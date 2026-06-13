@@ -5,10 +5,6 @@ This database stores a simple vehicle maintenance diary for a future web/PWA
 application. It allows users to manage vehicles, fuel logs, service records,
 parts, issues, expenses, reminders, odometer mileage readings, audit logs, and
 JSON exports of a vehicle history.
-
-The script is prepared for a university project in Advanced Databases. It uses
-PostgreSQL objects such as tables, constraints, indexes, functions, procedures,
-triggers, views, cursors, transactions, exception handling, and JSONB.
 */
 
 DROP SCHEMA IF EXISTS vehicle_diary CASCADE;

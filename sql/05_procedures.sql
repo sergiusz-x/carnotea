@@ -82,13 +82,10 @@ BEGIN
         RAISE EXCEPTION 'Price per liter must be greater than 0.';
     END IF;
 
-    SELECT id
-    INTO v_category_id
-    FROM expense_categories
-    WHERE name = 'Fuel';
+    SELECT id INTO v_category_id FROM expense_categories WHERE code = 'fuel';
 
     IF v_category_id IS NULL THEN
-        RAISE EXCEPTION 'Expense category Fuel does not exist.';
+        RAISE EXCEPTION 'Expense category with code "fuel" does not exist.';
     END IF;
 
     v_total_cost := round(p_liters * p_price_per_liter, 2);
@@ -115,28 +112,97 @@ BEGIN
     )
     RETURNING id INTO p_fuel_log_id;
 
-    INSERT INTO expenses (
-        vehicle_id,
-        category_id,
-        expense_date,
-        amount,
-        description,
-        source_type,
-        source_id
-    )
-    VALUES (
-        p_vehicle_id,
-        v_category_id,
-        p_fuel_date,
-        v_total_cost,
-        'Fuel purchase',
-        'fuel_log',
-        p_fuel_log_id
-    );
+    INSERT INTO expenses (vehicle_id, category_id, expense_date, amount, source_type, source_id)
+    VALUES (p_vehicle_id, v_category_id, p_fuel_date, v_total_cost, 'fuel_log', p_fuel_log_id);
 
 EXCEPTION
     WHEN OTHERS THEN
         RAISE EXCEPTION 'add_fuel_log failed: %', SQLERRM
+            USING ERRCODE = SQLSTATE;
+END;
+$procedure$;
+
+CREATE OR REPLACE PROCEDURE add_charging_session(
+    IN p_vehicle_id uuid,
+    IN p_charge_date date,
+    IN p_mileage integer,
+    IN p_energy_kwh numeric,
+    IN p_price_per_kwh numeric,
+    IN p_charger_type_id smallint,
+    IN p_soc_start_percent smallint DEFAULT NULL,
+    IN p_soc_end_percent smallint DEFAULT NULL,
+    IN p_station_name text DEFAULT NULL,
+    IN p_is_full_charge boolean DEFAULT true,
+    INOUT p_charging_session_id uuid DEFAULT NULL
+)
+LANGUAGE plpgsql
+AS $procedure$
+DECLARE
+    v_total_cost numeric(10, 2);
+    v_category_id uuid;
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM vehicles WHERE id = p_vehicle_id) THEN
+        RAISE EXCEPTION 'Vehicle with id % does not exist.', p_vehicle_id;
+    END IF;
+
+    IF p_charge_date IS NULL THEN
+        RAISE EXCEPTION 'Charge date is required.';
+    END IF;
+
+    IF p_mileage IS NULL OR p_mileage < 0 THEN
+        RAISE EXCEPTION 'Mileage must be greater than or equal to 0.';
+    END IF;
+
+    IF p_energy_kwh IS NULL OR p_energy_kwh <= 0 THEN
+        RAISE EXCEPTION 'Energy must be greater than 0 kWh.';
+    END IF;
+
+    IF p_price_per_kwh IS NULL OR p_price_per_kwh <= 0 THEN
+        RAISE EXCEPTION 'Price per kWh must be greater than 0.';
+    END IF;
+
+    SELECT id INTO v_category_id FROM expense_categories WHERE code = 'electricity';
+
+    IF v_category_id IS NULL THEN
+        RAISE EXCEPTION 'Expense category with code "electricity" does not exist.';
+    END IF;
+
+    v_total_cost := round(p_energy_kwh * p_price_per_kwh, 2);
+
+    INSERT INTO charging_sessions (
+        vehicle_id,
+        charge_date,
+        mileage,
+        energy_kwh,
+        price_per_kwh,
+        total_cost,
+        charger_type_id,
+        soc_start_percent,
+        soc_end_percent,
+        station_name,
+        is_full_charge
+    )
+    VALUES (
+        p_vehicle_id,
+        p_charge_date,
+        p_mileage,
+        p_energy_kwh,
+        p_price_per_kwh,
+        v_total_cost,
+        p_charger_type_id,
+        p_soc_start_percent,
+        p_soc_end_percent,
+        p_station_name,
+        coalesce(p_is_full_charge, true)
+    )
+    RETURNING id INTO p_charging_session_id;
+
+    INSERT INTO expenses (vehicle_id, category_id, expense_date, amount, source_type, source_id)
+    VALUES (p_vehicle_id, v_category_id, p_charge_date, v_total_cost, 'charging_session', p_charging_session_id);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'add_charging_session failed: %', SQLERRM
             USING ERRCODE = SQLSTATE;
 END;
 $procedure$;
@@ -186,13 +252,10 @@ BEGIN
         RAISE EXCEPTION 'Total cost must be greater than or equal to labor cost.';
     END IF;
 
-    SELECT id
-    INTO v_category_id
-    FROM expense_categories
-    WHERE name = 'Service';
+    SELECT id INTO v_category_id FROM expense_categories WHERE code = 'service';
 
     IF v_category_id IS NULL THEN
-        RAISE EXCEPTION 'Expense category Service does not exist.';
+        RAISE EXCEPTION 'Expense category with code "service" does not exist.';
     END IF;
 
     INSERT INTO service_records (
@@ -218,29 +281,52 @@ BEGIN
     RETURNING id INTO p_service_record_id;
 
     IF v_total_cost > 0 THEN
-        INSERT INTO expenses (
-            vehicle_id,
-            category_id,
-            expense_date,
-            amount,
-            description,
-            source_type,
-            source_id
-        )
-        VALUES (
-            p_vehicle_id,
-            v_category_id,
-            p_service_date,
-            v_total_cost,
-            trim(p_title),
-            'service_record',
-            p_service_record_id
-        );
+        INSERT INTO expenses (vehicle_id, category_id, expense_date, amount, description, source_type, source_id)
+        VALUES (p_vehicle_id, v_category_id, p_service_date, v_total_cost, trim(p_title), 'service_record', p_service_record_id);
     END IF;
 
 EXCEPTION
     WHEN OTHERS THEN
         RAISE EXCEPTION 'add_service_record failed: %', SQLERRM
+            USING ERRCODE = SQLSTATE;
+END;
+$procedure$;
+
+CREATE OR REPLACE PROCEDURE resolve_issue(
+    IN p_issue_id uuid,
+    IN p_resolved_date date DEFAULT CURRENT_DATE
+)
+LANGUAGE plpgsql
+AS $procedure$
+DECLARE
+    v_vehicle_id uuid;
+    v_issue_status varchar(30);
+    v_resolved_status_id smallint;
+BEGIN
+    SELECT i.vehicle_id, s.code
+    INTO v_vehicle_id, v_issue_status
+    FROM issues i
+    JOIN issue_statuses s ON s.id = i.status_id
+    WHERE i.id = p_issue_id
+    FOR UPDATE OF i;
+
+    IF v_vehicle_id IS NULL THEN
+        RAISE EXCEPTION 'Issue with id % does not exist.', p_issue_id;
+    END IF;
+
+    IF v_issue_status = 'resolved' THEN
+        RAISE EXCEPTION 'Issue with id % is already resolved.', p_issue_id;
+    END IF;
+
+    SELECT id INTO v_resolved_status_id FROM issue_statuses WHERE code = 'resolved';
+
+    UPDATE issues
+    SET status_id     = v_resolved_status_id,
+        resolved_date = coalesce(p_resolved_date, CURRENT_DATE)
+    WHERE id = p_issue_id;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE EXCEPTION 'resolve_issue failed: %', SQLERRM
             USING ERRCODE = SQLSTATE;
 END;
 $procedure$;
@@ -262,12 +348,14 @@ AS $procedure$
 DECLARE
     v_vehicle_id uuid;
     v_issue_status varchar(30);
+    v_resolved_status_id smallint;
 BEGIN
-    SELECT vehicle_id, status
+    SELECT i.vehicle_id, s.code
     INTO v_vehicle_id, v_issue_status
-    FROM issues
-    WHERE id = p_issue_id
-    FOR UPDATE;
+    FROM issues i
+    JOIN issue_statuses s ON s.id = i.status_id
+    WHERE i.id = p_issue_id
+    FOR UPDATE OF i;
 
     IF v_vehicle_id IS NULL THEN
         RAISE EXCEPTION 'Issue with id % does not exist.', p_issue_id;
@@ -275,6 +363,14 @@ BEGIN
 
     IF v_issue_status = 'resolved' THEN
         RAISE EXCEPTION 'Issue with id % is already resolved.', p_issue_id;
+    END IF;
+
+    SELECT id INTO v_resolved_status_id
+    FROM issue_statuses
+    WHERE code = 'resolved';
+
+    IF v_resolved_status_id IS NULL THEN
+        RAISE EXCEPTION 'Issue status "resolved" is not defined in issue_statuses.';
     END IF;
 
     CALL add_service_record(
@@ -291,7 +387,7 @@ BEGIN
 
     UPDATE issues
     SET
-        status = 'resolved',
+        status_id = v_resolved_status_id,
         resolved_date = coalesce(p_resolved_date, p_service_date),
         related_service_record_id = p_service_record_id
     WHERE id = p_issue_id;
@@ -302,10 +398,6 @@ EXCEPTION
 END;
 $procedure$;
 
--- This procedure is called inside an explicit transaction in 08_demo_calls.sql.
--- If an error happens, the exception is re-raised so the caller transaction can
--- be rolled back by PostgreSQL. The cursor exports one JSON document per vehicle
--- owned by the selected user.
 CREATE OR REPLACE PROCEDURE export_vehicles_to_json(IN p_user_id uuid)
 LANGUAGE plpgsql
 AS $procedure$
@@ -318,7 +410,8 @@ DECLARE
             v.generation,
             v.production_year,
             v.engine,
-            v.fuel_type,
+            ft.code AS fuel_type,
+            v.currency_code,
             v.vin,
             v.registration_number,
             v.current_mileage,
@@ -328,6 +421,7 @@ DECLARE
             u.email
         FROM vehicles v
         JOIN users u ON u.id = v.user_id
+        JOIN fuel_types ft ON ft.id = v.fuel_type_id
         WHERE v.user_id = p_user_id
         ORDER BY v.id;
     v_vehicle record;
@@ -361,6 +455,7 @@ BEGIN
                 'production_year', v_vehicle.production_year,
                 'engine', v_vehicle.engine,
                 'fuel_type', v_vehicle.fuel_type,
+                'currency_code', v_vehicle.currency_code,
                 'vin', v_vehicle.vin,
                 'registration_number', v_vehicle.registration_number,
                 'current_mileage', v_vehicle.current_mileage
@@ -401,6 +496,26 @@ BEGIN
                 FROM fuel_logs fl
                 WHERE fl.vehicle_id = v_vehicle.vehicle_id
             ), '[]'::jsonb),
+            'charging_sessions', coalesce((
+                SELECT jsonb_agg(
+                    jsonb_build_object(
+                        'charge_date', cs.charge_date,
+                        'mileage', cs.mileage,
+                        'energy_kwh', cs.energy_kwh,
+                        'price_per_kwh', cs.price_per_kwh,
+                        'total_cost', cs.total_cost,
+                        'charger_type', ct.code,
+                        'soc_start_percent', cs.soc_start_percent,
+                        'soc_end_percent', cs.soc_end_percent,
+                        'station_name', cs.station_name,
+                        'is_full_charge', cs.is_full_charge
+                    )
+                    ORDER BY cs.charge_date, cs.id
+                )
+                FROM charging_sessions cs
+                JOIN charger_types ct ON ct.id = cs.charger_type_id
+                WHERE cs.vehicle_id = v_vehicle.vehicle_id
+            ), '[]'::jsonb),
             'service_records', coalesce((
                 SELECT jsonb_agg(
                     jsonb_build_object(
@@ -420,13 +535,14 @@ BEGIN
                                     'identifiers', coalesce((
                                         SELECT jsonb_agg(
                                             jsonb_build_object(
-                                                'type', pi.identifier_type,
+                                                'type', pit.code,
                                                 'source_name', pi.source_name,
                                                 'value', pi.identifier_value
                                             )
-                                            ORDER BY pi.identifier_type, pi.source_name, pi.identifier_value
+                                            ORDER BY pit.code, pi.source_name, pi.identifier_value
                                         )
                                         FROM part_identifiers pi
+                                        JOIN part_identifier_types pit ON pit.id = pi.identifier_type_id
                                         WHERE pi.part_id = p.id
                                     ), '[]'::jsonb),
                                     'quantity', sp.quantity,
@@ -451,13 +567,15 @@ BEGIN
                         'reported_date', i.reported_date,
                         'resolved_date', i.resolved_date,
                         'title', i.title,
-                        'status', i.status,
-                        'priority', i.priority,
+                        'status', s.code,
+                        'priority', pr.code,
                         'related_service_record_id', i.related_service_record_id
                     )
                     ORDER BY i.reported_date, i.id
                 )
                 FROM issues i
+                JOIN issue_statuses s ON s.id = i.status_id
+                JOIN issue_priorities pr ON pr.id = i.priority_id
                 WHERE i.vehicle_id = v_vehicle.vehicle_id
             ), '[]'::jsonb),
             'expenses', coalesce((
@@ -483,11 +601,12 @@ BEGIN
                         'description', r.description,
                         'due_date', r.due_date,
                         'due_mileage', r.due_mileage,
-                        'status', r.status
+                        'status', rs.code
                     )
                     ORDER BY r.due_date NULLS LAST, r.due_mileage NULLS LAST, r.id
                 )
                 FROM reminders r
+                JOIN reminder_statuses rs ON rs.id = r.status_id
                 WHERE r.vehicle_id = v_vehicle.vehicle_id
             ), '[]'::jsonb)
         )

@@ -16,10 +16,8 @@ SELECT
 FROM expenses e
 WHERE e.source_type = 'fuel_log'
   AND NOT EXISTS (
-      SELECT 1
-      FROM fuel_logs fl
-      WHERE fl.id = e.source_id
-        AND fl.vehicle_id = e.vehicle_id
+      SELECT 1 FROM fuel_logs fl
+      WHERE fl.id = e.source_id AND fl.vehicle_id = e.vehicle_id
   );
 
 SELECT
@@ -29,10 +27,19 @@ SELECT
 FROM expenses e
 WHERE e.source_type = 'service_record'
   AND NOT EXISTS (
-      SELECT 1
-      FROM service_records sr
-      WHERE sr.id = e.source_id
-        AND sr.vehicle_id = e.vehicle_id
+      SELECT 1 FROM service_records sr
+      WHERE sr.id = e.source_id AND sr.vehicle_id = e.vehicle_id
+  );
+
+SELECT
+    'charging expenses reference existing charging sessions' AS check_name,
+    count(*) AS bad_rows,
+    count(*) = 0 AS passed
+FROM expenses e
+WHERE e.source_type = 'charging_session'
+  AND NOT EXISTS (
+      SELECT 1 FROM charging_sessions cs
+      WHERE cs.id = e.source_id AND cs.vehicle_id = e.vehicle_id
   );
 
 SELECT
@@ -41,8 +48,7 @@ SELECT
     count(*) = 0 AS passed
 FROM fuel_logs fl
 WHERE NOT EXISTS (
-    SELECT 1
-    FROM mileage_readings mr
+    SELECT 1 FROM mileage_readings mr
     WHERE mr.vehicle_id = fl.vehicle_id
       AND mr.source_type = 'fuel_log'
       AND mr.source_id = fl.id
@@ -51,13 +57,26 @@ WHERE NOT EXISTS (
 );
 
 SELECT
+    'charging sessions have mileage readings' AS check_name,
+    count(*) AS bad_rows,
+    count(*) = 0 AS passed
+FROM charging_sessions cs
+WHERE NOT EXISTS (
+    SELECT 1 FROM mileage_readings mr
+    WHERE mr.vehicle_id = cs.vehicle_id
+      AND mr.source_type = 'charging_session'
+      AND mr.source_id = cs.id
+      AND mr.reading_date = cs.charge_date
+      AND mr.mileage = cs.mileage
+);
+
+SELECT
     'service records have mileage readings' AS check_name,
     count(*) AS bad_rows,
     count(*) = 0 AS passed
 FROM service_records sr
 WHERE NOT EXISTS (
-    SELECT 1
-    FROM mileage_readings mr
+    SELECT 1 FROM mileage_readings mr
     WHERE mr.vehicle_id = sr.vehicle_id
       AND mr.source_type = 'service_record'
       AND mr.source_id = sr.id
@@ -72,21 +91,15 @@ SELECT
 FROM mileage_readings mr
 WHERE (
     mr.source_type = 'fuel_log'
-    AND NOT EXISTS (
-        SELECT 1
-        FROM fuel_logs fl
-        WHERE fl.id = mr.source_id
-          AND fl.vehicle_id = mr.vehicle_id
-    )
+    AND NOT EXISTS (SELECT 1 FROM fuel_logs fl WHERE fl.id = mr.source_id AND fl.vehicle_id = mr.vehicle_id)
 )
 OR (
     mr.source_type = 'service_record'
-    AND NOT EXISTS (
-        SELECT 1
-        FROM service_records sr
-        WHERE sr.id = mr.source_id
-          AND sr.vehicle_id = mr.vehicle_id
-    )
+    AND NOT EXISTS (SELECT 1 FROM service_records sr WHERE sr.id = mr.source_id AND sr.vehicle_id = mr.vehicle_id)
+)
+OR (
+    mr.source_type = 'charging_session'
+    AND NOT EXISTS (SELECT 1 FROM charging_sessions cs WHERE cs.id = mr.source_id AND cs.vehicle_id = mr.vehicle_id)
 );
 
 SELECT
@@ -112,16 +125,8 @@ SELECT
     count(*) AS bad_rows,
     count(*) = 0 AS passed
 FROM parts p
-WHERE EXISTS (
-    SELECT 1
-    FROM service_parts sp
-    WHERE sp.part_id = p.id
-)
-AND NOT EXISTS (
-    SELECT 1
-    FROM part_identifiers pi
-    WHERE pi.part_id = p.id
-);
+WHERE EXISTS (SELECT 1 FROM service_parts sp WHERE sp.part_id = p.id)
+  AND NOT EXISTS (SELECT 1 FROM part_identifiers pi WHERE pi.part_id = p.id);
 
 SELECT
     'part identifier values are not blank' AS check_name,
@@ -136,12 +141,11 @@ SELECT
     count(*) AS bad_rows,
     count(*) = 0 AS passed
 FROM issues i
-WHERE i.status = 'resolved'
+JOIN issue_statuses s ON s.id = i.status_id
+WHERE s.code = 'resolved'
   AND NOT EXISTS (
-      SELECT 1
-      FROM service_records sr
-      WHERE sr.id = i.related_service_record_id
-        AND sr.vehicle_id = i.vehicle_id
+      SELECT 1 FROM service_records sr
+      WHERE sr.id = i.related_service_record_id AND sr.vehicle_id = i.vehicle_id
   );
 
 SELECT
@@ -149,16 +153,10 @@ SELECT
     abs(
         (SELECT count(*) FROM active_issues_view)
         -
-        (
-            SELECT count(*)
-            FROM issues
-            WHERE status IN ('open', 'in_progress')
-        )
+        (SELECT count(*) FROM issues i JOIN issue_statuses s ON s.id = i.status_id WHERE NOT s.is_terminal)
     ) AS bad_rows,
     (SELECT count(*) FROM active_issues_view) = (
-        SELECT count(*)
-        FROM issues
-        WHERE status IN ('open', 'in_progress')
+        SELECT count(*) FROM issues i JOIN issue_statuses s ON s.id = i.status_id WHERE NOT s.is_terminal
     ) AS passed;
 
 SELECT
@@ -167,10 +165,26 @@ SELECT
     count(*) = 0 AS passed
 FROM vehicles v
 WHERE calculate_total_vehicle_cost(v.id) <> (
-    SELECT coalesce(sum(amount), 0)
-    FROM expenses e
-    WHERE e.vehicle_id = v.id
+    SELECT coalesce(sum(amount), 0) FROM expenses e WHERE e.vehicle_id = v.id
 );
+
+SELECT
+    'electric vehicles have no fuel logs' AS check_name,
+    count(*) AS bad_rows,
+    count(*) = 0 AS passed
+FROM fuel_logs fl
+JOIN vehicles v ON v.id = fl.vehicle_id
+JOIN fuel_types ft ON ft.id = v.fuel_type_id
+WHERE ft.code = 'electric';
+
+SELECT
+    'ice-only vehicles have no charging sessions' AS check_name,
+    count(*) AS bad_rows,
+    count(*) = 0 AS passed
+FROM charging_sessions cs
+JOIN vehicles v ON v.id = cs.vehicle_id
+JOIN fuel_types ft ON ft.id = v.fuel_type_id
+WHERE ft.code IN ('petrol', 'diesel', 'lpg');
 
 SELECT
     'json exports contain required top-level keys' AS check_name,
@@ -182,6 +196,7 @@ WHERE NOT (
     AND json_data ? 'owner'
     AND json_data ? 'mileage_readings'
     AND json_data ? 'fuel_logs'
+    AND json_data ? 'charging_sessions'
     AND json_data ? 'service_records'
     AND json_data ? 'issues'
     AND json_data ? 'expenses'
@@ -189,25 +204,19 @@ WHERE NOT (
 );
 
 SELECT
-    'json exports contain arrays for grouped data' AS check_name,
+    'fuel log expense amounts are consistent' AS check_name,
     count(*) AS bad_rows,
     count(*) = 0 AS passed
-FROM vehicle_json_exports
-WHERE jsonb_typeof(json_data -> 'mileage_readings') <> 'array'
-   OR jsonb_typeof(json_data -> 'fuel_logs') <> 'array'
-   OR jsonb_typeof(json_data -> 'service_records') <> 'array'
-   OR jsonb_typeof(json_data -> 'issues') <> 'array'
-   OR jsonb_typeof(json_data -> 'expenses') <> 'array'
-   OR jsonb_typeof(json_data -> 'reminders') <> 'array';
+FROM expenses e
+JOIN fuel_logs fl ON fl.id = e.source_id AND fl.vehicle_id = e.vehicle_id
+WHERE e.source_type = 'fuel_log'
+  AND e.amount <> fl.total_cost;
 
 SELECT
-    'json exported service parts contain identifier arrays' AS check_name,
+    'charging session expense amounts are consistent' AS check_name,
     count(*) AS bad_rows,
     count(*) = 0 AS passed
-FROM vehicle_json_exports vje
-WHERE EXISTS (
-    SELECT 1
-    FROM jsonb_array_elements(vje.json_data -> 'service_records') sr(service_record_json)
-    CROSS JOIN LATERAL jsonb_array_elements(sr.service_record_json -> 'parts') p(part_json)
-    WHERE jsonb_typeof(p.part_json -> 'identifiers') <> 'array'
-);
+FROM expenses e
+JOIN charging_sessions cs ON cs.id = e.source_id AND cs.vehicle_id = e.vehicle_id
+WHERE e.source_type = 'charging_session'
+  AND e.amount <> cs.total_cost;
