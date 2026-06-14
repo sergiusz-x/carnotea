@@ -1,14 +1,14 @@
 ---
 id: T-002
 title: Database package — Drizzle schema-as-code + migrations
-status: in_review
+status: done
 priority: high
 owner: claude
 dependencies: [T-001]
 labels: [bootstrap, db]
 created_at: 2026-06-13
 updated_at: 2026-06-14
-closed_at: ~
+closed_at: 2026-06-14
 ---
 
 # T-002 — Database package: Drizzle schema-as-code + migrations
