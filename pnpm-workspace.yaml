@@ -1,0 +1,35 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "tooling/*"
+
+linkWorkspacePackages: true
+
+# Native modules that must be built before they can be used
+onlyBuiltDependencies:
+  - esbuild
+
+# Dependency catalog — single source of truth for shared versions.
+# Packages reference these with `"zod": "catalog:"` instead of pinning a version
+# locally, so the whole monorepo upgrades in one place and `sherif` can prove
+# there is no drift. Scaffold tickets (T-001+) extend this list as they add deps.
+catalog:
+  # Language + lint toolchain
+  typescript: ^5.7.0
+  eslint: ^9.17.0
+  prettier: ^3.4.0
+  # Validation (used by api, web, shared)
+  zod: ^3.24.0
+  # Testing
+  vitest: ^2.1.0
+  # Types
+  "@types/node": ^22.10.0
+
+# React-family versions live in a named catalog so non-React packages never
+# accidentally pull them in.
+catalogs:
+  react19:
+    react: ^19.0.0
+    react-dom: ^19.0.0
+    "@types/react": ^19.0.0
+    "@types/react-dom": ^19.0.0

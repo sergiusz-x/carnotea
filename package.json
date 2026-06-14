@@ -1,0 +1,35 @@
+{
+  "name": "carnotea",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CarNotea - a vehicle diary PWA (web + mobile installable).",
+  "license": "MIT",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo watch dev --continue",
+    "lint": "turbo run lint --continue",
+    "lint:fix": "turbo run lint --continue -- --fix",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "lint:ws": "sherif",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v && docker compose up -d",
+    "db:migrate": "turbo run db:migrate",
+    "db:introspect": "turbo run db:introspect",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "postinstall": "pnpm lint:ws"
+  },
+  "devDependencies": {
+    "sherif": "^1.0.0",
+    "turbo": "^2.3.0"
+  }
+}
