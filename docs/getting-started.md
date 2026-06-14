@@ -86,7 +86,29 @@ expected, and it is what the initial tickets are for.
 | Run all tests       | `pnpm test`                          |
 | Run a single app    | `pnpm --filter <name> <script>`      |
 
-## 7. Where to look next
+## 7. Browser automation (agent-browser)
+
+For AI-assisted UI verification, manual browser exploration, and natural-language
+browser control, install [agent-browser](https://github.com/vercel-labs/agent-browser)
+globally and download Chrome once:
+
+```bash
+npm install -g agent-browser
+agent-browser install   # downloads Chrome for Testing (~184 MB, one-time)
+```
+
+A project config (`agent-browser.json`) is already committed. Browser session
+data is stored in `.agent-browser/` (gitignored — per-developer).
+
+Common workflows once `apps/web` is running:
+
+```bash
+agent-browser open http://localhost:5173   # open web app
+agent-browser snapshot -i                 # list interactive elements
+agent-browser chat                        # natural-language control
+```
+
+## 8. Where to look next
 
 - **Architecture overview**: [`docs/architecture.md`](./architecture.md)
 - **Conventions**: [`docs/conventions.md`](./conventions.md)

@@ -47,6 +47,26 @@ review costs everyone's time.
 - [ ] `pnpm test` — pass (or no logic changed that has unit/integration tests).
 - [ ] `pnpm build` — pass (or no build-affecting files changed).
 
+## UI verification
+
+Run this section when the ticket touches `apps/web`, any React component, or any
+route/page. Mark `—` (not applicable) for purely back-end, infra, or docs changes.
+
+- [ ] Dev server is running: `pnpm --filter @carnotea/web dev`
+- [ ] Open the app: `agent-browser open http://localhost:PORT`
+- [ ] Snapshot interactive elements: `agent-browser snapshot -i`
+      Confirm that elements added or changed by this ticket appear in the output.
+- [ ] Walk through every AC that has a visible UI outcome. Use
+      `agent-browser click`, `agent-browser fill`, etc. to drive the golden path.
+      If something breaks, capture it: `agent-browser screenshot <slug>-fail.png`
+- [ ] Glance at adjacent screens for obvious regressions.
+
+If the dev server cannot start (scaffold ticket not yet done, missing deps), report
+it explicitly in the Phase 5 report:
+  `UI not verified — <reason>`
+
+Never write "UI verified" when you did not open agent-browser. See [Be honest](../../AGENTS.md#be-honest).
+
 ## PR readiness
 
 - [ ] Branch follows `<type>/T-NNN-<slug>` naming.

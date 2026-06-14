@@ -61,5 +61,8 @@ drizzle/meta/_journal.local.json
 # Claude Code local settings (per-developer, not shared)
 .claude/settings.local.json
 
+# agent-browser — browser session data (per-developer)
+.agent-browser/
+
 # Generated single-file SQL dist (legacy)
 dist/
