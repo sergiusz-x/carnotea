@@ -15,7 +15,7 @@ onlyBuiltDependencies:
 # there is no drift. Scaffold tickets (T-001+) extend this list as they add deps.
 catalog:
   # Language + lint toolchain
-  typescript: ^5.7.0
+  typescript: ^6.0.3
   eslint: ^10.5.0
   prettier: ^3.4.0
   # Validation (used by api, web, shared)
