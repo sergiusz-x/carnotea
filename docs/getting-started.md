@@ -5,12 +5,12 @@ either a human developer or an AI agent picking up your first ticket.
 
 ## 1. Install prerequisites
 
-| Tool    | Version       | How to check         |
-| ------- | ------------- | -------------------- |
-| Node.js | 24 or newer    | `node --version`     |
-| pnpm    | 9.x or newer  | `pnpm --version`     |
-| Docker  | any recent    | `docker --version`   |
-| Git     | any recent    | `git --version`      |
+| Tool    | Version      | How to check       |
+| ------- | ------------ | ------------------ |
+| Node.js | 24 or newer  | `node --version`   |
+| pnpm    | 9.x or newer | `pnpm --version`   |
+| Docker  | any recent   | `docker --version` |
+| Git     | any recent   | `git --version`    |
 
 If you use `nvm` or `fnm`, run `nvm use` (the version is pinned in `.nvmrc`).
 
@@ -78,13 +78,13 @@ expected, and it is what the initial tickets are for.
 
 ## 6. Working day-to-day
 
-| Goal                | Command                              |
-| ------------------- | ------------------------------------ |
-| Type-check          | `pnpm typecheck`                     |
-| Lint                | `pnpm lint`                          |
-| Format              | `pnpm format`                        |
-| Run all tests       | `pnpm test`                          |
-| Run a single app    | `pnpm --filter <name> <script>`      |
+| Goal             | Command                         |
+| ---------------- | ------------------------------- |
+| Type-check       | `pnpm typecheck`                |
+| Lint             | `pnpm lint`                     |
+| Format           | `pnpm format`                   |
+| Run all tests    | `pnpm test`                     |
+| Run a single app | `pnpm --filter <name> <script>` |
 
 ## 7. Browser automation (agent-browser)
 

@@ -8,7 +8,7 @@ review costs everyone's time.
 
 ## Acceptance criteria
 
-- [ ] Every box in the ticket's **Acceptance criteria** is checked and *actually*
+- [ ] Every box in the ticket's **Acceptance criteria** is checked and _actually_
       true. Re-read each one from the ticket; do not tick speculatively.
 
 ## Code quality
@@ -63,7 +63,7 @@ route/page. Mark `—` (not applicable) for purely back-end, infra, or docs chan
 
 If the dev server cannot start (scaffold ticket not yet done, missing deps), report
 it explicitly in the Phase 5 report:
-  `UI not verified — <reason>`
+`UI not verified — <reason>`
 
 Never write "UI verified" when you did not open agent-browser. See [Be honest](../../AGENTS.md#be-honest).
 

@@ -38,10 +38,8 @@ them on subsequent requests.
       prefix; if a separate `auth` schema is preferred, document why).
 - [ ] `vehicle_diary.users.id` is reconciled with better-auth's user id: pick
       one of the two strategies and document the decision in
-      `packages/db/AGENTS.md`:
-      - (a) `vehicle_diary.users.id` IS the better-auth user id (same UUID),
-      - (b) `vehicle_diary.users.auth_user_id` references better-auth's user
-        table.
+      `packages/db/AGENTS.md`: - (a) `vehicle_diary.users.id` IS the better-auth user id (same UUID), - (b) `vehicle_diary.users.auth_user_id` references better-auth's user
+      table.
 - [ ] Email/password sign-up creates both an auth record and a
       `vehicle_diary.users` row in one transaction (or via a deterministic
       post-signup hook).

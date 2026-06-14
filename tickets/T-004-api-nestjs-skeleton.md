@@ -37,8 +37,7 @@ No business endpoints, no auth, no Swagger yet.
 - [ ] `apps/api/` exists as `@carnotea/api`, NestJS-based.
 - [ ] tsconfig extends `@carnotea/tsconfig/node.json`.
 - [ ] ESLint extends the `node` config from `@carnotea/eslint-config`.
-- [ ] `pnpm --filter @carnotea/api dev` runs the app on `API_PORT` (default
-      3001) and hot-reloads on file change.
+- [ ] `pnpm --filter @carnotea/api dev` runs the app on `API_PORT` (default 3001) and hot-reloads on file change.
 - [ ] `GET /healthz` returns 200 with `{ status: 'ok' }`.
 - [ ] `GET /readyz` returns 200 with `{ status: 'ok', db: 'ok' }` when the DB
       is reachable, 503 otherwise.

@@ -27,8 +27,8 @@ against direct writes are kept as raw SQL in a dedicated migration.
 
 The root `sql/` directory contains a university-course database schema with
 stored procedures, analytics functions, and sync triggers that belong in the
-application layer. This ticket re-expresses the *data model* (tables, indexes,
-lookup data) in Drizzle TypeScript; the *behaviour* (validation, syncing,
+application layer. This ticket re-expresses the _data model_ (tables, indexes,
+lookup data) in Drizzle TypeScript; the _behaviour_ (validation, syncing,
 calculations) becomes NestJS service logic in later tickets.
 
 `sql/` is left intact as a git reference while this ticket is being worked.
@@ -49,10 +49,8 @@ be deleted — see the cleanup note at the end.
 - [ ] `drizzle.config.ts` at `packages/db/drizzle.config.ts` points at
       `src/schema/index.ts`, `dialect: 'postgresql'`, and
       `out: './migrations'`.
-- [ ] `pnpm db:generate` (calls `drizzle-kit generate`) produces at minimum:
-      - `migrations/0000_init.sql` — all tables and indexes
-      - `migrations/0001_constraints.sql` — raw SQL for the two DB-level
-        constraints (see Implementation notes)
+- [ ] `pnpm db:generate` (calls `drizzle-kit generate`) produces at minimum: - `migrations/0000_init.sql` — all tables and indexes - `migrations/0001_constraints.sql` — raw SQL for the two DB-level
+      constraints (see Implementation notes)
 - [ ] `pnpm db:migrate` (calls `drizzle-kit migrate`) applies all pending
       migrations against the local database cleanly.
 - [ ] `pnpm db:migrate` applied against a fresh Postgres, followed by running
@@ -96,6 +94,7 @@ as NestJS service methods in the tickets that build the API:
    a trigger is the only correct implementation.
 
 Use Drizzle's `sql` tag to include raw SQL in a custom migration:
+
 ```ts
 // drizzle.config.ts — or just write 0001_constraints.sql by hand
 ```

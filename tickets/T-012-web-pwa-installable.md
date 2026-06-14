@@ -23,7 +23,7 @@ touch), the correct meta tags, and a service worker that satisfies the
 ## Context
 
 ADR-0006 commits to PWA from day one but defers offline / push to later
-tickets. This ticket implements the *installable* baseline.
+tickets. This ticket implements the _installable_ baseline.
 
 ## Acceptance criteria
 
@@ -38,7 +38,7 @@ tickets. This ticket implements the *installable* baseline.
       `<meta name="theme-color">`, `<link rel="apple-touch-icon">` and the
       iOS-specific meta tags.
 - [ ] A minimal service worker is registered (Vite PWA plugin OR a hand-rolled
-      `sw.js`) that does *not* cache API responses. It exists solely to make
+      `sw.js`) that does _not_ cache API responses. It exists solely to make
       the install prompt fire.
 - [ ] The Chrome devtools "Application > Manifest" tab shows no warnings on
       the built app.

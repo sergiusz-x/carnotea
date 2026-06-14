@@ -35,7 +35,7 @@ Humans can follow them too, but they're framed around how an agent operates.
 - **Inventing a tool** - if you can't find a documented choice for "how do we
   do X here", ask the user. Don't guess and write an ADR after the fact.
 - **Cargo-culting code from other repos** - it's tempting to copy a pattern
-  you've seen in other projects. Check whether it fits *this* project's
+  you've seen in other projects. Check whether it fits _this_ project's
   conventions first.
 - **Hallucinating a file or symbol** - if a doc references `packages/db/...`,
   verify the file exists before relying on it. If the doc is wrong, fix the doc
