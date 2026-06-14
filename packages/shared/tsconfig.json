@@ -1,0 +1,4 @@
+{
+  "extends": "@carnotea/tsconfig/base.json",
+  "include": ["src"]
+}

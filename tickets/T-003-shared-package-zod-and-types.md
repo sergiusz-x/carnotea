@@ -1,14 +1,14 @@
 ---
 id: T-003
 title: Shared package — Zod schemas and types
-status: ready
+status: done
 priority: high
-owner: ~
+owner: claude
 dependencies: [T-001]
 labels: [bootstrap, shared]
 created_at: 2026-06-13
-updated_at: 2026-06-13
-closed_at: ~
+updated_at: 2026-06-14
+closed_at: 2026-06-14
 ---
 
 # T-003 — Shared package: Zod schemas and types
@@ -30,13 +30,13 @@ expense category codes, etc.).
 
 ## Acceptance criteria
 
-- [ ] `packages/shared/` exists as `@carnotea/shared`.
-- [ ] It exports: - `constants/fuel-types.ts` (string-literal union mirroring the SQL seed), - `constants/issue-statuses.ts`, - `constants/issue-priorities.ts`, - `constants/reminder-statuses.ts`, - `constants/charger-types.ts`, - `constants/expense-categories.ts`, - `schemas/index.ts` (exports the schemas, currently empty placeholder), - `index.ts` (re-export entry point).
-- [ ] All constants are exported as `as const` arrays plus inferred union
+- [x] `packages/shared/` exists as `@carnotea/shared`.
+- [x] It exports: - `constants/fuel-types.ts` (string-literal union mirroring the SQL seed), - `constants/issue-statuses.ts`, - `constants/issue-priorities.ts`, - `constants/reminder-statuses.ts`, - `constants/charger-types.ts`, - `constants/expense-categories.ts`, - `schemas/index.ts` (exports the schemas, currently empty placeholder), - `index.ts` (re-export entry point).
+- [x] All constants are exported as `as const` arrays plus inferred union
       types (e.g. `type FuelTypeCode = (typeof FUEL_TYPE_CODES)[number]`).
-- [ ] tsconfig extends `@carnotea/tsconfig/base.json`.
-- [ ] `pnpm --filter @carnotea/shared build` succeeds.
-- [ ] `docs/tech-stack.md` "Shared (packages/shared)" section is accurate.
+- [x] tsconfig extends `@carnotea/tsconfig/base.json`.
+- [x] `pnpm --filter @carnotea/shared build` succeeds.
+- [x] `docs/tech-stack.md` "Shared (packages/shared)" section is accurate.
 
 ## Files to touch
 
@@ -57,6 +57,13 @@ expense category codes, etc.).
   tests later.
 - Keep the package zero-runtime-deps for now (except `zod`).
 - Use `tsup` or plain `tsc --build` — pick the simpler option (`tsc --build`).
+
+## Notes
+
+- `src/schemas/index.ts` uses `export {}` (empty module) — a comment-only file
+  is not a module in TypeScript and causes `TS2306`.
+- Build uses `tsc -p tsconfig.build.json` emitting to `dist/`; package exports
+  still point to `./src/index.ts` for workspace-internal dev use.
 
 ## References
 
