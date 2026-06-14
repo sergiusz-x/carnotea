@@ -22,7 +22,7 @@ catalog:
   eslint-plugin-jsx-a11y: ^6.10.0
   eslint-plugin-react: ^7.37.2
   eslint-plugin-react-hooks: ^7.1.1
-  globals: ^15.14.0
+  globals: ^17.6.0
   prettier: ^3.4.0
   typescript-eslint: ^8.18.2
   # Validation (used by api, web, shared)
