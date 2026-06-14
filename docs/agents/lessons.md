@@ -54,3 +54,13 @@ merge conflicts even though the local checkout looked clean.
 **Rule:** During `ship-pr`, fetch `origin`, rebase onto the fetched
 `origin/main`, resolve conflicts locally, and validate before creating or
 updating the PR.
+
+### 2026-06-14 — Use current dependency versions
+
+**Context:** Adding T-001 tooling dependencies.
+**Mistake:** Dependency versions were selected from stale assumptions, producing
+Dependabot alerts immediately after the PR was opened.
+**Rule:** When adding or changing dependencies, verify the latest stable
+compatible version from package-manager metadata before editing catalogs or
+manifests; if the latest version is blocked, document the constraint in the
+ticket notes and PR.

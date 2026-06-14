@@ -24,6 +24,11 @@ build_.
   parallel TS type by hand.
 - Keep every user-facing string in **both** `pl` and `en` translation files.
   See [ADR-0007](./docs/adr/0007-i18n-pl-en.md).
+- When adding or changing package dependencies, verify the latest stable
+  compatible version from package-manager metadata (for example `pnpm info`)
+  before editing `pnpm-workspace.yaml` or a manifest. Do not use stale versions
+  from memory; if the latest version is blocked by peer/support constraints,
+  record the reason in the ticket notes and PR.
 - Run the smallest relevant set of **Validation Commands** (below) before you
   call a task done.
 - After a human corrects you, append a rule to
