@@ -171,8 +171,8 @@ Only after the user confirms they are satisfied:
 7. Create the PR following `.github/PULL_REQUEST_TEMPLATE.md`:
    - Title: `<type>(<scope>): <ticket title>`
    - Body: link to ticket, what changed, how verified, anything _not_ verified.
-8. Update the ticket: `status: in_review`, `updated_at: <today>`.
-   Move its line in `tickets/INDEX.md` to **In review**.
+8. Update the ticket: `status: done`, `updated_at: <today>`, `closed_at: <today>`.
+   Move its line in `tickets/INDEX.md` to **Done**.
 9. Commit the status update and push it to the PR branch.
 10. Share the PR URL.
 

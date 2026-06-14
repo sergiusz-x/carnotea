@@ -64,3 +64,12 @@ Dependabot alerts immediately after the PR was opened.
 compatible version from package-manager metadata before editing catalogs or
 manifests; if the latest version is blocked, document the constraint in the
 ticket notes and PR.
+
+### 2026-06-14 — Set ticket status to done at ship-pr, not in_review
+
+**Context:** Shipping T-002 via `ship-pr`.
+**Mistake:** Ticket status was set to `in_review` after pushing the PR, leaving
+it stranded in "In review" instead of "Done".
+**Rule:** During `ship-pr` (Phase 6 step 8), set `status: done`, `closed_at: <today>`,
+and move the ticket line to **Done** in `tickets/INDEX.md`. The PR itself is the
+review artifact — the ticket is done when the PR is opened.
