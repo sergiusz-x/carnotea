@@ -107,6 +107,7 @@ one environment-agnostic spec in
 | ------ | ------------ | ----------- | ----- | ----- |
 | Pick next | Recommends the next unblocked ticket. | `/next-ticket` | `next-ticket` skill | read the doc |
 | Work a ticket | Analyze → plan (human approval) → implement in a worktree → self-review → report. | `/work-ticket <id>` | `work-ticket` skill | read the doc |
+| Smart commit | Groups uncommitted changes into logical commits with Conventional Commit messages, waits for approval, then commits. Does not push. | `/smart-commit` | `smart-commit` skill | `.claude/commands/smart-commit.md` |
 | Ship a PR | Validates, pushes the branch, opens a PR. | `/ship-pr` | `ship-pr` skill | read the doc |
 
 - **Claude Code** loads these as slash commands from `.claude/commands/*.md`.

@@ -108,7 +108,21 @@ agent-browser snapshot -i                 # list interactive elements
 agent-browser chat                        # natural-language control
 ```
 
-## 8. Where to look next
+## 8. Committing changes
+
+Instead of staging and committing manually, use `/smart-commit` (Claude Code)
+or the `smart-commit` Codex skill. It will:
+
+1. Fetch origin and warn if your branch is behind.
+2. Read all uncommitted changes.
+3. Propose a split into logically coherent commits with Conventional Commit
+   messages.
+4. Wait for your approval before writing anything to git history.
+5. Create the commits in sequence.
+
+To then push and open a PR, run `/ship-pr`.
+
+## 9. Where to look next
 
 - **Architecture overview**: [`docs/architecture.md`](./architecture.md)
 - **Conventions**: [`docs/conventions.md`](./conventions.md)
