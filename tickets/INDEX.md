@@ -41,10 +41,11 @@ _Empty._
 
 ## In review
 
-- 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
+_Empty._
 
 ## Done
 
+- 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
 - 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
 
 ---
