@@ -33,7 +33,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-- 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
+_Empty._
 
 ## Blocked
 
@@ -41,7 +41,7 @@ _Empty._
 
 ## In review
 
-_Empty._
+- 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
 
 ## Done
 

@@ -1,7 +1,7 @@
 ---
 id: T-001
 title: Bootstrap tooling and shared configs
-status: in_progress
+status: in_review
 priority: high
 owner: codex
 dependencies: []
