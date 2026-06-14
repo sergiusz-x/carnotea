@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📋 Work is tracked as tickets, not issues
+    url: https://github.com/sergiusz-x/carnotea/blob/main/tickets/README.md
+    about: >-
+      CarNotea plans and tracks work as markdown tickets in tickets/, not as
+      GitHub Issues (see ADR-0008). Use a bug report below for defects; for new
+      work, add a ticket.
+  - name: 🔐 Security vulnerability
+    url: https://github.com/sergiusz-x/carnotea/blob/main/SECURITY.md
+    about: Please report security issues privately, not as a public issue.
