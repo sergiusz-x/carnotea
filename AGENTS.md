@@ -78,9 +78,24 @@ pnpm lint:ws        # sherif — workspace dependency consistency
 > Bootstrap note: until the first app/package tickets land, these are wired but
 > mostly no-ops (nothing to lint/build yet). That's expected, not a failure.
 
+### UI verification with agent-browser
+
+When a ticket touches `apps/web` or any UI component, also verify it in a real
+browser. `agent-browser` is installed globally and configured via `agent-browser.json`
+at the repo root. Chrome for Testing is bundled — no system browser needed.
+
+```bash
+pnpm --filter @carnotea/web dev          # start the dev server first
+agent-browser open http://localhost:5173 # navigate to the app
+agent-browser snapshot -i                # list interactive elements + refs
+agent-browser chat                       # natural-language control (interactive)
+```
+
+See `docs/agents/self-review.md` §UI verification for the full checklist.
+
 A change is **done** when: every acceptance-criterion box in the ticket is
-genuinely checked, the relevant commands above pass, and the docs touched by
-the change are updated in the same commit.
+genuinely checked, the relevant commands above pass, UI changes are verified in
+agent-browser, and the docs touched by the change are updated in the same commit.
 
 ## Skills / commands
 
@@ -92,6 +107,7 @@ one environment-agnostic spec in
 | ------ | ------------ | ----------- | ----- | ----- |
 | Pick next | Recommends the next unblocked ticket. | `/next-ticket` | `next-ticket` skill | read the doc |
 | Work a ticket | Analyze → plan (human approval) → implement in a worktree → self-review → report. | `/work-ticket <id>` | `work-ticket` skill | read the doc |
+| Smart commit | Groups uncommitted changes into logical commits with Conventional Commit messages, waits for approval, then commits. Does not push. | `/smart-commit` | `smart-commit` skill | `.claude/commands/smart-commit.md` |
 | Ship a PR | Validates, pushes the branch, opens a PR. | `/ship-pr` | `ship-pr` skill | read the doc |
 
 - **Claude Code** loads these as slash commands from `.claude/commands/*.md`.

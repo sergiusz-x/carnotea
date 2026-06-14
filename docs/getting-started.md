@@ -86,7 +86,43 @@ expected, and it is what the initial tickets are for.
 | Run all tests       | `pnpm test`                          |
 | Run a single app    | `pnpm --filter <name> <script>`      |
 
-## 7. Where to look next
+## 7. Browser automation (agent-browser)
+
+For AI-assisted UI verification, manual browser exploration, and natural-language
+browser control, install [agent-browser](https://github.com/vercel-labs/agent-browser)
+globally and download Chrome once:
+
+```bash
+npm install -g agent-browser
+agent-browser install   # downloads Chrome for Testing (~184 MB, one-time)
+```
+
+A project config (`agent-browser.json`) is already committed. Browser session
+data is stored in `.agent-browser/` (gitignored — per-developer).
+
+Common workflows once `apps/web` is running:
+
+```bash
+agent-browser open http://localhost:5173   # open web app
+agent-browser snapshot -i                 # list interactive elements
+agent-browser chat                        # natural-language control
+```
+
+## 8. Committing changes
+
+Instead of staging and committing manually, use `/smart-commit` (Claude Code)
+or the `smart-commit` Codex skill. It will:
+
+1. Fetch origin and warn if your branch is behind.
+2. Read all uncommitted changes.
+3. Propose a split into logically coherent commits with Conventional Commit
+   messages.
+4. Wait for your approval before writing anything to git history.
+5. Create the commits in sequence.
+
+To then push and open a PR, run `/ship-pr`.
+
+## 9. Where to look next
 
 - **Architecture overview**: [`docs/architecture.md`](./architecture.md)
 - **Conventions**: [`docs/conventions.md`](./conventions.md)

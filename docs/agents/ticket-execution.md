@@ -93,6 +93,7 @@ Commit this change before touching any code.
 1. Implement the change.
 2. Run the smallest validation command that covers it.
 3. Confirm the AC is *actually* true. Do not tick speculatively.
+   For UI ACs: open the app in `agent-browser` and exercise the change before ticking.
 
 **After all ACs pass:**
 - Record non-obvious decisions in the ticket's **Notes** section.
@@ -129,8 +130,10 @@ Validation
   pnpm typecheck — pass
   pnpm lint      — pass
 
-Not verified (if any)
-  UI was not opened in a browser — will flag in PR.
+UI verification
+  agent-browser open http://localhost:PORT — <what was exercised>
+  — or —
+  UI not verified — <reason> (scaffold not yet done / no UI changes)
 
 Self-review — clean / N issues found and fixed.
 ```
