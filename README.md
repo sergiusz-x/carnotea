@@ -12,8 +12,8 @@ ERP. It is a personal logbook that respects your data and your time.
 
 Pre-release. The repository currently contains:
 
-- The PostgreSQL schema (tables, indexes, triggers, functions, procedures, views)
-  that models the domain.
+- `packages/db` — the Drizzle schema-as-code package (`@carnotea/db`) with
+  typed TypeScript schema, generated SQL migrations, and lookup seed data.
 - The agent-facing scaffolding (documentation, ADRs, ticket system) needed to drive
   the rest of the work.
 
@@ -25,7 +25,7 @@ under [`tickets/`](./tickets/INDEX.md).
 | Layer         | Choice                                                                 |
 | ------------- | ---------------------------------------------------------------------- |
 | Monorepo      | pnpm workspaces + Turborepo                                            |
-| Database      | PostgreSQL 16 (SQL-first; migrations as raw SQL)                       |
+| Database      | PostgreSQL 16; schema-as-code via Drizzle in `packages/db`             |
 | ORM / query   | Drizzle ORM (schema-as-code in TypeScript, migrations via drizzle-kit) |
 | Backend       | NestJS, REST API, OpenAPI generated from Zod                           |
 | Auth          | better-auth                                                            |
@@ -47,16 +47,14 @@ carnotea/
 ├── apps/                # runnable apps (created by tickets, not present yet)
 │   ├── api/             # NestJS HTTP API
 │   └── web/             # Vite + React PWA
-├── packages/            # shippable libraries (created by tickets, not present yet)
+├── packages/            # shippable libraries
 │   ├── db/              # Drizzle schema + SQL migrations + seeds
-│   └── shared/          # Zod schemas and shared types
+│   └── shared/          # Zod schemas and shared types (T-003)
 ├── tooling/             # build-time config packages, never shipped
 │   ├── eslint/          # shared ESLint presets
 │   ├── prettier/        # shared Prettier config
 │   ├── typescript/      # shared tsconfig presets
 │   └── vitest/          # shared Vitest base config
-├── sql/                 # legacy SQL (to be moved into packages/db in T-002)
-├── tests/               # legacy SQL integrity audit (to be moved similarly)
 ├── docs/                # architecture, conventions, ADRs, agent guides
 ├── tickets/             # markdown-based ticket system that drives the work
 ├── .claude/             # Claude Code slash commands (/next-ticket, /work-ticket, /ship-pr)
@@ -87,7 +85,7 @@ pnpm install
 pnpm db:up    # starts local Postgres on port 5433
 ```
 
-A full walk-through (including how to apply the SQL schema, how to start an app,
+A full walk-through (including how to apply the schema, how to start an app,
 and how the dev loop fits together) lives in
 [`docs/getting-started.md`](./docs/getting-started.md).
 

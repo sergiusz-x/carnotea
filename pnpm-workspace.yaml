@@ -31,6 +31,10 @@ catalog:
   vitest: ^4.1.8
   # Types
   '@types/node': ^25.9.3
+  # Database
+  drizzle-orm: ^0.45.2
+  drizzle-kit: ^0.31.10
+  postgres: ^3.4.9
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.

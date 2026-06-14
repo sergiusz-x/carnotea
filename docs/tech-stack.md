@@ -25,11 +25,13 @@ live in the linked documents.
 
 ## Database
 
-| Tool          | Purpose                             | Notes                                            |
-| ------------- | ----------------------------------- | ------------------------------------------------ |
-| PostgreSQL 16 | Primary store                       | docker-compose                                   |
-| Drizzle ORM   | Query builder, typed schema-as-code | [ADR-0002](./adr/0002-drizzle-schema-as-code.md) |
-| drizzle-kit   | Migration generator + runner        | dev tooling                                      |
+| Tool             | Purpose                             | Notes                                            |
+| ---------------- | ----------------------------------- | ------------------------------------------------ |
+| PostgreSQL 16    | Primary store                       | docker-compose                                   |
+| Drizzle ORM      | Query builder, typed schema-as-code | [ADR-0002](./adr/0002-drizzle-schema-as-code.md) |
+| drizzle-kit      | Migration generator + runner        | dev tooling only, not shipped                    |
+| postgres (pg.js) | Postgres driver for drizzle-orm     | `@carnotea/db` dependency                        |
+| @carnotea/db     | Drizzle schema + `createDb` factory | `packages/db/`; see `packages/db/AGENTS.md`      |
 
 ## Backend (apps/api)
 

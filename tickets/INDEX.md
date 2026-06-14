@@ -11,7 +11,6 @@ Legend: `🔴` high · `🟡` medium · `🟢` low
 These tickets are fully specced. An agent picks the first one whose `dependencies`
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
-- 🔴 [T-002 — Database package: Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
 - 🔴 [T-003 — Shared package: Zod schemas and types](./T-003-shared-package-zod-and-types.md)
 - 🔴 [T-004 — API skeleton: NestJS app + healthcheck + DB ping](./T-004-api-nestjs-skeleton.md)
 - 🟡 [T-005 — API: OpenAPI / Swagger generated from Zod](./T-005-api-openapi-swagger-from-zod.md)
@@ -46,6 +45,7 @@ _Empty._
 ## Done
 
 - 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
+- 🔴 [T-002 — Database package: Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
 - 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
 
 ---
