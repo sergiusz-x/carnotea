@@ -30,9 +30,7 @@ image tags).
 
 - [ ] `@changesets/cli` initialized at the repo root; `pnpm changeset` works.
 - [ ] `commitlint` config follows `@commitlint/config-conventional`.
-- [ ] `lefthook.yml` (or `.husky/`) runs:
-      - `pre-commit`: `pnpm lint --filter ...[HEAD]` on changed packages,
-      - `commit-msg`: `pnpm commitlint --edit "$1"`.
+- [ ] `lefthook.yml` (or `.husky/`) runs: - `pre-commit`: `pnpm lint --filter ...[HEAD]` on changed packages, - `commit-msg`: `pnpm commitlint --edit "$1"`.
 - [ ] CI is not required for this ticket — the hooks are enough.
 - [ ] `docs/conventions.md` "Commits" section is augmented with the exact
       `type(scope): subject` shapes that commitlint accepts.

@@ -7,12 +7,12 @@ lives in
 
 ## Files in this folder
 
-| File             | What it is                                                       |
-| ---------------- | ---------------------------------------------------------------- |
-| `README.md`      | This file. The "how the system works" reference.                 |
-| `_template.md`   | The starting point for every new ticket. Copy it, don't edit it. |
-| `INDEX.md`       | The single source of truth listing every ticket by status.       |
-| `T-NNN-slug.md`  | One file per ticket. The filename's `NNN` matches the id.        |
+| File            | What it is                                                       |
+| --------------- | ---------------------------------------------------------------- |
+| `README.md`     | This file. The "how the system works" reference.                 |
+| `_template.md`  | The starting point for every new ticket. Copy it, don't edit it. |
+| `INDEX.md`      | The single source of truth listing every ticket by status.       |
+| `T-NNN-slug.md` | One file per ticket. The filename's `NNN` matches the id.        |
 
 ## Ticket id and filename
 
@@ -28,16 +28,16 @@ same PR).
 
 ```yaml
 ---
-id: T-001                                 # immutable, matches filename
-title: Bootstrap tooling and workspaces   # short imperative summary
-status: ready                             # see "Lifecycle" below
-priority: high                            # low | medium | high
-owner: ~                                  # github handle or "claude", ~ = unassigned
-dependencies: []                          # list of ticket ids: [T-000]
-labels: [bootstrap, repo]                 # free-form tags
+id: T-001 # immutable, matches filename
+title: Bootstrap tooling and workspaces # short imperative summary
+status: ready # see "Lifecycle" below
+priority: high # low | medium | high
+owner: ~ # github handle or "claude", ~ = unassigned
+dependencies: [] # list of ticket ids: [T-000]
+labels: [bootstrap, repo] # free-form tags
 created_at: 2026-06-13
 updated_at: 2026-06-13
-closed_at: ~                              # set when status becomes "done"
+closed_at: ~ # set when status becomes "done"
 ---
 ```
 
@@ -52,7 +52,7 @@ Every ticket follows `_template.md` verbatim:
 - **Context** - why now? what does it unblock?
 - **Acceptance criteria** - a checklist. Each box is independently verifiable.
 - **Files to touch** - approximate blast radius. Not a contract, but a hint.
-- **Out of scope** - things to explicitly *not* do.
+- **Out of scope** - things to explicitly _not_ do.
 - **Implementation notes** - guidance for whoever picks it up. Updated as the
   work progresses.
 - **References** - links to ADRs, related tickets, external docs.

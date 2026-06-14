@@ -15,20 +15,20 @@ update this document and link to it from your PR.
 - Prefer named exports. Default exports only when a framework requires it
   (e.g. Vite route modules, NestJS bootstrap).
 - Don't add comments that describe what the code does - the names already do
-  that. Only add a comment when the *why* is non-obvious.
+  that. Only add a comment when the _why_ is non-obvious.
 
 ## Naming
 
-| Thing            | Style              | Example                               |
-| ---------------- | ------------------ | ------------------------------------- |
-| Files / folders  | `kebab-case`       | `fuel-log.service.ts`                 |
-| Components       | `PascalCase` file  | `VehicleCard.tsx`                     |
-| TS types         | `PascalCase`       | `FuelLog`, `CreateVehicleInput`       |
-| Variables        | `camelCase`        | `currentMileage`                      |
-| Constants        | `SCREAMING_SNAKE`  | `MAX_VIN_LENGTH = 17`                 |
-| DB tables/cols   | `snake_case`       | `fuel_logs`, `current_mileage`        |
-| URL paths        | `kebab-case`       | `/vehicles/:id/fuel-logs`             |
-| i18n keys        | `dot.notation`     | `vehicle.form.title.placeholder`      |
+| Thing           | Style             | Example                          |
+| --------------- | ----------------- | -------------------------------- |
+| Files / folders | `kebab-case`      | `fuel-log.service.ts`            |
+| Components      | `PascalCase` file | `VehicleCard.tsx`                |
+| TS types        | `PascalCase`      | `FuelLog`, `CreateVehicleInput`  |
+| Variables       | `camelCase`       | `currentMileage`                 |
+| Constants       | `SCREAMING_SNAKE` | `MAX_VIN_LENGTH = 17`            |
+| DB tables/cols  | `snake_case`      | `fuel_logs`, `current_mileage`   |
+| URL paths       | `kebab-case`      | `/vehicles/:id/fuel-logs`        |
+| i18n keys       | `dot.notation`    | `vehicle.form.title.placeholder` |
 
 The database side intentionally uses `snake_case` because that's the Postgres
 norm. Drizzle introspection translates them to `camelCase` in TS automatically.
@@ -43,6 +43,20 @@ Order:
 4. Local relative imports (`./...`, `../...`)
 
 Blank line between groups. ESLint's `import/order` enforces this.
+
+## Shared Tooling Configs
+
+- ESLint uses flat config only. `@carnotea/eslint-config/base` enforces the
+  import order above, type-only imports, and unused-variable ignores for names
+  prefixed with `_`.
+- `@carnotea/eslint-config/node` adds Node globals for scripts, configs, and API
+  code.
+- `@carnotea/eslint-config/react` adds browser globals plus React, React Hooks,
+  and JSX accessibility recommended rules.
+- Prettier is shared through `@carnotea/prettier-config`: 100-character width,
+  single quotes, trailing commas everywhere, and semicolons.
+- `.prettierignore` excludes generated lockfiles and accepted numbered ADRs;
+  do not reformat those by hand.
 
 ## Commits
 
@@ -116,17 +130,17 @@ us audit AI contributions in `git log`.
 
 ### Type reference
 
-| Type       | When to use                                                    |
-| ---------- | -------------------------------------------------------------- |
-| `feat`     | New user-visible behaviour                                     |
-| `fix`      | Corrects a bug                                                 |
-| `docs`     | Documentation only (`.md`, ADR, comments)                     |
-| `refactor` | Code change with no behaviour change and no new tests         |
-| `test`     | Adding or fixing tests only                                    |
-| `chore`    | Tooling, deps, config, scripts — nothing that ships           |
-| `perf`     | Measurable performance improvement                             |
-| `ci`       | GitHub Actions, CI config                                      |
-| `build`    | Build system (Turborepo config, tsconfig, Vite config)        |
+| Type       | When to use                                                        |
+| ---------- | ------------------------------------------------------------------ |
+| `feat`     | New user-visible behaviour                                         |
+| `fix`      | Corrects a bug                                                     |
+| `docs`     | Documentation only (`.md`, ADR, comments)                          |
+| `refactor` | Code change with no behaviour change and no new tests              |
+| `test`     | Adding or fixing tests only                                        |
+| `chore`    | Tooling, deps, config, scripts — nothing that ships                |
+| `perf`     | Measurable performance improvement                                 |
+| `ci`       | GitHub Actions, CI config                                          |
+| `build`    | Build system (Turborepo config, tsconfig, Vite config)             |
 | `revert`   | Reverts a previous commit (subject = `revert: <original subject>`) |
 
 ---
@@ -146,6 +160,7 @@ docs/T-000-initial-adr-set
 ```
 
 Rules:
+
 - Type prefix matches the primary commit type that will land in the PR.
 - Slug is `kebab-case`, derived from the ticket title — keep it short (3–5 words).
 - Delete the branch after the PR is merged.
@@ -191,11 +206,11 @@ handle PRs):
 
 ## Testing
 
-| Layer                | Tooling                                       |
-| -------------------- | --------------------------------------------- |
-| Unit / integration   | Vitest                                        |
-| E2E                  | Playwright                                    |
-| DB integration       | Vitest + a real Postgres (via testcontainers) |
+| Layer              | Tooling                                       |
+| ------------------ | --------------------------------------------- |
+| Unit / integration | Vitest                                        |
+| E2E                | Playwright                                    |
+| DB integration     | Vitest + a real Postgres (via testcontainers) |
 
 Mocks are a tool of last resort. If a test requires mocking the database to be
 fast, it is probably the wrong test. Drizzle + a disposable Postgres container
@@ -220,7 +235,7 @@ Don't duplicate it as a class and a Zod schema. Pick Zod.
 - Throw typed errors at the domain layer.
 - Translate to HTTP responses only at the controller / route layer.
 - No silent `catch (e) { /* nothing */ }`. If the catch is intentional, comment
-  *why* in one short line.
+  _why_ in one short line.
 
 ## Logging
 

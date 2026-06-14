@@ -38,10 +38,7 @@ and the conventions that future component tickets will follow.
       choice is persisted in `localStorage`.
 - [ ] The landing page from T-007 uses one `Button` and one `Card` so the
       install is visibly working.
-- [ ] `apps/web/AGENTS.md` documents:
-      - shadcn components live under `src/components/ui/`,
-      - layout / feature components live under `src/components/`,
-      - feature folders own their own components (`src/features/<name>/`).
+- [ ] `apps/web/AGENTS.md` documents: - shadcn components live under `src/components/ui/`, - layout / feature components live under `src/components/`, - feature folders own their own components (`src/features/<name>/`).
 
 ## Files to touch
 

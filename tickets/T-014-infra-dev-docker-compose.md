@@ -33,7 +33,7 @@ run one command, and reach the app in a browser.
       Postgres to be healthy before starting.
 - [ ] The `web` service serves the production build from a static container
       (nginx or Caddy).
-- [ ] Hot-reload during development is *not* a goal of this ticket — that's
+- [ ] Hot-reload during development is _not_ a goal of this ticket — that's
       `pnpm dev`. Compose is for "does it run end to end".
 - [ ] `docs/getting-started.md` documents the two flows clearly: "fast dev
       loop = `pnpm dev`", "end-to-end check = `docker compose up`".

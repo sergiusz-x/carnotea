@@ -39,10 +39,8 @@ working example that future tickets will mimic.
       wired up.
 - [ ] `apps/web/src/lib/queryClient.ts` and
       `apps/web/src/lib/router.ts` are clearly separated.
-- [ ] Conventions in `apps/web/AGENTS.md`:
-      - Feature folders own their own `routes.ts` and `queries.ts`.
-      - Server state lives in TanStack Query; component-local state in
-        `useState`. No Zustand/Redux/etc. unless added by a future ADR.
+- [ ] Conventions in `apps/web/AGENTS.md`: - Feature folders own their own `routes.ts` and `queries.ts`. - Server state lives in TanStack Query; component-local state in
+      `useState`. No Zustand/Redux/etc. unless added by a future ADR.
 
 ## Files to touch
 

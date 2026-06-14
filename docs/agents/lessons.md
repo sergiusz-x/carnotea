@@ -29,4 +29,28 @@ mistakes.
 
 ## Lessons
 
-_None yet. The first correction goes here._
+### 2026-06-14 — Leave work-ticket diffs uncommitted
+
+**Context:** Running `work-ticket T-001`.
+**Mistake:** The implementation was committed during `work-ticket`, which made
+the VS Code Source Control view appear empty before human review.
+**Rule:** Never commit ticket implementation during `work-ticket`; leave changes
+uncommitted for human review and let `ship-pr` perform commits, push, and PR
+creation after approval.
+
+### 2026-06-14 — Ship PR in logical commits
+
+**Context:** Shipping T-001 after human review.
+**Mistake:** `ship-pr` collapsed the whole reviewed diff into one large commit.
+**Rule:** During `ship-pr`, split the reviewed work into logical Conventional
+Commit chunks before pushing; do not make one large commit unless the whole diff
+is truly one tiny change.
+
+### 2026-06-14 — Sync before opening PR
+
+**Context:** Opening PR #6 for T-001.
+**Mistake:** The branch was pushed from a stale local base, so GitHub reported
+merge conflicts even though the local checkout looked clean.
+**Rule:** During `ship-pr`, fetch `origin`, rebase onto the fetched
+`origin/main`, resolve conflicts locally, and validate before creating or
+updating the PR.

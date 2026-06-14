@@ -2,8 +2,10 @@
   "name": "carnotea",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "CarNotea - a vehicle diary PWA (web + mobile installable).",
   "license": "MIT",
+  "prettier": "@carnotea/prettier-config",
   "packageManager": "pnpm@9.12.0",
   "engines": {
     "node": ">=24.0.0",
@@ -12,23 +14,30 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo watch dev --continue",
-    "lint": "turbo run lint --continue",
-    "lint:fix": "turbo run lint --continue -- --fix",
+    "lint": "turbo run //#lint:root lint --continue",
+    "lint:fix": "turbo run //#lint:root lint --continue -- --fix",
+    "lint:root": "eslint . --cache --cache-location .cache/.eslintcache",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
-    "lint:ws": "sherif",
+    "format": "turbo run //#format:root format --continue",
+    "format:root": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "format:check": "turbo run //#format:check:root format:check --continue",
+    "format:check:root": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
+    "lint:ws": "sherif -r non-existant-packages",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",
     "db:migrate": "turbo run db:migrate",
     "db:introspect": "turbo run db:introspect",
     "clean": "turbo run clean && rm -rf node_modules",
-    "postinstall": "pnpm lint:ws"
+    "postinstall": "corepack pnpm lint:ws"
   },
   "devDependencies": {
+    "@carnotea/eslint-config": "workspace:*",
+    "@carnotea/prettier-config": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
     "sherif": "^1.0.0",
     "turbo": "^2.3.0"
   }

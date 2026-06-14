@@ -21,6 +21,7 @@ git rev-list HEAD..origin/<current-branch> --count
 ```
 
 If the count is > 0, warn the user:
+
 > "Branch is N commit(s) behind origin/<branch>. Consider `git pull` before
 > committing to avoid conflicts on push."
 >
@@ -46,19 +47,20 @@ files are excluded or gitignored.
 Analyse the changed files and group them into logically coherent commits.
 Apply these heuristics — use judgment, not rigid rules:
 
-| Heuristic | Commit boundary |
-|-----------|----------------|
-| Tooling / config | Separate from feature code (package.json, tsconfig, eslint, prettier, turbo.json) |
-| DB schema changes | Separate from application logic |
-| Tests | Together with the code they test, unless the diff is large — then split |
-| i18n strings | Together with the component that introduces them |
-| Docs / ticket status | Separate commit |
-| Unrelated features | Separate commits |
+| Heuristic            | Commit boundary                                                                   |
+| -------------------- | --------------------------------------------------------------------------------- |
+| Tooling / config     | Separate from feature code (package.json, tsconfig, eslint, prettier, turbo.json) |
+| DB schema changes    | Separate from application logic                                                   |
+| Tests                | Together with the code they test, unless the diff is large — then split           |
+| i18n strings         | Together with the component that introduces them                                  |
+| Docs / ticket status | Separate commit                                                                   |
+| Unrelated features   | Separate commits                                                                  |
 
 Prefer fewer, more coherent commits over many micro-commits. If three files
 implement one logical change, that is one commit — not three.
 
 **Do not include** in any commit group:
+
 - `.env*` files
 - Lockfiles that were not intentionally modified as part of a dependency change
 - Files listed in `.gitignore`
@@ -91,6 +93,7 @@ Commit message format follows [`docs/conventions.md`](../../docs/conventions.md)
 Pause. Do not commit anything yet.
 
 Accept these responses:
+
 - **"yes" / "go" / "lgtm"** — proceed exactly as proposed.
 - **"yes but <edit>"** — apply the stated change (e.g. swap two files, rename
   scope, merge two commits) and re-present the affected entries for

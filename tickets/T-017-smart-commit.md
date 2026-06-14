@@ -30,6 +30,7 @@ creates the commits in sequence. It also syncs awareness of the remote branch
 so the developer knows whether they're safe to commit before a future push.
 
 This complements the existing skill trio:
+
 - `/work-ticket` — implements and commits within a worktree (will delegate to
   `/smart-commit` for its commit step once T-017 lands)
 - `/ship-pr` — pushes and opens a PR (unchanged; this command does not push)
@@ -69,17 +70,17 @@ This complements the existing skill trio:
   - Reports the final list of created SHAs and their titles.
 
 - [x] `.codex/skills/smart-commit/SKILL.md` exists with equivalent
-  instructions for Codex CLI, following the same steps.
+      instructions for Codex CLI, following the same steps.
 
 - [x] `AGENTS.md` Skills table has a `smart-commit` row with the Claude Code
-  command, the Codex skill name, and a reference to the command file.
+      command, the Codex skill name, and a reference to the command file.
 
 - [x] `docs/getting-started.md` documents `/smart-commit` in a short
-  "Committing changes" section.
+      "Committing changes" section.
 
 ## Files to touch
 
-- `.claude/commands/smart-commit.md`  — new
+- `.claude/commands/smart-commit.md` — new
 - `.codex/skills/smart-commit/SKILL.md` — new
 - `AGENTS.md` — add row to Skills table
 - `docs/getting-started.md` — add Committing changes section

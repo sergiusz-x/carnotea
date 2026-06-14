@@ -31,7 +31,7 @@ Write an ADR if any of these apply:
 - You're choosing a pattern that the rest of the codebase will follow (e.g.
   "REST over tRPC", "Zod over class-validator").
 - You're reversing a previous decision.
-- You're answering a question that came up *because the team disagreed*.
+- You're answering a question that came up _because the team disagreed_.
 
 Don't write one for:
 
@@ -41,13 +41,14 @@ Don't write one for:
 
 ## Index
 
-| ID  | Title                                            | Status   |
-| --- | ------------------------------------------------ | -------- |
-| [0001](./0001-monorepo-turborepo.md) | Monorepo with pnpm workspaces and Turborepo | accepted |
-| [0002](./0002-drizzle-schema-as-code.md) | Drizzle as source of truth; schema in TypeScript | accepted |
-| [0003](./0003-rest-openapi-zod.md) | REST API with OpenAPI generated from Zod | accepted |
-| [0004](./0004-better-auth.md) | better-auth for authentication | accepted |
-| [0005](./0005-vite-react-no-nextjs.md) | Vite + React (no Next.js) for the web app | accepted |
-| [0006](./0006-pwa-from-day-one.md) | PWA from day one, advanced features later | accepted |
-| [0007](./0007-i18n-pl-en.md) | i18n with Polish and English from the first screen | accepted |
-| [0008](./0008-tickets-as-markdown.md) | Tickets live as markdown files in the repo | accepted |
+| ID                                               | Title                                              | Status   |
+| ------------------------------------------------ | -------------------------------------------------- | -------- |
+| [0001](./0001-monorepo-turborepo.md)             | Monorepo with pnpm workspaces and Turborepo        | accepted |
+| [0002](./0002-drizzle-schema-as-code.md)         | Drizzle as source of truth; schema in TypeScript   | accepted |
+| [0003](./0003-rest-openapi-zod.md)               | REST API with OpenAPI generated from Zod           | accepted |
+| [0004](./0004-better-auth.md)                    | better-auth for authentication                     | accepted |
+| [0005](./0005-vite-react-no-nextjs.md)           | Vite + React (no Next.js) for the web app          | accepted |
+| [0006](./0006-pwa-from-day-one.md)               | PWA from day one, advanced features later          | accepted |
+| [0007](./0007-i18n-pl-en.md)                     | i18n with Polish and English from the first screen | accepted |
+| [0008](./0008-tickets-as-markdown.md)            | Tickets live as markdown files in the repo         | accepted |
+| [0009](./0009-shared-tooling-config-packages.md) | Shared tooling config packages                     | accepted |

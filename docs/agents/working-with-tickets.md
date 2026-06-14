@@ -11,14 +11,14 @@ backlog  →  ready  →  in_progress  →  in_review  →  done
                                    ↘  blocked  ↗
 ```
 
-| Status        | Meaning                                                          |
-| ------------- | ---------------------------------------------------------------- |
-| `backlog`     | Idea captured but not refined. Don't start work.                 |
-| `ready`       | Fully specced, dependencies satisfied. Safe to pick up.          |
-| `in_progress` | Someone (you?) is actively working on it.                        |
-| `blocked`     | Work paused waiting on something - the ticket says what.         |
-| `in_review`   | PR open, awaiting review.                                        |
-| `done`        | Merged. The ticket file stays as historical record.              |
+| Status        | Meaning                                                  |
+| ------------- | -------------------------------------------------------- |
+| `backlog`     | Idea captured but not refined. Don't start work.         |
+| `ready`       | Fully specced, dependencies satisfied. Safe to pick up.  |
+| `in_progress` | Someone (you?) is actively working on it.                |
+| `blocked`     | Work paused waiting on something - the ticket says what. |
+| `in_review`   | PR open, awaiting review.                                |
+| `done`        | Merged. The ticket file stays as historical record.      |
 
 Status lives in the ticket's frontmatter and is mirrored in `tickets/INDEX.md`.
 Both update together in the same PR.
@@ -34,7 +34,7 @@ Both update together in the same PR.
    - **Context** - why this work exists now.
    - **Acceptance criteria** - the explicit pass/fail checklist.
    - **Files to touch** - the rough blast radius.
-   - **Out of scope** - things you must *not* do.
+   - **Out of scope** - things you must _not_ do.
 4. If something in the ticket is unclear, stop and update the ticket (or ask
    the user). Do not start coding around a vague spec.
 
@@ -91,7 +91,7 @@ If the spec is wrong, fix the spec first:
 
 - "I'll just throw in a small refactor while I'm here." → No. Open a new ticket.
 - "The acceptance criteria don't quite match what I built, but it's basically
-  the same." → Update the AC *before* you tick them, or don't tick them.
+  the same." → Update the AC _before_ you tick them, or don't tick them.
 - "I marked it done because I'll fix the rest in another PR." → Mark it
   `in_progress` and create a follow-up ticket.
 - "I added a new dependency for this." → Did you also update an ADR? If not,

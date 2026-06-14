@@ -22,21 +22,21 @@ under [`tickets/`](./tickets/INDEX.md).
 
 ## Tech stack
 
-| Layer        | Choice                                                                  |
-| ------------ | ----------------------------------------------------------------------- |
-| Monorepo     | pnpm workspaces + Turborepo                                             |
-| Database     | PostgreSQL 16 (SQL-first; migrations as raw SQL)                        |
-| ORM / query  | Drizzle ORM (schema-as-code in TypeScript, migrations via drizzle-kit)  |
-| Backend      | NestJS, REST API, OpenAPI generated from Zod                            |
-| Auth         | better-auth                                                             |
-| Frontend     | React + Vite + TypeScript                                               |
-| Routing      | TanStack Router                                                         |
-| Data fetching| TanStack Query                                                          |
-| UI           | Tailwind CSS + shadcn/ui                                                |
-| Forms        | react-hook-form + Zod                                                   |
-| i18n         | Polish + English from day one                                           |
-| PWA          | Installable from day one; offline and push notifications later          |
-| Deployment   | VPS + docker compose                                                    |
+| Layer         | Choice                                                                 |
+| ------------- | ---------------------------------------------------------------------- |
+| Monorepo      | pnpm workspaces + Turborepo                                            |
+| Database      | PostgreSQL 16 (SQL-first; migrations as raw SQL)                       |
+| ORM / query   | Drizzle ORM (schema-as-code in TypeScript, migrations via drizzle-kit) |
+| Backend       | NestJS, REST API, OpenAPI generated from Zod                           |
+| Auth          | better-auth                                                            |
+| Frontend      | React + Vite + TypeScript                                              |
+| Routing       | TanStack Router                                                        |
+| Data fetching | TanStack Query                                                         |
+| UI            | Tailwind CSS + shadcn/ui                                               |
+| Forms         | react-hook-form + Zod                                                  |
+| i18n          | Polish + English from day one                                          |
+| PWA           | Installable from day one; offline and push notifications later         |
+| Deployment    | VPS + docker compose                                                   |
 
 The reasoning behind each choice is captured in [`docs/adr/`](./docs/adr/).
 
@@ -53,7 +53,8 @@ carnotea/
 ├── tooling/             # build-time config packages, never shipped
 │   ├── eslint/          # shared ESLint presets
 │   ├── prettier/        # shared Prettier config
-│   └── typescript/      # shared tsconfig presets
+│   ├── typescript/      # shared tsconfig presets
+│   └── vitest/          # shared Vitest base config
 ├── sql/                 # legacy SQL (to be moved into packages/db in T-002)
 ├── tests/               # legacy SQL integrity audit (to be moved similarly)
 ├── docs/                # architecture, conventions, ADRs, agent guides

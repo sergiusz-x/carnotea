@@ -30,10 +30,7 @@ client's typed API codegen (T-011) can consume it.
 ## Acceptance criteria
 
 - [ ] A small `zodRoute` (or equivalent) helper is exported from
-      `apps/api/src/lib/openapi` that:
-      - takes Zod schemas for `params`, `query`, `body`, `response`,
-      - validates the request at runtime,
-      - registers the route in the OpenAPI document.
+      `apps/api/src/lib/openapi` that: - takes Zod schemas for `params`, `query`, `body`, `response`, - validates the request at runtime, - registers the route in the OpenAPI document.
 - [ ] `GET /openapi.json` returns a valid OpenAPI 3.1 document.
 - [ ] `GET /docs` serves Swagger UI for that document.
 - [ ] The two existing healthcheck endpoints (T-004) are migrated to use the
@@ -57,7 +54,7 @@ client's typed API codegen (T-011) can consume it.
 ## Implementation notes
 
 - Use `@asteasolutions/zod-to-openapi` for Zod → OpenAPI conversion.
-- The helper should *not* require NestJS decorators — keep it functional so the
+- The helper should _not_ require NestJS decorators — keep it functional so the
   same approach works if we ever swap NestJS for plain Fastify.
 - Error response envelope: `{ code: string; message: string; issues?: ZodIssue[] }`.
   Codify this in a shared Zod schema in `@carnotea/shared`.

@@ -17,13 +17,8 @@ never push `main`, never skip validation, never commit secrets.
 
 ## Codex-specific notes
 
-There is no `ExitWorktree` tool — if you are still inside a worktree directory,
-`cd` back to the main checkout before pushing:
-
-```bash
-cd ../carnotea
-```
-
-Then follow Phase 6 from `ticket-execution.md` step by step (validate →
-derive ticket from branch → push → `gh pr create` → update ticket status →
-commit → push → share PR URL).
+Run this from the ticket worktree branch, not from `main`. Follow Phase 6 from
+`ticket-execution.md` step by step: fetch/rebase onto `origin/main` → validate →
+derive ticket from branch → check the working tree → commit the reviewed work in
+logical chunks → push → `gh pr create` → update ticket status → commit → push →
+share PR URL.

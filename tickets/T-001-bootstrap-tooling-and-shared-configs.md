@@ -1,13 +1,13 @@
 ---
 id: T-001
 title: Bootstrap tooling and shared configs
-status: ready
+status: in_review
 priority: high
-owner: ~
+owner: codex
 dependencies: []
 labels: [bootstrap, repo, tooling]
 created_at: 2026-06-13
-updated_at: 2026-06-13
+updated_at: 2026-06-14
 closed_at: ~
 ---
 
@@ -32,22 +32,22 @@ create-t3-turbo convention: `packages/*` are shippable product libraries,
 
 ## Acceptance criteria
 
-- [ ] `tooling/eslint/` exists as `@carnotea/eslint-config`, exporting flat
+- [x] `tooling/eslint/` exists as `@carnotea/eslint-config`, exporting flat
       configs: `base`, `node`, `react`.
-- [ ] `tooling/prettier/` exists as `@carnotea/prettier-config` (default export).
-- [ ] `tooling/typescript/` exists as `@carnotea/tsconfig`, exporting
+- [x] `tooling/prettier/` exists as `@carnotea/prettier-config` (default export).
+- [x] `tooling/typescript/` exists as `@carnotea/tsconfig`, exporting
       `base.json`, `node.json`, `react.json` (all extending the root
       `tsconfig.base.json`).
-- [ ] A shared Vitest base config is exported (either from `tooling/eslint`'s
+- [x] A shared Vitest base config is exported (either from `tooling/eslint`'s
       sibling `tooling/vitest/` or documented inline — pick one and note it).
-- [ ] Every `tooling/*` package consumes shared versions via `catalog:`
+- [x] Every `tooling/*` package consumes shared versions via `catalog:`
       (e.g. `"eslint": "catalog:"`), not pinned literals.
-- [ ] Root scripts `lint`, `lint:fix`, `format`, `format:check`, `typecheck`
+- [x] Root scripts `lint`, `lint:fix`, `format`, `format:check`, `typecheck`
       delegate to Turborepo and run clean on a fresh clone (no apps yet → mostly
       no-ops).
-- [ ] `pnpm lint:ws` (sherif) passes — no workspace dependency drift.
-- [ ] `docs/conventions.md` records any lint rule that overrides defaults.
-- [ ] `docs/tech-stack.md` lists the new tooling packages.
+- [x] `pnpm lint:ws` (sherif) passes — no workspace dependency drift.
+- [x] `docs/conventions.md` records any lint rule that overrides defaults.
+- [x] `docs/tech-stack.md` lists the new tooling packages.
 
 ## Files to touch
 
@@ -81,3 +81,14 @@ create-t3-turbo convention: `packages/*` are shippable product libraries,
 - ADR: [ADR-0001](../docs/adr/0001-monorepo-turborepo.md)
 - Conventions: [`docs/conventions.md`](../docs/conventions.md)
 - Reference: create-t3-turbo `tooling/` layout.
+
+## Notes
+
+- 2026-06-14: Implemented the Vitest base config as a dedicated
+  `tooling/vitest` package named `@carnotea/vitest-config`.
+- 2026-06-14: Added `.prettierignore` for the generated pnpm lockfile and
+  accepted numbered ADRs; other existing markdown/YAML files were normalized by
+  the new shared Prettier config so `pnpm format:check` passes.
+- 2026-06-14: `pnpm typecheck`, `pnpm test`, and `pnpm build` currently run zero
+  package tasks because no workspace package defines those scripts yet; that
+  matches the bootstrap state described in `AGENTS.md`.

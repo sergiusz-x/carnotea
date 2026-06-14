@@ -53,7 +53,7 @@ PWA, and auth into it. This ticket delivers the smallest runnable React app.
 
 ## Implementation notes
 
-- Use `vite@latest` with the React TS template as a *starting point*, but
+- Use `vite@latest` with the React TS template as a _starting point_, but
   prune everything we don't use. The committed scaffolding must be lean — no
   stock logos, no "edit src/App.tsx to get started" boilerplate.
 - The placeholder UI is intentionally bare. Resist the urge to "just add a

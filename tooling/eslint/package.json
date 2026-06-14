@@ -1,0 +1,30 @@
+{
+  "name": "@carnotea/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./base": "./base.js",
+    "./node": "./node.js",
+    "./react": "./react.js"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --cache --cache-location .cache/.eslintcache"
+  },
+  "dependencies": {
+    "@eslint/js": "catalog:",
+    "eslint-plugin-import": "catalog:",
+    "eslint-plugin-jsx-a11y": "catalog:",
+    "eslint-plugin-react": "catalog:",
+    "eslint-plugin-react-hooks": "catalog:",
+    "globals": "catalog:",
+    "typescript-eslint": "catalog:"
+  },
+  "devDependencies": {
+    "eslint": "catalog:",
+    "prettier": "catalog:"
+  }
+}

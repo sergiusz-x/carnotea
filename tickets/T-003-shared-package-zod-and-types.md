@@ -31,15 +31,7 @@ expense category codes, etc.).
 ## Acceptance criteria
 
 - [ ] `packages/shared/` exists as `@carnotea/shared`.
-- [ ] It exports:
-      - `constants/fuel-types.ts` (string-literal union mirroring the SQL seed),
-      - `constants/issue-statuses.ts`,
-      - `constants/issue-priorities.ts`,
-      - `constants/reminder-statuses.ts`,
-      - `constants/charger-types.ts`,
-      - `constants/expense-categories.ts`,
-      - `schemas/index.ts` (exports the schemas, currently empty placeholder),
-      - `index.ts` (re-export entry point).
+- [ ] It exports: - `constants/fuel-types.ts` (string-literal union mirroring the SQL seed), - `constants/issue-statuses.ts`, - `constants/issue-priorities.ts`, - `constants/reminder-statuses.ts`, - `constants/charger-types.ts`, - `constants/expense-categories.ts`, - `schemas/index.ts` (exports the schemas, currently empty placeholder), - `index.ts` (re-export entry point).
 - [ ] All constants are exported as `as const` arrays plus inferred union
       types (e.g. `type FuelTypeCode = (typeof FUEL_TYPE_CODES)[number]`).
 - [ ] tsconfig extends `@carnotea/tsconfig/base.json`.
@@ -61,7 +53,7 @@ expense category codes, etc.).
 
 - Don't re-derive constants from the database at build time. The SQL is the
   authority for what gets inserted; the TS constants are the authority for what
-  the application *expects*. They must match — that's enforced by integration
+  the application _expects_. They must match — that's enforced by integration
   tests later.
 - Keep the package zero-runtime-deps for now (except `zod`).
 - Use `tsup` or plain `tsc --build` — pick the simpler option (`tsc --build`).

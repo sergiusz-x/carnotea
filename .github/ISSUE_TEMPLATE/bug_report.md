@@ -1,9 +1,9 @@
 ---
 name: Bug report
 about: Report a defect in CarNotea
-title: "bug: "
+title: 'bug: '
 labels: [bug]
-assignees: ""
+assignees: ''
 ---
 
 <!--

@@ -6,6 +6,7 @@
 ## Ticket
 
 Closes T-XXX
+
 <!-- If this PR doesn't close a ticket, explain why (trivial fix, etc.). -->
 
 ## What changed
