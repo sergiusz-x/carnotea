@@ -21,7 +21,7 @@ catalog:
   # Validation (used by api, web, shared)
   zod: ^3.24.0
   # Testing
-  vitest: ^2.1.0
+  vitest: ^4.1.8
   # Types
   "@types/node": ^22.10.0
 
