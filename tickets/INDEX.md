@@ -46,7 +46,7 @@ _Empty._
 
 ## Done
 
-_Empty._
+- 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
 
 ---
 
