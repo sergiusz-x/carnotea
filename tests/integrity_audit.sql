@@ -1,4 +1,6 @@
-SET search_path TO vehicle_diary;
+-- Integrity audit for the @carnotea/db schema (public schema, Drizzle-managed).
+-- Run against a fresh database after pnpm db:migrate + seed data.
+-- All checks should return passed = true on an empty database.
 
 SELECT
     'all constraints are validated' AS check_name,
@@ -6,7 +8,7 @@ SELECT
     count(*) = 0 AS passed
 FROM pg_constraint c
 JOIN pg_namespace n ON n.oid = c.connamespace
-WHERE n.nspname = 'vehicle_diary'
+WHERE n.nspname = 'public'
   AND c.convalidated = false;
 
 SELECT
@@ -149,26 +151,6 @@ WHERE s.code = 'resolved'
   );
 
 SELECT
-    'active issues view matches source data' AS check_name,
-    abs(
-        (SELECT count(*) FROM active_issues_view)
-        -
-        (SELECT count(*) FROM issues i JOIN issue_statuses s ON s.id = i.status_id WHERE NOT s.is_terminal)
-    ) AS bad_rows,
-    (SELECT count(*) FROM active_issues_view) = (
-        SELECT count(*) FROM issues i JOIN issue_statuses s ON s.id = i.status_id WHERE NOT s.is_terminal
-    ) AS passed;
-
-SELECT
-    'total cost function matches expenses' AS check_name,
-    count(*) AS bad_rows,
-    count(*) = 0 AS passed
-FROM vehicles v
-WHERE calculate_total_vehicle_cost(v.id) <> (
-    SELECT coalesce(sum(amount), 0) FROM expenses e WHERE e.vehicle_id = v.id
-);
-
-SELECT
     'electric vehicles have no fuel logs' AS check_name,
     count(*) AS bad_rows,
     count(*) = 0 AS passed
@@ -185,23 +167,6 @@ FROM charging_sessions cs
 JOIN vehicles v ON v.id = cs.vehicle_id
 JOIN fuel_types ft ON ft.id = v.fuel_type_id
 WHERE ft.code IN ('petrol', 'diesel', 'lpg');
-
-SELECT
-    'json exports contain required top-level keys' AS check_name,
-    count(*) AS bad_rows,
-    count(*) = 0 AS passed
-FROM vehicle_json_exports
-WHERE NOT (
-    json_data ? 'vehicle'
-    AND json_data ? 'owner'
-    AND json_data ? 'mileage_readings'
-    AND json_data ? 'fuel_logs'
-    AND json_data ? 'charging_sessions'
-    AND json_data ? 'service_records'
-    AND json_data ? 'issues'
-    AND json_data ? 'expenses'
-    AND json_data ? 'reminders'
-);
 
 SELECT
     'fuel log expense amounts are consistent' AS check_name,

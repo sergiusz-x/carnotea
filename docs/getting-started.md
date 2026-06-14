@@ -47,20 +47,22 @@ pnpm db:reset                   # nuke the volume and start fresh
 
 ## 4. Apply the schema
 
-> ⚠️ The current `sql/` layout is the legacy university structure. Ticket
-> **T-002** moves it under `packages/db/` and introduces proper versioned
-> migrations. Until that ticket lands, apply the schema manually:
-
 ```bash
-docker compose exec -T postgres \
-  psql -U carnotea -d carnotea \
-  -f /repo/sql/00_schema_reset.sql
-
-# Repeat for 01_tables.sql, 02_indexes.sql, 03_functions.sql,
-# 04_triggers.sql, 05_procedures.sql, 06_views.sql, 07_seed_data.sql
+pnpm db:migrate
 ```
 
-(Once T-002 lands you will just run `pnpm db:migrate`.)
+This runs `drizzle-kit migrate` for `@carnotea/db`, applying all pending
+migrations in order — tables, indexes, constraint triggers, and lookup seed
+data. The database is ready to use immediately after.
+
+To regenerate migrations after a schema change:
+
+```bash
+pnpm db:generate   # diffs src/schema/ and writes a new SQL migration file
+pnpm db:migrate    # applies pending migrations
+```
+
+See `packages/db/AGENTS.md` for the full schema-change workflow.
 
 ## 5. Run the apps
 
