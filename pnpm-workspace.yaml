@@ -30,7 +30,7 @@ catalog:
   # Testing
   vitest: ^4.1.8
   # Types
-  '@types/node': ^22.10.0
+  '@types/node': ^25.9.3
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.
