@@ -1,14 +1,14 @@
 ---
 id: T-001
 title: Bootstrap tooling and shared configs
-status: in_review
+status: done
 priority: high
 owner: codex
 dependencies: []
 labels: [bootstrap, repo, tooling]
 created_at: 2026-06-13
 updated_at: 2026-06-14
-closed_at: ~
+closed_at: 2026-06-14
 ---
 
 # T-001 — Bootstrap tooling and shared configs
