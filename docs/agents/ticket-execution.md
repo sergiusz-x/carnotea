@@ -20,7 +20,7 @@ are thin pointers to it — when the workflow changes, change it here.
 ## Overview
 
 ```
-Analyze → Plan (human approval) → Implement (worktree) → Self-review → Report → PR
+Analyze → Plan (human approval) → Implement (worktree, uncommitted) → Self-review → Report → PR
 ```
 
 ---
@@ -86,25 +86,30 @@ work in parallel without conflicts.
 **First action in the worktree:**
 Update the ticket — `status: in_progress`, `owner: <agent-or-name>`,
 `updated_at: <today>`. Move its line in `tickets/INDEX.md` to **In progress**.
-Commit this change before touching any code.
+Leave this change uncommitted so the human can inspect it with the rest of the
+work.
 
 **For each acceptance criterion in order:**
 
 1. Implement the change.
 2. Run the smallest validation command that covers it.
-3. Confirm the AC is *actually* true. Do not tick speculatively.
-   For UI ACs: open the app in `agent-browser` and exercise the change before ticking.
+3. Confirm the AC is _actually_ true. Do not tick speculatively.
+   For UI ACs: open the app in `agent-browser` and exercise the change before
+   ticking.
 
 **After all ACs pass:**
+
 - Record non-obvious decisions in the ticket's **Notes** section.
 - Run the full validation set from the plan.
-- Commit: follow `docs/conventions.md` (Conventional Commits, appropriate scope).
+- Leave every change uncommitted in the worktree. Do not stage, commit, push, or
+  open a PR during `work-ticket`; the human must be able to review the full diff
+  in their editor's Source Control view first.
 
 **Clean up the worktree** when done:
 
 ```bash
 cd ../carnotea          # back to main checkout
-git worktree remove ../carnotea-T-NNN   # after pushing the branch
+git worktree remove ../carnotea-T-NNN   # after the PR branch is pushed and no longer needed locally
 ```
 
 ---
@@ -136,6 +141,9 @@ UI verification
   UI not verified — <reason> (scaffold not yet done / no UI changes)
 
 Self-review — clean / N issues found and fixed.
+
+Worktree
+  ../carnotea-T-NNN — changes are uncommitted for review
 ```
 
 Present the report and wait for the user to confirm before opening the PR.
@@ -146,13 +154,26 @@ Present the report and wait for the user to confirm before opening the PR.
 
 Only after the user confirms they are satisfied:
 
-1. Push: `git push -u origin <branch>`.
-2. Create the PR following `.github/PULL_REQUEST_TEMPLATE.md`:
+1. Work from the ticket worktree branch. If the current branch is `main`, stop.
+2. Synchronize with the remote before committing:
+   - `git fetch origin`
+   - rebase the ticket branch onto `origin/main`
+   - resolve any conflicts locally before continuing
+   - confirm the branch is based on the fetched `origin/main`
+3. Run the full validation suite again. Do not commit or push a failing branch.
+4. Check the working tree for secrets, debug logs, and unrelated files.
+5. Split the reviewed work into logical commits using `docs/conventions.md`
+   (Conventional Commits, appropriate scopes, `Closes T-NNN` on the commit that
+   completes the ticket, AI co-author trailer when applicable). Do not collapse
+   unrelated docs, workflow, dependency, and implementation changes into one
+   commit.
+6. Push: `git push -u origin <branch>`.
+7. Create the PR following `.github/PULL_REQUEST_TEMPLATE.md`:
    - Title: `<type>(<scope>): <ticket title>`
-   - Body: link to ticket, what changed, how verified, anything *not* verified.
-3. Update the ticket: `status: in_review`, `updated_at: <today>`.
+   - Body: link to ticket, what changed, how verified, anything _not_ verified.
+8. Update the ticket: `status: in_review`, `updated_at: <today>`.
    Move its line in `tickets/INDEX.md` to **In review**.
-4. Commit the status update and push it to the PR branch.
-5. Share the PR URL.
+9. Commit the status update and push it to the PR branch.
+10. Share the PR URL.
 
-Claude Code agents: run `/ship-pr` for steps 1–5.
+Claude Code agents: run `/ship-pr` for steps 1–10.

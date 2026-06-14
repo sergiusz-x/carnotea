@@ -38,6 +38,10 @@ cd ../carnotea
 git worktree remove ../carnotea-T-NNN   # after pushing the branch
 ```
 
+Do not commit during `work-ticket`. Leave the ticket updates and implementation
+changes uncommitted in the worktree so the human can inspect them in Source
+Control. The `ship-pr` skill performs commits after the human confirms the diff.
+
 **Self-review (Phase 4):** read and work through every item in
 [`docs/agents/self-review.md`](../../../docs/agents/self-review.md).
 Fix any ✗ before reporting.

@@ -3,11 +3,11 @@
 The contract every agent (and human) follows in CarNotea. Read it top to bottom
 once; after that, jump to the **Task Router** for the specific thing you're
 doing. Rules are written as commands, not prose — if a rule doesn't tell you
-what to *do* or what to *run*, it's a bug in this file. Fix it.
+what to _do_ or what to _run_, it's a bug in this file. Fix it.
 
 CarNotea is a vehicle-diary PWA. Stack and rationale: [`README.md`](./README.md)
-and [`docs/adr/`](./docs/adr/). This file is about *how we work*, not *what we
-build*.
+and [`docs/adr/`](./docs/adr/). This file is about _how we work_, not _what we
+build_.
 
 ## Always
 
@@ -29,7 +29,7 @@ build*.
 - After a human corrects you, append a rule to
   [`docs/agents/lessons.md`](./docs/agents/lessons.md) so the mistake doesn't
   recur. One correction → one lesson.
-- Update docs in the *same* change: a new command → `docs/getting-started.md`;
+- Update docs in the _same_ change: a new command → `docs/getting-started.md`;
   a new package → `docs/tech-stack.md`; a new top-level folder → the repo map
   here and in `README.md`.
 
@@ -103,12 +103,12 @@ The same three actions are wired up for every environment, all backed by the
 one environment-agnostic spec in
 [`docs/agents/ticket-execution.md`](./docs/agents/ticket-execution.md):
 
-| Action | What it does | Claude Code | Codex | Other |
-| ------ | ------------ | ----------- | ----- | ----- |
-| Pick next | Recommends the next unblocked ticket. | `/next-ticket` | `next-ticket` skill | read the doc |
-| Work a ticket | Analyze → plan (human approval) → implement in a worktree → self-review → report. | `/work-ticket <id>` | `work-ticket` skill | read the doc |
-| Smart commit | Groups uncommitted changes into logical commits with Conventional Commit messages, waits for approval, then commits. Does not push. | `/smart-commit` | `smart-commit` skill | `.claude/commands/smart-commit.md` |
-| Ship a PR | Validates, pushes the branch, opens a PR. | `/ship-pr` | `ship-pr` skill | read the doc |
+| Action        | What it does                                                                                      | Claude Code         | Codex                | Other                              |
+| ------------- | ------------------------------------------------------------------------------------------------- | ------------------- | -------------------- | ---------------------------------- |
+| Pick next     | Recommends the next unblocked ticket.                                                             | `/next-ticket`      | `next-ticket` skill  | read the doc                       |
+| Work a ticket | Analyze → plan (human approval) → implement in a worktree → self-review → report.                 | `/work-ticket <id>` | `work-ticket` skill  | read the doc                       |
+| Smart commit  | Groups uncommitted changes into logical commits, waits for approval, then commits. Does not push. | `/smart-commit`     | `smart-commit` skill | `.claude/commands/smart-commit.md` |
+| Ship a PR     | Validates, commits reviewed changes, pushes the branch, opens a PR.                               | `/ship-pr`          | `ship-pr` skill      | read the doc                       |
 
 - **Claude Code** loads these as slash commands from `.claude/commands/*.md`.
 - **Codex** loads them as project skills from `.codex/skills/<name>/SKILL.md`
@@ -125,36 +125,36 @@ one environment-agnostic spec in
 
 ## Task Router — where the detailed guidance lives
 
-Match your task to a row *before* you start. A task often matches several rows —
+Match your task to a row _before_ you start. A task often matches several rows —
 read all of them. Use an Explore agent only for topics no row covers.
 
-| Task | Read |
-| ---- | ---- |
-| **Execution** | |
-| Finding the next ticket to pick up | `/next-ticket` (Claude Code) · `next-ticket` skill (Codex) · `tickets/INDEX.md` + `docs/agents/working-with-tickets.md` |
-| Executing a ticket end-to-end | `/work-ticket <id>` (Claude Code) · `work-ticket` skill (Codex) · [`docs/agents/ticket-execution.md`](./docs/agents/ticket-execution.md) |
-| Self-review before a PR | [`docs/agents/self-review.md`](./docs/agents/self-review.md) |
-| Pushing and opening a PR | `/ship-pr` (Claude Code) · `ship-pr` skill (Codex) · `docs/agents/ticket-execution.md` §6 |
-| **Process** | |
-| Picking up / creating / closing a ticket | [`docs/agents/working-with-tickets.md`](./docs/agents/working-with-tickets.md) |
-| Recording a lesson after a correction | [`docs/agents/lessons.md`](./docs/agents/lessons.md) |
-| How the agent docs fit together | [`docs/agents/structure.md`](./docs/agents/structure.md) |
-| Agent-specific working style | [`docs/agents/conventions-for-agents.md`](./docs/agents/conventions-for-agents.md) |
-| **Decisions** | |
-| Choosing a tool / pattern, or reversing one | [`docs/adr/`](./docs/adr/) — read the relevant ADR; new decision → new ADR |
-| Understanding the system end-to-end | [`docs/architecture.md`](./docs/architecture.md) |
-| **Code conventions** | |
-| Style, naming, commits, branches, PRs | [`docs/conventions.md`](./docs/conventions.md) |
-| Which tool does what + versions | [`docs/tech-stack.md`](./docs/tech-stack.md) |
-| **Areas** (exist after their scaffold ticket) | |
-| API code (NestJS, routes, OpenAPI) | `apps/api/AGENTS.md` |
-| Web code (React, routing, i18n, PWA) | `apps/web/AGENTS.md` |
-| DB schema, migrations, `db:generate` | `packages/db/AGENTS.md` |
-| Shared Zod schemas + types | `packages/shared/AGENTS.md` |
-| ESLint / Prettier / tsconfig presets | `tooling/*` (see repo map) |
-| **Setup** | |
-| Running the repo locally | [`docs/getting-started.md`](./docs/getting-started.md) |
-| Finding what to do first | [`tickets/INDEX.md`](./tickets/INDEX.md) |
+| Task                                          | Read                                                                                                                                     |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Execution**                                 |                                                                                                                                          |
+| Finding the next ticket to pick up            | `/next-ticket` (Claude Code) · `next-ticket` skill (Codex) · `tickets/INDEX.md` + `docs/agents/working-with-tickets.md`                  |
+| Executing a ticket end-to-end                 | `/work-ticket <id>` (Claude Code) · `work-ticket` skill (Codex) · [`docs/agents/ticket-execution.md`](./docs/agents/ticket-execution.md) |
+| Self-review before a PR                       | [`docs/agents/self-review.md`](./docs/agents/self-review.md)                                                                             |
+| Pushing and opening a PR                      | `/ship-pr` (Claude Code) · `ship-pr` skill (Codex) · `docs/agents/ticket-execution.md` §6                                                |
+| **Process**                                   |                                                                                                                                          |
+| Picking up / creating / closing a ticket      | [`docs/agents/working-with-tickets.md`](./docs/agents/working-with-tickets.md)                                                           |
+| Recording a lesson after a correction         | [`docs/agents/lessons.md`](./docs/agents/lessons.md)                                                                                     |
+| How the agent docs fit together               | [`docs/agents/structure.md`](./docs/agents/structure.md)                                                                                 |
+| Agent-specific working style                  | [`docs/agents/conventions-for-agents.md`](./docs/agents/conventions-for-agents.md)                                                       |
+| **Decisions**                                 |                                                                                                                                          |
+| Choosing a tool / pattern, or reversing one   | [`docs/adr/`](./docs/adr/) — read the relevant ADR; new decision → new ADR                                                               |
+| Understanding the system end-to-end           | [`docs/architecture.md`](./docs/architecture.md)                                                                                         |
+| **Code conventions**                          |                                                                                                                                          |
+| Style, naming, commits, branches, PRs         | [`docs/conventions.md`](./docs/conventions.md)                                                                                           |
+| Which tool does what + versions               | [`docs/tech-stack.md`](./docs/tech-stack.md)                                                                                             |
+| **Areas** (exist after their scaffold ticket) |                                                                                                                                          |
+| API code (NestJS, routes, OpenAPI)            | `apps/api/AGENTS.md`                                                                                                                     |
+| Web code (React, routing, i18n, PWA)          | `apps/web/AGENTS.md`                                                                                                                     |
+| DB schema, migrations, `db:generate`          | `packages/db/AGENTS.md`                                                                                                                  |
+| Shared Zod schemas + types                    | `packages/shared/AGENTS.md`                                                                                                              |
+| ESLint / Prettier / tsconfig presets          | `tooling/*` (see repo map)                                                                                                               |
+| **Setup**                                     |                                                                                                                                          |
+| Running the repo locally                      | [`docs/getting-started.md`](./docs/getting-started.md)                                                                                   |
+| Finding what to do first                      | [`tickets/INDEX.md`](./tickets/INDEX.md)                                                                                                 |
 
 ## Hierarchy
 
@@ -200,6 +200,7 @@ carnotea/
 │   ├── eslint/           # shared ESLint presets
 │   ├── prettier/         # shared Prettier config
 │   ├── typescript/       # shared tsconfig presets
+│   ├── vitest/           # shared Vitest base config
 │   └── github/           # reusable GitHub Actions setup
 ├── docs/
 │   ├── adr/              # accepted architecture decisions (immutable)
