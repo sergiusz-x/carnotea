@@ -1,0 +1,51 @@
+{
+  "name": "@carnotea/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "nest start --watch",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "lint": "eslint . --cache --cache-location .cache/.eslintcache",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@carnotea/db": "workspace:*",
+    "@carnotea/shared": "workspace:*",
+    "@nestjs/common": "catalog:",
+    "@nestjs/config": "catalog:",
+    "@nestjs/core": "catalog:",
+    "@nestjs/platform-fastify": "catalog:",
+    "drizzle-orm": "catalog:",
+    "fastify": "catalog:",
+    "nestjs-pino": "catalog:",
+    "pino-http": "catalog:",
+    "pino-pretty": "catalog:",
+    "reflect-metadata": "catalog:",
+    "rxjs": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@carnotea/eslint-config": "workspace:*",
+    "@carnotea/prettier-config": "workspace:*",
+    "@carnotea/tsconfig": "workspace:*",
+    "@carnotea/vitest-config": "workspace:*",
+    "@nestjs/cli": "catalog:",
+    "@nestjs/testing": "catalog:",
+    "@swc/cli": "catalog:",
+    "@swc/core": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "typescript": "catalog:",
+    "unplugin-swc": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "prettier": "@carnotea/prettier-config"
+}

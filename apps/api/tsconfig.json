@@ -1,0 +1,9 @@
+{
+  "extends": "@carnotea/tsconfig/node.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "outDir": "dist"
+  },
+  "include": ["src", "vitest.config.ts"]
+}
