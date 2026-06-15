@@ -55,6 +55,7 @@ catalog:
   unplugin-swc: ^1.5.9
   # OpenAPI (apps/api)
   '@asteasolutions/zod-to-openapi': ^8.5.0
+  '@fastify/swagger': ^9.7.0
   '@fastify/swagger-ui': ^6.0.0
 
 # React-family versions live in a named catalog so non-React packages never

@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 
+import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -21,8 +22,12 @@ async function bootstrap(): Promise<void> {
   app.useLogger(app.get(Logger));
   app.useGlobalFilters(new ZodValidationFilter());
 
-  // Serve Swagger UI at /docs, pointing at our /openapi.json endpoint.
-  // The spec is generated from the zodRoute registry populated during module init.
+  // @fastify/swagger-ui declares @fastify/swagger as a required dependency and asserts
+  // it on boot — registering the UI alone crashes the server. Register @fastify/swagger
+  // to satisfy that dependency, and point the UI at /openapi.json: the canonical
+  // OpenAPI 3.1 document generated from the zodRoute registry and served by
+  // OpenApiController (used as-is for client codegen in T-011).
+  await app.register(swagger);
   await app.register(swaggerUi, {
     routePrefix: '/docs',
     uiConfig: { url: '/openapi.json' },

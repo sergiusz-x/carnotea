@@ -18,6 +18,7 @@
     "@asteasolutions/zod-to-openapi": "catalog:",
     "@carnotea/db": "workspace:*",
     "@carnotea/shared": "workspace:*",
+    "@fastify/swagger": "catalog:",
     "@fastify/swagger-ui": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
