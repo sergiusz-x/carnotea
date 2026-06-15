@@ -28,7 +28,7 @@ catalog:
   # Validation (used by api, web, shared)
   zod: ^4.4.3
   # Testing
-  vitest: ^4.1.8
+  vitest: ^4.1.9
   # Pinned to v7: unplugin-swc 1.5.9 does not yet support vite 8's Oxc transform.
   vite: ^7.3.5
   # Types
@@ -38,11 +38,11 @@ catalog:
   drizzle-kit: ^0.31.10
   postgres: ^3.4.9
   # API (apps/api) — NestJS + Fastify stack
-  '@nestjs/common': ^11.1.26
-  '@nestjs/core': ^11.1.26
+  '@nestjs/common': ^11.1.27
+  '@nestjs/core': ^11.1.27
   '@nestjs/config': ^4.0.4
-  '@nestjs/platform-fastify': ^11.1.26
-  '@nestjs/testing': ^11.1.26
+  '@nestjs/platform-fastify': ^11.1.27
+  '@nestjs/testing': ^11.1.27
   '@nestjs/cli': ^11.0.23
   fastify: ^5.8.5
   nestjs-pino: ^4.6.1
