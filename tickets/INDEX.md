@@ -11,7 +11,6 @@ Legend: `🔴` high · `🟡` medium · `🟢` low
 These tickets are fully specced. An agent picks the first one whose `dependencies`
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
-- 🔴 [T-004 — API skeleton: NestJS app + healthcheck + DB ping](./T-004-api-nestjs-skeleton.md)
 - 🟡 [T-005 — API: OpenAPI / Swagger generated from Zod](./T-005-api-openapi-swagger-from-zod.md)
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
 - 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
@@ -31,7 +30,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-_Empty._
+- 🔴 [T-004 — API skeleton: NestJS app + healthcheck + DB ping](./T-004-api-nestjs-skeleton.md)
 
 ## Blocked
 
