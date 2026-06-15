@@ -15,8 +15,10 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "catalog:",
     "@carnotea/db": "workspace:*",
     "@carnotea/shared": "workspace:*",
+    "@fastify/swagger-ui": "catalog:",
     "@nestjs/common": "catalog:",
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
