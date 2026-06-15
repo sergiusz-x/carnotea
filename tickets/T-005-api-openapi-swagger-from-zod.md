@@ -1,14 +1,14 @@
 ---
 id: T-005
 title: API — OpenAPI / Swagger generated from Zod
-status: ready
+status: done
 priority: medium
-owner: ~
+owner: claude
 dependencies: [T-004]
 labels: [api, contracts]
 created_at: 2026-06-13
-updated_at: 2026-06-13
-closed_at: ~
+updated_at: 2026-06-15
+closed_at: 2026-06-15
 ---
 
 # T-005 — API: OpenAPI / Swagger generated from Zod
