@@ -75,8 +75,9 @@ pnpm --filter @carnotea/api dev
 pnpm --filter @carnotea/web dev
 ```
 
-Right now this is a no-op because no app has been scaffolded yet. That's
-expected, and it is what the initial tickets are for.
+`apps/web` is scaffolded (T-007): `pnpm --filter @carnotea/web dev` serves the
+landing page on http://localhost:5173. `apps/api` lands in a later ticket, so
+`pnpm dev` currently runs the web app only.
 
 ## 6. Working day-to-day
 
