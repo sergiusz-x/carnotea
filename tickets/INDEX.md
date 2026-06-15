@@ -30,7 +30,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-- 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
+_Empty._
 
 ## Blocked
 
@@ -42,6 +42,7 @@ _Empty._
 
 ## Done
 
+- 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
 - 🔴 [T-002 — Database package: Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
 - 🔴 [T-003 — Shared package: Zod schemas and types](./T-003-shared-package-zod-and-types.md)

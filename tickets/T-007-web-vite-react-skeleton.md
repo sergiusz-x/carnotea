@@ -1,14 +1,14 @@
 ---
 id: T-007
 title: Web skeleton — Vite + React + TS
-status: in_progress
+status: done
 priority: high
 owner: Claude
 dependencies: [T-001, T-003]
 labels: [bootstrap, web]
 created_at: 2026-06-13
 updated_at: 2026-06-15
-closed_at: ~
+closed_at: 2026-06-15
 ---
 
 # T-007 — Web skeleton: Vite + React + TS
