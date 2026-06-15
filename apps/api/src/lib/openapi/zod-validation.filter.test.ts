@@ -4,8 +4,8 @@ import { Test } from '@nestjs/testing';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { z } from 'zod';
 
-import { ZodValidationFilter } from './zod-validation.filter.js';
 import { zodRoute } from './registry.js';
+import { ZodValidationFilter } from './zod-validation.filter.js';
 
 const echoRoute = zodRoute({
   method: 'post',

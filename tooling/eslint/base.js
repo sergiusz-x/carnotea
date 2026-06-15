@@ -1,5 +1,5 @@
 import js from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
+import importPlugin from 'eslint-plugin-import-x';
 import tseslint from 'typescript-eslint';
 
 const ignoredPaths = [
@@ -9,6 +9,10 @@ const ignoredPaths = [
   '**/coverage/**',
   '**/dist/**',
   '**/node_modules/**',
+  // Hand-written declaration files (e.g. tooling/vitest/base.d.ts, vite-env.d.ts)
+  // are types, not code, and live outside any tsconfig `include`, so the typed
+  // project service can't resolve them. Generated ones already sit under dist/.
+  '**/*.d.ts',
 ];
 
 const sourceFiles = ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'];
@@ -35,7 +39,7 @@ export const base = tseslint.config(
   {
     files: sourceFiles,
     plugins: {
-      import: importPlugin,
+      'import-x': importPlugin,
     },
     rules: {
       '@typescript-eslint/consistent-type-imports': [
@@ -53,7 +57,7 @@ export const base = tseslint.config(
           varsIgnorePattern: '^_',
         },
       ],
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           alphabetize: {
@@ -62,6 +66,13 @@ export const base = tseslint.config(
           },
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
           'newlines-between': 'always',
+          pathGroups: [
+            {
+              pattern: '@/**',
+              group: 'internal',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
         },
       ],
     },

@@ -62,7 +62,7 @@
     },
     "db:generate": {
       "cache": false,
-      "outputs": ["src/schema.ts", "drizzle/**"]
+      "outputs": ["migrations/**"]
     },
     "db:migrate": {
       "cache": false
