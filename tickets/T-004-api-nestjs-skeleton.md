@@ -1,14 +1,14 @@
 ---
 id: T-004
 title: API skeleton — NestJS app + healthcheck + DB ping
-status: in_progress
+status: done
 priority: high
 owner: Claude
 dependencies: [T-001, T-002, T-003]
 labels: [bootstrap, api]
 created_at: 2026-06-13
-updated_at: 2026-06-14
-closed_at: ~
+updated_at: 2026-06-15
+closed_at: 2026-06-15
 ---
 
 # T-004 — API skeleton: NestJS app + healthcheck + DB ping
@@ -34,17 +34,17 @@ No business endpoints, no auth, no Swagger yet.
 
 ## Acceptance criteria
 
-- [ ] `apps/api/` exists as `@carnotea/api`, NestJS-based.
-- [ ] tsconfig extends `@carnotea/tsconfig/node.json`.
-- [ ] ESLint extends the `node` config from `@carnotea/eslint-config`.
-- [ ] `pnpm --filter @carnotea/api dev` runs the app on `API_PORT` (default 3001) and hot-reloads on file change.
-- [ ] `GET /healthz` returns 200 with `{ status: 'ok' }`.
-- [ ] `GET /readyz` returns 200 with `{ status: 'ok', db: 'ok' }` when the DB
+- [x] `apps/api/` exists as `@carnotea/api`, NestJS-based.
+- [x] tsconfig extends `@carnotea/tsconfig/node.json`.
+- [x] ESLint extends the `node` config from `@carnotea/eslint-config`.
+- [x] `pnpm --filter @carnotea/api dev` runs the app on `API_PORT` (default 3001) and hot-reloads on file change.
+- [x] `GET /healthz` returns 200 with `{ status: 'ok' }`.
+- [x] `GET /readyz` returns 200 with `{ status: 'ok', db: 'ok' }` when the DB
       is reachable, 503 otherwise.
-- [ ] The app reads `DATABASE_URL` from `process.env`; missing env vars cause
+- [x] The app reads `DATABASE_URL` from `process.env`; missing env vars cause
       a startup error with a clear message.
-- [ ] A first Vitest test covers the healthcheck handler.
-- [ ] `apps/api/AGENTS.md` exists with API-specific rules.
+- [x] A first Vitest test covers the healthcheck handler.
+- [x] `apps/api/AGENTS.md` exists with API-specific rules.
 
 ## Files to touch
 
