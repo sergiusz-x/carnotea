@@ -24,6 +24,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-014 — Infra: dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
 - 🟡 [T-015 — CI: GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
 - 🟢 [T-016 — Turborepo generators: scaffold new packages](./T-016-turbo-generators.md)
+- 🟡 [T-018 — Observability baseline: OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)
 
 ## Backlog
 
