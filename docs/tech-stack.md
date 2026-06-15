@@ -35,17 +35,19 @@ live in the linked documents.
 
 ## Backend (apps/api)
 
-| Tool             | Purpose                              | Notes                                      |
-| ---------------- | ------------------------------------ | ------------------------------------------ |
-| NestJS           | HTTP framework, DI, module structure |                                            |
-| Fastify adapter  | Faster HTTP layer under NestJS       | optional, TBD                              |
-| Zod              | Validation, schema source            | [ADR-0003](./adr/0003-rest-openapi-zod.md) |
-| zod-to-openapi   | Generate OpenAPI from Zod            |                                            |
-| @nestjs/swagger  | Serve `/docs`                        |                                            |
-| better-auth      | Authentication                       | [ADR-0004](./adr/0004-better-auth.md)      |
-| pino             | Structured logging                   |                                            |
-| @carnotea/db     | Drizzle client + schema              | workspace package                          |
-| @carnotea/shared | Zod schemas, shared types            | workspace package                          |
+| Tool               | Purpose                              | Notes                                      |
+| ------------------ | ------------------------------------ | ------------------------------------------ |
+| NestJS             | HTTP framework, DI, module structure | `apps/api`; T-004                          |
+| Fastify adapter    | Faster HTTP layer under NestJS       | adopted in T-004                           |
+| SWC                | Compiler for `apps/api` (dev/build)  | [ADR-0010](./adr/0010-api-compiler-swc.md) |
+| @nestjs/config     | Env loading, validated by Zod        | `src/config/env.ts`                        |
+| Zod                | Validation, schema source            | [ADR-0003](./adr/0003-rest-openapi-zod.md) |
+| zod-to-openapi     | Generate OpenAPI from Zod            | T-005                                      |
+| @nestjs/swagger    | Serve `/docs`                        | T-005                                      |
+| better-auth        | Authentication                       | [ADR-0004](./adr/0004-better-auth.md)      |
+| nestjs-pino / pino | Structured logging                   | `pino-pretty` in non-prod                  |
+| @carnotea/db       | Drizzle client + schema              | workspace package                          |
+| @carnotea/shared   | Zod schemas, shared types            | workspace package                          |
 
 ## Frontend (apps/web)
 
