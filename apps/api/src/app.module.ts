@@ -6,6 +6,7 @@ import { validateEnv } from './config/env.js';
 import { DbModule } from './db/db.module.js';
 import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
+import { OpenApiModule } from './openapi/openapi.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ReadinessController } from './health/readiness.controller.js';
       },
     }),
     DbModule,
+    OpenApiModule,
   ],
   controllers: [HealthController, ReadinessController],
 })
