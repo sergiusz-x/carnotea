@@ -29,7 +29,7 @@ vitest.setup.ts     # registers @testing-library/jest-dom matchers
 
 - **`src/components/ui/`** — shadcn/ui components only. Added via `pnpm dlx shadcn@latest add <name>`. Never hand-edit generated component internals; re-run the CLI instead.
 - **`src/components/`** — layout and shared app-level components (e.g. `ThemeProvider`, `Navbar`, `PageWrapper`).
-- **`src/features/<name>/`** — feature folders own their own components. Keep component files co-located with the feature they belong to.
+- **`src/features/<name>/`** — feature folders own their own components. Keep component files co-located with the feature they belong to. When the first feature lands, create `src/features/` and add the matching `@/features` alias to `vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`.
 
 ## Path aliases
 
@@ -37,9 +37,8 @@ vitest.setup.ts     # registers @testing-library/jest-dom matchers
 |-------|---------|
 | `@/components` | `src/components` |
 | `@/lib` | `src/lib` |
-| `@/features` | `src/features` |
 
-Configured in both `vite.config.ts` (runtime) and `tsconfig.json` (type-checking).
+Configured in `vite.config.ts` (runtime), `vitest.config.ts` (tests), and `tsconfig.json` (type-checking). Only directories that exist are aliased — add a new alias in all three when you create its directory.
 
 ## Styling
 

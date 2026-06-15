@@ -1,6 +1,6 @@
 import { resolve } from 'node:path';
 
-import { vitestBaseConfig } from '@carnotea/vitest-config/base';
+import { vitestBaseConfig } from '@carnotea/vitest-config';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 export default mergeConfig(
@@ -10,7 +10,6 @@ export default mergeConfig(
       alias: {
         '@/components': resolve(import.meta.dirname, 'src/components'),
         '@/lib': resolve(import.meta.dirname, 'src/lib'),
-        '@/features': resolve(import.meta.dirname, 'src/features'),
       },
     },
     test: {

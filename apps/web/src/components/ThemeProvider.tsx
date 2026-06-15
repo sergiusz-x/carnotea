@@ -10,6 +10,12 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function getInitialTheme(): Theme {
+  // The inline script in index.html resolves and applies the theme class before
+  // first paint; read it back so React state matches the DOM. Fall back to the
+  // same resolution for environments where that script didn't run (e.g. tests).
+  const root = document.documentElement;
+  if (root.classList.contains('dark')) return 'dark';
+  if (root.classList.contains('light')) return 'light';
   const stored = localStorage.getItem('theme');
   if (stored === 'dark' || stored === 'light') return stored;
   if (typeof window.matchMedia === 'function') {

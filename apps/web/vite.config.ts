@@ -10,7 +10,6 @@ export default defineConfig({
     alias: {
       '@/components': resolve(import.meta.dirname, 'src/components'),
       '@/lib': resolve(import.meta.dirname, 'src/lib'),
-      '@/features': resolve(import.meta.dirname, 'src/features'),
     },
   },
   server: {

@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CarNotea</title>
+    <script>
+      // Apply the persisted/preferred theme before first paint so the page never
+      // flashes the wrong colour scheme. ThemeProvider reads this class back.
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var prefersDark =
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme =
+            stored === 'dark' || stored === 'light' ? stored : prefersDark ? 'dark' : 'light';
+          document.documentElement.classList.add(theme);
+        } catch (e) {
+          /* localStorage/matchMedia unavailable — fall back to default styling */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
