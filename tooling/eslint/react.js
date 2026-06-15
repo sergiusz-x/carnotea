@@ -30,7 +30,10 @@ export const react = [
     },
     settings: {
       react: {
-        version: 'detect',
+        // Pinned (not 'detect'): eslint-plugin-react's autodetection calls the
+        // ESLint 9 `context.getFilename()` API, which was removed in ESLint 10
+        // and crashes the lint. The monorepo standardizes on React 19.
+        version: '19.0',
       },
     },
   },
