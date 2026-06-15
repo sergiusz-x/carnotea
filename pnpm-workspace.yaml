@@ -28,7 +28,7 @@ catalog:
   # Validation (used by api, web, shared)
   zod: ^4.4.3
   # Testing
-  vitest: ^4.1.8
+  vitest: ^4.1.9
   # Types
   '@types/node': ^25.9.3
   # Database
