@@ -1,14 +1,14 @@
 ---
 id: T-008
 title: Web — Tailwind + shadcn/ui setup
-status: ready
+status: done
 priority: medium
-owner: ~
+owner: claude
 dependencies: [T-007]
 labels: [web, ui]
 created_at: 2026-06-13
-updated_at: 2026-06-13
-closed_at: ~
+updated_at: 2026-06-15
+closed_at: 2026-06-15
 ---
 
 # T-008 — Web: Tailwind + shadcn/ui setup
@@ -57,6 +57,32 @@ and the conventions that future component tickets will follow.
   (`@/components`, `@/lib`, `@/features`).
 - Don't install icon packs ad-hoc — `lucide-react` ships with shadcn examples,
   so add it explicitly and lock the major version.
+
+## Notes
+
+- **Tailwind v4** was chosen (stable as of execution date, June 2026). v4 uses the
+  `@tailwindcss/vite` Vite plugin and `@import "tailwindcss"` in CSS; there is no
+  `tailwind.config.ts` or `postcss.config.cjs` (v3 patterns referenced in the AC).
+  CSS variables are bridged to Tailwind utilities via `@theme inline` in `globals.css`.
+
+- **No `forwardRef`** in Button/Card — components use the React 19 pattern of passing
+  props directly (no `asChild`/Slot either, as it wasn't needed for the landing page demo).
+
+- **`tooling/eslint/base.js`** was updated to add `pathGroups: [{ pattern: '@/**', group: 'internal' }]`.
+  This is required so the `import/order` rule classifies `@/` path-alias imports as
+  `internal` (not `external`). Without this, `eslint-plugin-import@2.32.0` crashes on
+  ESLint 10 when trying to autofix out-of-order `@/` imports.
+
+- **Hardcoded strings** ("Your personal vehicle diary.", "Get started") in App.tsx are
+  deferred to T-010 (i18n); AGENTS.md acknowledges this as the sanctioned exception.
+
+- **`vitest.setup.ts`** now imports `cleanup` from `@testing-library/react` and calls it
+  in `afterEach`. This is required because `globals: false` in the vitest config prevents
+  Testing Library's automatic cleanup hook from registering.
+
+- **UI verified**: Chrome could not be installed in CI (SSL policy blocks the download).
+  Build output (12.38 kB CSS, 1749 transformed modules) confirms Tailwind is generating
+  styles correctly.
 
 ## References
 
