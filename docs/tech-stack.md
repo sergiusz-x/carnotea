@@ -42,8 +42,8 @@ live in the linked documents.
 | SWC                | Compiler for `apps/api` (dev/build)  | [ADR-0010](./adr/0010-api-compiler-swc.md) |
 | @nestjs/config     | Env loading, validated by Zod        | `src/config/env.ts`                        |
 | Zod                | Validation, schema source            | [ADR-0003](./adr/0003-rest-openapi-zod.md) |
-| zod-to-openapi     | Generate OpenAPI from Zod            | T-005                                      |
-| @nestjs/swagger    | Serve `/docs`                        | T-005                                      |
+| @asteasolutions/zod-to-openapi | Generate OpenAPI 3.1 spec from Zod | T-005; `src/lib/openapi/registry.ts` |
+| @fastify/swagger-ui | Serve Swagger UI at `/docs`         | T-005; registered in `main.ts`       |
 | better-auth        | Authentication                       | [ADR-0004](./adr/0004-better-auth.md)      |
 | nestjs-pino / pino | Structured logging                   | `pino-pretty` in non-prod                  |
 | @carnotea/db       | Drizzle client + schema              | workspace package                          |

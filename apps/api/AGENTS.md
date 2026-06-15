@@ -15,6 +15,8 @@ for any file under `apps/api/`.
 - **nestjs-pino** for structured JSON logging (`pino-pretty` only in non-prod).
 - **@nestjs/config** loads `process.env`; the shape is validated by a Zod schema
   at boot (`src/config/env.ts`).
+- **@asteasolutions/zod-to-openapi** generates the OpenAPI 3.1 spec from Zod
+  schemas. **@fastify/swagger-ui** serves the Swagger UI at `GET /docs`.
 
 ## Day-to-day workflow
 
@@ -28,9 +30,45 @@ pnpm --filter @carnotea/api typecheck    # tsc --noEmit
 Probes:
 
 ```bash
-curl localhost:3001/healthz   # {"status":"ok"}
-curl localhost:3001/readyz    # {"status":"ok","db":"ok"} or 503 when the DB is down
+curl localhost:3001/healthz      # {"status":"ok"}
+curl localhost:3001/readyz       # {"status":"ok","db":"ok"} or 503 when the DB is down
+curl localhost:3001/openapi.json # OpenAPI 3.1 spec
+# GET /docs                      → Swagger UI
 ```
+
+## OpenAPI convention — `zodRoute`
+
+Every endpoint **must** be registered with `zodRoute` from
+`src/lib/openapi/index.ts`. No endpoint ships without Zod-typed input and
+output.
+
+```ts
+// 1. Call zodRoute at module level (outside the class). This populates the
+//    OpenAPI registry when the controller file is first imported.
+const myRoute = zodRoute({
+  method: 'post',
+  path: '/things',
+  operationId: 'createThing',
+  tags: ['things'],
+  body: CreateThingSchema,       // ZodType — validates request body
+  query: ListQuerySchema,        // ZodType — validates query params (optional)
+  params: ThingParamsSchema,     // ZodType — validates path params (optional)
+  response: ThingSchema,         // ZodType — documents response shape
+});
+
+// 2. In the controller method, call the returned validators:
+@Post('things')
+create(@Body() rawBody: unknown): z.infer<typeof ThingSchema> {
+  const body = myRoute.validateBody(rawBody);   // throws ZodValidationException on failure
+  // ... business logic ...
+}
+```
+
+The `ZodValidationFilter` (registered globally in `main.ts`) catches
+`ZodValidationException` and returns a 400 with:
+`{ code: 'VALIDATION_ERROR', message: string, issues: ZodIssue[] }`.
+
+This shape is defined as `ApiErrorSchema` in `@carnotea/shared`.
 
 ## Rules
 
@@ -50,6 +88,5 @@ curl localhost:3001/readyz    # {"status":"ok","db":"ok"} or 503 when the DB is 
 
 ## Out of scope here (own tickets)
 
-- OpenAPI / Swagger at `/docs` — T-005.
 - Authentication — T-006.
 - Docker image for the API — T-014.
