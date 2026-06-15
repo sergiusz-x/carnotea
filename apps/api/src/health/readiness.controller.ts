@@ -12,6 +12,7 @@ zodRoute({
   operationId: 'getReadiness',
   tags: ['health'],
   response: z.object({ status: z.literal('ok'), db: z.literal('ok') }),
+  errors: { 503: 'Service unavailable — the database is not reachable' },
 });
 
 @Controller()
@@ -23,8 +24,9 @@ export class ReadinessController {
     try {
       await this.db.execute(sql`SELECT 1`);
     } catch {
+      // Use the shared ApiErrorSchema envelope so every error response is consistent.
       throw new HttpException(
-        { status: 'error', db: 'unreachable' },
+        { code: 'SERVICE_UNAVAILABLE', message: 'The database is not reachable' },
         HttpStatus.SERVICE_UNAVAILABLE,
       );
     }
