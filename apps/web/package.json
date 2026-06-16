@@ -14,12 +14,15 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@tanstack/react-query": "catalog:",
+    "@tanstack/react-router": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
-    "tailwind-merge": "catalog:"
+    "tailwind-merge": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@carnotea/eslint-config": "workspace:*",
@@ -27,6 +30,8 @@
     "@carnotea/tsconfig": "workspace:*",
     "@carnotea/vitest-config": "workspace:*",
     "@tailwindcss/vite": "catalog:",
+    "@tanstack/react-query-devtools": "catalog:",
+    "@tanstack/react-router-devtools": "catalog:",
     "@testing-library/dom": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
