@@ -37,6 +37,8 @@ catalog:
   drizzle-orm: ^0.45.2
   drizzle-kit: ^0.31.10
   postgres: ^3.4.9
+  # OpenAPI / Zod-to-OpenAPI
+  '@asteasolutions/zod-to-openapi': ^8.5.0
   # API (apps/api) — NestJS + Fastify stack
   '@nestjs/common': ^11.1.27
   '@nestjs/core': ^11.1.27

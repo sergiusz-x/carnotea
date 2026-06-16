@@ -11,7 +11,6 @@ Legend: `🔴` high · `🟡` medium · `🟢` low
 These tickets are fully specced. An agent picks the first one whose `dependencies`
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
-- 🟡 [T-005 — API: OpenAPI / Swagger generated from Zod](./T-005-api-openapi-swagger-from-zod.md)
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
 - 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🟡 [T-008 — Web: Tailwind + shadcn/ui setup](./T-008-web-tailwind-shadcn.md)
@@ -46,6 +45,7 @@ _Empty._
 - 🔴 [T-002 — Database package: Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
 - 🔴 [T-003 — Shared package: Zod schemas and types](./T-003-shared-package-zod-and-types.md)
 - 🔴 [T-004 — API skeleton: NestJS app + healthcheck + DB ping](./T-004-api-nestjs-skeleton.md)
+- 🟡 [T-005 — API: OpenAPI / Swagger generated from Zod](./T-005-api-openapi-swagger-from-zod.md)
 - 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
 
 ---
