@@ -1,18 +1,17 @@
 import { vitestBaseConfig } from '@carnotea/vitest-config';
-import swc from 'unplugin-swc';
 import { defineConfig, mergeConfig } from 'vitest/config';
 
 export default mergeConfig(
   vitestBaseConfig,
   defineConfig({
-    plugins: [
-      swc.vite({
-        jsc: {
-          target: 'es2022',
-          parser: { syntax: 'typescript', decorators: true },
-          transform: { legacyDecorator: true, decoratorMetadata: true },
-        },
-      }),
-    ],
+    // Vite 8 transforms TS with Oxc natively, which supports the legacy
+    // experimental decorators + emitDecoratorMetadata that NestJS DI relies on.
+    // This replaces unplugin-swc for tests (build still uses SWC via nest build).
+    oxc: {
+      decorator: {
+        legacy: true,
+        emitDecoratorMetadata: true,
+      },
+    },
   }),
 );

@@ -9,6 +9,10 @@ const ignoredPaths = [
   '**/coverage/**',
   '**/dist/**',
   '**/node_modules/**',
+  // Hand-written declaration files (e.g. tooling/vitest/base.d.ts, vite-env.d.ts)
+  // are types, not code, and live outside any tsconfig `include`, so the typed
+  // project service can't resolve them. Generated ones already sit under dist/.
+  '**/*.d.ts',
 ];
 
 const sourceFiles = ['**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}'];

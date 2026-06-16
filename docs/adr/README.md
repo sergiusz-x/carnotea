@@ -52,3 +52,5 @@ Don't write one for:
 | [0007](./0007-i18n-pl-en.md)                     | i18n with Polish and English from the first screen | accepted |
 | [0008](./0008-tickets-as-markdown.md)            | Tickets live as markdown files in the repo         | accepted |
 | [0009](./0009-shared-tooling-config-packages.md) | Shared tooling config packages                     | accepted |
+| [0010](./0010-api-compiler-swc.md)               | SWC as the apps/api compiler                       | accepted |
+| [0011](./0011-vite8-oxc-api-test-transform.md)   | Vite 8 monorepo; native Oxc for api test transform | accepted |

@@ -35,34 +35,37 @@ live in the linked documents.
 
 ## Backend (apps/api)
 
-| Tool                           | Purpose                               | Notes                                      |
-| ------------------------------ | ------------------------------------- | ------------------------------------------ |
-| NestJS                         | HTTP framework, DI, module structure  | `apps/api`; T-004                          |
-| Fastify adapter                | Faster HTTP layer under NestJS        | adopted in T-004                           |
-| SWC                            | Compiler for `apps/api` (dev/build)   | [ADR-0010](./adr/0010-api-compiler-swc.md) |
-| @nestjs/config                 | Env loading, validated by Zod         | `src/config/env.ts`                        |
-| Zod                            | Validation, schema source             | [ADR-0003](./adr/0003-rest-openapi-zod.md) |
-| @asteasolutions/zod-to-openapi | Generate OpenAPI 3.1 from Zod schemas | T-005; ADR-0003                            |
-| better-auth                    | Authentication                        | [ADR-0004](./adr/0004-better-auth.md)      |
-| nestjs-pino / pino             | Structured logging                    | `pino-pretty` in non-prod                  |
-| @carnotea/db                   | Drizzle client + schema               | workspace package                          |
-| @carnotea/shared               | Zod schemas, shared types             | workspace package                          |
+| Tool                           | Purpose                               | Notes                                                                                                                              |
+| ------------------------------ | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| NestJS                         | HTTP framework, DI, module structure  | `apps/api`; T-004                                                                                                                  |
+| Fastify adapter                | Faster HTTP layer under NestJS        | adopted in T-004                                                                                                                   |
+| SWC                            | Compiler for `apps/api` (dev/build)   | [ADR-0010](./adr/0010-api-compiler-swc.md); tests transform via native Oxc, [ADR-0011](./adr/0011-vite8-oxc-api-test-transform.md) |
+| @nestjs/config                 | Env loading, validated by Zod         | `src/config/env.ts`                                                                                                                |
+| Zod                            | Validation, schema source             | [ADR-0003](./adr/0003-rest-openapi-zod.md)                                                                                         |
+| @asteasolutions/zod-to-openapi | Generate OpenAPI 3.1 from Zod schemas | T-005; ADR-0003                                                                                                                    |
+| better-auth                    | Authentication                        | [ADR-0004](./adr/0004-better-auth.md)                                                                                              |
+| nestjs-pino / pino             | Structured logging                    | `pino-pretty` in non-prod                                                                                                          |
+| @carnotea/db                   | Drizzle client + schema               | workspace package                                                                                                                  |
+| @carnotea/shared               | Zod schemas, shared types             | workspace package                                                                                                                  |
 
 ## Frontend (apps/web)
 
-| Tool                    | Purpose                          | Notes                                          |
-| ----------------------- | -------------------------------- | ---------------------------------------------- |
-| React 18                | UI framework                     | [ADR-0005](./adr/0005-vite-react-no-nextjs.md) |
-| Vite                    | Build + dev server               |                                                |
-| TanStack Router         | Routing                          | file-based or code-based, TBD in T-009         |
-| TanStack Query          | Server-state caching             |                                                |
-| Tailwind CSS            | Utility CSS                      |                                                |
-| shadcn/ui               | Copy-paste accessible components |                                                |
-| react-hook-form         | Forms                            |                                                |
-| Zod                     | Form + API validation            | [ADR-0003](./adr/0003-rest-openapi-zod.md)     |
-| i18next + react-i18next | i18n                             | [ADR-0007](./adr/0007-i18n-pl-en.md)           |
-| Workbox                 | Service worker for PWA           | [ADR-0006](./adr/0006-pwa-from-day-one.md)     |
-| openapi-typescript      | Typed API client from `/docs`    | T-011                                          |
+| Tool                    | Purpose                           | Notes                                          |
+| ----------------------- | --------------------------------- | ---------------------------------------------- |
+| @carnotea/web           | The web app                       | `apps/web/`; see `apps/web/AGENTS.md`          |
+| React 19                | UI framework                      | [ADR-0005](./adr/0005-vite-react-no-nextjs.md) |
+| Vite                    | Build + dev server                | `apps/web/vite.config.ts`; dev on `5173`       |
+| @vitejs/plugin-react    | React fast refresh / JSX for Vite | dev dependency of `apps/web`                   |
+| Testing Library + jsdom | Component tests under Vitest      | `@testing-library/react`, jsdom environment    |
+| TanStack Router         | Routing                           | file-based or code-based, TBD in T-009         |
+| TanStack Query          | Server-state caching              |                                                |
+| Tailwind CSS            | Utility CSS                       |                                                |
+| shadcn/ui               | Copy-paste accessible components  |                                                |
+| react-hook-form         | Forms                             |                                                |
+| Zod                     | Form + API validation             | [ADR-0003](./adr/0003-rest-openapi-zod.md)     |
+| i18next + react-i18next | i18n                              | [ADR-0007](./adr/0007-i18n-pl-en.md)           |
+| Workbox                 | Service worker for PWA            | [ADR-0006](./adr/0006-pwa-from-day-one.md)     |
+| openapi-typescript      | Typed API client from `/docs`     | T-011                                          |
 
 ## Shared (packages/shared)
 

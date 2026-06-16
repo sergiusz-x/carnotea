@@ -70,8 +70,11 @@ See `packages/db/AGENTS.md` for the full schema-change workflow.
 pnpm dev          # runs all dev tasks in parallel via Turborepo
 # or, focused:
 pnpm --filter @carnotea/api dev    # NestJS API on API_PORT (default 3001)
-pnpm --filter @carnotea/web dev    # Vite dev server (once T-007 lands)
+pnpm --filter @carnotea/web dev    # Vite dev server on http://localhost:5173
 ```
+
+`apps/web` is scaffolded (T-007): `pnpm --filter @carnotea/web dev` serves the
+landing page on http://localhost:5173.
 
 The API (`apps/api`) is live as of T-004. Health probes:
 

@@ -12,7 +12,6 @@ These tickets are fully specced. An agent picks the first one whose `dependencie
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
-- 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🟡 [T-008 — Web: Tailwind + shadcn/ui setup](./T-008-web-tailwind-shadcn.md)
 - 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
 - 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
@@ -79,6 +78,7 @@ _Empty._
 
 ## Done
 
+- 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
 - 🔴 [T-002 — Database package: Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
 - 🔴 [T-003 — Shared package: Zod schemas and types](./T-003-shared-package-zod-and-types.md)

@@ -8,10 +8,11 @@ for any file under `apps/api/`.
 - **NestJS 11** with the **Fastify** adapter (`@nestjs/platform-fastify`).
   Fastify is measurably faster than Express and our routes are small; the
   ticket (T-004) prefers it. If a future need forces Express, document why here.
-- **SWC** is the compiler — see [ADR-0010](../../docs/adr/0010-api-compiler-swc.md).
+- **SWC** is the build compiler — see [ADR-0010](../../docs/adr/0010-api-compiler-swc.md).
   Dev and build go through `@nestjs/cli` (`nest start --watch` / `nest build`),
-  which reads `.swcrc`. Vitest transforms with the same SWC options via
-  `unplugin-swc` so decorator metadata is available in tests too.
+  which reads `.swcrc`. Vitest transforms with **native Oxc** (Vite 8) via
+  `oxc.decorator` in `vitest.config.ts`, which emits the decorator metadata
+  NestJS DI needs — see [ADR-0011](../../docs/adr/0011-vite8-oxc-api-test-transform.md).
 - **nestjs-pino** for structured JSON logging (`pino-pretty` only in non-prod).
 - **@nestjs/config** loads `process.env`; the shape is validated by a Zod schema
   at boot (`src/config/env.ts`).

@@ -44,9 +44,9 @@ The reasoning behind each choice is captured in [`docs/adr/`](./docs/adr/).
 
 ```
 carnotea/
-├── apps/                # runnable apps (created by tickets, not present yet)
-│   ├── api/             # NestJS HTTP API
-│   └── web/             # Vite + React PWA
+├── apps/                # runnable apps (created by tickets)
+│   ├── api/             # NestJS HTTP API (not present yet)
+│   └── web/             # Vite + React PWA (T-007)
 ├── packages/            # shippable libraries
 │   ├── db/              # Drizzle schema + SQL migrations + seeds
 │   └── shared/          # Zod schemas and shared types (T-003)
