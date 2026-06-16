@@ -1,13 +1,13 @@
 ---
 id: T-009
 title: Web — TanStack Router + TanStack Query
-status: ready
+status: in_progress
 priority: medium
-owner: ~
+owner: Claude
 dependencies: [T-007]
 labels: [web, routing, data]
 created_at: 2026-06-13
-updated_at: 2026-06-13
+updated_at: 2026-06-16
 closed_at: ~
 ---
 
@@ -27,19 +27,19 @@ working example that future tickets will mimic.
 
 ## Acceptance criteria
 
-- [ ] TanStack Router is installed and configured. Decision: file-based vs
+- [x] TanStack Router is installed and configured. Decision: file-based vs
       code-based is recorded in `apps/web/AGENTS.md` with a one-paragraph
       rationale.
-- [ ] TanStack Query is installed; `QueryClient` is configured with sensible
+- [x] TanStack Query is installed; `QueryClient` is configured with sensible
       defaults (`staleTime: 30s`, `retry: 1`, `refetchOnWindowFocus: false`).
-- [ ] A devtools panel is available in development and tree-shaken in
+- [x] A devtools panel is available in development and tree-shaken in
       production.
-- [ ] One example route `/healthz` calls `GET /healthz` on the API and shows
+- [x] One example route `/healthz` calls `GET /healthz` on the API and shows
       "OK" or "down" based on the response. This proves both libraries are
       wired up.
-- [ ] `apps/web/src/lib/queryClient.ts` and
+- [x] `apps/web/src/lib/queryClient.ts` and
       `apps/web/src/lib/router.ts` are clearly separated.
-- [ ] Conventions in `apps/web/AGENTS.md`: - Feature folders own their own `routes.ts` and `queries.ts`. - Server state lives in TanStack Query; component-local state in
+- [x] Conventions in `apps/web/AGENTS.md`: - Feature folders own their own `routes.ts` and `queries.ts`. - Server state lives in TanStack Query; component-local state in
       `useState`. No Zustand/Redux/etc. unless added by a future ADR.
 
 ## Files to touch
@@ -59,6 +59,38 @@ working example that future tickets will mimic.
   `routeTree.gen.ts` into git so the next agent doesn't have to bootstrap to
   understand routing.
 - If code-based: define the routes in `src/router.ts` and keep imports flat.
+
+## Notes
+
+- **Routing style: code-based** (not file-based). ADR-0005 explicitly chose
+  "code-based routing with strong types", and code-based keeps the toolchain
+  minimal — no Vite router plugin and no generated `routeTree.gen.ts` to
+  bootstrap and keep in sync. Routes are plain modules assembled in
+  `src/lib/router.ts`. Rationale recorded in `apps/web/AGENTS.md`.
+- **API call uses a same-origin relative fetch (`/healthz`) + a Vite dev
+  proxy**, not a direct cross-origin call to `http://localhost:3001`. The API
+  sets no CORS headers, so a direct cross-origin fetch from `:5173` would be
+  blocked by the browser and the "OK" state would be unreachable in dev. The
+  proxy (`vite.config.ts` → `server.proxy`) forwards `/healthz` to the API. A
+  configurable API base URL belongs to the typed client (T-011), so no
+  `VITE_API_URL`/env module was added here (would be speculative).
+- **Router + Query are integrated**: the root route is created with
+  `createRootRouteWithContext` so `queryClient` is on the router context; the
+  `/healthz` route prefetches via a `loader`
+  (`context.queryClient.ensureQueryData`) and the component reads with
+  `useQuery`. This is the canonical pattern future feature routes mimic.
+- **Feature-folder convention seeded**: `src/features/health/` owns `routes.ts`,
+  `queries.ts`, and its component — the reference example for future features.
+  New `src/` directories added `@/features` and `@/routes` aliases across
+  `vite.config.ts`, `vitest.config.ts`, and `tsconfig.json`.
+- **i18n debt**: the `OK` / `down` / `…` status labels are hardcoded JSX
+  placeholders, consistent with the existing pre-T-010 scaffold strings in
+  `App.tsx`. They will be routed through i18next in T-010.
+- **Browser UI not visually verified**: `agent-browser` / Chrome are not
+  available in this execution environment. The `/healthz` request path was
+  verified end-to-end at the HTTP level through the Vite proxy (API up → 200
+  `{"status":"ok"}` → "OK"; API down → 502 → "down"), and both render branches
+  are covered by `HealthStatus.test.tsx`.
 
 ## References
 
