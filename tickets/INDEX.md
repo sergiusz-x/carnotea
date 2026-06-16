@@ -21,7 +21,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-015 — CI: GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
 - 🟢 [T-016 — Turborepo generators: scaffold new packages](./T-016-turbo-generators.md)
 - 🟡 [T-018 — Observability baseline: OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)
-- 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
 - 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
 - 🟡 [T-021 — API — Mileage readings + odometer sync rule](./T-021-api-mileage-readings-sync.md)
 - 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
@@ -65,7 +64,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-_Empty._
+- 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
 
 ## Blocked
 
