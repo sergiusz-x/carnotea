@@ -15,6 +15,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "catalog:",
     "@carnotea/db": "workspace:*",
     "@carnotea/shared": "workspace:*",
     "@nestjs/common": "catalog:",
