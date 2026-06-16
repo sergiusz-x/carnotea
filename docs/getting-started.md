@@ -119,7 +119,20 @@ agent-browser snapshot -i                 # list interactive elements
 agent-browser chat                        # natural-language control
 ```
 
-## 8. Committing changes
+## 8. Adding UI components (shadcn/ui)
+
+shadcn/ui components are copied into `apps/web/src/components/ui/` rather than
+installed as a package. To add a new one:
+
+```bash
+cd apps/web
+pnpm dlx shadcn@latest add <component-name>   # e.g. input, dialog, select
+```
+
+The CLI reads `apps/web/components.json` for paths and configuration. See
+`apps/web/AGENTS.md` for the component location conventions.
+
+## 9. Committing changes
 
 Instead of staging and committing manually, use `/smart-commit` (Claude Code)
 or the `smart-commit` Codex skill. It will:
@@ -133,7 +146,7 @@ or the `smart-commit` Codex skill. It will:
 
 To then push and open a PR, run `/ship-pr`.
 
-## 9. Where to look next
+## 10. Where to look next
 
 - **Architecture overview**: [`docs/architecture.md`](./architecture.md)
 - **Conventions**: [`docs/conventions.md`](./conventions.md)

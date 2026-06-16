@@ -50,22 +50,23 @@ live in the linked documents.
 
 ## Frontend (apps/web)
 
-| Tool                    | Purpose                           | Notes                                          |
-| ----------------------- | --------------------------------- | ---------------------------------------------- |
-| @carnotea/web           | The web app                       | `apps/web/`; see `apps/web/AGENTS.md`          |
-| React 19                | UI framework                      | [ADR-0005](./adr/0005-vite-react-no-nextjs.md) |
-| Vite                    | Build + dev server                | `apps/web/vite.config.ts`; dev on `5173`       |
-| @vitejs/plugin-react    | React fast refresh / JSX for Vite | dev dependency of `apps/web`                   |
-| Testing Library + jsdom | Component tests under Vitest      | `@testing-library/react`, jsdom environment    |
-| TanStack Router         | Routing                           | file-based or code-based, TBD in T-009         |
-| TanStack Query          | Server-state caching              |                                                |
-| Tailwind CSS            | Utility CSS                       |                                                |
-| shadcn/ui               | Copy-paste accessible components  |                                                |
-| react-hook-form         | Forms                             |                                                |
-| Zod                     | Form + API validation             | [ADR-0003](./adr/0003-rest-openapi-zod.md)     |
-| i18next + react-i18next | i18n                              | [ADR-0007](./adr/0007-i18n-pl-en.md)           |
-| Workbox                 | Service worker for PWA            | [ADR-0006](./adr/0006-pwa-from-day-one.md)     |
-| openapi-typescript      | Typed API client from `/docs`     | T-011                                          |
+| Tool                    | Purpose                           | Notes                                                              |
+| ----------------------- | --------------------------------- | ------------------------------------------------------------------ |
+| @carnotea/web           | The web app                       | `apps/web/`; see `apps/web/AGENTS.md`                              |
+| React 19                | UI framework                      | [ADR-0005](./adr/0005-vite-react-no-nextjs.md)                     |
+| Vite                    | Build + dev server                | `apps/web/vite.config.ts`; dev on `5173`                           |
+| @vitejs/plugin-react    | React fast refresh / JSX for Vite | dev dependency of `apps/web`                                       |
+| Testing Library + jsdom | Component tests under Vitest      | `@testing-library/react`, jsdom environment                        |
+| TanStack Router         | Routing                           | file-based or code-based, TBD in T-009                             |
+| TanStack Query          | Server-state caching              |                                                                    |
+| Tailwind CSS v4         | Utility CSS                       | via `@tailwindcss/vite` plugin; config in `src/styles/globals.css` |
+| shadcn/ui               | Copy-paste accessible components  | components in `src/components/ui/`; config in `components.json`    |
+| lucide-react            | Icons                             | bundled with shadcn/ui examples                                    |
+| react-hook-form         | Forms                             |                                                                    |
+| Zod                     | Form + API validation             | [ADR-0003](./adr/0003-rest-openapi-zod.md)                         |
+| i18next + react-i18next | i18n                              | [ADR-0007](./adr/0007-i18n-pl-en.md)                               |
+| Workbox                 | Service worker for PWA            | [ADR-0006](./adr/0006-pwa-from-day-one.md)                         |
+| openapi-typescript      | Typed API client from `/docs`     | T-011                                                              |
 
 ## Shared (packages/shared)
 

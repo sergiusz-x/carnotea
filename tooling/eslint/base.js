@@ -1,5 +1,5 @@
 import js from '@eslint/js';
-import importPlugin from 'eslint-plugin-import';
+import importPlugin from 'eslint-plugin-import-x';
 import tseslint from 'typescript-eslint';
 
 const ignoredPaths = [
@@ -39,7 +39,7 @@ export const base = tseslint.config(
   {
     files: sourceFiles,
     plugins: {
-      import: importPlugin,
+      'import-x': importPlugin,
     },
     rules: {
       '@typescript-eslint/consistent-type-imports': [
@@ -57,7 +57,7 @@ export const base = tseslint.config(
           varsIgnorePattern: '^_',
         },
       ],
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           alphabetize: {
@@ -66,6 +66,13 @@ export const base = tseslint.config(
           },
           groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
           'newlines-between': 'always',
+          pathGroups: [
+            {
+              pattern: '@/**',
+              group: 'internal',
+            },
+          ],
+          pathGroupsExcludedImportTypes: ['builtin'],
         },
       ],
     },

@@ -1,7 +1,11 @@
 {
   "extends": "@carnotea/tsconfig/react.json",
   "compilerOptions": {
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"]
+    }
   },
   "include": ["src", "vite.config.ts", "vitest.config.ts", "vitest.setup.ts"]
 }
