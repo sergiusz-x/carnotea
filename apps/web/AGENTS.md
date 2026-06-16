@@ -33,10 +33,10 @@ vitest.setup.ts     # registers @testing-library/jest-dom matchers
 
 ## Path aliases
 
-| Alias | Maps to |
-|-------|---------|
+| Alias          | Maps to          |
+| -------------- | ---------------- |
 | `@/components` | `src/components` |
-| `@/lib` | `src/lib` |
+| `@/lib`        | `src/lib`        |
 
 Configured in `vite.config.ts` (runtime), `vitest.config.ts` (tests), and `tsconfig.json` (type-checking). Only directories that exist are aliased — add a new alias in all three when you create its directory.
 
