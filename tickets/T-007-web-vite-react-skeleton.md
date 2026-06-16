@@ -97,7 +97,18 @@ PWA, and auth into it. This ticket delivers the smallest runnable React app.
   Refresh injected, and `main.tsx`/`App.tsx` transform without error. The
   rendered `CarNotea` heading is asserted by the jsdom test. A live in-browser
   HMR edit/reload was not visually confirmed.
+- **Vite 8 + api Oxc migration (done on merge to `main`):** the web app needs
+  `vite ^8` / `@vitejs/plugin-react@6`, which collided with `main`'s `vite ^7`
+  pin (kept only because `unplugin-swc` couldn't run on Vite 8). Resolved by
+  moving the catalog to `vite ^8.0.16` repo-wide and switching `apps/api`'s
+  Vitest from `unplugin-swc` to native Oxc (`oxc.decorator`), which emits the
+  decorator metadata NestJS DI needs — verified by resolving a by-type
+  constructor dependency through `Test.createTestingModule`. The api **build**
+  still uses SWC (`nest build`). Recorded in
+  [ADR-0011](../docs/adr/0011-vite8-oxc-api-test-transform.md).
 
 ## References
+
+- ADR: [ADR-0011](../docs/adr/0011-vite8-oxc-api-test-transform.md)
 
 - ADR: [ADR-0005](../docs/adr/0005-vite-react-no-nextjs.md)

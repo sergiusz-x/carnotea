@@ -66,18 +66,26 @@ See `packages/db/AGENTS.md` for the full schema-change workflow.
 
 ## 5. Run the apps
 
-Once `apps/api` and `apps/web` exist (their respective tickets are completed):
-
 ```bash
 pnpm dev          # runs all dev tasks in parallel via Turborepo
 # or, focused:
-pnpm --filter @carnotea/api dev
-pnpm --filter @carnotea/web dev
+pnpm --filter @carnotea/api dev    # NestJS API on API_PORT (default 3001)
+pnpm --filter @carnotea/web dev    # Vite dev server on http://localhost:5173
 ```
 
 `apps/web` is scaffolded (T-007): `pnpm --filter @carnotea/web dev` serves the
-landing page on http://localhost:5173. `apps/api` lands in a later ticket, so
-`pnpm dev` currently runs the web app only.
+landing page on http://localhost:5173.
+
+The API (`apps/api`) is live as of T-004. Health probes:
+
+```bash
+curl localhost:3001/healthz   # {"status":"ok"}
+curl localhost:3001/readyz    # {"status":"ok","db":"ok"} or 503
+```
+
+Note: workspace packages (`@carnotea/db`, `@carnotea/shared`) must be built
+before the API can run. `pnpm build` (or `pnpm --filter @carnotea/api build`)
+handles this automatically via Turborepo's `^build` dependency chain.
 
 ## 6. Working day-to-day
 

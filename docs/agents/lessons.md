@@ -73,3 +73,26 @@ it stranded in "In review" instead of "Done".
 **Rule:** During `ship-pr` (Phase 6 step 8), set `status: done`, `closed_at: <today>`,
 and move the ticket line to **Done** in `tickets/INDEX.md`. The PR itself is the
 review artifact — the ticket is done when the PR is opened.
+
+### 2026-06-15 — Validate env eagerly in main.ts, not only via ConfigModule
+
+**Context:** Implementing T-004 (NestJS API skeleton).
+**Mistake:** Relying solely on `ConfigModule.forRoot({ validate: validateEnv })` to
+abort startup on bad env. In NestJS 11, the validate function is called during
+module initialization but its thrown error does not prevent `app.listen()` from
+being called; the error is swallowed by the module lifecycle.
+**Rule:** Always add an eager call to `validateEnv(process.env)` at the very top
+of `main.ts` (before `NestFactory.create`). This guarantees process exit-1 with a
+clear human-readable message when required env vars are missing or invalid.
+
+### 2026-06-15 — Workspace packages must export compiled dist, not raw TS
+
+**Context:** Implementing T-004 — first runtime consumer of `@carnotea/db` and
+`@carnotea/shared`.
+**Mistake:** Both packages had `"exports": { ".": "./src/index.ts" }`. Node cannot
+load `.ts` files; the API crashed at startup with ERR_MODULE_NOT_FOUND for `.js`
+specifiers inside the packages.
+**Rule:** Any package consumed by a runtime Node.js app must compile to JS and
+export `dist/` with `types` + `import` conditions. Add `tsconfig.build.json` +
+`build` script to each package and update exports before the first runtime consumer
+is created. The Turborepo `build: dependsOn: ^build` pipeline handles ordering.
