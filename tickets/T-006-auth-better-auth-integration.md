@@ -1,14 +1,14 @@
 ---
 id: T-006
 title: Auth — better-auth integration + user-profile linkage
-status: in_progress
+status: done
 priority: high
 owner: claude
 dependencies: [T-002, T-004, T-005]
 labels: [auth, api, db]
 created_at: 2026-06-13
 updated_at: 2026-06-17
-closed_at: ~
+closed_at: 2026-06-17
 ---
 
 # T-006 — Auth: better-auth integration + user-profile linkage
