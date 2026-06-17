@@ -64,7 +64,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-- 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
+_Empty._
 
 ## Blocked
 
@@ -76,6 +76,7 @@ _Empty._
 
 ## Done
 
+- 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
 - 🟡 [T-008 — Web: Tailwind + shadcn/ui setup](./T-008-web-tailwind-shadcn.md)
 - 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)

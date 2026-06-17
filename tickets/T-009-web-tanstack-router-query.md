@@ -1,14 +1,14 @@
 ---
 id: T-009
 title: Web — TanStack Router + TanStack Query
-status: in_progress
+status: done
 priority: medium
 owner: Claude
 dependencies: [T-007]
 labels: [web, routing, data]
 created_at: 2026-06-13
-updated_at: 2026-06-16
-closed_at: ~
+updated_at: 2026-06-17
+closed_at: 2026-06-17
 ---
 
 # T-009 — Web: TanStack Router + TanStack Query
