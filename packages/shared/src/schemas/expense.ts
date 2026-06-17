@@ -23,7 +23,7 @@ const expenseFields = z.object({
   vehicleId: uuidField(),
   category: z.enum(EXPENSE_CATEGORY_CODES),
   expenseDate: dateField(),
-  amount: moneyField(),
+  amount: moneyField(10),
   description: z.string().nullish(),
   sourceType: z.enum(EXPENSE_SOURCE_TYPES),
   sourceId: uuidField().nullish(),

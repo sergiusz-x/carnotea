@@ -11,15 +11,19 @@ const partFields = z.object({
   name: z.string().min(1).max(160),
   manufacturer: z.string().max(120).nullish(),
   partNumber: z.string().max(80).nullish(),
-  defaultPrice: moneyField().default(0),
+  defaultPrice: moneyField(10),
   createdAt: timestampField(),
 });
 
 export const PartSchema = partFields;
 
-export const PartCreateSchema = partFields.omit({ id: true, createdAt: true });
+const partCreateFields = partFields.omit({ id: true, createdAt: true });
 
-export const PartUpdateSchema = PartCreateSchema.partial();
+export const PartCreateSchema = partCreateFields.extend({
+  defaultPrice: moneyField(10).default(0),
+});
+
+export const PartUpdateSchema = partCreateFields.partial();
 
 export type Part = z.infer<typeof PartSchema>;
 export type PartCreate = z.infer<typeof PartCreateSchema>;

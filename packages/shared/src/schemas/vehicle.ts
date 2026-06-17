@@ -32,11 +32,20 @@ const vehicleFields = z.object({
 
 export const VehicleSchema = vehicleFields;
 
-export const VehicleCreateSchema = vehicleFields
-  .omit({ id: true, currentMileage: true, createdAt: true, updatedAt: true })
-  .extend({ currencyCode: currencyCodeField().default('EUR') });
+const vehicleCreateFields = vehicleFields.omit({
+  id: true,
+  currentMileage: true,
+  createdAt: true,
+  updatedAt: true,
+});
 
-export const VehicleUpdateSchema = VehicleCreateSchema.partial();
+export const VehicleCreateSchema = vehicleCreateFields.extend({
+  currencyCode: currencyCodeField().default('EUR'),
+});
+
+// Update derives from the default-free createable shape so an omitted field is
+// left untouched (PATCH semantics) rather than reset to its create-time default.
+export const VehicleUpdateSchema = vehicleCreateFields.partial();
 
 export type Vehicle = z.infer<typeof VehicleSchema>;
 export type VehicleCreate = z.infer<typeof VehicleCreateSchema>;

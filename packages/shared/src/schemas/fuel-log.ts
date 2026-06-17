@@ -18,24 +18,28 @@ const fuelLogFields = z.object({
   vehicleId: uuidField(),
   fuelDate: dateField(),
   mileage: mileageField(),
-  liters: positiveDecimalField(),
-  pricePerLiter: positiveDecimalField(),
-  totalCost: moneyField(),
+  liters: positiveDecimalField(8),
+  pricePerLiter: positiveDecimalField(8),
+  totalCost: moneyField(10),
   stationName: z.string().max(120).nullish(),
-  isFullTank: z.boolean().default(true),
+  isFullTank: z.boolean(),
   createdAt: timestampField(),
 });
 
 export const FuelLogSchema = fuelLogFields;
 
-export const FuelLogCreateSchema = fuelLogFields.omit({
+const fuelLogCreateFields = fuelLogFields.omit({
   id: true,
   vehicleId: true,
   totalCost: true,
   createdAt: true,
 });
 
-export const FuelLogUpdateSchema = FuelLogCreateSchema.partial();
+export const FuelLogCreateSchema = fuelLogCreateFields.extend({
+  isFullTank: z.boolean().default(true),
+});
+
+export const FuelLogUpdateSchema = fuelLogCreateFields.partial();
 
 export type FuelLog = z.infer<typeof FuelLogSchema>;
 export type FuelLogCreate = z.infer<typeof FuelLogCreateSchema>;

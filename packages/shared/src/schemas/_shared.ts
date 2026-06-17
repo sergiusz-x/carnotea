@@ -16,17 +16,24 @@ export const dateField = () => z.iso.date();
 export const timestampField = () => z.iso.datetime({ offset: true });
 
 /**
- * `numeric(p, s)` columns are read back from Postgres as strings, so decimal
- * fields accept both stringified and real numbers via coercion. This is the one
- * decimal convention applied everywhere (ticket T-019 implementation note).
+ * The largest value a `numeric(precision, 2)` column can hold, e.g.
+ * `numeric(8, 2)` → `999999.99`, `numeric(10, 2)` → `99999999.99`.
  */
-export const decimalField = () => z.coerce.number();
+const decimalMax = (precision: number) => 10 ** (precision - 2) - 0.01;
 
-/** A non-negative money amount stored in a `numeric` column. */
-export const moneyField = () => decimalField().nonnegative();
+/**
+ * `numeric(precision, 2)` columns are read back from Postgres as strings, so
+ * decimal fields accept both stringified and real numbers via coercion (the one
+ * decimal convention applied everywhere — ticket T-019 implementation note) and
+ * are bounded to the column's precision. Defaults to `numeric(10, 2)`.
+ */
+export const decimalField = (precision = 10) => z.coerce.number().max(decimalMax(precision));
 
-/** A strictly positive `numeric` quantity (liters, kWh, part quantity). */
-export const positiveDecimalField = () => decimalField().positive();
+/** A non-negative money amount stored in a `numeric(precision, 2)` column. */
+export const moneyField = (precision = 10) => decimalField(precision).nonnegative();
+
+/** A strictly positive `numeric(precision, 2)` quantity (liters, kWh, parts). */
+export const positiveDecimalField = (precision = 10) => decimalField(precision).positive();
 
 /** `integer` mileage / odometer columns are constrained to `>= 0` in the DB. */
 export const mileageField = () => z.number().int().nonnegative();

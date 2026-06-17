@@ -14,8 +14,8 @@ const serviceRecordFields = z.object({
   mileage: mileageField(),
   title: z.string().min(1).max(160),
   description: z.string().nullish(),
-  laborCost: moneyField().default(0),
-  totalCost: moneyField(),
+  laborCost: moneyField(10),
+  totalCost: moneyField(10),
   workshopName: z.string().max(160).nullish(),
   createdAt: timestampField(),
   updatedAt: timestampField(),
@@ -23,7 +23,7 @@ const serviceRecordFields = z.object({
 
 export const ServiceRecordSchema = serviceRecordFields;
 
-export const ServiceRecordCreateSchema = serviceRecordFields.omit({
+const serviceRecordCreateFields = serviceRecordFields.omit({
   id: true,
   vehicleId: true,
   totalCost: true,
@@ -31,7 +31,11 @@ export const ServiceRecordCreateSchema = serviceRecordFields.omit({
   updatedAt: true,
 });
 
-export const ServiceRecordUpdateSchema = ServiceRecordCreateSchema.partial();
+export const ServiceRecordCreateSchema = serviceRecordCreateFields.extend({
+  laborCost: moneyField(10).default(0),
+});
+
+export const ServiceRecordUpdateSchema = serviceRecordCreateFields.partial();
 
 export type ServiceRecord = z.infer<typeof ServiceRecordSchema>;
 export type ServiceRecordCreate = z.infer<typeof ServiceRecordCreateSchema>;

@@ -23,14 +23,14 @@ const chargingSessionFields = z.object({
   vehicleId: uuidField(),
   chargeDate: dateField(),
   mileage: mileageField(),
-  energyKwh: positiveDecimalField(),
-  pricePerKwh: positiveDecimalField(),
-  totalCost: moneyField(),
+  energyKwh: positiveDecimalField(8),
+  pricePerKwh: positiveDecimalField(8),
+  totalCost: moneyField(10),
   chargerType: z.enum(CHARGER_TYPE_CODES),
   socStartPercent: socPercentField().nullish(),
   socEndPercent: socPercentField().nullish(),
   stationName: z.string().max(120).nullish(),
-  isFullCharge: z.boolean().default(true),
+  isFullCharge: z.boolean(),
   createdAt: timestampField(),
 });
 
@@ -56,11 +56,11 @@ const chargingSessionCreateFields = chargingSessionFields.omit({
   createdAt: true,
 });
 
-export const ChargingSessionCreateSchema = chargingSessionCreateFields.refine(
-  socOrderRefine,
-  socOrderError,
-);
+export const ChargingSessionCreateSchema = chargingSessionCreateFields
+  .extend({ isFullCharge: z.boolean().default(true) })
+  .refine(socOrderRefine, socOrderError);
 
+// Update derives from the default-free createable shape (no isFullCharge reset).
 export const ChargingSessionUpdateSchema = chargingSessionCreateFields
   .partial()
   .refine(socOrderRefine, socOrderError);

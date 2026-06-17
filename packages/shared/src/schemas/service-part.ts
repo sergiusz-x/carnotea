@@ -11,20 +11,24 @@ const servicePartFields = z.object({
   id: uuidField(),
   serviceRecordId: uuidField(),
   partId: uuidField(),
-  quantity: positiveDecimalField().default(1),
-  unitPrice: moneyField(),
-  totalPrice: moneyField(),
+  quantity: positiveDecimalField(10),
+  unitPrice: moneyField(10),
+  totalPrice: moneyField(10),
 });
 
 export const ServicePartSchema = servicePartFields;
 
-export const ServicePartCreateSchema = servicePartFields.omit({
+const servicePartCreateFields = servicePartFields.omit({
   id: true,
   serviceRecordId: true,
   totalPrice: true,
 });
 
-export const ServicePartUpdateSchema = ServicePartCreateSchema.partial();
+export const ServicePartCreateSchema = servicePartCreateFields.extend({
+  quantity: positiveDecimalField(10).default(1),
+});
+
+export const ServicePartUpdateSchema = servicePartCreateFields.partial();
 
 export type ServicePart = z.infer<typeof ServicePartSchema>;
 export type ServicePartCreate = z.infer<typeof ServicePartCreateSchema>;
