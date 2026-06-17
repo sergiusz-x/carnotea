@@ -1,13 +1,14 @@
 ---
 id: T-019
 title: Shared — canonical domain Zod schemas + inferred types
-status: in_progress
+status: done
 priority: high
 owner: claude
 dependencies: [T-003]
 labels: [shared, domain]
 created_at: 2026-06-15
-updated_at: 2026-06-16
+updated_at: 2026-06-17
+closed_at: 2026-06-17
 closed_at: ~
 ---
 
