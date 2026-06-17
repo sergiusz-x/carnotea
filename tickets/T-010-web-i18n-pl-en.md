@@ -1,14 +1,14 @@
 ---
 id: T-010
 title: Web — i18n (pl + en) with i18next
-status: in_progress
+status: done
 priority: medium
 owner: claude
 dependencies: [T-007]
 labels: [web, i18n]
 created_at: 2026-06-13
 updated_at: 2026-06-17
-closed_at: ~
+closed_at: 2026-06-17
 ---
 
 # T-010 — Web: i18n (pl + en) with i18next
