@@ -14,7 +14,8 @@
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "zod": "catalog:"
@@ -23,9 +24,12 @@
     "@carnotea/eslint-config": "workspace:*",
     "@carnotea/prettier-config": "workspace:*",
     "@carnotea/tsconfig": "workspace:*",
+    "@carnotea/vitest-config": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
   },
   "prettier": "@carnotea/prettier-config"
 }

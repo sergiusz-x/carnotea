@@ -13,6 +13,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 - 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
 - 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
+- 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
 - 🟡 [T-011 — Web: typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 - 🟡 [T-012 — Web: PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
 - 🟢 [T-013 — Tooling: Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
@@ -20,7 +21,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-015 — CI: GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
 - 🟢 [T-016 — Turborepo generators: scaffold new packages](./T-016-turbo-generators.md)
 - 🟡 [T-018 — Observability baseline: OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)
-- 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
 - 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
 - 🟡 [T-021 — API — Mileage readings + odometer sync rule](./T-021-api-mileage-readings-sync.md)
 - 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
@@ -77,6 +77,9 @@ _Empty._
 ## Done
 
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
+- 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
+- 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
+- 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
 - 🟡 [T-008 — Web: Tailwind + shadcn/ui setup](./T-008-web-tailwind-shadcn.md)
 - 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)

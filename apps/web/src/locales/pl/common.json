@@ -1,0 +1,12 @@
+{
+  "appName": "CarNotea",
+  "language": {
+    "label": "Język",
+    "english": "English",
+    "polish": "Polski"
+  },
+  "theme": {
+    "toLight": "Przełącz na tryb jasny",
+    "toDark": "Przełącz na tryb ciemny"
+  }
+}
