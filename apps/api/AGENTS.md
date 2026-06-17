@@ -84,6 +84,30 @@ curl localhost:3001/openapi.json   # OpenAPI 3.1 document
 curl localhost:3001/docs           # Swagger UI
 ```
 
+## Auth (better-auth, T-006)
+
+better-auth (ADR-0004) owns email/password auth. It is mounted and consumed like
+this:
+
+- **Handler:** `AuthModule` mounts better-auth's web handler at `/api/auth/*` on
+  the underlying Fastify instance (an encapsulated plugin with a raw-body parser,
+  so the rest of the API keeps default JSON parsing). The instance is built by
+  `createAuth(db, { secret, baseURL })` in `src/auth/auth.ts` and provided under
+  the `AUTH` token.
+- **Protected routes:** every route under `/api/*` except `/api/auth/*` requires
+  an authenticated session. Enforce it with `@UseGuards(AuthGuard)` —
+  `AuthGuard` reads the session via better-auth and populates a typed
+  `request.user` (`{ id, email }`), or throws `401`. Read it in a handler with
+  the `@CurrentUser()` decorator.
+- **Identity = ownership id.** `vehicle_diary.users.id` IS the better-auth user id
+  (same UUID — see `packages/db/AGENTS.md`), so `request.user.id` is the value to
+  scope queries by; no profile lookup is needed to get the owner id.
+- **Profile creation:** a better-auth `databaseHooks.user.create.after` hook
+  mirrors each new auth user into the domain `users` row (idempotent). `GET /me`
+  returns that profile.
+- **Env:** `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` are required (see
+  `src/config/env.ts` and root `.env.example`).
+
 ## Rules
 
 - **ESM only.** Relative imports use explicit `.js` extensions (the package is
@@ -102,5 +126,5 @@ curl localhost:3001/docs           # Swagger UI
 
 ## Out of scope here (own tickets)
 
-- Authentication — T-006.
+- OAuth providers, 2FA, passkeys, password reset — follow-ups to T-006.
 - Docker image for the API — T-014.

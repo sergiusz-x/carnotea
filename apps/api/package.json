@@ -22,6 +22,7 @@
     "@nestjs/config": "catalog:",
     "@nestjs/core": "catalog:",
     "@nestjs/platform-fastify": "catalog:",
+    "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "fastify": "catalog:",
     "nestjs-pino": "catalog:",
