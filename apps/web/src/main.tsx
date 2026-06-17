@@ -7,6 +7,7 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { queryClient } from '@/lib/queryClient';
 import { router } from '@/lib/router';
 
+import './i18n';
 import './styles/globals.css';
 
 const rootElement = document.getElementById('root');
