@@ -64,7 +64,7 @@ live in the linked documents.
 | lucide-react            | Icons                             | bundled with shadcn/ui examples                                    |
 | react-hook-form         | Forms                             |                                                                    |
 | Zod                     | Form + API validation             | [ADR-0003](./adr/0003-rest-openapi-zod.md)                         |
-| i18next + react-i18next | i18n                              | [ADR-0007](./adr/0007-i18n-pl-en.md)                               |
+| i18next + react-i18next | i18n (pl + en)                    | browser-languagedetector persists choice to `localStorage`; [ADR-0007](./adr/0007-i18n-pl-en.md) |
 | Workbox                 | Service worker for PWA            | [ADR-0006](./adr/0006-pwa-from-day-one.md)                         |
 | openapi-typescript      | Typed API client from `/docs`     | T-011                                                              |
 
