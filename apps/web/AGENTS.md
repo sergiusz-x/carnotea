@@ -65,9 +65,11 @@ glance.
   exports the route(s), co-located with that feature's `queries.ts` and
   components. Register them in `src/lib/router.ts`.
 - The root route is created with `createRootRouteWithContext<RouterContext>()`
-  so `queryClient` is available to loaders via `context`. Prefetch with a route
-  `loader` (`context.queryClient.ensureQueryData(...)`) and read with `useQuery`
-  in the component — see `src/features/health/`.
+  so `queryClient` is available to loaders via `context`. Warm the cache from a
+  route `loader` with `context.queryClient.prefetchQuery(...)` (non-throwing, so
+  a failed request still renders the component) and read with `useQuery` in the
+  component, which owns the loading/error/success UI — see
+  `src/features/health/`.
 
 ## Data / state (TanStack Query)
 

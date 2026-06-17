@@ -20,7 +20,7 @@ const QueryDevtools = import.meta.env.PROD
 
 export function Devtools() {
   return (
-    <Suspense>
+    <Suspense fallback={null}>
       <RouterDevtools />
       <QueryDevtools />
     </Suspense>

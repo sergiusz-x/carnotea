@@ -76,9 +76,11 @@ working example that future tickets will mimic.
   `VITE_API_URL`/env module was added here (would be speculative).
 - **Router + Query are integrated**: the root route is created with
   `createRootRouteWithContext` so `queryClient` is on the router context; the
-  `/healthz` route prefetches via a `loader`
-  (`context.queryClient.ensureQueryData`) and the component reads with
-  `useQuery`. This is the canonical pattern future feature routes mimic.
+  `/healthz` route warms the cache in a `loader` via
+  `context.queryClient.prefetchQuery` (non-throwing — a failed request leaves the
+  query in an error state rather than tripping the router error boundary), and
+  the component reads with `useQuery` and renders the loading / "down" / "OK"
+  states. This is the canonical pattern future feature routes mimic.
 - **Feature-folder convention seeded**: `src/features/health/` owns `routes.ts`,
   `queries.ts`, and its component — the reference example for future features.
   New `src/` directories added `@/features` and `@/routes` aliases across
@@ -89,8 +91,21 @@ working example that future tickets will mimic.
 - **Browser UI not visually verified**: `agent-browser` / Chrome are not
   available in this execution environment. The `/healthz` request path was
   verified end-to-end at the HTTP level through the Vite proxy (API up → 200
-  `{"status":"ok"}` → "OK"; API down → 502 → "down"), and both render branches
-  are covered by `HealthStatus.test.tsx`.
+  `{"status":"ok"}`; API down → proxy 502). The rendered states are covered by
+  tests instead: `HealthStatus.test.tsx` asserts the component renders "OK" and
+  "down" (a 503 example), and `routes.test.ts` asserts the route `loader`
+  resolves without throwing on a down API and leaves the query in an error state
+  (so the component renders "down" through the real route, not the router error
+  boundary).
+
+- **Out-of-scope security fix (requested on this branch)**: Dependabot flagged
+  vulnerable `esbuild` (GHSA-gv7w-rqvm-qjhr high, GHSA-67mh-4wv8-2f99 moderate)
+  pulled transitively by `drizzle-kit` in `packages/db` (a dev-only `esbuild@0.18.20`
+  via the deprecated `@esbuild-kit/*` loader, plus `esbuild@0.25.12`). Vite 8 and
+  tsx already resolve the patched `esbuild@0.28.1`. Fixed repo-wide with a pnpm
+  override `"esbuild@<0.28.1": "^0.28.1"` in the root `package.json` (pnpm 9 reads
+  overrides from `package.json`, not `pnpm-workspace.yaml`). Not part of the
+  TanStack work; called out here for traceability.
 
 ## References
 
