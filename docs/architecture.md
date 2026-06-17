@@ -73,10 +73,19 @@ See [ADR-0003](./adr/0003-rest-openapi-zod.md).
 
 ### 3. Auth lives in better-auth, not in our code
 
-better-auth owns its own tables for sessions, accounts, verifications, and the
-auth-level user. Our domain `users` table acts as a profile that is linked to the
-auth user by id. The API integrates better-auth as middleware; the web client
-talks to better-auth's endpoints for sign-in / sign-up / sign-out.
+better-auth owns its own tables (`auth_user`, `auth_session`, `auth_account`,
+`auth_verification`) for sessions, accounts, verifications, and the auth-level
+user. Our domain `users` table acts as a profile.
+
+**Linkage (decided in T-006):** the domain `users.id` IS the better-auth user id
+— better-auth is configured to generate UUIDs and a post-signup hook creates the
+matching `users` profile row with the same id. So the authenticated user id from
+a session is also the ownership key for `vehicles` and every child entity, with
+no indirection.
+
+The API mounts better-auth's handler at `/api/auth/*`; an `AuthGuard` exposes a
+typed `request.user` to controllers and returns 401 when unauthenticated. The web
+client talks to better-auth's endpoints for sign-in / sign-up / sign-out.
 
 See [ADR-0004](./adr/0004-better-auth.md).
 
