@@ -24,6 +24,22 @@ pnpm --filter @carnotea/db drizzle-kit generate --custom --name=<slug>
 # Then fill in the empty migrations/<next>_<slug>.sql that was created
 ```
 
+## Auth tables + user linkage (T-006)
+
+better-auth (ADR-0004) owns four tables defined in `src/schema/auth.ts`:
+`auth_user`, `auth_session`, `auth_account`, `auth_verification`. They live in the
+same `public` schema as the domain tables (the codebase keeps everything in
+`public`; the `auth_` prefix namespaces them) and use `text` primary keys because
+better-auth generates ids in application code.
+
+**Linkage strategy (a): `users.id` IS the better-auth user id.** better-auth is
+configured to emit UUIDs (`advanced.database.generateId: 'uuid'`), and a
+post-signup hook inserts the domain `users` profile row with that same id. There
+is no foreign key between `auth_user` and `users` — the link is the shared id
+value. This was chosen over a separate `auth_user_id` FK so that the auth-context
+user id can be used directly as the ownership id (`vehicles.user_id`, etc.) with
+no extra lookup. The signup hook and id config live in `apps/api/src/auth/`.
+
 ## current_mileage on vehicles
 
 The `current_mileage` column on `vehicles` is denormalised for display
