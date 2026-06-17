@@ -1,6 +1,7 @@
 import 'i18next';
 
 import type common from '../locales/en/common.json';
+import type health from '../locales/en/health.json';
 import type landing from '../locales/en/landing.json';
 
 // Make `t()` keys type-safe and namespace-aware. English is the source of truth
@@ -10,6 +11,7 @@ declare module 'i18next' {
     defaultNS: 'common';
     resources: {
       common: typeof common;
+      health: typeof health;
       landing: typeof landing;
     };
   }

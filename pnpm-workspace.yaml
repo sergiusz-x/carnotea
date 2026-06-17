@@ -41,6 +41,11 @@ catalog:
   clsx: ^2.1.1
   tailwind-merge: ^3.6.0
   class-variance-authority: ^0.7.1
+  # Web routing + server-state (TanStack)
+  '@tanstack/react-query': ^5.101.0
+  '@tanstack/react-query-devtools': ^5.101.0
+  '@tanstack/react-router': ^1.170.15
+  '@tanstack/react-router-devtools': ^1.167.0
   # Testing
   vitest: ^4.1.8
   jsdom: ^29.1.1
