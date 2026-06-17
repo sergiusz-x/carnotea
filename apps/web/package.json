@@ -16,9 +16,12 @@
   "dependencies": {
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
+    "i18next": "catalog:",
+    "i18next-browser-languagedetector": "catalog:",
     "lucide-react": "catalog:",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
+    "react-i18next": "catalog:",
     "tailwind-merge": "catalog:"
   },
   "devDependencies": {
