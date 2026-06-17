@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { VehicleCreateSchema, VehicleSchema } from './vehicle.js';
+import { VehicleCreateSchema, VehicleSchema, VehicleUpdateSchema } from './vehicle.js';
 
 describe('VehicleSchema', () => {
   it('accepts a valid vehicle read row', () => {
@@ -56,5 +56,9 @@ describe('VehicleSchema', () => {
         vin: 'TOOSHORT',
       }),
     ).toThrow();
+  });
+
+  it('does not inject the currency default on an empty update (PATCH semantics)', () => {
+    expect(VehicleUpdateSchema.parse({})).toEqual({});
   });
 });

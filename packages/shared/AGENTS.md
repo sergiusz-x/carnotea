@@ -33,18 +33,24 @@ Domain schemas mirror `packages/db/src/schema/<entity>.ts` as the **API
 contract** (what crosses the wire), one module per entity:
 
 - Each module exports a base/read schema (`XxxSchema`) plus `XxxCreateSchema`
-  and `XxxUpdateSchema`. `Update` is the createable shape `.partial()`.
+  and `XxxUpdateSchema`. `Update` is the default-free createable shape
+  `.partial()`.
 - `Create` omits server-owned fields: `id`, `createdAt`, `updatedAt`,
   `userId`/`vehicleId` (these come from the route + auth context), and any
   DB-computed value (`totalCost`, `totalPrice`, `currentMileage`,
   `notifiedAt`, sync-managed `sourceType`/`sourceId`).
+- Column defaults (`currencyCode`, `isFullTank`, `laborCost`, `defaultPrice`,
+  `quantity`, …) live **only** in `Create` via `.extend()`. Derive `Update`
+  from the default-free createable shape, never from `Create`, so an omitted
+  field is left untouched (PATCH) rather than reset to its create-time default.
 - Lookup/enum fields use the `constants/*` code lists via `z.enum` and expose
   the **code** (`fuelType`, `chargerType`, `status`, `priority`, `category`),
   not the numeric FK id the DB stores. The API maps code ↔ id.
-- `numeric` columns are read back from Postgres as strings, so decimal fields
-  use `z.coerce.number()` (`decimalField`/`moneyField`/`positiveDecimalField`
-  in `_shared.ts`) — the one decimal convention everywhere. `integer` columns
-  stay `z.number().int()`.
+- `numeric(precision, 2)` columns are read back from Postgres as strings, so
+  decimal fields use `z.coerce.number()` bounded to the column precision
+  (`decimalField`/`moneyField`/`positiveDecimalField` in `_shared.ts`, which
+  take the precision — `8` or `10`) — the one decimal convention everywhere.
+  `integer` columns stay `z.number().int()`.
 - `date` columns → `z.iso.date()`; `timestamp` columns → `z.iso.datetime()`.
 - Bounds and check constraints are mirrored (mileage `>= 0`, SoC `0..100`,
   currency = 3 chars, `socStart < socEnd`, `resolvedDate >= reportedDate`,

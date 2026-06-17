@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ChargingSessionCreateSchema } from './charging-session.js';
+import { ChargingSessionCreateSchema, ChargingSessionUpdateSchema } from './charging-session.js';
 
 describe('ChargingSessionCreateSchema', () => {
   it('accepts a valid session with SoC start < end', () => {
@@ -42,5 +42,9 @@ describe('ChargingSessionCreateSchema', () => {
         socEndPercent: 80,
       }),
     ).toThrow();
+  });
+
+  it('does not inject the isFullCharge default on an empty update', () => {
+    expect(ChargingSessionUpdateSchema.parse({})).toEqual({});
   });
 });

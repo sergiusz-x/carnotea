@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ServicePartCreateSchema } from './service-part.js';
+import { ServicePartCreateSchema, ServicePartUpdateSchema } from './service-part.js';
 
 describe('ServicePartCreateSchema', () => {
   it('accepts a valid line and defaults quantity to 1', () => {
@@ -20,5 +20,9 @@ describe('ServicePartCreateSchema', () => {
         quantity: 0,
       }),
     ).toThrow();
+  });
+
+  it('does not inject the quantity default on an empty update', () => {
+    expect(ServicePartUpdateSchema.parse({})).toEqual({});
   });
 });

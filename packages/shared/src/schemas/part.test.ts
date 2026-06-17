@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { PartCreateSchema } from './part.js';
+import { PartCreateSchema, PartUpdateSchema } from './part.js';
 
 describe('PartCreateSchema', () => {
   it('accepts a valid part and defaults price to 0', () => {
@@ -10,5 +10,9 @@ describe('PartCreateSchema', () => {
 
   it('rejects a negative default price', () => {
     expect(() => PartCreateSchema.parse({ name: 'Oil filter', defaultPrice: -5 })).toThrow();
+  });
+
+  it('does not inject the defaultPrice default on an empty update', () => {
+    expect(PartUpdateSchema.parse({})).toEqual({});
   });
 });

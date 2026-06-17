@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { ServiceRecordCreateSchema } from './service-record.js';
+import { ServiceRecordCreateSchema, ServiceRecordUpdateSchema } from './service-record.js';
 
 describe('ServiceRecordCreateSchema', () => {
   it('accepts a valid record and defaults labor cost to 0', () => {
@@ -17,5 +17,9 @@ describe('ServiceRecordCreateSchema', () => {
     expect(() =>
       ServiceRecordCreateSchema.parse({ serviceDate: '2026-05-01', mileage: 90000, title: '' }),
     ).toThrow();
+  });
+
+  it('does not inject the laborCost default on an empty update', () => {
+    expect(ServiceRecordUpdateSchema.parse({})).toEqual({});
   });
 });
