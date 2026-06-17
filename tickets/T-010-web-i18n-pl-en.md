@@ -1,13 +1,13 @@
 ---
 id: T-010
 title: Web — i18n (pl + en) with i18next
-status: ready
+status: in_progress
 priority: medium
-owner: ~
+owner: claude
 dependencies: [T-007]
 labels: [web, i18n]
 created_at: 2026-06-13
-updated_at: 2026-06-13
+updated_at: 2026-06-17
 closed_at: ~
 ---
 
@@ -27,19 +27,19 @@ that commitment so every future feature ticket inherits the convention.
 
 ## Acceptance criteria
 
-- [ ] `i18next` + `react-i18next` + `i18next-browser-languagedetector`
+- [x] `i18next` + `react-i18next` + `i18next-browser-languagedetector`
       installed in `apps/web`.
-- [ ] Translation files live under `apps/web/src/locales/<lang>/<namespace>.json`.
+- [x] Translation files live under `apps/web/src/locales/<lang>/<namespace>.json`.
       Initial namespaces: `common`, `landing`. Both `pl` and `en` exist.
-- [ ] `useTranslation()` works in any component; the landing page uses it.
-- [ ] A simple language switcher in the header lets the user pick `pl` or
+- [x] `useTranslation()` works in any component; the landing page uses it.
+- [x] A simple language switcher in the header lets the user pick `pl` or
       `en`. The choice is persisted in `localStorage`.
-- [ ] Date and number formatting in the example route uses
+- [x] Date and number formatting in the example route uses
       `Intl.DateTimeFormat` / `Intl.NumberFormat` with the active locale.
-- [ ] A lint rule (or a CI check) flags any string literal that looks like
+- [x] A lint rule (or a CI check) flags any string literal that looks like
       user-visible text but is not wrapped in `t(...)`. (If lint can't catch it
       cheaply, document the convention in `apps/web/AGENTS.md` and move on.)
-- [ ] `apps/web/AGENTS.md` documents the namespace conventions:
+- [x] `apps/web/AGENTS.md` documents the namespace conventions:
       `common` for shared strings, one namespace per feature folder.
 
 ## Files to touch
@@ -64,6 +64,31 @@ that commitment so every future feature ticket inherits the convention.
 - The "did you forget to translate" check is easiest as an ESLint rule
   combined with a one-line wrapper component for raw text. Pick the cheap
   option.
+
+## Notes
+
+- **Resources are bundled, not lazy-loaded.** The four locale JSON files are
+  imported into `src/i18n/index.ts` so `i18next.init` resolves synchronously and
+  no async backend / Suspense boundary is needed. `react: { useSuspense: false }`
+  keeps render (and tests) synchronous.
+- **Type-safe keys.** `src/i18n/i18next.d.ts` augments `CustomTypeOptions` from
+  the `en` resources, so `t()` autocompletes keys and a typo or a key missing
+  from `en` is a compile error.
+- **JSON is nested, not flat-dotted.** Keys are nested objects addressed by
+  i18next's default `.` separator (`preview.today`), since flat `"a.b"` keys
+  would collide with that separator.
+- **"Example route" = the landing page.** TanStack Router (T-009) is not merged
+  yet, so the `Intl` date/number demo lives on the landing card via the
+  `src/lib/format.ts` helpers keyed to `i18n.resolvedLanguage`.
+- **Lint guard.** `react/jsx-no-literals` (built into the already-installed
+  `eslint-plugin-react`, no new dep) is enabled for `src/**/*.tsx` (tests
+  exempt) — verified it errors on an untranslated JSX literal.
+- **UI not visually verified:** `agent-browser`/Chrome is unavailable in this
+  environment. Behaviour is covered by tests: `App.test.tsx` (translated copy +
+  switcher present), `LanguageSwitcher.test.tsx` (language change + localStorage
+  persistence), `format.test.ts` (locale-specific Intl output).
+- **Pre-existing, untouched:** `src/styles/globals.css` fails `prettier --check`
+  on `main`; left as-is per minimal blast radius.
 
 ## References
 
