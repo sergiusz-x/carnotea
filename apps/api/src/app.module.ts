@@ -2,11 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 
+import { AuthModule } from './auth/auth.module.js';
 import { validateEnv } from './config/env.js';
 import { DbModule } from './db/db.module.js';
 import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
 import { OpenApiModule } from './lib/openapi/index.js';
+import { MeController } from './users/me.controller.js';
 
 @Module({
   imports: [
@@ -21,7 +23,8 @@ import { OpenApiModule } from './lib/openapi/index.js';
     }),
     DbModule,
     OpenApiModule,
+    AuthModule,
   ],
-  controllers: [HealthController, ReadinessController],
+  controllers: [HealthController, ReadinessController, MeController],
 })
 export class AppModule {}
