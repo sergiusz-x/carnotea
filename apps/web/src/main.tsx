@@ -4,6 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { ThemeProvider } from '@/components/ThemeProvider';
 
 import { App } from './App';
+import './i18n';
 import './styles/globals.css';
 
 const rootElement = document.getElementById('root');
