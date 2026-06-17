@@ -9,11 +9,16 @@ export default defineConfig({
   resolve: {
     alias: {
       '@/components': resolve(import.meta.dirname, 'src/components'),
+      '@/features': resolve(import.meta.dirname, 'src/features'),
       '@/lib': resolve(import.meta.dirname, 'src/lib'),
+      '@/routes': resolve(import.meta.dirname, 'src/routes'),
     },
   },
   server: {
     port: 5173,
     strictPort: true,
+    proxy: {
+      '/healthz': 'http://localhost:3001',
+    },
   },
 });
