@@ -66,6 +66,8 @@ catalog:
   rxjs: ^7.8.2
   '@swc/cli': ^0.8.1
   '@swc/core': ^1.15.41
+  # Auth (apps/api) — better-auth, ADR-0004
+  better-auth: ^1.6.19
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.
