@@ -1,0 +1,26 @@
+{
+  "errors": {
+    "required": "To pole jest wymagane",
+    "invalid": "Nieprawidłowa wartość",
+    "string": {
+      "min": "Musi mieć co najmniej {{min}} znaki",
+      "max": "Może mieć co najwyżej {{max}} znaków"
+    },
+    "number": {
+      "min": "Musi wynosić co najmniej {{min}}",
+      "max": "Musi wynosić co najwyżej {{max}}"
+    },
+    "format": {
+      "uuid": "Musi być prawidłowym identyfikatorem",
+      "email": "Musi być prawidłowym adresem e-mail",
+      "url": "Musi być prawidłowym adresem URL",
+      "default": "Nieprawidłowy format"
+    }
+  },
+  "submit": {
+    "loading": "Zapisywanie…"
+  },
+  "select": {
+    "placeholder": "Wybierz opcję"
+  }
+}

@@ -1,6 +1,7 @@
 import 'i18next';
 
 import type common from '../locales/en/common.json';
+import type forms from '../locales/en/forms.json';
 import type health from '../locales/en/health.json';
 import type landing from '../locales/en/landing.json';
 
@@ -11,6 +12,7 @@ declare module 'i18next' {
     defaultNS: 'common';
     resources: {
       common: typeof common;
+      forms: typeof forms;
       health: typeof health;
       landing: typeof landing;
     };

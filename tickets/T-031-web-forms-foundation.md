@@ -1,14 +1,14 @@
 ---
 id: T-031
 title: Web forms foundation — react-hook-form + Zod resolver + fields
-status: ready
+status: done
 priority: high
-owner: ~
+owner: claude
 dependencies: [T-008, T-019]
 labels: [web, foundation]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-18
+closed_at: 2026-06-18
 ---
 
 # T-031 — Web: forms foundation (react-hook-form + Zod resolver)
@@ -31,26 +31,28 @@ submit handling.
 
 ## Acceptance criteria
 
-- [ ] A `Form` primitive integrates react-hook-form with
+- [x] A `Form` primitive integrates react-hook-form with
       `@hookform/resolvers/zod` so a shared Zod schema is the single validation
       source; field types are derived via `z.infer`, not hand-written.
-- [ ] Reusable, controlled field components on top of shadcn/ui: `TextField`,
+- [x] Reusable, controlled field components on top of shadcn/ui: `TextField`,
       `NumberField`, `DateField`, `SelectField`, each with a label, description,
       and inline error slot, accessible (`label`/`aria-describedby`, error
       `aria-invalid`).
-- [ ] Validation errors render localized messages in both `pl` and `en`; the Zod
+- [x] Validation errors render localized messages in both `pl` and `en`; the Zod
       resolver's messages map to i18n keys (no raw English schema messages leak to
       the UI).
-- [ ] Server-side validation errors (the API's `ApiError`/field errors) can be
+- [x] Server-side validation errors (the API's `ApiError`/field errors) can be
       mapped back onto the matching fields via a shared `setServerErrors` helper.
-- [ ] A submit wrapper handles pending/disabled state and surfaces a form-level
+- [x] A submit wrapper handles pending/disabled state and surfaces a form-level
       error; success/`onSubmit` returns typed, parsed values.
-- [ ] `SelectField` accepts `{ value, label }` options so lookup enums
+- [x] `SelectField` accepts `{ value, label }` options so lookup enums
       (e.g. `FUEL_TYPE_CODES`) can be rendered with translated labels.
-- [ ] No hardcoded user-facing strings — labels/errors/placeholders route through
+- [x] No hardcoded user-facing strings — labels/errors/placeholders route through
       i18n; verified in agent-browser with a representative example form
       (valid + invalid submit). If Chrome is blocked, note the structural fallback.
-- [ ] Vitest/RTL covers: invalid input blocks submit and shows a localized error,
+      **Structural fallback: Chrome blocked by network policy; all string paths
+      covered by Vitest/RTL tests; noted in ticket Notes.**
+- [x] Vitest/RTL covers: invalid input blocks submit and shows a localized error,
       valid input calls `onSubmit` with parsed values, and `setServerErrors` lands
       on the right field.
 
@@ -79,6 +81,16 @@ submit handling.
   feature locales only add field labels.
 - Confirm the latest stable `@hookform/resolvers` against the installed
   `react-hook-form`/`zod` versions via `pnpm info` before pinning.
+
+## Notes
+
+- **Zod 4 error API**: `z.setErrorMap()` is gone; use `z.config({ customError: fn })`. `ZodIssueCode` enum is gone — use raw string literals. `issue.type` is renamed `issue.origin`. `invalid_string` is renamed `invalid_format`. These are breaking changes from Zod 3.
+- **`@hookform/resolvers` v5**: Import path is `/zod` (same as v3), not `/zod4`. The resolver handles Zod 4 natively.
+- **Native `<select>`**: Used a styled native `<select>` rather than a Radix Select primitive, which would need shadcn UI state wiring. Sufficient for all immediate uses; the Radix version is a future upgrade if multi-select or combobox behaviour is needed.
+- **`FormSubmit` uses `useFormState`**: The errors object from `useFormContext()` doesn't subscribe to re-renders; `useFormState()` does. Root error display uses `useFormState()` for this reason.
+- **`useZodForm` type cast**: `z.ZodType<any>` + `as any` cast are needed because Zod 4's `ZodType` output defaults to `unknown`, which doesn't satisfy RHF's `FieldValues` constraint. The cast is internal to `useZodForm`; call sites are fully typed.
+- **`react/prop-types` disabled**: Added to `apps/web/eslint.config.js`. The `eslint-plugin-react` recommended config enables this rule, but TypeScript already enforces prop shapes; the rule creates false positives on `React.forwardRef` components.
+- **UI verification**: Not verified in agent-browser — Chrome installation blocked by network policy in the remote execution environment. All ACs are covered by Vitest/RTL tests.
 
 ## References
 
