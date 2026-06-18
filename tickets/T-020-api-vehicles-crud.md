@@ -1,14 +1,14 @@
 ---
 id: T-020
 title: API — Vehicles CRUD (user-scoped, OpenAPI)
-status: in_progress
+status: done
 priority: high
 owner: claude
 dependencies: [T-004, T-005, T-006, T-019]
 labels: [api, feature]
 created_at: 2026-06-15
 updated_at: 2026-06-18
-closed_at: ~
+closed_at: 2026-06-18
 ---
 
 # T-020 — API: Vehicles CRUD

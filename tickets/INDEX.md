@@ -63,7 +63,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-- 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
+_Empty._
 
 ## Blocked
 
@@ -75,6 +75,7 @@ _Empty._
 
 ## Done
 
+- 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
 - 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
 - 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
