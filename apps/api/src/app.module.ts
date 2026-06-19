@@ -9,6 +9,7 @@ import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
 import { OpenApiModule } from './lib/openapi/index.js';
 import { MeController } from './users/me.controller.js';
+import { VehiclesModule } from './vehicles/vehicles.module.js';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MeController } from './users/me.controller.js';
     DbModule,
     OpenApiModule,
     AuthModule,
+    VehiclesModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })

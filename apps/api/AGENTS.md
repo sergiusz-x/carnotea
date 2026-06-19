@@ -108,6 +108,28 @@ this:
 - **Env:** `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` are required (see
   `src/config/env.ts` and root `.env.example`).
 
+## Resource modules (user-scoped CRUD)
+
+`vehicles/` (T-020) is the reference shape every owned resource copies:
+
+- **One module per resource** (`<name>/<name>.module.ts` + controller + service),
+  registered in `app.module.ts`. The module imports `AuthModule` so
+  `@UseGuards(AuthGuard)` resolves; `DbModule` is global.
+- **Ownership = a single filtered query.** Scope every read/write by
+  `eq(<table>.userId, user.id)` in the `WHERE` clause — never fetch-then-check.
+  A missing row and another user's row are indistinguishable, so both return
+  **404, never 403** — existence must not leak across users.
+- **Error envelope.** Throw NestJS exceptions with the shared `ApiError` body
+  `{ code, message, issues? }` (e.g. `new NotFoundException({ code: 'NOT_FOUND',
+message })`) so every error matches `ErrorResponseSchema` like the
+  `ZodValidationPipe` 400 does. Register error responses in `zodRoute(...)` with
+  `schema: ErrorResponseSchema`.
+- **Unique conflicts → 409.** Drizzle wraps the driver error in
+  `DrizzleQueryError`; the `PostgresError` (SQLSTATE `23505`, `constraint_name`)
+  is on `.cause`. Map it to a `ConflictException` rather than letting a 500 leak.
+- **Lookup codes.** Contracts expose stable lookup _codes_ (e.g. `fuelType`); the
+  service resolves them to the lookup table id on write and joins back on read.
+
 ## Rules
 
 - **ESM only.** Relative imports use explicit `.js` extensions (the package is
