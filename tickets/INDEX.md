@@ -31,7 +31,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-028 — Dashboard and analytics read endpoints](./T-028-api-dashboard-analytics.md)
 - 🟡 [T-029 — User profile endpoints linked to better-auth identity](./T-029-api-user-profile.md)
 - 🟢 [T-030 — Audit-logging interceptor for mutating actions](./T-030-api-audit-logging.md)
-- 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
 - 🔴 [T-032 — Web app shell — auth guard, login/logout, nav, layout](./T-032-web-app-shell-auth.md)
 - 🔴 [T-033 — Web vehicles screens — list, detail hub, create/edit/delete](./T-033-web-vehicles-screens.md)
 - 🟡 [T-034 — Web fuel-log screens under a vehicle](./T-034-web-fuel-logs-screens.md)
@@ -76,6 +75,7 @@ _Empty._
 ## Done
 
 - 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
+- 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
 - 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
 - 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)

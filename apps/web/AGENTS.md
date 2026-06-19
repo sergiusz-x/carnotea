@@ -145,6 +145,52 @@ The app is bilingual (`pl` + `en`) from the first screen via `i18next` +
   passing the active locale (`i18n.resolvedLanguage`). Never format user-facing
   dates/numbers by hand.
 
+## Forms (T-031)
+
+The shared forms layer lives in `src/components/form/` and `src/lib/forms/`.
+
+### Usage pattern
+
+```tsx
+import { AppForm, FormSubmit, TextField, useZodForm } from '@/components/form';
+import { MySchema } from '@carnotea/shared';
+
+function MyForm() {
+  const form = useZodForm(MySchema);
+  return (
+    <AppForm form={form} onSubmit={(values) => { /* typed values */ }}>
+      <TextField name="fieldName" label={t('label')} />
+      <FormSubmit>{t('save')}</FormSubmit>
+    </AppForm>
+  );
+}
+```
+
+### What lives where
+
+| File | Purpose |
+|---|---|
+| `src/components/form/Form.tsx` | `useZodForm`, `AppForm`, `FormSubmit` |
+| `src/components/form/TextField.tsx` | Text/email/tel/password input |
+| `src/components/form/NumberField.tsx` | Numeric input, parses to `number` |
+| `src/components/form/DateField.tsx` | `<input type="date">` |
+| `src/components/form/SelectField.tsx` | Native `<select>` from `{ value, label }[]` |
+| `src/components/form/set-server-errors.ts` | Maps API `ErrorResponse` back to fields |
+| `src/lib/forms/zod-i18n.ts` | Zod 4 `customError` → `forms.*` i18n keys |
+| `src/components/ui/form.tsx` | shadcn/ui form primitives (Context + aria wiring) |
+| `src/components/ui/label.tsx` | shadcn/ui label (wraps `@radix-ui/react-label`) |
+| `src/components/ui/input.tsx` | shadcn/ui input (forwardRef, Tailwind classes) |
+
+### Rules
+
+- All form strings (labels, placeholder, error messages) go through `t(...)` — never hard-code in field components.
+- The `forms` namespace holds validation/submit strings; feature namespaces hold field labels.
+- `useZodForm` is the only way to create a form. Never call `useForm` directly — it bypasses the Zod resolver.
+- Use `setServerErrors` to map API error responses onto fields; never write field-level catch blocks by hand.
+- Native `<select>` for `SelectField` is intentional (sufficient for current needs); upgrade to Radix Select only when multi-select or combobox is required.
+- `useFormState()` (not `useFormContext()`) must be used anywhere you need reactive `errors` or `isSubmitting`, because `useFormContext` doesn't subscribe.
+- Zod 4 error map is configured in `src/lib/forms/zod-i18n.ts` via `z.config({ customError: fn })`. Do not call `z.setErrorMap()` (removed in Zod 4).
+
 ## Out of scope here (own tickets)
 
 The typesafe API client (T-011) and the PWA layer (T-012) are still separate
