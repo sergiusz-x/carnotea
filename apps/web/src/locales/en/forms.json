@@ -1,0 +1,26 @@
+{
+  "errors": {
+    "required": "This field is required",
+    "invalid": "Invalid value",
+    "string": {
+      "min": "Must be at least {{min}} characters",
+      "max": "Must be at most {{max}} characters"
+    },
+    "number": {
+      "min": "Must be at least {{min}}",
+      "max": "Must be at most {{max}}"
+    },
+    "format": {
+      "uuid": "Must be a valid identifier",
+      "email": "Must be a valid email address",
+      "url": "Must be a valid URL",
+      "default": "Invalid format"
+    }
+  },
+  "submit": {
+    "loading": "Saving…"
+  },
+  "select": {
+    "placeholder": "Select an option"
+  }
+}
