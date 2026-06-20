@@ -60,7 +60,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-- 🟡 [T-011 — Web: typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
+_Empty._
 
 ## Blocked
 
@@ -72,6 +72,7 @@ _Empty._
 
 ## Done
 
+- 🟡 [T-011 — Web: typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 - 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
 - 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
 - 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)

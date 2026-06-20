@@ -1,14 +1,14 @@
 ---
 id: T-011
 title: Web — typesafe API client from OpenAPI
-status: in_progress
+status: done
 priority: medium
 owner: Codex
 dependencies: [T-005, T-007, T-009]
 labels: [web, api]
 created_at: 2026-06-13
 updated_at: 2026-06-20
-closed_at: ~
+closed_at: 2026-06-20
 ---
 
 # T-011 — Web: typesafe API client from OpenAPI
