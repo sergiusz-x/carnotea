@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 
+import { ROUTES } from '@carnotea/shared';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -18,7 +19,7 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     proxy: {
-      '/healthz': 'http://localhost:3001',
+      [ROUTES.healthz]: 'http://localhost:3001',
     },
   },
 });

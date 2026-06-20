@@ -1,3 +1,4 @@
+import { ROUTES } from '@carnotea/shared';
 import { type Db } from '@carnotea/db';
 import { Controller, Get, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
@@ -8,7 +9,7 @@ import { zodRoute } from '../lib/openapi/index.js';
 
 zodRoute({
   method: 'get',
-  path: '/readyz',
+  path: ROUTES.readyz,
   operationId: 'readyz',
   summary: 'Readiness probe',
   tags: ['Health'],
@@ -28,7 +29,7 @@ zodRoute({
 export class ReadinessController {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  @Get('readyz')
+  @Get(ROUTES.readyz)
   async readyz(): Promise<{ status: 'ok'; db: 'ok' }> {
     try {
       await this.db.execute(sql`SELECT 1`);

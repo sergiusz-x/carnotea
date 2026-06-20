@@ -1,3 +1,4 @@
+import { ROUTES } from '@carnotea/shared';
 import { queryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 
@@ -8,7 +9,7 @@ type HealthResponse = Awaited<ReturnType<typeof apiClient.GET<'/healthz'>>>['dat
 const healthSchema = z.object({ status: z.literal('ok') }) satisfies z.ZodType<HealthResponse>;
 
 async function fetchHealth() {
-  const { data } = await apiClient.GET('/healthz');
+  const { data } = await apiClient.GET(ROUTES.healthz);
   return healthSchema.parse(data);
 }
 

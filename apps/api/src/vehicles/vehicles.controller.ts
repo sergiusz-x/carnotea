@@ -3,6 +3,7 @@ import {
   VehicleCreateSchema,
   VehicleSchema,
   VehicleUpdateSchema,
+  ROUTES,
   type Vehicle,
   type VehicleCreate,
   type VehicleUpdate,
@@ -33,7 +34,7 @@ const idPipe = new ZodValidationPipe(z.uuid());
 
 zodRoute({
   method: 'get',
-  path: '/vehicles',
+  path: ROUTES.vehicles,
   operationId: 'listVehicles',
   summary: "List the authenticated user's vehicles",
   tags: ['Vehicles'],
@@ -45,7 +46,7 @@ zodRoute({
 
 zodRoute({
   method: 'get',
-  path: '/vehicles/{id}',
+  path: ROUTES.vehicleById,
   operationId: 'getVehicle',
   summary: 'Get one owned vehicle',
   tags: ['Vehicles'],
@@ -59,7 +60,7 @@ zodRoute({
 
 zodRoute({
   method: 'post',
-  path: '/vehicles',
+  path: ROUTES.vehicles,
   operationId: 'createVehicle',
   summary: 'Create a vehicle',
   tags: ['Vehicles'],
@@ -77,7 +78,7 @@ zodRoute({
 
 zodRoute({
   method: 'patch',
-  path: '/vehicles/{id}',
+  path: ROUTES.vehicleById,
   operationId: 'updateVehicle',
   summary: 'Update an owned vehicle',
   tags: ['Vehicles'],
@@ -96,7 +97,7 @@ zodRoute({
 
 zodRoute({
   method: 'delete',
-  path: '/vehicles/{id}',
+  path: ROUTES.vehicleById,
   operationId: 'deleteVehicle',
   summary: 'Delete an owned vehicle',
   tags: ['Vehicles'],
@@ -113,17 +114,17 @@ zodRoute({
 export class VehiclesController {
   constructor(private readonly vehicles: VehiclesService) {}
 
-  @Get('vehicles')
+  @Get(ROUTES.vehicles)
   list(@CurrentUser() user: AuthUser): Promise<Vehicle[]> {
     return this.vehicles.list(user.id);
   }
 
-  @Get('vehicles/:id')
+  @Get(`${ROUTES.vehicles}/:id`)
   getOne(@CurrentUser() user: AuthUser, @Param('id', idPipe) id: string): Promise<Vehicle> {
     return this.vehicles.getOwnedOrThrow(user.id, id);
   }
 
-  @Post('vehicles')
+  @Post(ROUTES.vehicles)
   create(
     @CurrentUser() user: AuthUser,
     @Body(new ZodValidationPipe(VehicleCreateSchema)) body: VehicleCreate,
@@ -131,7 +132,7 @@ export class VehiclesController {
     return this.vehicles.create(user.id, body);
   }
 
-  @Patch('vehicles/:id')
+  @Patch(`${ROUTES.vehicles}/:id`)
   update(
     @CurrentUser() user: AuthUser,
     @Param('id', idPipe) id: string,
@@ -140,7 +141,7 @@ export class VehiclesController {
     return this.vehicles.update(user.id, id, body);
   }
 
-  @Delete('vehicles/:id')
+  @Delete(`${ROUTES.vehicles}/:id`)
   @HttpCode(204)
   remove(@CurrentUser() user: AuthUser, @Param('id', idPipe) id: string): Promise<void> {
     return this.vehicles.remove(user.id, id);

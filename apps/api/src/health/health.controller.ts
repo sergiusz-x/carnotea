@@ -1,3 +1,4 @@
+import { ROUTES } from '@carnotea/shared';
 import { Controller, Get } from '@nestjs/common';
 import { z } from 'zod';
 
@@ -5,7 +6,7 @@ import { zodRoute } from '../lib/openapi/index.js';
 
 zodRoute({
   method: 'get',
-  path: '/healthz',
+  path: ROUTES.healthz,
   operationId: 'healthz',
   summary: 'Liveness probe',
   tags: ['Health'],
@@ -19,7 +20,7 @@ zodRoute({
 
 @Controller()
 export class HealthController {
-  @Get('healthz')
+  @Get(ROUTES.healthz)
   healthz(): { status: 'ok' } {
     return { status: 'ok' };
   }
