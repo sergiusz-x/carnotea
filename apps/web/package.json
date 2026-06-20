@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "codegen:api": "node scripts/generate-api-schema.mjs http://localhost:3001/openapi.json src/lib/api/schema.d.ts",
+    "codegen:api:check": "pnpm codegen:api && git diff --exit-code -- src/lib/api/schema.d.ts",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",

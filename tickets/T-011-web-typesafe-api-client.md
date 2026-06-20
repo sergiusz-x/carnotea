@@ -1,13 +1,13 @@
 ---
 id: T-011
 title: Web — typesafe API client from OpenAPI
-status: ready
+status: in_progress
 priority: medium
-owner: ~
+owner: Codex
 dependencies: [T-005, T-007, T-009]
 labels: [web, api]
 created_at: 2026-06-13
-updated_at: 2026-06-13
+updated_at: 2026-06-20
 closed_at: ~
 ---
 
@@ -27,14 +27,14 @@ requests.
 
 ## Acceptance criteria
 
-- [ ] `pnpm --filter @carnotea/web codegen:api` fetches
+- [x] `pnpm --filter @carnotea/web codegen:api` fetches
       `http://localhost:3001/openapi.json` and writes
       `apps/web/src/lib/api/schema.d.ts`.
-- [ ] A small `apiClient` is exported from `apps/web/src/lib/api/client.ts`,
+- [x] A small `apiClient` is exported from `apps/web/src/lib/api/client.ts`,
       typed against the generated schema.
-- [ ] The example `/healthz` route from T-009 is migrated to use `apiClient`
+- [x] The example `/healthz` route from T-009 is migrated to use `apiClient`
       and the type of the response is inferred (no `as any`).
-- [ ] Request errors (non-2xx) are normalised into a typed error class with
+- [x] Request errors (non-2xx) are normalised into a typed error class with
       the shape `{ code, message, issues? }` (matching the API's envelope from
       T-005).
 - [ ] The generated `schema.d.ts` is committed. CI fails if it is out of date
@@ -64,3 +64,11 @@ requests.
 
 - ADR: [ADR-0003](../docs/adr/0003-rest-openapi-zod.md)
 - <https://openapi-ts.dev>
+
+## Notes
+
+- The generated declaration and fetch client are dependency-free and limited
+  to the OpenAPI features used by the current API. This avoids adding runtime
+  weight while preserving compile-time response inference.
+- The schema is committed and regenerated on demand. The dedicated CI workflow
+  starts the built API, regenerates the declaration, and fails on a Git diff.

@@ -14,7 +14,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
 - 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
-- 🟡 [T-011 — Web: typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 - 🟡 [T-012 — Web: PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
 - 🟢 [T-013 — Tooling: Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
 - 🟢 [T-014 — Infra: dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
@@ -61,7 +60,7 @@ _Empty for now. New ideas land here before they are refined into `ready`._
 
 ## In progress
 
-_Empty._
+- 🟡 [T-011 — Web: typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 
 ## Blocked
 

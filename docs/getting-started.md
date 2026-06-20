@@ -87,6 +87,17 @@ Note: workspace packages (`@carnotea/db`, `@carnotea/shared`) must be built
 before the API can run. `pnpm build` (or `pnpm --filter @carnotea/api build`)
 handles this automatically via Turborepo's `^build` dependency chain.
 
+When an API route contract changes, regenerate the committed web client types
+while the API is running:
+
+```bash
+pnpm --filter @carnotea/web codegen:api
+pnpm --filter @carnotea/web codegen:api:check
+```
+
+The check regenerates `apps/web/src/lib/api/schema.d.ts` and fails when the
+working tree differs, matching the CI freshness check.
+
 ## 6. Working day-to-day
 
 | Goal             | Command                         |

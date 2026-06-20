@@ -19,6 +19,9 @@ src/
     format.ts       # locale-aware Intl date/number helpers (active locale)
     queryClient.ts  # configured TanStack QueryClient (see Data below)
     router.ts       # assembles the route tree + creates the TanStack Router
+    api/
+      client.ts     # typed fetch client + normalized ApiError
+      schema.d.ts   # committed generated types from GET /openapi.json
   i18n/
     index.ts        # i18next init: bundled resources, detection, persistence
     i18next.d.ts    # type-safe t() keys derived from the `en` resources
@@ -87,10 +90,13 @@ glance.
   (`staleTime: 30s`, `retry: 1`, `refetchOnWindowFocus: false`). Don't construct
   ad-hoc clients in app code.
 - Each feature owns its `queries.ts`, exporting `queryOptions(...)` values that
-  routes and components share. Validate every fetched response with **Zod** at
-  the boundary. The example fetches the API with a same-origin relative path
-  (`/healthz`); the Vite dev server proxies it to the API (`vite.config.ts` →
-  `server.proxy`). The typesafe client and configurable base URL land in T-011.
+  routes and components share. Use `apiClient` from `src/lib/api/client.ts` for
+  API requests; its request and response types come from the committed OpenAPI
+  schema and it normalizes non-2xx responses to `ApiError`.
+- After changing an API route contract, start the API and run
+  `pnpm --filter @carnotea/web codegen:api`. Commit the resulting
+  `src/lib/api/schema.d.ts`. Run `codegen:api:check` to reproduce the CI
+  freshness check.
 - Router + Query devtools render only in development via `Devtools` and are
   tree-shaken out of the production bundle.
 
@@ -158,7 +164,12 @@ import { MySchema } from '@carnotea/shared';
 function MyForm() {
   const form = useZodForm(MySchema);
   return (
-    <AppForm form={form} onSubmit={(values) => { /* typed values */ }}>
+    <AppForm
+      form={form}
+      onSubmit={(values) => {
+        /* typed values */
+      }}
+    >
       <TextField name="fieldName" label={t('label')} />
       <FormSubmit>{t('save')}</FormSubmit>
     </AppForm>
@@ -168,18 +179,18 @@ function MyForm() {
 
 ### What lives where
 
-| File | Purpose |
-|---|---|
-| `src/components/form/Form.tsx` | `useZodForm`, `AppForm`, `FormSubmit` |
-| `src/components/form/TextField.tsx` | Text/email/tel/password input |
-| `src/components/form/NumberField.tsx` | Numeric input, parses to `number` |
-| `src/components/form/DateField.tsx` | `<input type="date">` |
-| `src/components/form/SelectField.tsx` | Native `<select>` from `{ value, label }[]` |
-| `src/components/form/set-server-errors.ts` | Maps API `ErrorResponse` back to fields |
-| `src/lib/forms/zod-i18n.ts` | Zod 4 `customError` → `forms.*` i18n keys |
-| `src/components/ui/form.tsx` | shadcn/ui form primitives (Context + aria wiring) |
-| `src/components/ui/label.tsx` | shadcn/ui label (wraps `@radix-ui/react-label`) |
-| `src/components/ui/input.tsx` | shadcn/ui input (forwardRef, Tailwind classes) |
+| File                                       | Purpose                                           |
+| ------------------------------------------ | ------------------------------------------------- |
+| `src/components/form/Form.tsx`             | `useZodForm`, `AppForm`, `FormSubmit`             |
+| `src/components/form/TextField.tsx`        | Text/email/tel/password input                     |
+| `src/components/form/NumberField.tsx`      | Numeric input, parses to `number`                 |
+| `src/components/form/DateField.tsx`        | `<input type="date">`                             |
+| `src/components/form/SelectField.tsx`      | Native `<select>` from `{ value, label }[]`       |
+| `src/components/form/set-server-errors.ts` | Maps API `ErrorResponse` back to fields           |
+| `src/lib/forms/zod-i18n.ts`                | Zod 4 `customError` → `forms.*` i18n keys         |
+| `src/components/ui/form.tsx`               | shadcn/ui form primitives (Context + aria wiring) |
+| `src/components/ui/label.tsx`              | shadcn/ui label (wraps `@radix-ui/react-label`)   |
+| `src/components/ui/input.tsx`              | shadcn/ui input (forwardRef, Tailwind classes)    |
 
 ### Rules
 
@@ -193,6 +204,6 @@ function MyForm() {
 
 ## Out of scope here (own tickets)
 
-The typesafe API client (T-011) and the PWA layer (T-012) are still separate
-tickets. Don't pull them in ahead of their tickets. Routing and TanStack Query
-landed in T-009, and i18n landed in T-010.
+The PWA layer (T-012) is a separate ticket. Don't pull it in ahead of its
+ticket. Routing and TanStack Query landed in T-009, i18n landed in T-010, and
+the typesafe API client landed in T-011.
