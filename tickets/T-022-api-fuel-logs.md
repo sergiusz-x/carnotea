@@ -1,14 +1,14 @@
 ---
 id: T-022
 title: API — Fuel logs (refuels) CRUD
-status: ready
+status: done
 priority: high
-owner: ~
+owner: claude-sonnet-4-6
 dependencies: [T-020]
 labels: [api, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-20
+closed_at: 2026-06-20
 ---
 
 # T-022 — API: Fuel logs (refuels)
@@ -61,6 +61,16 @@ into T-021's sync helper now and T-026's cost sync later.
   `mileage`; partial fills break the interval — return null rather than guess.
 - Treat `liters`/`pricePerLiter`/`totalCost` consistently with the decimal
   convention chosen in T-019 (string vs coerced number).
+
+## Notes
+
+- T-021 (mileage sync) was not yet implemented; `apps/api/src/mileage/mileage-sync.service.ts`
+  was created here with the interface T-021 specifies so T-022 can call it now and T-021
+  can flesh out the full mileage-readings CRUD on top later.
+- `consumptionHint` is a local response-only field (not in T-019 shared schema); a
+  `FuelLogResponseSchema` is defined in the controller that extends the stored fields with it.
+- `totalCost` is computed as `Math.round(liters * pricePerLiter * 100) / 100`, matching
+  the DB check `round(liters * pricePerLiter, 2)`.
 
 ## References
 
