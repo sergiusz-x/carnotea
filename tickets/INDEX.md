@@ -22,7 +22,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-016 — Turborepo generators: scaffold new packages](./T-016-turbo-generators.md)
 - 🟡 [T-018 — Observability baseline: OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)
 - 🟡 [T-021 — API — Mileage readings + odometer sync rule](./T-021-api-mileage-readings-sync.md)
-- 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
 - 🟡 [T-023 — API — Charging sessions CRUD](./T-023-api-charging-sessions.md)
 - 🟡 [T-024 — API — Service records + parts CRUD](./T-024-api-service-records-parts.md)
 - 🟡 [T-025 — API — Issues CRUD (status, priority, resolved-date invariant)](./T-025-api-issues.md)
@@ -74,6 +73,7 @@ _Empty._
 
 ## Done
 
+- 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
 - 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
 - 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
 - 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
