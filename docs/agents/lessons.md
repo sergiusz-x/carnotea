@@ -71,7 +71,7 @@ ticket notes and PR.
 **Mistake:** Ticket status was set to `in_review` after pushing the PR, leaving
 it stranded in "In review" instead of "Done".
 **Rule:** During `ship-pr` (Phase 6 step 8), set `status: done`, `closed_at: <today>`,
-and move the ticket line to **Done** in `tickets/INDEX.md`. The PR itself is the
+and regenerate `tickets/INDEX.md` with `pnpm tickets:index`. The PR itself is the
 review artifact — the ticket is done when the PR is opened.
 
 ### 2026-06-15 — Validate env eagerly in main.ts, not only via ConfigModule
@@ -96,3 +96,16 @@ specifiers inside the packages.
 export `dist/` with `types` + `import` conditions. Add `tsconfig.build.json` +
 `build` script to each package and update exports before the first runtime consumer
 is created. The Turborepo `build: dependsOn: ^build` pipeline handles ordering.
+
+### 2026-06-21 — Derived writes share the source row's transaction
+
+**Context:** Architecture review of the mileage/cost sync seams (T-061).
+**Mistake:** `FuelLogsService.create` inserts the fuel log, then calls
+`MileageSyncService.syncDerivedReading(...)`, which opens its **own**
+`db.transaction`. The source insert and the derived `mileage_readings` row are not
+atomic — a crash between them leaves a fuel log with no reading and a stale
+`currentMileage`.
+**Rule:** A resource that is a mileage/cost source must wrap its own write and the
+derived sync in **one** `db.transaction(async (tx) => …)` and pass `tx` to the sync
+seams; the seams take `tx` as their first argument and never open their own
+transaction. See `docs/agents/patterns/resource-crud-api.md` § Derived-data hooks.

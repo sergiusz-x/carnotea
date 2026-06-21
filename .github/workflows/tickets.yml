@@ -1,0 +1,27 @@
+name: Tickets
+
+on:
+  pull_request:
+    paths:
+      - 'tickets/**'
+      - 'scripts/lint-tickets.mjs'
+      - '.github/workflows/tickets.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tickets/**'
+      - 'scripts/lint-tickets.mjs'
+
+permissions:
+  contents: read
+
+jobs:
+  lint-tickets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Lint tickets + INDEX consistency
+        run: node scripts/lint-tickets.mjs

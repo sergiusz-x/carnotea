@@ -30,6 +30,8 @@
     "format:check": "turbo run //#format:check:root format:check --continue",
     "format:check:root": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
     "lint:ws": "sherif -r non-existant-packages",
+    "lint:tickets": "node scripts/lint-tickets.mjs",
+    "tickets:index": "node scripts/gen-tickets-index.mjs",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",

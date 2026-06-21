@@ -10,8 +10,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "format": "prettier --write . --ignore-path ../../.prettierignore",
+    "format:check": "prettier --check . --ignore-path ../../.prettierignore",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

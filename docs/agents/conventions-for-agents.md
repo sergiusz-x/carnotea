@@ -21,7 +21,7 @@ Humans can follow them too, but they're framed around how an agent operates.
 ## 3. When you finish a task
 
 - Update the ticket (status, notes, acceptance checklist).
-- Update `tickets/INDEX.md`.
+- Regenerate `tickets/INDEX.md` from frontmatter: `pnpm tickets:index`.
 - Update affected docs (`tech-stack.md`, `getting-started.md`, `README.md`,
   area `AGENTS.md`) in the same PR.
 - Open the PR with a body that:

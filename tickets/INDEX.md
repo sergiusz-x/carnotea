@@ -1,25 +1,25 @@
 # Tickets index
 
-The single source of truth for what is planned, in progress, and done. Each
-line links to the ticket file and shows its priority. Update this file in the
-**same PR** as any ticket status change.
+A view of what is planned, in progress, and done. The **source of truth is each
+ticket's `status` frontmatter**, not this file — the list below is generated.
+Change a ticket's status in its own file, then run `pnpm tickets:index` to
+regenerate this list. Do not hand-edit between the markers.
 
 Legend: `🔴` high · `🟡` medium · `🟢` low
+
+<!-- BEGIN GENERATED:tickets — edit ticket frontmatter, then run `pnpm tickets:index` -->
 
 ## Ready
 
 These tickets are fully specced. An agent picks the first one whose `dependencies`
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
-- 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
-- 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
-- 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
-- 🟡 [T-012 — Web: PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
-- 🟢 [T-013 — Tooling: Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
-- 🟢 [T-014 — Infra: dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
-- 🟡 [T-015 — CI: GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
-- 🟢 [T-016 — Turborepo generators: scaffold new packages](./T-016-turbo-generators.md)
-- 🟡 [T-018 — Observability baseline: OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)
+- 🟡 [T-012 — Web — PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
+- 🟢 [T-013 — Tooling — Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
+- 🟢 [T-014 — Infra — dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
+- 🔴 [T-015 — CI — GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
+- 🟢 [T-016 — Turborepo generators — scaffold new packages](./T-016-turbo-generators.md)
+- 🟡 [T-018 — Observability baseline — OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)
 - 🟡 [T-021 — API — Mileage readings + odometer sync rule](./T-021-api-mileage-readings-sync.md)
 - 🟡 [T-023 — API — Charging sessions CRUD](./T-023-api-charging-sessions.md)
 - 🟡 [T-024 — API — Service records + parts CRUD](./T-024-api-service-records-parts.md)
@@ -53,41 +53,50 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
 - 🟡 [T-055 — Web Push notifications for due reminders](./T-055-pwa-push-notifications.md)
+- 🔴 [T-061 — Make derived-sync seams transaction-composable and source writes atomic](./T-061-atomic-derived-sync-seam.md)
 
 ## Backlog
 
-_Empty for now. New ideas land here before they are refined into `ready`._
+_None._
 
 ## In progress
 
-_Empty._
+_None._
 
 ## Blocked
 
-_Empty._
+_None._
 
 ## In review
 
-_Empty._
+_None._
 
 ## Done
 
-- 🟡 [T-011 — Web: typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
-- 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
-- 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
-- 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
-- 🔴 [T-006 — Auth: better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
-- 🟡 [T-010 — Web: i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
-- 🟡 [T-009 — Web: TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
-- 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
-- 🟡 [T-008 — Web: Tailwind + shadcn/ui setup](./T-008-web-tailwind-shadcn.md)
-- 🔴 [T-007 — Web skeleton: Vite + React + TS](./T-007-web-vite-react-skeleton.md)
 - 🔴 [T-001 — Bootstrap tooling and shared configs](./T-001-bootstrap-tooling-and-shared-configs.md)
-- 🔴 [T-002 — Database package: Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
-- 🔴 [T-003 — Shared package: Zod schemas and types](./T-003-shared-package-zod-and-types.md)
-- 🔴 [T-004 — API skeleton: NestJS app + healthcheck + DB ping](./T-004-api-nestjs-skeleton.md)
-- 🟡 [T-005 — API: OpenAPI / Swagger generated from Zod](./T-005-api-openapi-swagger-from-zod.md)
+- 🔴 [T-002 — Database package — Drizzle schema-as-code + migrations](./T-002-database-package-drizzle-introspect.md)
+- 🔴 [T-003 — Shared package — Zod schemas and types](./T-003-shared-package-zod-and-types.md)
+- 🔴 [T-004 — API skeleton — NestJS app + healthcheck + DB ping](./T-004-api-nestjs-skeleton.md)
+- 🟡 [T-005 — API — OpenAPI / Swagger generated from Zod](./T-005-api-openapi-swagger-from-zod.md)
+- 🔴 [T-006 — Auth — better-auth integration + user-profile linkage](./T-006-auth-better-auth-integration.md)
+- 🔴 [T-007 — Web skeleton — Vite + React + TS](./T-007-web-vite-react-skeleton.md)
+- 🟡 [T-008 — Web — Tailwind + shadcn/ui setup](./T-008-web-tailwind-shadcn.md)
+- 🟡 [T-009 — Web — TanStack Router + TanStack Query](./T-009-web-tanstack-router-query.md)
+- 🟡 [T-010 — Web — i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
+- 🟡 [T-011 — Web — typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 - 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
+- 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
+- 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
+- 🔴 [T-022 — API — Fuel logs (refuels) CRUD](./T-022-api-fuel-logs.md)
+- 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
+- 🔴 [T-056 — Spec-driven ticket template + Definition of Ready](./T-056-spec-driven-template-dor.md)
+- 🔴 [T-057 — Resource-CRUD API pattern + rewrite API tickets to delta specs](./T-057-resource-crud-pattern-api-tickets.md)
+- 🔴 [T-058 — Web-screens pattern + rewrite web tickets to delta specs](./T-058-web-screens-pattern-web-tickets.md)
+- 🟡 [T-059 — Ticket-spec linter + CI gate](./T-059-ticket-linter-ci.md)
+- 🟡 [T-060 — Generate INDEX.md from frontmatter to end status-move merge conflicts](./T-060-tickets-index-generated.md)
+- 🟡 [T-062 — Remove legacy sql/ + tests/ and fix the stale architecture data-flow](./T-062-remove-legacy-sql-fix-architecture-doc.md)
+
+<!-- END GENERATED:tickets -->
 
 ---
 
@@ -97,5 +106,6 @@ _Empty._
 - A ticket id is never reused, even if the ticket is dropped (mark it
   `status: deleted` in the file and move the line to "Done" with a note).
 - A ticket file is never deleted. The historical record stays.
-- When a ticket's status changes, update both the ticket frontmatter and the
-  line in this index in the **same commit / PR**.
+- A ticket's status lives in its frontmatter; this index is generated from it.
+  Change the status in the ticket file and run `pnpm tickets:index` in the
+  **same commit / PR**. `pnpm lint:tickets` (CI) fails if the two disagree.

@@ -37,7 +37,7 @@ review costs everyone's time.
 ## Ticket hygiene
 
 - [ ] Ticket frontmatter: `status` updated, `owner` set, `updated_at` is today.
-- [ ] `tickets/INDEX.md` reflects the current status.
+- [ ] `tickets/INDEX.md` was regenerated (`pnpm tickets:index`) and `pnpm lint:tickets` passes.
 - [ ] Non-obvious decisions recorded in the ticket's **Notes** section.
 
 ## Validation

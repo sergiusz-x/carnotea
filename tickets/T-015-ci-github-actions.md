@@ -2,12 +2,12 @@
 id: T-015
 title: CI — GitHub Actions (lint, typecheck, test, build)
 status: ready
-priority: medium
+priority: high
 owner: ~
 dependencies: [T-001]
 labels: [tooling, ci, repo]
 created_at: 2026-06-13
-updated_at: 2026-06-13
+updated_at: 2026-06-21
 closed_at: ~
 ---
 
@@ -25,6 +25,13 @@ The governance files (`.github/`) already exist; CI was deferred until there was
 something to build. Once `tooling/*` (T-001) lands, the validation commands in
 the root `AGENTS.md` are real and CI can enforce them.
 
+**Bumped to `high` (2026-06-21):** feature PRs (vehicles, fuel logs, the typed
+client, …) are merging with **no** automated lint/typecheck/test/build gate — only
+`api-schema.yml` and `tickets.yml` run. Critically, the privacy invariant
+"cross-user → 404, not 403" is tested only in `*.integration.test.ts` blocks gated
+on `describe.skipIf(!process.env.DATABASE_URL)`, so without a Postgres in CI it
+**never executes**. The `test` job must provide a database so those tests run.
+
 We follow the create-t3-turbo CI shape: a reusable composite setup action under
 `tooling/github/setup`, then parallel jobs.
 
@@ -34,8 +41,13 @@ We follow the create-t3-turbo CI shape: a reusable composite setup action under
       installs pnpm + Node (from `.nvmrc`), and runs `pnpm install`.
 - [ ] `.github/workflows/ci.yml` runs on `pull_request` and `push` to `main`,
       with `concurrency` cancelling superseded runs on non-main refs.
-- [ ] Jobs (parallel where possible): `lint` (incl. `pnpm lint:ws`),
-      `format` (`pnpm format:check`), `typecheck`, `test`, `build`.
+- [ ] Jobs (parallel where possible): `lint` (incl. `pnpm lint:ws` and
+      `pnpm lint:tickets`), `format` (`pnpm format:check`), `typecheck`, `test`,
+      `build`.
+- [ ] The `test` job runs a **Postgres service** (or container) and sets
+      `DATABASE_URL` so the `*.integration.test.ts` suites actually execute — the
+      cross-user 404 ownership tests must run in CI, not be silently skipped. Run
+      `pnpm db:migrate` against it before the suite.
 - [ ] Turborepo remote caching is wired via repo secrets/vars but degrades
       gracefully when they're absent (forks).
 - [ ] The workflow copies `.env.example` to `.env` so commands needing env vars

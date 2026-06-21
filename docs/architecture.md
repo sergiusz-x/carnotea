@@ -113,27 +113,35 @@ See [ADR-0007](./adr/0007-i18n-pl-en.md).
 1. User opens the "Add refuel" form on the web app.
 2. `react-hook-form` validates with the same Zod schema the API uses.
 3. `POST /vehicles/{id}/fuel-logs` is called via the typed client.
-4. The API authenticates the request through better-auth, runs the Zod parser,
-   and calls the `add_fuel_log(...)` stored procedure (or the equivalent
-   Drizzle-built insert) - whichever the corresponding ticket decides.
-5. The database trigger `trg_fuel_logs_sync_mileage_reading` writes a derived
-   row into `mileage_readings`; another trigger keeps the matching `expenses`
-   row in sync.
+4. The API authenticates through better-auth (`AuthGuard` → `request.user`),
+   runs the Zod parser, asserts the vehicle is owned, and inserts the fuel log
+   with a Drizzle query (`totalCost` is computed server-side, never trusted from
+   the body).
+5. The same service then projects the entry into the derived tables **in
+   application code**: `MileageSyncService` upserts a `mileage_readings` row
+   (`sourceType = 'fuel_log'`) and recomputes `vehicles.currentMileage`, and
+   `CostSyncService` upserts the matching `expenses` row. These run through
+   explicit service seams, not DB triggers. (Making the insert + the derived
+   writes one transaction is tracked in T-061.)
 6. The response is the saved fuel log; TanStack Query invalidates
-   `["vehicles", id, "fuel-logs"]` and `["vehicles", id, "summary"]`.
+   `["vehicles", id, "fuel-logs"]` and the vehicle's mileage/expense queries.
 
-### Resolving an issue with a service
+### Keeping the cost ledger in sync
 
-1. The web app calls `POST /issues/{id}/resolve-with-service` with the service
-   payload.
-2. The API forwards to the `resolve_issue_with_service(...)` procedure in a
-   single transaction.
-3. The trigger network synchronises mileage readings, expenses, and the issue
-   status atomically.
+1. Every cost-bearing entry (fuel log, charging session, service record) calls
+   `CostSyncService` on create/update/delete.
+2. The helper upserts/deletes one `expenses` row keyed by `(sourceType, sourceId)`
+   (a partial unique index), so the `expenses` table is the single normalized
+   source of truth for spend — analytics (T-028) read it instead of re-summing
+   four source tables.
 
-The point of these examples is that **the database does a lot of the work**.
-Application code should not try to recreate logic that already exists as a
-trigger or procedure.
+The DB still enforces the **invariants** it owns as constraints and a few
+validation triggers (e.g. `enforce_vehicle_energy_source`,
+`enforce_issue_resolved_date`, `totalCost = round(...)` checks). But the
+**business logic** — mileage sync, cost sync, analytics — lives in NestJS service
+methods, per [ADR-0002](./adr/0002-drizzle-schema-as-code.md). There are no
+`add_fuel_log` / `resolve_issue_with_service` stored procedures or sync triggers;
+the legacy `sql/` design that used them was superseded by schema-as-code in T-002.
 
 ## Deployment
 

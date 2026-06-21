@@ -142,6 +142,9 @@ read all of them. Use an Explore agent only for topics no row covers.
 | Pushing and opening a PR                      | `/ship-pr` (Claude Code) · `ship-pr` skill (Codex) · `docs/agents/ticket-execution.md` §6                                                |
 | **Process**                                   |                                                                                                                                          |
 | Picking up / creating / closing a ticket      | [`docs/agents/working-with-tickets.md`](./docs/agents/working-with-tickets.md)                                                           |
+| Marking a ticket `ready` (the gate)           | [`docs/agents/definition-of-ready.md`](./docs/agents/definition-of-ready.md)                                                             |
+| Specifying an API CRUD resource ticket        | [`docs/agents/patterns/resource-crud-api.md`](./docs/agents/patterns/resource-crud-api.md)                                               |
+| Specifying a web screen ticket                | [`docs/agents/patterns/web-screens.md`](./docs/agents/patterns/web-screens.md)                                                           |
 | Recording a lesson after a correction         | [`docs/agents/lessons.md`](./docs/agents/lessons.md)                                                                                     |
 | How the agent docs fit together               | [`docs/agents/structure.md`](./docs/agents/structure.md)                                                                                 |
 | Agent-specific working style                  | [`docs/agents/conventions-for-agents.md`](./docs/agents/conventions-for-agents.md)                                                       |
@@ -221,8 +224,6 @@ carnotea/
 ├── .codex/
 │   └── skills/           # Codex skills — same three actions for Codex CLI
 ├── .github/             # CI, PR/issue templates, CODEOWNERS, dependabot
-├── sql/                 # legacy SQL — moves into packages/db in T-002
-├── tests/               # legacy SQL audit — moves into packages/db in T-002
 ├── docker-compose.yml   # local Postgres
 ├── pnpm-workspace.yaml  # workspaces + dependency catalog
 └── turbo.json
