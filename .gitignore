@@ -59,8 +59,10 @@ Thumbs.db
 # Drizzle / DB local artifacts
 drizzle/meta/_journal.local.json
 
-# Claude Code local settings (per-developer, not shared)
+# Claude Code local settings + worktrees (per-developer, not shared)
 .claude/settings.local.json
+.claude/settings.json
+.claude/worktrees/
 
 # agent-browser — browser session data (per-developer)
 .agent-browser/
