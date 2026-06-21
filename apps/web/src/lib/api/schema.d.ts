@@ -254,6 +254,24 @@ export interface paths {
       };
     };
   };
+  "/readyz": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            status: "ok";
+            db: "ok";
+          };
+        } };
+        503: { content: {
+          "application/json": {
+            status: "error";
+            db: "unreachable";
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/mileage-readings": {
     get: {
       responses: {
@@ -414,24 +432,6 @@ export interface paths {
               path: (string | number)[];
               message: string;
             })[];
-          };
-        } };
-      };
-    };
-  };
-  "/readyz": {
-    get: {
-      responses: {
-        200: { content: {
-          "application/json": {
-            status: "ok";
-            db: "ok";
-          };
-        } };
-        503: { content: {
-          "application/json": {
-            status: "error";
-            db: "unreachable";
           };
         } };
       };
