@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import { boolean, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 // better-auth owns these tables (ADR-0004). They are prefixed `auth_` and live in
@@ -5,13 +6,15 @@ import { boolean, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 // better-auth's core model fields exactly (camelCase) so its Drizzle adapter maps
 // them; `casing: 'snake_case'` turns them into snake_case columns.
 //
-// Ids are stored as `text` because better-auth generates them in application code
-// (configured to emit UUIDs — see apps/api/src/auth/auth.ts). The domain
-// `users.id` reuses the same UUID value (linkage strategy (a), see
-// packages/db/AGENTS.md).
+// Ids are stored as `text` because better-auth uses UUID strings (see
+// apps/api/src/auth/auth.ts). Database defaults also cover adapter inserts that
+// pass SQL DEFAULT instead of an application-generated id. The domain `users.id`
+// reuses the same UUID value (linkage strategy (a), see packages/db/AGENTS.md).
 
 export const authUser = pgTable('auth_user', {
-  id: text().primaryKey(),
+  id: text()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   name: text().notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
   emailVerified: boolean().notNull().default(false),
@@ -21,7 +24,9 @@ export const authUser = pgTable('auth_user', {
 });
 
 export const authSession = pgTable('auth_session', {
-  id: text().primaryKey(),
+  id: text()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   expiresAt: timestamp({ withTimezone: true }).notNull(),
   token: text().notNull().unique(),
   ipAddress: text(),
@@ -34,7 +39,9 @@ export const authSession = pgTable('auth_session', {
 });
 
 export const authAccount = pgTable('auth_account', {
-  id: text().primaryKey(),
+  id: text()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   accountId: text().notNull(),
   providerId: text().notNull(),
   userId: text()
@@ -52,7 +59,9 @@ export const authAccount = pgTable('auth_account', {
 });
 
 export const authVerification = pgTable('auth_verification', {
-  id: text().primaryKey(),
+  id: text()
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
   identifier: text().notNull(),
   value: text().notNull(),
   expiresAt: timestamp({ withTimezone: true }).notNull(),
