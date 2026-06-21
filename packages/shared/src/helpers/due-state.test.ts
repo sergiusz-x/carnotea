@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { computeDueState, DUE_SOON_DAYS, DUE_SOON_MILEAGE } from './due-state.js';
+import { computeDueState, DUE_SOON_DAYS } from './due-state.js';
 
 describe('computeDueState', () => {
   it('returns ok when no triggers are set', () => {
@@ -33,12 +33,12 @@ describe('computeDueState', () => {
   });
 
   it('returns overdue when dueMileage is less than or equal to currentMileage', () => {
-    expect(
-      computeDueState({ dueMileage: 100000, currentMileage: 100000, status: 'pending' }),
-    ).toBe('overdue');
-    expect(
-      computeDueState({ dueMileage: 100000, currentMileage: 110000, status: 'pending' }),
-    ).toBe('overdue');
+    expect(computeDueState({ dueMileage: 100000, currentMileage: 100000, status: 'pending' })).toBe(
+      'overdue',
+    );
+    expect(computeDueState({ dueMileage: 100000, currentMileage: 110000, status: 'pending' })).toBe(
+      'overdue',
+    );
   });
 
   it('returns due_soon when dueDate is within the threshold', () => {

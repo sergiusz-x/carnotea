@@ -12,7 +12,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { and, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
 
@@ -83,9 +83,7 @@ export class RemindersService {
     const conditions = [eq(reminders.vehicleId, vehicleId)];
 
     if (filters?.status && filters.status.length > 0) {
-      const statusIds = await Promise.all(
-        filters.status.map((code) => this.resolveStatusId(code)),
-      );
+      const statusIds = await Promise.all(filters.status.map((code) => this.resolveStatusId(code)));
       conditions.push(inArray(reminders.statusId, statusIds));
     }
 
@@ -106,11 +104,7 @@ export class RemindersService {
     return allResponses;
   }
 
-  async getOwnedOrThrow(
-    userId: string,
-    vehicleId: string,
-    id: string,
-  ): Promise<ReminderResponse> {
+  async getOwnedOrThrow(userId: string, vehicleId: string, id: string): Promise<ReminderResponse> {
     await this.assertVehicleOwned(userId, vehicleId);
 
     const rows = await this.db
@@ -134,7 +128,7 @@ export class RemindersService {
   ): Promise<ReminderResponse> {
     await this.assertVehicleOwned(userId, vehicleId);
 
-    const statusId = await this.resolveStatusId(input.status ?? 'pending');
+    const statusId = await this.resolveStatusId(input.status);
 
     const inserted = await this.db
       .insert(reminders)
@@ -192,21 +186,20 @@ export class RemindersService {
 
     // Merge the body with persisted values to check the "at least one trigger" rule
     const mergedDueDate = input.dueDate !== undefined ? input.dueDate : current.dueDate;
-    const mergedDueMileage =
-      input.dueMileage !== undefined ? input.dueMileage : current.dueMileage;
+    const mergedDueMileage = input.dueMileage !== undefined ? input.dueMileage : current.dueMileage;
 
     if (mergedDueDate == null && mergedDueMileage == null) {
       throw new BadRequestException({
         code: 'VALIDATION_ERROR',
         message: 'A reminder needs at least one trigger: dueDate or dueMileage',
-        issues: [{ code: 'validation', path: ['dueDate'], message: 'At least one trigger required' }],
+        issues: [
+          { code: 'validation', path: ['dueDate'], message: 'At least one trigger required' },
+        ],
       });
     }
 
     const statusId =
-      input.status !== undefined
-        ? await this.resolveStatusId(input.status)
-        : current.statusId;
+      input.status !== undefined ? await this.resolveStatusId(input.status) : current.statusId;
 
     const updates: Partial<typeof reminders.$inferInsert> = {
       updatedAt: new Date(),
@@ -269,7 +262,11 @@ export class RemindersService {
       await this.loadStatusCache();
     }
 
-    const cached = this.statusIdCache![code];
+    const cache = this.statusIdCache;
+    if (!cache) {
+      throw new InternalServerErrorException('Status cache failed to load');
+    }
+    const cached = cache[code];
     if (cached === undefined) {
       throw new BadRequestException({
         code: 'VALIDATION_ERROR',

@@ -272,6 +272,243 @@ export interface paths {
       };
     };
   };
+  "/api/vehicles/{vehicleId}/reminders": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            title: string;
+            description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
+            status: string;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
+            createdAt: string;
+            updatedAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          title: string;
+          description?: string | null;
+          dueDate?: string | null;
+          dueMileage?: number | null;
+          status: "pending" | "done" | "cancelled";
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            title: string;
+            description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
+            status: string;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/reminders/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            title: string;
+            description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
+            status: string;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          title?: string;
+          description?: string | null;
+          dueDate?: string | null;
+          dueMileage?: number | null;
+          status?: "pending" | "done" | "cancelled";
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            title: string;
+            description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
+            status: string;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/me": {
     get: {
       responses: {
