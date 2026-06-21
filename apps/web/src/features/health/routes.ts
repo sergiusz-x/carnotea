@@ -1,3 +1,4 @@
+import { ROUTES } from '@carnotea/shared';
 import { createRoute } from '@tanstack/react-router';
 
 import { rootRoute } from '@/routes/root';
@@ -7,7 +8,7 @@ import { healthQueryOptions } from './queries';
 
 export const healthRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/healthz',
+  path: ROUTES.healthz,
   // prefetchQuery warms the cache without throwing on failure, so a down API
   // still renders HealthStatus (which surfaces the error as "down") instead of
   // the router's error boundary.

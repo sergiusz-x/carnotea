@@ -2,6 +2,7 @@ import {
   ErrorResponseSchema,
   FuelLogCreateSchema,
   FuelLogUpdateSchema,
+  ROUTES,
   type FuelLogCreate,
   type FuelLogUpdate,
 } from '@carnotea/shared';
@@ -46,7 +47,7 @@ const FuelLogResponseSchema = z.object({
 
 zodRoute({
   method: 'get',
-  path: '/vehicles/{vehicleId}/fuel-logs',
+  path: ROUTES.fuelLogsByVehicle,
   operationId: 'listFuelLogs',
   summary: "List an owned vehicle's fuel logs, newest first",
   tags: ['Fuel Logs'],
@@ -60,7 +61,7 @@ zodRoute({
 
 zodRoute({
   method: 'get',
-  path: '/vehicles/{vehicleId}/fuel-logs/{id}',
+  path: ROUTES.fuelLogById,
   operationId: 'getFuelLog',
   summary: 'Get one fuel log',
   tags: ['Fuel Logs'],
@@ -74,7 +75,7 @@ zodRoute({
 
 zodRoute({
   method: 'post',
-  path: '/vehicles/{vehicleId}/fuel-logs',
+  path: ROUTES.fuelLogsByVehicle,
   operationId: 'createFuelLog',
   summary: 'Create a fuel log',
   tags: ['Fuel Logs'],
@@ -89,7 +90,7 @@ zodRoute({
 
 zodRoute({
   method: 'patch',
-  path: '/vehicles/{vehicleId}/fuel-logs/{id}',
+  path: ROUTES.fuelLogById,
   operationId: 'updateFuelLog',
   summary: 'Update a fuel log',
   tags: ['Fuel Logs'],
@@ -104,7 +105,7 @@ zodRoute({
 
 zodRoute({
   method: 'delete',
-  path: '/vehicles/{vehicleId}/fuel-logs/{id}',
+  path: ROUTES.fuelLogById,
   operationId: 'deleteFuelLog',
   summary: 'Delete a fuel log',
   tags: ['Fuel Logs'],
@@ -121,7 +122,7 @@ zodRoute({
 export class FuelLogsController {
   constructor(private readonly fuelLogs: FuelLogsService) {}
 
-  @Get('vehicles/:vehicleId/fuel-logs')
+  @Get(ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId'))
   list(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -129,7 +130,7 @@ export class FuelLogsController {
     return this.fuelLogs.list(user.id, vehicleId);
   }
 
-  @Get('vehicles/:vehicleId/fuel-logs/:id')
+  @Get(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
   getOne(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -138,7 +139,7 @@ export class FuelLogsController {
     return this.fuelLogs.getOwnedOrThrow(user.id, vehicleId, id);
   }
 
-  @Post('vehicles/:vehicleId/fuel-logs')
+  @Post(ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId'))
   create(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -147,7 +148,7 @@ export class FuelLogsController {
     return this.fuelLogs.create(user.id, vehicleId, body);
   }
 
-  @Patch('vehicles/:vehicleId/fuel-logs/:id')
+  @Patch(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
   update(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -157,7 +158,7 @@ export class FuelLogsController {
     return this.fuelLogs.update(user.id, vehicleId, id, body);
   }
 
-  @Delete('vehicles/:vehicleId/fuel-logs/:id')
+  @Delete(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
   @HttpCode(204)
   remove(
     @CurrentUser() user: AuthUser,

@@ -1,0 +1,43 @@
+name: API schema
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  generated-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Verify generated web API schema
+        env:
+          API_HOST: 127.0.0.1
+          API_PORT: 3001
+          BETTER_AUTH_SECRET: ci-placeholder-secret
+          BETTER_AUTH_URL: http://localhost:3001
+          DATABASE_URL: postgresql://carnotea:carnotea@127.0.0.1:5432/carnotea
+          NODE_ENV: test
+        run: |
+          pnpm --filter @carnotea/api start &
+          api_pid=$!
+          trap 'kill "$api_pid"' EXIT
+          for attempt in {1..30}; do
+            if curl --fail --silent http://localhost:3001/openapi.json >/dev/null; then
+              pnpm --filter @carnotea/web codegen:api:check
+              exit
+            fi
+            sleep 1
+          done
+          echo 'API did not become ready in time' >&2
+          exit 1

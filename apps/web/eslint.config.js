@@ -1,7 +1,13 @@
-import { react } from '@carnotea/eslint-config';
+import { node, react } from '@carnotea/eslint-config';
+
+const nodeScripts = node.map((config) => ({
+  ...config,
+  files: ['scripts/**/*.mjs'],
+}));
 
 export default [
   ...react,
+  ...nodeScripts,
   {
     // TypeScript provides prop-type checking; the React prop-types runtime rule
     // is redundant for TS files and fires false positives on forwardRef components.

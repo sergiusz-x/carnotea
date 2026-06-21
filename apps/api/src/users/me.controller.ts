@@ -1,4 +1,5 @@
 import { users, type Db } from '@carnotea/db';
+import { ROUTES } from '@carnotea/shared';
 import { Controller, Get, Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
@@ -24,7 +25,7 @@ type MeResponse = z.infer<typeof MeResponseSchema>;
 
 zodRoute({
   method: 'get',
-  path: '/me',
+  path: ROUTES.me,
   operationId: 'getMe',
   summary: 'Get the authenticated user profile',
   tags: ['Users'],
@@ -39,7 +40,7 @@ zodRoute({
 export class MeController {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  @Get('me')
+  @Get(ROUTES.me)
   @UseGuards(AuthGuard)
   async me(@CurrentUser() user: AuthUser): Promise<MeResponse> {
     const profile = await this.db.query.users.findFirst({
