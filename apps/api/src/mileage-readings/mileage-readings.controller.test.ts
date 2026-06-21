@@ -90,13 +90,19 @@ describe('MileageReadingsController', () => {
   it('rejects an unauthenticated request with 401', async () => {
     currentSession = null;
 
-    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/mileage-readings` });
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/mileage-readings`,
+    });
 
     expect(res.statusCode).toBe(401);
   });
 
   it('GET /api/vehicles/:vehicleId/mileage-readings lists readings', async () => {
-    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/mileage-readings` });
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/mileage-readings`,
+    });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual([sampleReading]);
@@ -104,7 +110,10 @@ describe('MileageReadingsController', () => {
   });
 
   it('GET /api/vehicles/:vehicleId/mileage-readings rejects non-uuid vehicleId with 400', async () => {
-    const res = await app.inject({ method: 'GET', url: '/api/vehicles/not-a-uuid/mileage-readings' });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/vehicles/not-a-uuid/mileage-readings',
+    });
 
     expect(res.statusCode).toBe(400);
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });

@@ -4,16 +4,7 @@ import {
   ROUTES,
   type MileageReadingCreate,
 } from '@carnotea/shared';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  Param,
-  Post,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from '@nestjs/common';
 import { z } from 'zod';
 
 import { AuthGuard } from '../auth/auth.guard.js';
@@ -54,7 +45,10 @@ zodRoute({
   tags: ['Mileage Readings'],
   request: { params: vehicleIdParam },
   responses: {
-    '200': { description: 'Mileage readings for the vehicle', schema: z.array(MileageReadingResponseSchema) },
+    '200': {
+      description: 'Mileage readings for the vehicle',
+      schema: z.array(MileageReadingResponseSchema),
+    },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Vehicle not found', schema: ErrorResponseSchema },
   },

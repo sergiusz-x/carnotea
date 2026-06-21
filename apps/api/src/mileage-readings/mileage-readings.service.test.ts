@@ -45,10 +45,14 @@ describe('MileageReadingsService — sourceType enforcement', () => {
     const fakeDb = {
       select: vi.fn().mockReturnValue({
         from: vi.fn().mockReturnValue({
-          where: vi.fn().mockReturnValue({ limit: vi.fn().mockResolvedValue([{ id: 'vehicle-id' }]) }),
+          where: vi
+            .fn()
+            .mockReturnValue({ limit: vi.fn().mockResolvedValue([{ id: 'vehicle-id' }]) }),
         }),
       }),
-      transaction: vi.fn().mockImplementation((cb: (tx: unknown) => Promise<unknown>) => cb(fakeTx)),
+      transaction: vi
+        .fn()
+        .mockImplementation((cb: (tx: unknown) => Promise<unknown>) => cb(fakeTx)),
     };
 
     const fakeMileageSync = {
