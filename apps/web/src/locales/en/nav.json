@@ -1,0 +1,9 @@
+{
+  "primary": "Primary navigation",
+  "vehicles": "Vehicles",
+  "dashboard": "Dashboard",
+  "profile": "Profile",
+  "user": {
+    "signOut": "Sign out"
+  }
+}
