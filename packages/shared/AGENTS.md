@@ -14,8 +14,9 @@ src/
 
 ## Rules
 
-- Constants mirror the SQL seed data in `sql/07_seed_data.sql`. If the seed
-  changes, update the matching constant file in the same PR.
+- Constants mirror the lookup seed data in
+  `packages/db/migrations/0003_seed_lookups.sql`. If the seed changes, update the
+  matching constant file in the same PR.
 - Constants are exported as `as const` arrays plus an inferred union type:
   `export const FOO_CODES = [...] as const; export type FooCode = (typeof FOO_CODES)[number];`
 - Schemas live under `src/schemas/`. Use `z.infer` for derived types — never
