@@ -1,0 +1,9 @@
+{
+  "primary": "Nawigacja główna",
+  "vehicles": "Pojazdy",
+  "dashboard": "Panel",
+  "profile": "Profil",
+  "user": {
+    "signOut": "Wyloguj się"
+  }
+}
