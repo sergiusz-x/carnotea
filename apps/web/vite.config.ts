@@ -4,9 +4,20 @@ import { ROUTES } from '@carnotea/shared';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  plugins: [tailwindcss(), react()],
+  plugins: [
+    tailwindcss(),
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: false,
+      workbox: {
+        runtimeCaching: [],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       '@/components': resolve(import.meta.dirname, 'src/components'),
