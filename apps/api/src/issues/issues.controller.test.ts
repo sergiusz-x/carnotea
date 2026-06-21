@@ -152,9 +152,7 @@ describe('IssuesController', () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual(sampleIssue);
-    expect(calls).toEqual([
-      { method: 'getOwnedOrThrow', args: [userId, vehicleId, existingId] },
-    ]);
+    expect(calls).toEqual([{ method: 'getOwnedOrThrow', args: [userId, vehicleId, existingId] }]);
   });
 
   it('GET /api/vehicles/:vehicleId/issues/:id surfaces 404 from service', async () => {

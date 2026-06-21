@@ -272,20 +272,20 @@ export interface paths {
       };
     };
   };
-  "/api/vehicles/{vehicleId}/reminders": {
+  "/api/vehicles/{vehicleId}/issues": {
     get: {
       responses: {
         200: { content: {
           "application/json": ({
             id: string;
             vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
             title: string;
             description: string | null;
-            dueDate: string | null;
-            dueMileage: number | null;
             status: string;
-            dueState: "overdue" | "due_soon" | "ok";
-            notifiedAt: string | null;
+            priority: string;
+            relatedServiceRecordId: string | null;
             createdAt: string;
             updatedAt: string;
           })[];
@@ -317,11 +317,13 @@ export interface paths {
     post: {
       requestBody: { content: {
         "application/json": {
+          reportedDate: string;
+          resolvedDate?: string | null;
           title: string;
           description?: string | null;
-          dueDate?: string | null;
-          dueMileage?: number | null;
-          status: "pending" | "done" | "cancelled";
+          status: "open" | "in_progress" | "resolved" | "cancelled";
+          priority: "low" | "medium" | "high" | "critical";
+          relatedServiceRecordId?: string | null;
         };
       } };
       responses: {
@@ -329,13 +331,13 @@ export interface paths {
           "application/json": {
             id: string;
             vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
             title: string;
             description: string | null;
-            dueDate: string | null;
-            dueMileage: number | null;
             status: string;
-            dueState: "overdue" | "due_soon" | "ok";
-            notifiedAt: string | null;
+            priority: string;
+            relatedServiceRecordId: string | null;
             createdAt: string;
             updatedAt: string;
           };
@@ -376,20 +378,20 @@ export interface paths {
       };
     };
   };
-  "/api/vehicles/{vehicleId}/reminders/{id}": {
+  "/api/vehicles/{vehicleId}/issues/{id}": {
     get: {
       responses: {
         200: { content: {
           "application/json": {
             id: string;
             vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
             title: string;
             description: string | null;
-            dueDate: string | null;
-            dueMileage: number | null;
             status: string;
-            dueState: "overdue" | "due_soon" | "ok";
-            notifiedAt: string | null;
+            priority: string;
+            relatedServiceRecordId: string | null;
             createdAt: string;
             updatedAt: string;
           };
@@ -450,11 +452,13 @@ export interface paths {
     patch: {
       requestBody: { content: {
         "application/json": {
+          reportedDate?: string;
+          resolvedDate?: string | null;
           title?: string;
           description?: string | null;
-          dueDate?: string | null;
-          dueMileage?: number | null;
-          status?: "pending" | "done" | "cancelled";
+          status?: "open" | "in_progress" | "resolved" | "cancelled";
+          priority?: "low" | "medium" | "high" | "critical";
+          relatedServiceRecordId?: string | null;
         };
       } };
       responses: {
@@ -462,13 +466,13 @@ export interface paths {
           "application/json": {
             id: string;
             vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
             title: string;
             description: string | null;
-            dueDate: string | null;
-            dueMileage: number | null;
             status: string;
-            dueState: "overdue" | "due_soon" | "ok";
-            notifiedAt: string | null;
+            priority: string;
+            relatedServiceRecordId: string | null;
             createdAt: string;
             updatedAt: string;
           };

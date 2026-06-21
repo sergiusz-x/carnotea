@@ -1,14 +1,7 @@
 import { issues, issueStatuses, issuePriorities, vehicles, type Db } from '@carnotea/db';
-import {
-  type IssueCreate,
-  type IssueUpdate,
-  ISSUE_PRIORITY_CODES,
-  type IssuePriorityCode,
-  ISSUE_STATUS_CODES,
-  type IssueStatusCode,
-} from '@carnotea/shared';
+import { type IssueCreate, type IssueUpdate } from '@carnotea/shared';
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { and, desc, eq, inArray, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
 
@@ -125,9 +118,7 @@ export class IssuesService {
     // resolved status → always set a resolvedDate if not provided
     // non-resolved status → never persist a resolvedDate
     const resolvedDate =
-      input.status === 'resolved'
-        ? (input.resolvedDate ?? input.reportedDate)
-        : undefined;
+      input.status === 'resolved' ? (input.resolvedDate ?? input.reportedDate) : undefined;
 
     const values: Record<string, unknown> = {
       vehicleId,
@@ -193,13 +184,12 @@ export class IssuesService {
     }
 
     // Determine the effective status after update
-    const effectiveStatus = input.status ?? current.statusCode;
     let effectiveResolvedDate: string | null | undefined;
 
     if (input.resolvedDate !== undefined) {
       effectiveResolvedDate = input.resolvedDate;
     } else {
-      effectiveResolvedDate = current.resolvedDate as string | null | undefined;
+      effectiveResolvedDate = current.resolvedDate;
     }
 
     if (input.status !== undefined) {
@@ -281,10 +271,8 @@ export class IssuesService {
   }
 
   private async resolveStatusId(code: string): Promise<number> {
-    if (!statusCodeToId) {
-      await this.loadStatusMap();
-    }
-    const id = statusCodeToId![code];
+    const map = statusCodeToId ?? (await this.loadStatusMap());
+    const id = map[code];
     if (id === undefined) {
       throw new BadRequestException({
         code: 'VALIDATION_ERROR',
@@ -295,10 +283,8 @@ export class IssuesService {
   }
 
   private async resolvePriorityId(code: string): Promise<number> {
-    if (!priorityCodeToId) {
-      await this.loadPriorityMap();
-    }
-    const id = priorityCodeToId![code];
+    const map = priorityCodeToId ?? (await this.loadPriorityMap());
+    const id = map[code];
     if (id === undefined) {
       throw new BadRequestException({
         code: 'VALIDATION_ERROR',
@@ -308,18 +294,20 @@ export class IssuesService {
     return id;
   }
 
-  private async loadStatusMap(): Promise<void> {
+  private async loadStatusMap(): Promise<Record<string, number>> {
     const rows = await this.db
       .select({ id: issueStatuses.id, code: issueStatuses.code })
       .from(issueStatuses);
     statusCodeToId = Object.fromEntries(rows.map((r) => [r.code, r.id]));
+    return statusCodeToId;
   }
 
-  private async loadPriorityMap(): Promise<void> {
+  private async loadPriorityMap(): Promise<Record<string, number>> {
     const rows = await this.db
       .select({ id: issuePriorities.id, code: issuePriorities.code })
       .from(issuePriorities);
     priorityCodeToId = Object.fromEntries(rows.map((r) => [r.code, r.id]));
+    return priorityCodeToId;
   }
 
   private toResponse(row: IssueRow): IssueResponse {
