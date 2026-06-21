@@ -272,20 +272,185 @@ export interface paths {
       };
     };
   };
-  "/api/vehicles/{vehicleId}/issues": {
+  "/api/vehicles/{vehicleId}/mileage-readings": {
     get: {
       responses: {
         200: { content: {
           "application/json": ({
             id: string;
             vehicleId: string;
-            reportedDate: string;
-            resolvedDate: string | null;
+            readingDate: string;
+            mileage: number;
+            sourceType: string;
+            sourceId: string | null;
+            note: string | null;
+            createdAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          readingDate: string;
+          mileage: number;
+          note?: string | null;
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            readingDate: string;
+            mileage: number;
+            sourceType: string;
+            sourceId: string | null;
+            note: string | null;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/mileage-readings/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            readingDate: string;
+            mileage: number;
+            sourceType: string;
+            sourceId: string | null;
+            note: string | null;
+            createdAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/reminders": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
             title: string;
             description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
             status: string;
-            priority: string;
-            relatedServiceRecordId: string | null;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
             createdAt: string;
             updatedAt: string;
           })[];
@@ -317,13 +482,11 @@ export interface paths {
     post: {
       requestBody: { content: {
         "application/json": {
-          reportedDate: string;
-          resolvedDate?: string | null;
           title: string;
           description?: string | null;
-          status: "open" | "in_progress" | "resolved" | "cancelled";
-          priority: "low" | "medium" | "high" | "critical";
-          relatedServiceRecordId?: string | null;
+          dueDate?: string | null;
+          dueMileage?: number | null;
+          status: "pending" | "done" | "cancelled";
         };
       } };
       responses: {
@@ -331,13 +494,13 @@ export interface paths {
           "application/json": {
             id: string;
             vehicleId: string;
-            reportedDate: string;
-            resolvedDate: string | null;
             title: string;
             description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
             status: string;
-            priority: string;
-            relatedServiceRecordId: string | null;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
             createdAt: string;
             updatedAt: string;
           };
@@ -378,20 +541,20 @@ export interface paths {
       };
     };
   };
-  "/api/vehicles/{vehicleId}/issues/{id}": {
+  "/api/vehicles/{vehicleId}/reminders/{id}": {
     get: {
       responses: {
         200: { content: {
           "application/json": {
             id: string;
             vehicleId: string;
-            reportedDate: string;
-            resolvedDate: string | null;
             title: string;
             description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
             status: string;
-            priority: string;
-            relatedServiceRecordId: string | null;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
             createdAt: string;
             updatedAt: string;
           };
@@ -452,13 +615,11 @@ export interface paths {
     patch: {
       requestBody: { content: {
         "application/json": {
-          reportedDate?: string;
-          resolvedDate?: string | null;
           title?: string;
           description?: string | null;
-          status?: "open" | "in_progress" | "resolved" | "cancelled";
-          priority?: "low" | "medium" | "high" | "critical";
-          relatedServiceRecordId?: string | null;
+          dueDate?: string | null;
+          dueMileage?: number | null;
+          status?: "pending" | "done" | "cancelled";
         };
       } };
       responses: {
@@ -466,13 +627,13 @@ export interface paths {
           "application/json": {
             id: string;
             vehicleId: string;
-            reportedDate: string;
-            resolvedDate: string | null;
             title: string;
             description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
             status: string;
-            priority: string;
-            relatedServiceRecordId: string | null;
+            dueState: "overdue" | "due_soon" | "ok";
+            notifiedAt: string | null;
             createdAt: string;
             updatedAt: string;
           };
@@ -519,18 +680,74 @@ export interface paths {
         200: { content: {
           "application/json": {
             id: string;
-            email: string;
             firstName: string;
             lastName: string;
+            email: string;
+            localePref: "pl" | "en";
+            unitsPref: "metric" | "imperial";
+            currencyPref: string;
             createdAt: string;
             updatedAt: string;
           };
         } };
         401: { content: {
-
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
         } };
-        404: { content: {
-
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          firstName?: string;
+          lastName?: string;
+          localePref?: "pl" | "en";
+          unitsPref?: "metric" | "imperial";
+          currencyPref?: string;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            localePref: "pl" | "en";
+            unitsPref: "metric" | "imperial";
+            currencyPref: string;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
         } };
       };
     };
