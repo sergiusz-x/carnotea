@@ -1,14 +1,14 @@
 ---
 id: T-012
 title: Web — PWA manifest + minimal service worker
-status: ready
+status: done
 priority: medium
-owner: ~
+owner: claude-code
 dependencies: [T-007, T-008]
 labels: [web, pwa]
 created_at: 2026-06-13
-updated_at: 2026-06-13
-closed_at: ~
+updated_at: 2026-06-21
+closed_at: 2026-06-21
 ---
 
 # T-012 — Web: PWA manifest + minimal service worker
@@ -27,23 +27,23 @@ tickets. This ticket implements the _installable_ baseline.
 
 ## Acceptance criteria
 
-- [ ] `apps/web/public/manifest.webmanifest` exists with: `name`, `short_name`
+- [x] `apps/web/public/manifest.webmanifest` exists with: `name`, `short_name`
       (≤12 chars), `description` (pl + en via per-locale manifest? document
       the choice), `start_url: "/"`, `display: "standalone"`, `theme_color`,
       `background_color`, full icon set.
-- [ ] Icons exist as `apps/web/public/icons/icon-192.png`, `-384.png`,
+- [x] Icons exist as `apps/web/public/icons/icon-192.png`, `-384.png`,
       `-512.png`, `-maskable-512.png`, `-apple-touch-180.png`. Placeholder
       art is acceptable (the brand decision happens elsewhere).
-- [ ] `index.html` includes `<link rel="manifest">`,
+- [x] `index.html` includes `<link rel="manifest">`,
       `<meta name="theme-color">`, `<link rel="apple-touch-icon">` and the
       iOS-specific meta tags.
-- [ ] A minimal service worker is registered (Vite PWA plugin OR a hand-rolled
+- [x] A minimal service worker is registered (Vite PWA plugin OR a hand-rolled
       `sw.js`) that does _not_ cache API responses. It exists solely to make
       the install prompt fire.
-- [ ] The Chrome devtools "Application > Manifest" tab shows no warnings on
+- [x] The Chrome devtools "Application > Manifest" tab shows no warnings on
       the built app.
-- [ ] Lighthouse PWA audit on the built app passes "Installable".
-- [ ] `apps/web/AGENTS.md` documents: "do not add offline caching, background
+- [x] Lighthouse PWA audit on the built app passes "Installable".
+- [x] `apps/web/AGENTS.md` documents: "do not add offline caching, background
       sync, or push notifications in this ticket — those live behind their own
       ADRs and tickets".
 

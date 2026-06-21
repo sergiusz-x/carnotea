@@ -14,7 +14,6 @@ Legend: `🔴` high · `🟡` medium · `🟢` low
 These tickets are fully specced. An agent picks the first one whose `dependencies`
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
-- 🟡 [T-012 — Web — PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
 - 🟢 [T-013 — Tooling — Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
 - 🟢 [T-014 — Infra — dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
 - 🟢 [T-016 — Turborepo generators — scaffold new packages](./T-016-turbo-generators.md)
@@ -84,6 +83,7 @@ _None._
 - 🟡 [T-010 — Web — i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
 - 🟡 [T-011 — Web — typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 - 🔴 [T-015 — CI — GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
+- 🟡 [T-012 — Web — PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
 - 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
 - 🔴 [T-019 — Shared — canonical domain Zod schemas + inferred types](./T-019-shared-domain-zod-schemas.md)
 - 🔴 [T-020 — API — Vehicles CRUD (user-scoped, OpenAPI)](./T-020-api-vehicles-crud.md)
