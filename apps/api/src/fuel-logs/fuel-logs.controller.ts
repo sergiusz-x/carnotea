@@ -122,7 +122,7 @@ zodRoute({
 export class FuelLogsController {
   constructor(private readonly fuelLogs: FuelLogsService) {}
 
-  @Get(`${ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId')}`)
+  @Get(ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId'))
   list(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -130,7 +130,7 @@ export class FuelLogsController {
     return this.fuelLogs.list(user.id, vehicleId);
   }
 
-  @Get(`${ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id')}`)
+  @Get(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
   getOne(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -139,7 +139,7 @@ export class FuelLogsController {
     return this.fuelLogs.getOwnedOrThrow(user.id, vehicleId, id);
   }
 
-  @Post(`${ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId')}`)
+  @Post(ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId'))
   create(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -148,7 +148,7 @@ export class FuelLogsController {
     return this.fuelLogs.create(user.id, vehicleId, body);
   }
 
-  @Patch(`${ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id')}`)
+  @Patch(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
   update(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -158,7 +158,7 @@ export class FuelLogsController {
     return this.fuelLogs.update(user.id, vehicleId, id, body);
   }
 
-  @Delete(`${ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id')}`)
+  @Delete(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
   @HttpCode(204)
   remove(
     @CurrentUser() user: AuthUser,

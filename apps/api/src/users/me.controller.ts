@@ -1,5 +1,5 @@
-import { ROUTES } from '@carnotea/shared';
 import { users, type Db } from '@carnotea/db';
+import { ROUTES } from '@carnotea/shared';
 import { Controller, Get, Inject, NotFoundException, UseGuards } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';

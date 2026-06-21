@@ -1,5 +1,5 @@
-import { ROUTES } from '@carnotea/shared';
 import { type Db } from '@carnotea/db';
+import { ROUTES } from '@carnotea/shared';
 import { Controller, Get, HttpException, HttpStatus, Inject } from '@nestjs/common';
 import { sql } from 'drizzle-orm';
 import { z } from 'zod';

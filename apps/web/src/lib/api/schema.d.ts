@@ -4,351 +4,556 @@
  */
 
 export interface paths {
-  '/healthz': {
+  "/vehicles/{vehicleId}/fuel-logs": {
     get: {
       responses: {
-        200: {
-          content: {
-            'application/json': {
-              status: 'ok';
-            };
-          };
-        };
-      };
-    };
-  };
-  '/readyz': {
-    get: {
-      responses: {
-        200: {
-          content: {
-            'application/json': {
-              status: 'ok';
-              db: 'ok';
-            };
-          };
-        };
-        503: {
-          content: {
-            'application/json': {
-              status: 'error';
-              db: 'unreachable';
-            };
-          };
-        };
-      };
-    };
-  };
-  '/me': {
-    get: {
-      responses: {
-        200: {
-          content: {
-            'application/json': {
-              id: string;
-              email: string;
-              firstName: string;
-              lastName: string;
-              createdAt: string;
-              updatedAt: string;
-            };
-          };
-        };
-        401: { content: {} };
-        404: { content: {} };
-      };
-    };
-  };
-  '/vehicles': {
-    get: {
-      responses: {
-        200: {
-          content: {
-            'application/json': {
-              id: string;
-              brand: string;
-              model: string;
-              generation?: string | null;
-              productionYear: number;
-              engine?: string | null;
-              fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'lpg' | 'other';
-              vin?: string | null;
-              registrationNumber?: string | null;
-              currentMileage: number;
-              currencyCode: string;
-              createdAt: string;
-              updatedAt: string;
-            }[];
-          };
-        };
-        401: {
-          content: {
-            'application/json': {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            fuelDate: string;
+            mileage: number;
+            liters: number;
+            pricePerLiter: number;
+            totalCost: number;
+            stationName: string | null;
+            isFullTank: boolean;
+            consumptionHint: number | null;
+            createdAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
       };
     };
     post: {
-      requestBody: {
-        content: {
-          'application/json': {
+      requestBody: { content: {
+        "application/json": {
+          fuelDate: string;
+          mileage: number;
+          liters: number;
+          pricePerLiter: number;
+          stationName?: string | null;
+          isFullTank?: boolean;
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            fuelDate: string;
+            mileage: number;
+            liters: number;
+            pricePerLiter: number;
+            totalCost: number;
+            stationName: string | null;
+            isFullTank: boolean;
+            consumptionHint: number | null;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/vehicles/{vehicleId}/fuel-logs/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            fuelDate: string;
+            mileage: number;
+            liters: number;
+            pricePerLiter: number;
+            totalCost: number;
+            stationName: string | null;
+            isFullTank: boolean;
+            consumptionHint: number | null;
+            createdAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          fuelDate?: string;
+          mileage?: number;
+          liters?: number;
+          pricePerLiter?: number;
+          stationName?: string | null;
+          isFullTank?: boolean;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            fuelDate: string;
+            mileage: number;
+            liters: number;
+            pricePerLiter: number;
+            totalCost: number;
+            stationName: string | null;
+            isFullTank: boolean;
+            consumptionHint: number | null;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/healthz": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            status: "ok";
+          };
+        } };
+      };
+    };
+  };
+  "/readyz": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            status: "ok";
+            db: "ok";
+          };
+        } };
+        503: { content: {
+          "application/json": {
+            status: "error";
+            db: "unreachable";
+          };
+        } };
+      };
+    };
+  };
+  "/me": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            email: string;
+            firstName: string;
+            lastName: string;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        401: { content: {
+
+        } };
+        404: { content: {
+
+        } };
+      };
+    };
+  };
+  "/vehicles": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
             brand: string;
             model: string;
             generation?: string | null;
             productionYear: number;
             engine?: string | null;
-            fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'lpg' | 'other';
+            fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
             vin?: string | null;
             registrationNumber?: string | null;
-            currencyCode?: string;
+            currentMileage: number;
+            currencyCode: string;
+            createdAt: string;
+            updatedAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
           };
-        };
+        } };
       };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          brand: string;
+          model: string;
+          generation?: string | null;
+          productionYear: number;
+          engine?: string | null;
+          fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
+          vin?: string | null;
+          registrationNumber?: string | null;
+          currencyCode?: string;
+        };
+      } };
       responses: {
-        201: {
-          content: {
-            'application/json': {
-              id: string;
-              brand: string;
-              model: string;
-              generation?: string | null;
-              productionYear: number;
-              engine?: string | null;
-              fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'lpg' | 'other';
-              vin?: string | null;
-              registrationNumber?: string | null;
-              currentMileage: number;
-              currencyCode: string;
-              createdAt: string;
-              updatedAt: string;
-            };
+        201: { content: {
+          "application/json": {
+            id: string;
+            brand: string;
+            model: string;
+            generation?: string | null;
+            productionYear: number;
+            engine?: string | null;
+            fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
+            vin?: string | null;
+            registrationNumber?: string | null;
+            currentMileage: number;
+            currencyCode: string;
+            createdAt: string;
+            updatedAt: string;
           };
-        };
-        400: {
-          content: {
-            'application/json': {
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        401: {
-          content: {
-            'application/json': {
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        409: {
-          content: {
-            'application/json': {
+        } };
+        409: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
+        } };
       };
     };
   };
-  '/vehicles/{id}': {
+  "/vehicles/{id}": {
     get: {
       responses: {
-        200: {
-          content: {
-            'application/json': {
-              id: string;
-              brand: string;
-              model: string;
-              generation?: string | null;
-              productionYear: number;
-              engine?: string | null;
-              fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'lpg' | 'other';
-              vin?: string | null;
-              registrationNumber?: string | null;
-              currentMileage: number;
-              currencyCode: string;
-              createdAt: string;
-              updatedAt: string;
-            };
+        200: { content: {
+          "application/json": {
+            id: string;
+            brand: string;
+            model: string;
+            generation?: string | null;
+            productionYear: number;
+            engine?: string | null;
+            fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
+            vin?: string | null;
+            registrationNumber?: string | null;
+            currentMileage: number;
+            currencyCode: string;
+            createdAt: string;
+            updatedAt: string;
           };
-        };
-        401: {
-          content: {
-            'application/json': {
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        404: {
-          content: {
-            'application/json': {
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
+        } };
       };
     };
     delete: {
       responses: {
-        204: { content: {} };
-        401: {
-          content: {
-            'application/json': {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        404: {
-          content: {
-            'application/json': {
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
+        } };
       };
     };
     patch: {
-      requestBody: {
-        content: {
-          'application/json': {
-            brand?: string;
-            model?: string;
+      requestBody: { content: {
+        "application/json": {
+          brand?: string;
+          model?: string;
+          generation?: string | null;
+          productionYear?: number;
+          engine?: string | null;
+          fuelType?: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
+          vin?: string | null;
+          registrationNumber?: string | null;
+          currencyCode?: string;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            brand: string;
+            model: string;
             generation?: string | null;
-            productionYear?: number;
+            productionYear: number;
             engine?: string | null;
-            fuelType?: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'lpg' | 'other';
+            fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
             vin?: string | null;
             registrationNumber?: string | null;
-            currencyCode?: string;
+            currentMileage: number;
+            currencyCode: string;
+            createdAt: string;
+            updatedAt: string;
           };
-        };
-      };
-      responses: {
-        200: {
-          content: {
-            'application/json': {
-              id: string;
-              brand: string;
-              model: string;
-              generation?: string | null;
-              productionYear: number;
-              engine?: string | null;
-              fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric' | 'lpg' | 'other';
-              vin?: string | null;
-              registrationNumber?: string | null;
-              currentMileage: number;
-              currencyCode: string;
-              createdAt: string;
-              updatedAt: string;
-            };
-          };
-        };
-        400: {
-          content: {
-            'application/json': {
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        401: {
-          content: {
-            'application/json': {
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        404: {
-          content: {
-            'application/json': {
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
-        409: {
-          content: {
-            'application/json': {
+        } };
+        409: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
               code: string;
+              path: (string | number)[];
               message: string;
-              issues?: {
-                code: string;
-                path: (string | number)[];
-                message: string;
-              }[];
-            };
+            })[];
           };
-        };
+        } };
       };
     };
   };
 }
 
 export interface components {
-  schemas: {};
-  parameters: {};
+  "schemas": {
+
+  };
+  "parameters": {
+
+  };
 }
