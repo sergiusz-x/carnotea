@@ -36,7 +36,7 @@ Closes T-XXX
       (`README.md`, `docs/*`, area `AGENTS.md`, `docs/tech-stack.md`).
 - [ ] New top-level dependency / tool? An ADR was added or updated.
 - [ ] User-facing strings exist in both `pl` and `en`.
-- [ ] The ticket's `status` and `tickets/INDEX.md` were updated.
+- [ ] The ticket's `status` was updated and `tickets/INDEX.md` regenerated (`pnpm tickets:index`).
 
 ## Anything not done / follow-ups
 

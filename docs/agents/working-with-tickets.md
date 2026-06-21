@@ -20,8 +20,9 @@ backlog  →  ready  →  in_progress  →  in_review  →  done
 | `in_review`   | PR open, awaiting review.                                |
 | `done`        | Merged. The ticket file stays as historical record.      |
 
-Status lives in the ticket's frontmatter and is mirrored in `tickets/INDEX.md`.
-Both update together in the same PR.
+Status lives in the ticket's frontmatter — that is the single source of truth.
+`tickets/INDEX.md` is **generated** from it (`pnpm tickets:index`); never
+hand-edit the list. See [ADR-0012](../adr/0012-tickets-index-generated-from-frontmatter.md).
 
 ## How to pick up a ticket
 
@@ -60,7 +61,7 @@ Both update together in the same PR.
    [`lessons.md`](./lessons.md).
 5. Update the ticket frontmatter: `status: in_review`, add `closed_at` once the
    PR is open.
-6. Move the line in `tickets/INDEX.md` to the right section.
+6. Regenerate the index: `pnpm tickets:index`.
 7. Open the PR. The PR body links to the ticket and follows
    [`.github/PULL_REQUEST_TEMPLATE.md`](../../.github/PULL_REQUEST_TEMPLATE.md).
 8. After merge, the PR title's "Closes T-XXX" closes the ticket - mark it `done`
@@ -76,6 +77,25 @@ Numbering is monotonic. The next ticket id is one higher than the highest in
 `tickets/INDEX.md`. No gaps, no reuse.
 
 Name the file `T-NNN-kebab-case-slug.md`.
+
+When you fill the **Contract** section, lean on the patterns so the ticket is a
+delta, not a re-derivation:
+
+- API resources → [`patterns/resource-crud-api.md`](./patterns/resource-crud-api.md)
+- Web screens → [`patterns/web-screens.md`](./patterns/web-screens.md)
+
+## Marking a ticket `ready`
+
+A ticket only moves from `backlog` to `ready` once it passes every box in
+[`definition-of-ready.md`](./definition-of-ready.md). `ready` means an agent can
+execute it end-to-end without a single clarifying question.
+
+## Keeping the index honest
+
+`pnpm lint:tickets` validates every ticket's frontmatter, the
+`# T-NNN` heading, dependency references, and that `tickets/INDEX.md` mirrors each
+ticket's status in exactly one section. CI runs it on any change under `tickets/`.
+Run it locally before opening a PR that touches tickets.
 
 ## When a ticket is wrong
 

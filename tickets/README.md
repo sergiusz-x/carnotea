@@ -11,7 +11,7 @@ lives in
 | --------------- | ---------------------------------------------------------------- |
 | `README.md`     | This file. The "how the system works" reference.                 |
 | `_template.md`  | The starting point for every new ticket. Copy it, don't edit it. |
-| `INDEX.md`      | The single source of truth listing every ticket by status.       |
+| `INDEX.md`      | Generated list of every ticket by status (`pnpm tickets:index`). |
 | `T-NNN-slug.md` | One file per ticket. The filename's `NNN` matches the id.        |
 
 ## Ticket id and filename
@@ -32,6 +32,8 @@ id: T-001 # immutable, matches filename
 title: Bootstrap tooling and workspaces # short imperative summary
 status: ready # see "Lifecycle" below
 priority: high # low | medium | high
+size: M # S | M | L (one ticket = one PR; see definition-of-ready.md)
+spec_version: 1 # opts into the extended template (Contract/Test matrix/Verification)
 owner: ~ # github handle or "claude", ~ = unassigned
 dependencies: [] # list of ticket ids: [T-000]
 labels: [bootstrap, repo] # free-form tags
@@ -62,19 +64,22 @@ the heading. That way the next agent sees you thought about it.
 
 ## INDEX.md
 
-`INDEX.md` is the truth. If a ticket's status disagrees between the ticket file
-and `INDEX.md`, the index wins until the ticket file is corrected (in the same
-PR).
+Each ticket's `status` frontmatter is the source of truth; `INDEX.md` is
+**generated** from it by `scripts/gen-tickets-index.mjs` (`pnpm tickets:index`).
+Never hand-edit the list between the `BEGIN/END GENERATED` markers — change the
+status in the ticket file and regenerate. `pnpm lint:tickets` (CI) fails if the
+two disagree. See [ADR-0012](../docs/adr/0012-tickets-index-generated-from-frontmatter.md).
 
 The index groups tickets by status. New tickets land in `backlog` first; the
-agent or human refining them promotes them to `ready` once the spec is solid.
+agent or human refining them promotes them to `ready` once the spec passes the
+[Definition of Ready](../docs/agents/definition-of-ready.md).
 
 ## Creating a ticket
 
 1. Pick the next free id (highest in `INDEX.md` + 1).
 2. `cp tickets/_template.md tickets/T-NNN-<slug>.md`.
 3. Fill in frontmatter and body.
-4. Add a line in `INDEX.md` under the right status section.
+4. Run `pnpm tickets:index` to add it to the generated list.
 5. Open a PR. The PR title is `chore(tickets): add T-NNN <slug>`.
 
 ## Working on a ticket
@@ -87,7 +92,7 @@ When a PR that closes a ticket is merged:
 
 1. The ticket's frontmatter is updated to `status: done` with `closed_at` set
    to the merge date.
-2. The line in `INDEX.md` moves to the "Done" section.
+2. `pnpm tickets:index` regenerates `INDEX.md` (the ticket lands under "Done").
 3. The PR title or body contains `Closes T-NNN`.
 
 A `done` ticket file is never edited afterwards. To revise the underlying

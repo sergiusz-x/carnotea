@@ -41,16 +41,17 @@ Don't write one for:
 
 ## Index
 
-| ID                                               | Title                                              | Status   |
-| ------------------------------------------------ | -------------------------------------------------- | -------- |
-| [0001](./0001-monorepo-turborepo.md)             | Monorepo with pnpm workspaces and Turborepo        | accepted |
-| [0002](./0002-drizzle-schema-as-code.md)         | Drizzle as source of truth; schema in TypeScript   | accepted |
-| [0003](./0003-rest-openapi-zod.md)               | REST API with OpenAPI generated from Zod           | accepted |
-| [0004](./0004-better-auth.md)                    | better-auth for authentication                     | accepted |
-| [0005](./0005-vite-react-no-nextjs.md)           | Vite + React (no Next.js) for the web app          | accepted |
-| [0006](./0006-pwa-from-day-one.md)               | PWA from day one, advanced features later          | accepted |
-| [0007](./0007-i18n-pl-en.md)                     | i18n with Polish and English from the first screen | accepted |
-| [0008](./0008-tickets-as-markdown.md)            | Tickets live as markdown files in the repo         | accepted |
-| [0009](./0009-shared-tooling-config-packages.md) | Shared tooling config packages                     | accepted |
-| [0010](./0010-api-compiler-swc.md)               | SWC as the apps/api compiler                       | accepted |
-| [0011](./0011-vite8-oxc-api-test-transform.md)   | Vite 8 monorepo; native Oxc for api test transform | accepted |
+| ID                                                         | Title                                              | Status                                   |
+| ---------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------- |
+| [0001](./0001-monorepo-turborepo.md)                       | Monorepo with pnpm workspaces and Turborepo        | accepted                                 |
+| [0002](./0002-drizzle-schema-as-code.md)                   | Drizzle as source of truth; schema in TypeScript   | accepted                                 |
+| [0003](./0003-rest-openapi-zod.md)                         | REST API with OpenAPI generated from Zod           | accepted                                 |
+| [0004](./0004-better-auth.md)                              | better-auth for authentication                     | accepted                                 |
+| [0005](./0005-vite-react-no-nextjs.md)                     | Vite + React (no Next.js) for the web app          | accepted                                 |
+| [0006](./0006-pwa-from-day-one.md)                         | PWA from day one, advanced features later          | accepted                                 |
+| [0007](./0007-i18n-pl-en.md)                               | i18n with Polish and English from the first screen | accepted                                 |
+| [0008](./0008-tickets-as-markdown.md)                      | Tickets live as markdown files in the repo         | accepted (index part superseded by 0012) |
+| [0009](./0009-shared-tooling-config-packages.md)           | Shared tooling config packages                     | accepted                                 |
+| [0010](./0010-api-compiler-swc.md)                         | SWC as the apps/api compiler                       | accepted                                 |
+| [0011](./0011-vite8-oxc-api-test-transform.md)             | Vite 8 monorepo; native Oxc for api test transform | accepted                                 |
+| [0012](./0012-tickets-index-generated-from-frontmatter.md) | Ticket status in frontmatter; INDEX.md generated   | accepted                                 |

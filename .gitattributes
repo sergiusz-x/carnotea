@@ -1,15 +1,4 @@
-* text=auto eol=lf
-
-*.{cmd,[cC][mM][dD]} text eol=crlf
-*.{bat,[bB][aA][tT]} text eol=crlf
-*.{ps1,[pP][sS]1} text eol=crlf
-
-*.png binary
-*.jpg binary
-*.jpeg binary
-*.gif binary
-*.ico binary
-*.pdf binary
-*.zip binary
-
-pnpm-lock.yaml linguist-generated=true
+# Generated, union-merged to avoid status-move conflicts. Source of truth is
+# each ticket frontmatter; run `pnpm tickets:index` after a messy merge. See
+# scripts/gen-tickets-index.mjs and docs/agents/working-with-tickets.md.
+tickets/INDEX.md merge=union

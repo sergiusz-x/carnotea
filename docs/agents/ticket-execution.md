@@ -85,9 +85,9 @@ work in parallel without conflicts.
 
 **First action in the worktree:**
 Update the ticket — `status: in_progress`, `owner: <agent-or-name>`,
-`updated_at: <today>`. Move its line in `tickets/INDEX.md` to **In progress**.
-Leave this change uncommitted so the human can inspect it with the rest of the
-work.
+`updated_at: <today>`. Regenerate the index with `pnpm tickets:index` (it reads
+`status` from frontmatter — never hand-edit `INDEX.md`). Leave this change
+uncommitted so the human can inspect it with the rest of the work.
 
 **For each acceptance criterion in order:**
 
@@ -172,7 +172,7 @@ Only after the user confirms they are satisfied:
    - Title: `<type>(<scope>): <ticket title>`
    - Body: link to ticket, what changed, how verified, anything _not_ verified.
 8. Update the ticket: `status: done`, `updated_at: <today>`, `closed_at: <today>`.
-   Move its line in `tickets/INDEX.md` to **Done**.
+   Regenerate the index with `pnpm tickets:index`.
 9. Commit the status update and push it to the PR branch.
 10. Share the PR URL.
 
