@@ -1,11 +1,11 @@
 ---
 id: T-032
 title: Web app shell — auth guard, login/logout, nav, layout
-status: ready
+status: in_progress
 priority: high
 size: L
 spec_version: 1
-owner: ~
+owner: claude-code
 dependencies: [T-006, T-009, T-010, T-031]
 labels: [web, foundation]
 created_at: 2026-06-15
@@ -62,18 +62,18 @@ calls use the **better-auth client**, not the OpenAPI `apiClient`.
 
 ## Acceptance criteria
 
-- [ ] Sign-in, sign-up, sign-out use the better-auth client; on success the user
+- [x] Sign-in, sign-up, sign-out use the better-auth client; on success the user
       lands in the app, on sign-out returns to `/login`.
-- [ ] Protected routes are guarded: an unauthenticated user hitting any app route is
+- [x] Protected routes are guarded: an unauthenticated user hitting any app route is
       redirected to `/login` with the intended path preserved and restored after login.
-- [ ] Authenticated routes render inside a top-level layout: header with app name,
+- [x] Authenticated routes render inside a top-level layout: header with app name,
       primary nav (Vehicles, Dashboard, Profile), locale switcher, theme toggle, and
       a user/sign-out menu.
-- [ ] The locale switcher toggles `pl`/`en` and persists; the active locale applies
+- [x] The locale switcher toggles `pl`/`en` and persists; the active locale applies
       immediately without a full reload.
-- [ ] Session state is read via TanStack Query so guard + header react to login/out;
+- [x] Session state is read via TanStack Query so guard + header react to login/out;
       a loading state avoids a login-page flash for already-authenticated users.
-- [ ] All shell strings exist in both `pl` and `en`; no hardcoded JSX.
+- [x] All shell strings exist in both `pl` and `en`; no hardcoded JSX.
 
 ## Test matrix
 
@@ -122,3 +122,19 @@ calls use the **better-auth client**, not the OpenAPI `apiClient`.
 - Related tickets: T-006, T-009, T-010, T-031, T-033+ (feature screens)
 - ADR: better-auth [ADR-0004](../docs/adr/0004-better-auth.md); i18n
   [ADR-0007](../docs/adr/0007-i18n-pl-en.md)
+
+## Notes
+
+- `better-auth` added to `@carnotea/web` dependencies (covered by ADR-0004).
+- `_authenticated` is a pathless layout route using `id: '_authenticated'` (no
+  path) — child routes inherit auth guard without URL path segment.
+- `throw redirect()` requires `// eslint-disable-next-line @typescript-eslint/only-throw-error`
+  since TanStack Router redirect objects are not `Error` instances.
+- `z.email()` (Zod 4 standalone) used instead of deprecated `z.string().email()`.
+- Placeholder routes `/vehicles`, `/dashboard`, `/profile` registered under
+  `_authenticated` so TanStack Router `Link` `to` props are type-safe. Feature
+  tickets (T-033+) replace the placeholder component bodies.
+- `staleTime: Infinity` on session query; invalidated explicitly on sign-in/out.
+- UI verified: dev server started, login page visible at `/login`, redirect
+  preserved as search param. Browser-based visual verification not possible in
+  this environment — reported as not visually verified via agent-browser.
