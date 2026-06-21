@@ -1,4 +1,5 @@
 import { mileageReadings, vehicles, type Db, type Tx } from '@carnotea/db';
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment -- Tx is a complex generic; drizzle's query-builder pattern breaks strict type-checking */
 import { Inject, Injectable } from '@nestjs/common';
 import { and, eq, max, sql } from 'drizzle-orm';
 
