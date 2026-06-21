@@ -18,6 +18,7 @@ src/
     utils.ts        # cn() helper (clsx + tailwind-merge)
     format.ts       # locale-aware Intl date/number helpers (active locale)
     queryClient.ts  # configured TanStack QueryClient (see Data below)
+    auth-client.ts  # better-auth browser client (default baseURL + basePath /api/auth)
     router.ts       # assembles the route tree + creates the TanStack Router
     api/
       client.ts     # typed fetch client + normalized ApiError
@@ -32,11 +33,16 @@ src/
     LanguageSwitcher.tsx # header pl/en picker (persists via i18next detector)
     Devtools.tsx        # dev-only Router + Query devtools (tree-shaken in prod)
     ui/                 # shadcn/ui components copied here by the CLI
-  routes/             # app-level routes (root layout + index); see Routing below
+    layout/            # app-level layout: AppShell, Nav, UserMenu
+  routes/             # app-level routes; see Routing below
     root.tsx          # root route + layout (Outlet + Devtools)
+    _authenticated.tsx # pathless layout route — auth guard → AppShell
+    _authenticated/    # child routes (/, /vehicles, /dashboard, /profile)
+    login.tsx          # /login — sign-in/sign-up, redirects if already authed
     index.tsx         # index route '/' → <App/>
   features/           # feature folders own their own routes.ts + queries.ts + components
     health/           # example feature wiring Router + Query against GET /healthz
+    auth/             # session query, sign-in/up/out forms, useSession hook
 vite.config.ts      # build + dev server (port 5173), Tailwind v4 plugin, path aliases
 vitest.config.ts    # extends @carnotea/vitest-config with the jsdom environment
 vitest.setup.ts     # registers @testing-library/jest-dom matchers

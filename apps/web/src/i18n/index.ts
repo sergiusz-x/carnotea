@@ -3,14 +3,18 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 import { configureZodErrorMap } from '../lib/forms/zod-i18n';
+import enAuth from '../locales/en/auth.json';
 import enCommon from '../locales/en/common.json';
 import enForms from '../locales/en/forms.json';
 import enHealth from '../locales/en/health.json';
 import enLanding from '../locales/en/landing.json';
+import enNav from '../locales/en/nav.json';
+import plAuth from '../locales/pl/auth.json';
 import plCommon from '../locales/pl/common.json';
 import plForms from '../locales/pl/forms.json';
 import plHealth from '../locales/pl/health.json';
 import plLanding from '../locales/pl/landing.json';
+import plNav from '../locales/pl/nav.json';
 
 export const SUPPORTED_LANGUAGES = ['pl', 'en'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
@@ -18,8 +22,22 @@ export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
 export const DEFAULT_NS = 'common';
 
 export const resources = {
-  en: { common: enCommon, forms: enForms, health: enHealth, landing: enLanding },
-  pl: { common: plCommon, forms: plForms, health: plHealth, landing: plLanding },
+  en: {
+    common: enCommon,
+    forms: enForms,
+    health: enHealth,
+    landing: enLanding,
+    auth: enAuth,
+    nav: enNav,
+  },
+  pl: {
+    common: plCommon,
+    forms: plForms,
+    health: plHealth,
+    landing: plLanding,
+    auth: plAuth,
+    nav: plNav,
+  },
 } as const;
 
 void i18n
@@ -32,7 +50,7 @@ void i18n
     // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
-    ns: ['common', 'forms', 'health', 'landing'],
+    ns: ['common', 'forms', 'health', 'landing', 'auth', 'nav'],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
     // boundary is needed and tests render translated text immediately.
