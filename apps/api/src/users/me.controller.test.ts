@@ -1,4 +1,4 @@
-import { users, type Db } from '@carnotea/db';
+import type { users, Db } from '@carnotea/db';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
@@ -6,6 +6,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AUTH } from '../auth/auth.constants.js';
 import { AuthGuard } from '../auth/auth.guard.js';
 import { DB } from '../db/db.constants.js';
+
 import { MeController } from './me.controller.js';
 
 const userId = '11111111-1111-4111-8111-111111111111';
@@ -63,7 +64,11 @@ const dbStub = {
       where: () => ({
         returning: () => {
           if (!storedProfile) return Promise.resolve([]);
-          storedProfile = { ...storedProfile, ...data, updatedAt: new Date(data.updatedAt as Date) };
+          storedProfile = {
+            ...storedProfile,
+            ...data,
+            updatedAt: new Date(data.updatedAt as Date),
+          };
           return Promise.resolve([storedProfile]);
         },
       }),
@@ -159,6 +164,7 @@ describe('MeController', () => {
       });
 
       expect(res.statusCode).toBe(200);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       expect(res.json().email).toBe('jan@example.com');
     });
 
@@ -169,6 +175,7 @@ describe('MeController', () => {
         payload: { localePref: 'de' },
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       console.log('invalid locale response:', { status: res.statusCode, body: res.json() });
       expect(res.statusCode).toBe(400);
       expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
