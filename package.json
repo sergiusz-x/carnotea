@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "description": "CarNotea - a vehicle diary PWA (web + mobile installable).",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "prettier": "@carnotea/prettier-config",
   "packageManager": "pnpm@9.12.0",
   "pnpm": {
