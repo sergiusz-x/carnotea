@@ -31,6 +31,8 @@ import { VehiclesService } from './vehicles.service.js';
 // OpenAPI path format uses {id}; the NestJS routes below use :id.
 const vehicleIdParam = z.object({ id: z.uuid() });
 const idPipe = new ZodValidationPipe(z.uuid());
+const vehiclesNestPath = ROUTES.vehicles.slice(1);
+const vehicleByIdNestPath = ROUTES.vehicleById.replace('{id}', ':id').slice(1);
 
 zodRoute({
   method: 'get',
@@ -114,17 +116,17 @@ zodRoute({
 export class VehiclesController {
   constructor(private readonly vehicles: VehiclesService) {}
 
-  @Get(ROUTES.vehicles)
+  @Get(vehiclesNestPath)
   list(@CurrentUser() user: AuthUser): Promise<Vehicle[]> {
     return this.vehicles.list(user.id);
   }
 
-  @Get(`${ROUTES.vehicles}/:id`)
+  @Get(vehicleByIdNestPath)
   getOne(@CurrentUser() user: AuthUser, @Param('id', idPipe) id: string): Promise<Vehicle> {
     return this.vehicles.getOwnedOrThrow(user.id, id);
   }
 
-  @Post(ROUTES.vehicles)
+  @Post(vehiclesNestPath)
   create(
     @CurrentUser() user: AuthUser,
     @Body(new ZodValidationPipe(VehicleCreateSchema)) body: VehicleCreate,
@@ -132,7 +134,7 @@ export class VehiclesController {
     return this.vehicles.create(user.id, body);
   }
 
-  @Patch(`${ROUTES.vehicles}/:id`)
+  @Patch(vehicleByIdNestPath)
   update(
     @CurrentUser() user: AuthUser,
     @Param('id', idPipe) id: string,
@@ -141,7 +143,7 @@ export class VehiclesController {
     return this.vehicles.update(user.id, id, body);
   }
 
-  @Delete(`${ROUTES.vehicles}/:id`)
+  @Delete(vehicleByIdNestPath)
   @HttpCode(204)
   remove(@CurrentUser() user: AuthUser, @Param('id', idPipe) id: string): Promise<void> {
     return this.vehicles.remove(user.id, id);

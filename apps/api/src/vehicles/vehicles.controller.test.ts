@@ -103,46 +103,46 @@ describe('VehiclesController', () => {
   it('rejects an unauthenticated request with 401', async () => {
     currentSession = null;
 
-    const res = await app.inject({ method: 'GET', url: '/vehicles' });
+    const res = await app.inject({ method: 'GET', url: '/api/vehicles' });
 
     expect(res.statusCode).toBe(401);
   });
 
-  it('GET /vehicles lists the session user vehicles', async () => {
-    const res = await app.inject({ method: 'GET', url: '/vehicles' });
+  it('GET /api/vehicles lists the session user vehicles', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/vehicles' });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual([sampleVehicle]);
     expect(calls).toEqual([{ method: 'list', args: [userId] }]);
   });
 
-  it('GET /vehicles/:id returns the vehicle scoped to the session user', async () => {
-    const res = await app.inject({ method: 'GET', url: `/vehicles/${existingId}` });
+  it('GET /api/vehicles/:id returns the vehicle scoped to the session user', async () => {
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${existingId}` });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual(sampleVehicle);
     expect(calls).toEqual([{ method: 'getOwnedOrThrow', args: [userId, existingId] }]);
   });
 
-  it('GET /vehicles/:id surfaces a service 404 as the ApiError envelope', async () => {
-    const res = await app.inject({ method: 'GET', url: `/vehicles/${missingId}` });
+  it('GET /api/vehicles/:id surfaces a service 404 as the ApiError envelope', async () => {
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${missingId}` });
 
     expect(res.statusCode).toBe(404);
     expect(res.json()).toMatchObject({ code: 'NOT_FOUND', message: 'Vehicle not found' });
   });
 
-  it('GET /vehicles/:id rejects a non-uuid id with 400', async () => {
-    const res = await app.inject({ method: 'GET', url: '/vehicles/not-a-uuid' });
+  it('GET /api/vehicles/:id rejects a non-uuid id with 400', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/vehicles/not-a-uuid' });
 
     expect(res.statusCode).toBe(400);
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
     expect(calls).toEqual([]);
   });
 
-  it('POST /vehicles takes the owner from the session, not the body', async () => {
+  it('POST /api/vehicles takes the owner from the session, not the body', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/vehicles',
+      url: '/api/vehicles',
       payload: {
         userId: 'attacker-supplied',
         brand: 'Toyota',
@@ -158,10 +158,10 @@ describe('VehiclesController', () => {
     expect(createCall?.args[1]).not.toHaveProperty('userId');
   });
 
-  it('POST /vehicles rejects an invalid body with 400', async () => {
+  it('POST /api/vehicles rejects an invalid body with 400', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/vehicles',
+      url: '/api/vehicles',
       payload: { model: 'Corolla' },
     });
 
@@ -170,10 +170,10 @@ describe('VehiclesController', () => {
     expect(calls).toEqual([]);
   });
 
-  it('PATCH /vehicles/:id forwards the parsed update scoped to the session user', async () => {
+  it('PATCH /api/vehicles/:id forwards the parsed update scoped to the session user', async () => {
     const res = await app.inject({
       method: 'PATCH',
-      url: `/vehicles/${existingId}`,
+      url: `/api/vehicles/${existingId}`,
       payload: { brand: 'Honda' },
     });
 
@@ -184,8 +184,8 @@ describe('VehiclesController', () => {
     expect(updateCall?.args[2]).toMatchObject({ brand: 'Honda' });
   });
 
-  it('DELETE /vehicles/:id returns 204 and calls the service', async () => {
-    const res = await app.inject({ method: 'DELETE', url: `/vehicles/${existingId}` });
+  it('DELETE /api/vehicles/:id returns 204 and calls the service', async () => {
+    const res = await app.inject({ method: 'DELETE', url: `/api/vehicles/${existingId}` });
 
     expect(res.statusCode).toBe(204);
     expect(res.body).toBe('');

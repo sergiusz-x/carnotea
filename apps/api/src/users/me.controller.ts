@@ -22,6 +22,7 @@ const MeResponseSchema = z.object({
 });
 
 type MeResponse = z.infer<typeof MeResponseSchema>;
+const meNestPath = ROUTES.me.slice(1);
 
 zodRoute({
   method: 'get',
@@ -40,7 +41,7 @@ zodRoute({
 export class MeController {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  @Get(ROUTES.me)
+  @Get(meNestPath)
   @UseGuards(AuthGuard)
   async me(@CurrentUser() user: AuthUser): Promise<MeResponse> {
     const profile = await this.db.query.users.findFirst({

@@ -50,9 +50,9 @@ in `mileage_readings` for the vehicle.
 ## Rules
 
 - **Never edit migration files by hand.** Change the TypeScript schema in
-  `src/schema/` and run `pnpm db:generate`. The only exception is the two
-  custom migration files (`0002_constraints.sql`, `0003_seed_lookups.sql`)
-  which are intentionally handwritten.
+  `src/schema/` and run `pnpm db:generate`. The only exception is custom SQL
+  migrations created with `drizzle-kit generate --custom`, which are intentionally
+  filled in by hand after Drizzle registers them.
 - **Never edit `migrations/meta/_journal.json` by hand.** `drizzle-kit`
   manages it. Use `drizzle-kit generate --custom` to register custom SQL.
 - Schema uses `casing: 'snake_case'` — TypeScript field names are camelCase;

@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  "/vehicles/{vehicleId}/fuel-logs": {
+  "/api/vehicles/{vehicleId}/fuel-logs": {
     get: {
       responses: {
         200: { content: {
@@ -109,7 +109,7 @@ export interface paths {
       };
     };
   };
-  "/vehicles/{vehicleId}/fuel-logs/{id}": {
+  "/api/vehicles/{vehicleId}/fuel-logs/{id}": {
     get: {
       responses: {
         200: { content: {
@@ -272,7 +272,7 @@ export interface paths {
       };
     };
   };
-  "/me": {
+  "/api/me": {
     get: {
       responses: {
         200: { content: {
@@ -294,7 +294,7 @@ export interface paths {
       };
     };
   };
-  "/vehicles": {
+  "/api/vehicles": {
     get: {
       responses: {
         200: { content: {
@@ -395,7 +395,7 @@ export interface paths {
       };
     };
   };
-  "/vehicles/{id}": {
+  "/api/vehicles/{id}": {
     get: {
       responses: {
         200: { content: {
