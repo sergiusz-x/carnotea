@@ -9,6 +9,7 @@ import { FuelLogsModule } from './fuel-logs/fuel-logs.module.js';
 import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
 import { OpenApiModule } from './lib/openapi/index.js';
+import { RemindersModule } from './reminders/reminders.module.js';
 import { MeController } from './users/me.controller.js';
 import { VehiclesModule } from './vehicles/vehicles.module.js';
 
@@ -28,6 +29,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     AuthModule,
     VehiclesModule,
     FuelLogsModule,
+    RemindersModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })
