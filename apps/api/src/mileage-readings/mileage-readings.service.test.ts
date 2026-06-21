@@ -59,10 +59,12 @@ describe('MileageReadingsService — sourceType enforcement', () => {
       recomputeCurrentMileage: vi.fn().mockResolvedValue(undefined),
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
     const svc = new MileageReadingsService(fakeDb as any, fakeMileageSync as any);
 
     await svc.create('user-id', 'vehicle-id', { readingDate: '2026-01-01', mileage: 1000 });
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const valuesCall = insertValues.mock.calls[0]?.[0];
     expect(valuesCall).toMatchObject({ sourceType: 'manual', sourceId: null });
     expect(fakeMileageSync.recomputeCurrentMileage).toHaveBeenCalledOnce();
