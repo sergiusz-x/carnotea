@@ -61,7 +61,7 @@ _None._
 
 ## In progress
 
-- 🔴 [T-063 — Align API paths, vehicle energy invariant, and README](./T-063-api-prefix-energy-invariant-readme-cleanup.md)
+_None._
 
 ## Blocked
 
@@ -95,6 +95,7 @@ _None._
 - 🟡 [T-059 — Ticket-spec linter + CI gate](./T-059-ticket-linter-ci.md)
 - 🟡 [T-060 — Generate INDEX.md from frontmatter to end status-move merge conflicts](./T-060-tickets-index-generated.md)
 - 🟡 [T-062 — Remove legacy sql/ + tests/ and fix the stale architecture data-flow](./T-062-remove-legacy-sql-fix-architecture-doc.md)
+- 🔴 [T-063 — Align API paths, vehicle energy invariant, and README](./T-063-api-prefix-energy-invariant-readme-cleanup.md)
 
 <!-- END GENERATED:tickets -->
 

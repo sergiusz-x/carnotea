@@ -1,7 +1,7 @@
 ---
 id: T-063
 title: Align API paths, vehicle energy invariant, and README
-status: in_progress
+status: done
 priority: high
 size: M
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-020, T-022]
 labels: [api, web, db, docs]
 created_at: 2026-06-21
 updated_at: 2026-06-21
-closed_at: ~
+closed_at: 2026-06-21
 ---
 
 # T-063 — Align API paths, vehicle energy invariant, and README
