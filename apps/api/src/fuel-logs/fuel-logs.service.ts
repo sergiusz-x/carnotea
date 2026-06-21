@@ -70,11 +70,7 @@ export class FuelLogsService {
       .sort((a, b) => a.mileage - b.mileage);
 
     return rows.map((row) => {
-      const prevMileage = this.prevFullTankMileage(
-        row.mileage,
-        row.isFullTank,
-        fullTankByMileage,
-      );
+      const prevMileage = this.prevFullTankMileage(row.mileage, row.isFullTank, fullTankByMileage);
       return this.toResponse(row, prevMileage);
     });
   }
@@ -234,9 +230,7 @@ export class FuelLogsService {
     allFullTanksSortedByMileage: Array<{ mileage: number }>,
   ): number | null {
     if (!currentIsFullTank) return null;
-    const prev = allFullTanksSortedByMileage
-      .filter((r) => r.mileage < currentMileage)
-      .at(-1);
+    const prev = allFullTanksSortedByMileage.filter((r) => r.mileage < currentMileage).at(-1);
     return prev?.mileage ?? null;
   }
 
@@ -252,7 +246,12 @@ export class FuelLogsService {
       totalCost: Number(row.totalCost),
       stationName: row.stationName,
       isFullTank: row.isFullTank,
-      consumptionHint: computeConsumptionHint(liters, row.mileage, row.isFullTank, prevFullTankMileage),
+      consumptionHint: computeConsumptionHint(
+        liters,
+        row.mileage,
+        row.isFullTank,
+        prevFullTankMileage,
+      ),
       createdAt: row.createdAt.toISOString(),
     };
   }

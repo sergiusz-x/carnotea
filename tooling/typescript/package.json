@@ -9,8 +9,8 @@
     "./react.json": "./react.json"
   },
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format": "prettier --write . --ignore-path ../../.prettierignore",
+    "format:check": "prettier --check . --ignore-path ../../.prettierignore"
   },
   "devDependencies": {
     "prettier": "catalog:"

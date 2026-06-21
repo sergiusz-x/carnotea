@@ -46,8 +46,7 @@ function schemaType(schema) {
   if (schema.type === 'object' || schema.properties) {
     const required = new Set(schema.required ?? []);
     const properties = Object.entries(schema.properties ?? {}).map(
-      ([name, property]) =>
-        `${name}${required.has(name) ? '' : '?'}: ${schemaType(property)};`,
+      ([name, property]) => `${name}${required.has(name) ? '' : '?'}: ${schemaType(property)};`,
     );
     if (schema.additionalProperties) {
       properties.push(`[key: string]: ${schemaType(schema.additionalProperties)};`);
