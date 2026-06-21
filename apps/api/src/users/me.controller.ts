@@ -1,27 +1,30 @@
 import { users, type Db } from '@carnotea/db';
-import { ROUTES } from '@carnotea/shared';
-import { Controller, Get, Inject, NotFoundException, UseGuards } from '@nestjs/common';
+import {
+  ErrorResponseSchema,
+  UserProfileSchema,
+  UserProfileUpdateSchema,
+  ROUTES,
+  type UserProfile,
+  type UserProfileUpdate,
+} from '@carnotea/shared';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+  Patch,
+  UseGuards,
+} from '@nestjs/common';
 import { eq } from 'drizzle-orm';
-import { z } from 'zod';
 
 import { AuthGuard } from '../auth/auth.guard.js';
 import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { DB } from '../db/db.constants.js';
-import { zodRoute } from '../lib/openapi/index.js';
+import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
 
-// Local response schema until the shared user-profile schema (T-019) lands; the
-// type is still inferred, never hand-written.
-const MeResponseSchema = z.object({
-  id: z.uuid(),
-  email: z.email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-});
-
-type MeResponse = z.infer<typeof MeResponseSchema>;
 const meNestPath = ROUTES.me.slice(1);
 
 zodRoute({
@@ -31,9 +34,22 @@ zodRoute({
   summary: 'Get the authenticated user profile',
   tags: ['Users'],
   responses: {
-    '200': { description: 'The authenticated user profile', schema: MeResponseSchema },
-    '401': { description: 'Not authenticated' },
-    '404': { description: 'Profile not found' },
+    '200': { description: 'The authenticated user profile', schema: UserProfileSchema },
+    '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
+  },
+});
+
+zodRoute({
+  method: 'patch',
+  path: ROUTES.me,
+  operationId: 'updateMe',
+  summary: 'Update the authenticated user profile',
+  tags: ['Users'],
+  request: { body: UserProfileUpdateSchema },
+  responses: {
+    '200': { description: 'The updated user profile', schema: UserProfileSchema },
+    '400': { description: 'Invalid request body', schema: ErrorResponseSchema },
+    '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
   },
 });
 
@@ -43,22 +59,72 @@ export class MeController {
 
   @Get(meNestPath)
   @UseGuards(AuthGuard)
-  async me(@CurrentUser() user: AuthUser): Promise<MeResponse> {
+  async getMe(@CurrentUser() user: AuthUser): Promise<UserProfile> {
     const profile = await this.db.query.users.findFirst({
       where: eq(users.id, user.id),
     });
 
     if (!profile) {
-      throw new NotFoundException();
+      // Provision a domain profile from the auth identity (edge case: no users row).
+      const [inserted] = await this.db
+        .insert(users)
+        .values({
+          id: user.id,
+          firstName: '',
+          lastName: '',
+          email: user.email,
+        })
+        .returning();
+
+      if (!inserted) {
+        throw new InternalServerErrorException('Failed to provision user profile');
+      }
+
+      return this.toContract(inserted);
     }
 
+    return this.toContract(profile);
+  }
+
+  @Patch(meNestPath)
+  @UseGuards(AuthGuard)
+  async updateMe(
+    @CurrentUser() user: AuthUser,
+    @Body(new ZodValidationPipe(UserProfileUpdateSchema)) body: UserProfileUpdate,
+  ): Promise<UserProfile> {
+    // Build the update object from the body.
+    const updates: Partial<typeof users.$inferInsert> = {};
+    if (body.firstName !== undefined) updates.firstName = body.firstName;
+    if (body.lastName !== undefined) updates.lastName = body.lastName;
+    if (body.localePref !== undefined) updates.localePref = body.localePref;
+    if (body.unitsPref !== undefined) updates.unitsPref = body.unitsPref;
+    if (body.currencyPref !== undefined) updates.currencyPref = body.currencyPref;
+    updates.updatedAt = new Date();
+
+    const [updated] = await this.db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, user.id))
+      .returning();
+
+    if (!updated) {
+      throw new NotFoundException({ code: 'NOT_FOUND', message: 'User profile not found' });
+    }
+
+    return this.toContract(updated);
+  }
+
+  private toContract(row: typeof users.$inferSelect): UserProfile {
     return {
-      id: profile.id,
-      email: profile.email,
-      firstName: profile.firstName,
-      lastName: profile.lastName,
-      createdAt: profile.createdAt.toISOString(),
-      updatedAt: profile.updatedAt.toISOString(),
+      id: row.id,
+      firstName: row.firstName,
+      lastName: row.lastName,
+      email: row.email,
+      localePref: row.localePref as 'pl' | 'en',
+      unitsPref: row.unitsPref as 'metric' | 'imperial',
+      currencyPref: row.currencyPref,
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
     };
   }
 }
