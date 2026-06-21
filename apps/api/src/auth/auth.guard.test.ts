@@ -14,6 +14,9 @@ const profile = {
   email: 'jan@example.com',
   firstName: 'Jan',
   lastName: 'Kowalski',
+  localePref: 'en',
+  unitsPref: 'metric',
+  currencyPref: 'EUR',
   createdAt: new Date('2026-01-01T00:00:00.000Z'),
   updatedAt: new Date('2026-01-02T00:00:00.000Z'),
 };
@@ -76,6 +79,9 @@ describe('AuthGuard + GET /api/me', () => {
       email: profile.email,
       firstName: 'Jan',
       lastName: 'Kowalski',
+      localePref: 'en',
+      unitsPref: 'metric',
+      currencyPref: 'EUR',
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-01-02T00:00:00.000Z',
     });

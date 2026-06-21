@@ -57,6 +57,13 @@
       "when": 1782050717854,
       "tag": "0007_soft_trish_tilby",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1782064703035,
+      "tag": "0008_clear_shooting_star",
+      "breakpoints": true
     }
   ]
 }
