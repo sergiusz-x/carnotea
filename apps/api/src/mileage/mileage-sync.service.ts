@@ -22,10 +22,7 @@ export interface RemoveDerivedReadingParams {
 export class MileageSyncService {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  async syncDerivedReading(
-    tx: Tx,
-    params: SyncDerivedReadingParams,
-  ): Promise<void> {
+  async syncDerivedReading(tx: Tx, params: SyncDerivedReadingParams): Promise<void> {
     await tx
       .insert(mileageReadings)
       .values({
@@ -56,10 +53,7 @@ export class MileageSyncService {
       .where(eq(vehicles.id, params.vehicleId));
   }
 
-  async removeDerivedReading(
-    tx: Tx,
-    params: RemoveDerivedReadingParams,
-  ): Promise<void> {
+  async removeDerivedReading(tx: Tx, params: RemoveDerivedReadingParams): Promise<void> {
     await tx
       .delete(mileageReadings)
       .where(
