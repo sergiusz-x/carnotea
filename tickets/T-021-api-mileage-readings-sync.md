@@ -40,12 +40,12 @@ Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-
 
 ### Endpoints
 
-| Method | Path                                          | Auth    | Success                | Errors                         |
-| ------ | --------------------------------------------- | ------- | ---------------------- | ------------------------------ |
-| GET    | `/vehicles/{vehicleId}/mileage-readings`      | session | 200 `MileageReading[]` | 401, 404 NOT_FOUND             |
-| POST   | `/vehicles/{vehicleId}/mileage-readings`      | session | 201 `MileageReading`   | 400 VALIDATION_ERROR, 401, 404 |
-| GET    | `/vehicles/{vehicleId}/mileage-readings/{id}` | session | 200 `MileageReading`   | 401, 404 NOT_FOUND             |
-| DELETE | `/vehicles/{vehicleId}/mileage-readings/{id}` | session | 204                    | 401, 404 NOT_FOUND             |
+| Method | Path                                              | Auth    | Success                | Errors                         |
+| ------ | ------------------------------------------------- | ------- | ---------------------- | ------------------------------ |
+| GET    | `/api/vehicles/{vehicleId}/mileage-readings`      | session | 200 `MileageReading[]` | 401, 404 NOT_FOUND             |
+| POST   | `/api/vehicles/{vehicleId}/mileage-readings`      | session | 201 `MileageReading`   | 400 VALIDATION_ERROR, 401, 404 |
+| GET    | `/api/vehicles/{vehicleId}/mileage-readings/{id}` | session | 200 `MileageReading`   | 401, 404 NOT_FOUND             |
+| DELETE | `/api/vehicles/{vehicleId}/mileage-readings/{id}` | session | 204                    | 401, 404 NOT_FOUND             |
 
 No PATCH: a reading is immutable; correct it by delete + create. List is
 newest-first on `readingDate`, tie-broken by `id`.
@@ -76,7 +76,7 @@ newest-first on `readingDate`, tie-broken by `id`.
 
 ## Acceptance criteria
 
-- [ ] `GET`/`POST /vehicles/{vehicleId}/mileage-readings` and `GET`/`DELETE`
+- [ ] `GET`/`POST /api/vehicles/{vehicleId}/mileage-readings` and `GET`/`DELETE`
       of one reading are ownership-scoped through the parent vehicle
       (cross-user → 404).
 - [ ] `POST` creates a `manual` reading; the API forces `sourceType = 'manual'`
@@ -131,5 +131,5 @@ newest-first on `readingDate`, tie-broken by `id`.
 - Pattern: [resource-crud-api](../docs/agents/patterns/resource-crud-api.md)
 - Related tickets: T-020 (vehicles), T-022/T-023/T-024 (reading sources)
 - Schema: `packages/db/src/schema/mileage-readings.ts`,
-  `packages/db/src/schema/vehicles.ts`;
+  `packages/db/src/schema/api/vehicles.ts`;
   `packages/shared/src/schemas/mileage-reading.ts`

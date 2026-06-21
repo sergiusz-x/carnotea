@@ -1,5 +1,6 @@
-import { fuelTypes, vehicles, type Db } from '@carnotea/db';
+import { chargingSessions, fuelLogs, fuelTypes, vehicles, type Db } from '@carnotea/db';
 import {
+  type ApiIssue,
   type Vehicle,
   type VehicleCreate,
   type VehicleUpdate,
@@ -51,6 +52,36 @@ interface VehicleRow {
   currencyCode: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface VehicleEnergySourceState {
+  hasFuelLogs: boolean;
+  hasChargingSessions: boolean;
+}
+
+const ICE_ONLY_FUEL_TYPES = new Set<FuelTypeCode>(['petrol', 'diesel', 'lpg']);
+
+export function vehicleEnergySourceIssue(
+  targetFuelType: FuelTypeCode,
+  state: VehicleEnergySourceState,
+): ApiIssue | null {
+  if (targetFuelType === 'electric' && state.hasFuelLogs) {
+    return {
+      code: 'invalid_energy_source',
+      path: ['fuelType'],
+      message: 'A vehicle with fuel logs cannot be changed to electric.',
+    };
+  }
+
+  if (ICE_ONLY_FUEL_TYPES.has(targetFuelType) && state.hasChargingSessions) {
+    return {
+      code: 'invalid_energy_source',
+      path: ['fuelType'],
+      message: 'A vehicle with charging sessions cannot be changed to an ICE-only fuel type.',
+    };
+  }
+
+  return null;
 }
 
 /**
@@ -137,6 +168,10 @@ export class VehiclesService {
     if (input.productionYear !== undefined) updates.productionYear = input.productionYear;
     if (input.engine !== undefined) updates.engine = input.engine;
     if (input.fuelType !== undefined) {
+      const current = await this.getOwnedOrThrow(userId, id);
+      if (current.fuelType !== input.fuelType) {
+        await this.assertFuelTypeChangeAllowed(id, input.fuelType);
+      }
       updates.fuelTypeId = await this.resolveFuelTypeId(input.fuelType);
     }
     if (input.vin !== undefined) updates.vin = input.vin;
@@ -170,6 +205,37 @@ export class VehiclesService {
       .returning({ id: vehicles.id });
     if (deleted.length === 0) {
       throw this.notFound();
+    }
+  }
+
+  private async assertFuelTypeChangeAllowed(
+    vehicleId: string,
+    targetFuelType: FuelTypeCode,
+  ): Promise<void> {
+    const [existingFuelLogs, existingChargingSessions] = await Promise.all([
+      this.db
+        .select({ id: fuelLogs.id })
+        .from(fuelLogs)
+        .where(eq(fuelLogs.vehicleId, vehicleId))
+        .limit(1),
+      this.db
+        .select({ id: chargingSessions.id })
+        .from(chargingSessions)
+        .where(eq(chargingSessions.vehicleId, vehicleId))
+        .limit(1),
+    ]);
+
+    const issue = vehicleEnergySourceIssue(targetFuelType, {
+      hasFuelLogs: existingFuelLogs.length > 0,
+      hasChargingSessions: existingChargingSessions.length > 0,
+    });
+
+    if (issue) {
+      throw new BadRequestException({
+        code: 'VALIDATION_ERROR',
+        message: 'Vehicle fuel type conflicts with existing entries.',
+        issues: [issue],
+      });
     }
   }
 

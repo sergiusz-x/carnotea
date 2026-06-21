@@ -26,8 +26,8 @@ better-auth user id via the `users` table.
 The `users` table is the domain mirror of the auth identity: its `id` is the
 better-auth user id, plus `firstName`, `lastName`, `email`. Auth is set up in
 T-006 (the `databaseHooks.user.create.after` hook already provisions a `users` row
-and `GET /me` already returns it — see `apps/api/src/users/me.controller.ts`), and
-shared Zod schemas in T-019. This ticket adds **preferences** + `PATCH /me`.
+and `GET /api/me` already returns it — see `apps/api/src/users/me.controller.ts`), and
+shared Zod schemas in T-019. This ticket adds **preferences** + `PATCH /api/me`.
 
 User-scoped (not vehicle-scoped); reuses the ownership + OpenAPI rules from
 [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-api.md).
@@ -36,13 +36,13 @@ User-scoped (not vehicle-scoped); reuses the ownership + OpenAPI rules from
 
 ### Endpoints
 
-| Method | Path  | Auth    | Success           | Errors                    |
-| ------ | ----- | ------- | ----------------- | ------------------------- |
-| GET    | `/me` | session | 200 `UserProfile` | 401                       |
-| PATCH  | `/me` | session | 200 `UserProfile` | 400 VALIDATION_ERROR, 401 |
+| Method | Path      | Auth    | Success           | Errors                    |
+| ------ | --------- | ------- | ----------------- | ------------------------- |
+| GET    | `/api/me` | session | 200 `UserProfile` | 401                       |
+| PATCH  | `/api/me` | session | 200 `UserProfile` | 400 VALIDATION_ERROR, 401 |
 
-`GET /me` already exists; this ticket extends its response with preferences and
-adds `PATCH /me`.
+`GET /api/me` already exists; this ticket extends its response with preferences and
+adds `PATCH /api/me`.
 
 ### Request / response shapes
 
@@ -65,16 +65,16 @@ adds `PATCH /me`.
 
 ## Acceptance criteria
 
-- [ ] `GET /me` returns the authenticated user's profile (`id`, `firstName`,
+- [ ] `GET /api/me` returns the authenticated user's profile (`id`, `firstName`,
       `lastName`, `email`, preferences); never another user's record.
-- [ ] `PATCH /me` updates `firstName`/`lastName` and preferences via `zodRoute()`;
+- [ ] `PATCH /api/me` updates `firstName`/`lastName` and preferences via `zodRoute()`;
       `updatedAt` stamped.
 - [ ] `email` is read-only — attempting to update it is rejected; the response
       email matches the auth identity.
 - [ ] Preferences validated against the shared enums; stored in discrete columns
-      and returned by `GET /me`.
+      and returned by `GET /api/me`.
 - [ ] For a logged-in user with no domain `users` row (edge case), a profile is
-      provisioned from the auth identity so `GET /me` always succeeds.
+      provisioned from the auth identity so `GET /api/me` always succeeds.
 - [ ] Email lowercase/format rules mirror the DB checks
       (`users_email_lowercase_chk`, `users_email_format_chk`).
 
@@ -119,7 +119,7 @@ adds `PATCH /me`.
 ## Verification
 
 - `pnpm --filter @carnotea/api test users` → all pass
-- `curl -s localhost:3001/openapi.json | jq '.paths."/me"'` → GET + PATCH present
+- `curl -s localhost:3001/openapi.json | jq '.paths."/api/me"'` → GET + PATCH present
 
 ## References
 

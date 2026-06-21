@@ -38,13 +38,13 @@ Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-
 
 ### Endpoints
 
-| Method | Path                                | Auth    | Success       | Errors                                   |
-| ------ | ----------------------------------- | ------- | ------------- | ---------------------------------------- |
-| GET    | `/vehicles/{vehicleId}/issues`      | session | 200 `Issue[]` | 401, 404 NOT_FOUND                       |
-| POST   | `/vehicles/{vehicleId}/issues`      | session | 201 `Issue`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
-| GET    | `/vehicles/{vehicleId}/issues/{id}` | session | 200 `Issue`   | 401, 404 NOT_FOUND                       |
-| PATCH  | `/vehicles/{vehicleId}/issues/{id}` | session | 200 `Issue`   | 400, 401, 404 NOT_FOUND                  |
-| DELETE | `/vehicles/{vehicleId}/issues/{id}` | session | 204           | 401, 404 NOT_FOUND                       |
+| Method | Path                                    | Auth    | Success       | Errors                                   |
+| ------ | --------------------------------------- | ------- | ------------- | ---------------------------------------- |
+| GET    | `/api/vehicles/{vehicleId}/issues`      | session | 200 `Issue[]` | 401, 404 NOT_FOUND                       |
+| POST   | `/api/vehicles/{vehicleId}/issues`      | session | 201 `Issue`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
+| GET    | `/api/vehicles/{vehicleId}/issues/{id}` | session | 200 `Issue`   | 401, 404 NOT_FOUND                       |
+| PATCH  | `/api/vehicles/{vehicleId}/issues/{id}` | session | 200 `Issue`   | 400, 401, 404 NOT_FOUND                  |
+| DELETE | `/api/vehicles/{vehicleId}/issues/{id}` | session | 204           | 401, 404 NOT_FOUND                       |
 
 List newest-first on `reportedDate`. GET list supports `?status=` and
 `?priority=` query filters (validated by a Zod query schema).

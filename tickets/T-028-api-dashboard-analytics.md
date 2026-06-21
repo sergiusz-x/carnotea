@@ -37,13 +37,13 @@ pattern, but reuses its ownership (404-not-403) and OpenAPI rules.
 
 ### Endpoints (all read-only, user-scoped)
 
-| Method | Path                                                 | Auth    | Success                   | Errors             |
-| ------ | ---------------------------------------------------- | ------- | ------------------------- | ------------------ |
-| GET    | `/vehicles/{vehicleId}/analytics/summary`            | session | 200 `VehicleSpendSummary` | 401, 404 NOT_FOUND |
-| GET    | `/vehicles/{vehicleId}/analytics/consumption`        | session | 200 `ConsumptionStats`    | 401, 404 NOT_FOUND |
-| GET    | `/vehicles/{vehicleId}/analytics/upcoming-reminders` | session | 200 `Reminder[]`          | 401, 404 NOT_FOUND |
-| GET    | `/analytics/overview`                                | session | 200 `AccountOverview`     | 401                |
-| GET    | `/analytics/recent-activity`                         | session | 200 `ActivityFeed`        | 401                |
+| Method | Path                                                     | Auth    | Success                   | Errors             |
+| ------ | -------------------------------------------------------- | ------- | ------------------------- | ------------------ |
+| GET    | `/api/vehicles/{vehicleId}/analytics/summary`            | session | 200 `VehicleSpendSummary` | 401, 404 NOT_FOUND |
+| GET    | `/api/vehicles/{vehicleId}/analytics/consumption`        | session | 200 `ConsumptionStats`    | 401, 404 NOT_FOUND |
+| GET    | `/api/vehicles/{vehicleId}/analytics/upcoming-reminders` | session | 200 `Reminder[]`          | 401, 404 NOT_FOUND |
+| GET    | `/analytics/overview`                                    | session | 200 `AccountOverview`     | 401                |
+| GET    | `/analytics/recent-activity`                             | session | 200 `ActivityFeed`        | 401                |
 
 `summary` accepts `?from=&to=` (default: last 12 months). `recent-activity`
 paginates via the shared `list-query` schema.

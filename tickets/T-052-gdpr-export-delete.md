@@ -32,14 +32,14 @@ domain schema and the better-auth tables, or stale auth rows remain.
 
 ## Acceptance criteria
 
-- [ ] `GET /me/export` (authenticated) returns a single file containing the
+- [ ] `GET /api/me/export` (authenticated) returns a single file containing the
       caller's **vehicles, logs, services, issues, expenses, reminders, and
       profile** — everything they own, nothing belonging to another user.
 - [ ] The export is machine-readable (JSON, `Content-Disposition: attachment`)
       with a stable, documented top-level shape validated by a **Zod** schema.
 - [ ] The export excludes secrets (password hashes, session tokens) but includes
       the user's own profile fields and account email.
-- [ ] `DELETE /me` (authenticated, with an explicit confirmation step)
+- [ ] `DELETE /api/me` (authenticated, with an explicit confirmation step)
       permanently deletes the account and **all** owned domain data via cascades.
 - [ ] Deletion also removes the linked **better-auth** rows (user, accounts,
       sessions, verifications) so no orphaned auth identity survives.
@@ -78,7 +78,7 @@ domain schema and the better-auth tables, or stale auth rows remain.
 - Scope **every** query by the authenticated user id; never trust a path/body id
   for ownership.
 - Confirmation: require the user to re-confirm (e.g. type their email) before
-  `DELETE /me` proceeds; surface an irreversibility warning in the UI.
+  `DELETE /api/me` proceeds; surface an irreversibility warning in the UI.
 
 ## References
 

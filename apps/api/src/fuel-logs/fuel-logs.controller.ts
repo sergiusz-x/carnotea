@@ -30,6 +30,13 @@ const vehicleIdParam = z.object({ vehicleId: z.uuid() });
 const fuelLogIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
 const vehicleIdPipe = new ZodValidationPipe(z.uuid());
 const idPipe = new ZodValidationPipe(z.uuid());
+const fuelLogsByVehicleNestPath = ROUTES.fuelLogsByVehicle
+  .replace('{vehicleId}', ':vehicleId')
+  .slice(1);
+const fuelLogByIdNestPath = ROUTES.fuelLogById
+  .replace('{vehicleId}', ':vehicleId')
+  .replace('{id}', ':id')
+  .slice(1);
 
 const FuelLogResponseSchema = z.object({
   id: z.uuid(),
@@ -122,7 +129,7 @@ zodRoute({
 export class FuelLogsController {
   constructor(private readonly fuelLogs: FuelLogsService) {}
 
-  @Get(ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId'))
+  @Get(fuelLogsByVehicleNestPath)
   list(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -130,7 +137,7 @@ export class FuelLogsController {
     return this.fuelLogs.list(user.id, vehicleId);
   }
 
-  @Get(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
+  @Get(fuelLogByIdNestPath)
   getOne(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -139,7 +146,7 @@ export class FuelLogsController {
     return this.fuelLogs.getOwnedOrThrow(user.id, vehicleId, id);
   }
 
-  @Post(ROUTES.fuelLogsByVehicle.replace('{vehicleId}', ':vehicleId'))
+  @Post(fuelLogsByVehicleNestPath)
   create(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -148,7 +155,7 @@ export class FuelLogsController {
     return this.fuelLogs.create(user.id, vehicleId, body);
   }
 
-  @Patch(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
+  @Patch(fuelLogByIdNestPath)
   update(
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
@@ -158,7 +165,7 @@ export class FuelLogsController {
     return this.fuelLogs.update(user.id, vehicleId, id, body);
   }
 
-  @Delete(ROUTES.fuelLogById.replace('{vehicleId}', ':vehicleId').replace('{id}', ':id'))
+  @Delete(fuelLogByIdNestPath)
   @HttpCode(204)
   remove(
     @CurrentUser() user: AuthUser,

@@ -27,13 +27,13 @@ readings) or **user-scoped** (the vehicle itself, the profile).
 Vehicle-scoped resources nest the collection under the parent and address the
 item by its own id:
 
-| Method | Path                                    | Auth    | Success   | Body      | Errors                                       |
-| ------ | --------------------------------------- | ------- | --------- | --------- | -------------------------------------------- |
-| GET    | `/vehicles/{vehicleId}/<resource>`      | session | 200 `T[]` | —         | 401, 404 NOT_FOUND                           |
-| POST   | `/vehicles/{vehicleId}/<resource>`      | session | 201 `T`   | `TCreate` | 400 VALIDATION_ERROR, 401, 404, 409 CONFLICT |
-| GET    | `/vehicles/{vehicleId}/<resource>/{id}` | session | 200 `T`   | —         | 401, 404 NOT_FOUND                           |
-| PATCH  | `/vehicles/{vehicleId}/<resource>/{id}` | session | 200 `T`   | `TUpdate` | 400, 401, 404, 409                           |
-| DELETE | `/vehicles/{vehicleId}/<resource>/{id}` | session | 204       | —         | 401, 404 NOT_FOUND                           |
+| Method | Path                                        | Auth    | Success   | Body      | Errors                                       |
+| ------ | ------------------------------------------- | ------- | --------- | --------- | -------------------------------------------- |
+| GET    | `/api/vehicles/{vehicleId}/<resource>`      | session | 200 `T[]` | —         | 401, 404 NOT_FOUND                           |
+| POST   | `/api/vehicles/{vehicleId}/<resource>`      | session | 201 `T`   | `TCreate` | 400 VALIDATION_ERROR, 401, 404, 409 CONFLICT |
+| GET    | `/api/vehicles/{vehicleId}/<resource>/{id}` | session | 200 `T`   | —         | 401, 404 NOT_FOUND                           |
+| PATCH  | `/api/vehicles/{vehicleId}/<resource>/{id}` | session | 200 `T`   | `TUpdate` | 400, 401, 404, 409                           |
+| DELETE | `/api/vehicles/{vehicleId}/<resource>/{id}` | session | 204       | —         | 401, 404 NOT_FOUND                           |
 
 - OpenAPI path format is `{param}`, not `:param`, in `zodRoute(...)`.
 - `TUpdate = TCreate.partial()` unless the ticket says otherwise.
@@ -152,7 +152,7 @@ A ticket lists only the rows specific to its invariants on top of these:
 ```bash
 pnpm --filter @carnotea/api test <resource>      # unit + controller tests pass
 pnpm --filter @carnotea/api typecheck            # 0 errors
-curl -s localhost:3001/openapi.json | jq '.paths | keys[] | select(startswith("/vehicles/{vehicleId}/<resource>"))'
+curl -s localhost:3001/openapi.json | jq '.paths | keys[] | select(startswith("/api/vehicles/{vehicleId}/<resource>"))'
 ```
 
 Integration tests (real DB) run only when `DATABASE_URL` is set; report them as

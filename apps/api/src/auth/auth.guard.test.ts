@@ -35,7 +35,7 @@ const dbStub = {
   },
 } as unknown as Db;
 
-describe('AuthGuard + GET /me', () => {
+describe('AuthGuard + GET /api/me', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
@@ -60,7 +60,7 @@ describe('AuthGuard + GET /me', () => {
   it('returns 401 for an unauthenticated request', async () => {
     currentSession = null;
 
-    const res = await app.inject({ method: 'GET', url: '/me' });
+    const res = await app.inject({ method: 'GET', url: '/api/me' });
 
     expect(res.statusCode).toBe(401);
   });
@@ -68,7 +68,7 @@ describe('AuthGuard + GET /me', () => {
   it('returns the authenticated user profile', async () => {
     currentSession = { user: { id: profile.id, email: profile.email } };
 
-    const res = await app.inject({ method: 'GET', url: '/me' });
+    const res = await app.inject({ method: 'GET', url: '/api/me' });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({

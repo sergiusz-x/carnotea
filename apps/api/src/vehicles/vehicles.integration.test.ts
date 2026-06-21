@@ -1,4 +1,12 @@
-import { createDb, users, vehicles, type Db } from '@carnotea/db';
+import {
+  chargerTypes,
+  chargingSessions,
+  createDb,
+  fuelLogs,
+  users,
+  vehicles,
+  type Db,
+} from '@carnotea/db';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 import { inArray } from 'drizzle-orm';
@@ -32,6 +40,7 @@ describe.skipIf(!databaseUrl)('Vehicles CRUD (DB integration)', () => {
   let otherId: string;
   let actingUserId: string;
   let createdId: string;
+  let chargingVehicleId: string;
 
   const stamp = Date.now();
   const vin = 'WVWZZZ1KZAW000001';
@@ -86,10 +95,10 @@ describe.skipIf(!databaseUrl)('Vehicles CRUD (DB integration)', () => {
     await app.close();
   });
 
-  it('POST /vehicles creates a vehicle with DB defaults and the mapped fuel type', async () => {
+  it('POST /api/vehicles creates a vehicle with DB defaults and the mapped fuel type', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/vehicles',
+      url: '/api/vehicles',
       payload: {
         brand: 'Volkswagen',
         model: 'Golf',
@@ -108,25 +117,25 @@ describe.skipIf(!databaseUrl)('Vehicles CRUD (DB integration)', () => {
     expect(body.currencyCode).toBe('EUR');
   });
 
-  it('GET /vehicles lists only the owner vehicles', async () => {
-    const res = await app.inject({ method: 'GET', url: '/vehicles' });
+  it('GET /api/vehicles lists only the owner vehicles', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/vehicles' });
 
     expect(res.statusCode).toBe(200);
     const body = res.json<VehicleResponse[]>();
     expect(body.map((v) => v.id)).toContain(createdId);
   });
 
-  it('GET /vehicles/:id returns the owned vehicle', async () => {
-    const res = await app.inject({ method: 'GET', url: `/vehicles/${createdId}` });
+  it('GET /api/vehicles/:id returns the owned vehicle', async () => {
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${createdId}` });
 
     expect(res.statusCode).toBe(200);
     expect(res.json<VehicleResponse>().id).toBe(createdId);
   });
 
-  it('PATCH /vehicles/:id updates fields and remaps the fuel type', async () => {
+  it('PATCH /api/vehicles/:id updates fields and remaps the fuel type', async () => {
     const res = await app.inject({
       method: 'PATCH',
-      url: `/vehicles/${createdId}`,
+      url: `/api/vehicles/${createdId}`,
       payload: { brand: 'Audi', fuelType: 'petrol' },
     });
 
@@ -136,20 +145,86 @@ describe.skipIf(!databaseUrl)('Vehicles CRUD (DB integration)', () => {
     expect(body.fuelType).toBe('petrol');
   });
 
+  it('rejects changing a vehicle with fuel logs to electric', async () => {
+    await db.insert(fuelLogs).values({
+      vehicleId: createdId,
+      fuelDate: '2026-01-20',
+      mileage: 50_500,
+      liters: '40',
+      pricePerLiter: '1.80',
+      totalCost: '72',
+    });
+
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/vehicles/${createdId}`,
+      payload: { fuelType: 'electric' },
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toMatchObject({
+      code: 'VALIDATION_ERROR',
+      issues: [{ path: ['fuelType'] }],
+    });
+  });
+
+  it('rejects changing a vehicle with charging sessions to an ICE-only fuel type', async () => {
+    const created = await app.inject({
+      method: 'POST',
+      url: '/api/vehicles',
+      payload: {
+        brand: 'Tesla',
+        model: 'Model 3',
+        productionYear: 2022,
+        fuelType: 'electric',
+      },
+    });
+    expect(created.statusCode).toBe(201);
+    chargingVehicleId = created.json<VehicleResponse>().id;
+
+    const chargerType = await db.select({ id: chargerTypes.id }).from(chargerTypes).limit(1);
+    const chargerTypeId = chargerType.at(0)?.id;
+    if (chargerTypeId === undefined) {
+      throw new Error('Expected charger_types seed data to exist');
+    }
+
+    await db.insert(chargingSessions).values({
+      vehicleId: chargingVehicleId,
+      chargeDate: '2026-01-20',
+      mileage: 12_000,
+      energyKwh: '20',
+      pricePerKwh: '0.30',
+      totalCost: '6',
+      chargerTypeId,
+    });
+
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/vehicles/${chargingVehicleId}`,
+      payload: { fuelType: 'petrol' },
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toMatchObject({
+      code: 'VALIDATION_ERROR',
+      issues: [{ path: ['fuelType'] }],
+    });
+  });
+
   it('hides another user vehicle behind a 404 (never 403, never leak existence)', async () => {
     actingUserId = otherId;
     try {
-      const get = await app.inject({ method: 'GET', url: `/vehicles/${createdId}` });
+      const get = await app.inject({ method: 'GET', url: `/api/vehicles/${createdId}` });
       expect(get.statusCode).toBe(404);
 
       const patch = await app.inject({
         method: 'PATCH',
-        url: `/vehicles/${createdId}`,
+        url: `/api/vehicles/${createdId}`,
         payload: { brand: 'Stolen' },
       });
       expect(patch.statusCode).toBe(404);
 
-      const del = await app.inject({ method: 'DELETE', url: `/vehicles/${createdId}` });
+      const del = await app.inject({ method: 'DELETE', url: `/api/vehicles/${createdId}` });
       expect(del.statusCode).toBe(404);
     } finally {
       actingUserId = ownerId;
@@ -159,7 +234,7 @@ describe.skipIf(!databaseUrl)('Vehicles CRUD (DB integration)', () => {
   it('returns 409 when a VIN collides with an existing vehicle', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: '/vehicles',
+      url: '/api/vehicles',
       payload: { brand: 'Seat', model: 'Leon', productionYear: 2018, fuelType: 'petrol', vin },
     });
 
@@ -167,11 +242,11 @@ describe.skipIf(!databaseUrl)('Vehicles CRUD (DB integration)', () => {
     expect(res.json()).toMatchObject({ code: 'CONFLICT' });
   });
 
-  it('DELETE /vehicles/:id removes the owned vehicle, then 404 on re-fetch', async () => {
-    const del = await app.inject({ method: 'DELETE', url: `/vehicles/${createdId}` });
+  it('DELETE /api/vehicles/:id removes the owned vehicle, then 404 on re-fetch', async () => {
+    const del = await app.inject({ method: 'DELETE', url: `/api/vehicles/${createdId}` });
     expect(del.statusCode).toBe(204);
 
-    const get = await app.inject({ method: 'GET', url: `/vehicles/${createdId}` });
+    const get = await app.inject({ method: 'GET', url: `/api/vehicles/${createdId}` });
     expect(get.statusCode).toBe(404);
   });
 });

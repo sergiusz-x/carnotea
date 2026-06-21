@@ -101,31 +101,31 @@ describe('FuelLogsController', () => {
   it('rejects an unauthenticated request with 401', async () => {
     currentSession = null;
 
-    const res = await app.inject({ method: 'GET', url: `/vehicles/${vehicleId}/fuel-logs` });
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/fuel-logs` });
 
     expect(res.statusCode).toBe(401);
   });
 
-  it('GET /vehicles/:vehicleId/fuel-logs lists fuel logs', async () => {
-    const res = await app.inject({ method: 'GET', url: `/vehicles/${vehicleId}/fuel-logs` });
+  it('GET /api/vehicles/:vehicleId/fuel-logs lists fuel logs', async () => {
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/fuel-logs` });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual([sampleLog]);
     expect(calls).toEqual([{ method: 'list', args: [userId, vehicleId] }]);
   });
 
-  it('GET /vehicles/:vehicleId/fuel-logs rejects non-uuid vehicleId with 400', async () => {
-    const res = await app.inject({ method: 'GET', url: '/vehicles/not-a-uuid/fuel-logs' });
+  it('GET /api/vehicles/:vehicleId/fuel-logs rejects non-uuid vehicleId with 400', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/vehicles/not-a-uuid/fuel-logs' });
 
     expect(res.statusCode).toBe(400);
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
     expect(calls).toEqual([]);
   });
 
-  it('GET /vehicles/:vehicleId/fuel-logs/:id returns the fuel log', async () => {
+  it('GET /api/vehicles/:vehicleId/fuel-logs/:id returns the fuel log', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: `/vehicles/${vehicleId}/fuel-logs/${existingId}`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs/${existingId}`,
     });
 
     expect(res.statusCode).toBe(200);
@@ -133,20 +133,20 @@ describe('FuelLogsController', () => {
     expect(calls).toEqual([{ method: 'getOwnedOrThrow', args: [userId, vehicleId, existingId] }]);
   });
 
-  it('GET /vehicles/:vehicleId/fuel-logs/:id surfaces 404 from service', async () => {
+  it('GET /api/vehicles/:vehicleId/fuel-logs/:id surfaces 404 from service', async () => {
     const res = await app.inject({
       method: 'GET',
-      url: `/vehicles/${vehicleId}/fuel-logs/${missingId}`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs/${missingId}`,
     });
 
     expect(res.statusCode).toBe(404);
     expect(res.json()).toMatchObject({ code: 'NOT_FOUND', message: 'Fuel log not found' });
   });
 
-  it('POST /vehicles/:vehicleId/fuel-logs takes owner from session', async () => {
+  it('POST /api/vehicles/:vehicleId/fuel-logs takes owner from session', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: `/vehicles/${vehicleId}/fuel-logs`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs`,
       payload: {
         fuelDate: '2026-01-15',
         mileage: 50000,
@@ -163,10 +163,10 @@ describe('FuelLogsController', () => {
     expect(createCall?.args[2]).not.toHaveProperty('totalCost');
   });
 
-  it('POST /vehicles/:vehicleId/fuel-logs ignores totalCost in body', async () => {
+  it('POST /api/vehicles/:vehicleId/fuel-logs ignores totalCost in body', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: `/vehicles/${vehicleId}/fuel-logs`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs`,
       payload: {
         fuelDate: '2026-01-15',
         mileage: 50000,
@@ -181,10 +181,10 @@ describe('FuelLogsController', () => {
     expect(createCall?.args[2]).not.toHaveProperty('totalCost');
   });
 
-  it('POST /vehicles/:vehicleId/fuel-logs rejects invalid body with 400', async () => {
+  it('POST /api/vehicles/:vehicleId/fuel-logs rejects invalid body with 400', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: `/vehicles/${vehicleId}/fuel-logs`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs`,
       payload: { fuelDate: '2026-01-15' },
     });
 
@@ -196,7 +196,7 @@ describe('FuelLogsController', () => {
   it('POST rejects liters <= 0', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: `/vehicles/${vehicleId}/fuel-logs`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs`,
       payload: { fuelDate: '2026-01-15', mileage: 50000, liters: 0, pricePerLiter: 1.8 },
     });
 
@@ -207,7 +207,7 @@ describe('FuelLogsController', () => {
   it('POST rejects pricePerLiter <= 0', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: `/vehicles/${vehicleId}/fuel-logs`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs`,
       payload: { fuelDate: '2026-01-15', mileage: 50000, liters: 40, pricePerLiter: 0 },
     });
 
@@ -218,7 +218,7 @@ describe('FuelLogsController', () => {
   it('POST rejects mileage < 0', async () => {
     const res = await app.inject({
       method: 'POST',
-      url: `/vehicles/${vehicleId}/fuel-logs`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs`,
       payload: { fuelDate: '2026-01-15', mileage: -1, liters: 40, pricePerLiter: 1.8 },
     });
 
@@ -226,10 +226,10 @@ describe('FuelLogsController', () => {
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
   });
 
-  it('PATCH /vehicles/:vehicleId/fuel-logs/:id forwards update to service', async () => {
+  it('PATCH /api/vehicles/:vehicleId/fuel-logs/:id forwards update to service', async () => {
     const res = await app.inject({
       method: 'PATCH',
-      url: `/vehicles/${vehicleId}/fuel-logs/${existingId}`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs/${existingId}`,
       payload: { liters: 45 },
     });
 
@@ -241,10 +241,10 @@ describe('FuelLogsController', () => {
     expect(updateCall?.args[3]).toMatchObject({ liters: 45 });
   });
 
-  it('DELETE /vehicles/:vehicleId/fuel-logs/:id returns 204', async () => {
+  it('DELETE /api/vehicles/:vehicleId/fuel-logs/:id returns 204', async () => {
     const res = await app.inject({
       method: 'DELETE',
-      url: `/vehicles/${vehicleId}/fuel-logs/${existingId}`,
+      url: `/api/vehicles/${vehicleId}/fuel-logs/${existingId}`,
     });
 
     expect(res.statusCode).toBe(204);

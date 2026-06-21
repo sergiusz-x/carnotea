@@ -40,13 +40,13 @@ one PR because the rollup and the record are inseparable. Follows
 
 ### Endpoints
 
-| Method | Path                                         | Auth    | Success               | Errors                                       |
-| ------ | -------------------------------------------- | ------- | --------------------- | -------------------------------------------- |
-| GET    | `/vehicles/{vehicleId}/service-records`      | session | 200 `ServiceRecord[]` | 401, 404 NOT_FOUND                           |
-| POST   | `/vehicles/{vehicleId}/service-records`      | session | 201 `ServiceRecord`   | 400 VALIDATION_ERROR, 401, 404, 409 CONFLICT |
-| GET    | `/vehicles/{vehicleId}/service-records/{id}` | session | 200 `ServiceRecord`   | 401, 404 NOT_FOUND                           |
-| PATCH  | `/vehicles/{vehicleId}/service-records/{id}` | session | 200 `ServiceRecord`   | 400, 401, 404, 409 CONFLICT                  |
-| DELETE | `/vehicles/{vehicleId}/service-records/{id}` | session | 204                   | 401, 404 NOT_FOUND                           |
+| Method | Path                                             | Auth    | Success               | Errors                                       |
+| ------ | ------------------------------------------------ | ------- | --------------------- | -------------------------------------------- |
+| GET    | `/api/vehicles/{vehicleId}/service-records`      | session | 200 `ServiceRecord[]` | 401, 404 NOT_FOUND                           |
+| POST   | `/api/vehicles/{vehicleId}/service-records`      | session | 201 `ServiceRecord`   | 400 VALIDATION_ERROR, 401, 404, 409 CONFLICT |
+| GET    | `/api/vehicles/{vehicleId}/service-records/{id}` | session | 200 `ServiceRecord`   | 401, 404 NOT_FOUND                           |
+| PATCH  | `/api/vehicles/{vehicleId}/service-records/{id}` | session | 200 `ServiceRecord`   | 400, 401, 404, 409 CONFLICT                  |
+| DELETE | `/api/vehicles/{vehicleId}/service-records/{id}` | session | 204                   | 401, 404 NOT_FOUND                           |
 
 List newest-first on `serviceDate`. The `ServiceRecord` response embeds its
 `parts: ServicePartLine[]`.

@@ -27,7 +27,7 @@ update this document and link to it from your PR.
 | Variables       | `camelCase`       | `currentMileage`                 |
 | Constants       | `SCREAMING_SNAKE` | `MAX_VIN_LENGTH = 17`            |
 | DB tables/cols  | `snake_case`      | `fuel_logs`, `current_mileage`   |
-| URL paths       | `kebab-case`      | `/vehicles/:id/fuel-logs`        |
+| URL paths       | `kebab-case`      | `/api/vehicles/:id/fuel-logs`    |
 | i18n keys       | `dot.notation`    | `vehicle.form.title.placeholder` |
 
 The database side intentionally uses `snake_case` because that's the Postgres

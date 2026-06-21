@@ -49,7 +49,7 @@ import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
 // 1. Register route + schemas (module-level, runs on import).
 const createThingRoute = zodRoute({
   method: 'post',
-  path: '/things',            // OpenAPI path format — {param} not :param
+  path: '/api/things',        // OpenAPI path format — {param} not :param
   operationId: 'createThing',
   tags: ['Things'],
   request: {
@@ -64,7 +64,7 @@ const createThingRoute = zodRoute({
 // 2. Use ZodValidationPipe to validate the body at runtime.
 @Controller()
 export class ThingsController {
-  @Post('things')
+  @Post('api/things')
   create(@Body(new ZodValidationPipe(createThingRoute.request!.body!)) body: { name: string }) {
     ...
   }
@@ -103,7 +103,7 @@ this:
   (same UUID — see `packages/db/AGENTS.md`), so `request.user.id` is the value to
   scope queries by; no profile lookup is needed to get the owner id.
 - **Profile creation:** a better-auth `databaseHooks.user.create.after` hook
-  mirrors each new auth user into the domain `users` row (idempotent). `GET /me`
+  mirrors each new auth user into the domain `users` row (idempotent). `GET /api/me`
   returns that profile.
 - **Env:** `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` are required (see
   `src/config/env.ts` and root `.env.example`).

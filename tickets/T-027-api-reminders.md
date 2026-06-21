@@ -36,13 +36,13 @@ Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-
 
 ### Endpoints
 
-| Method | Path                                   | Auth    | Success          | Errors                                   |
-| ------ | -------------------------------------- | ------- | ---------------- | ---------------------------------------- |
-| GET    | `/vehicles/{vehicleId}/reminders`      | session | 200 `Reminder[]` | 401, 404 NOT_FOUND                       |
-| POST   | `/vehicles/{vehicleId}/reminders`      | session | 201 `Reminder`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
-| GET    | `/vehicles/{vehicleId}/reminders/{id}` | session | 200 `Reminder`   | 401, 404 NOT_FOUND                       |
-| PATCH  | `/vehicles/{vehicleId}/reminders/{id}` | session | 200 `Reminder`   | 400, 401, 404 NOT_FOUND                  |
-| DELETE | `/vehicles/{vehicleId}/reminders/{id}` | session | 204              | 401, 404 NOT_FOUND                       |
+| Method | Path                                       | Auth    | Success          | Errors                                   |
+| ------ | ------------------------------------------ | ------- | ---------------- | ---------------------------------------- |
+| GET    | `/api/vehicles/{vehicleId}/reminders`      | session | 200 `Reminder[]` | 401, 404 NOT_FOUND                       |
+| POST   | `/api/vehicles/{vehicleId}/reminders`      | session | 201 `Reminder`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
+| GET    | `/api/vehicles/{vehicleId}/reminders/{id}` | session | 200 `Reminder`   | 401, 404 NOT_FOUND                       |
+| PATCH  | `/api/vehicles/{vehicleId}/reminders/{id}` | session | 200 `Reminder`   | 400, 401, 404 NOT_FOUND                  |
+| DELETE | `/api/vehicles/{vehicleId}/reminders/{id}` | session | 204              | 401, 404 NOT_FOUND                       |
 
 GET list supports `?status=` and `?dueState=` filters.
 
