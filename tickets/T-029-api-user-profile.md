@@ -1,16 +1,16 @@
 ---
 id: T-029
 title: User profile endpoints linked to better-auth identity
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
-owner: ~
+owner: claude-code
 dependencies: [T-006, T-019]
 labels: [api, feature]
 created_at: 2026-06-15
 updated_at: 2026-06-21
-closed_at: ~
+closed_at: 2026-06-21
 ---
 
 # T-029 — User profile endpoints linked to better-auth identity
