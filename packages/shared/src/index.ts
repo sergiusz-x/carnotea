@@ -4,5 +4,6 @@ export * from './constants/fuel-types.js';
 export * from './constants/issue-priorities.js';
 export * from './constants/issue-statuses.js';
 export * from './constants/reminder-statuses.js';
+export * from './helpers/due-state.js';
 export * from './routes.js';
 export * from './schemas/index.js';

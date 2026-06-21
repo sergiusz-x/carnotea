@@ -10,4 +10,6 @@ export const ROUTES = {
   me: '/api/me',
   fuelLogsByVehicle: '/api/vehicles/{vehicleId}/fuel-logs',
   fuelLogById: '/api/vehicles/{vehicleId}/fuel-logs/{id}',
+  remindersByVehicle: '/api/vehicles/{vehicleId}/reminders',
+  reminderById: '/api/vehicles/{vehicleId}/reminders/{id}',
 } as const;
