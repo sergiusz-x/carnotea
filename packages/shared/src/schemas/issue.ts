@@ -8,7 +8,10 @@ import { dateField, timestampField, uuidField } from './_shared.js';
 /**
  * Vehicle issue. The DB stores `statusId`/`priorityId` (FKs to lookups); the
  * contract exposes the stable `status`/`priority` codes. When set, `resolvedDate`
- * must be on or after `reportedDate` (DB check).
+ * must be on or after `reportedDate` (DB check). The resolved-date invariant:
+ * - `status='resolved'` ⇒ `resolvedDate` is required
+ * - Any other status ⇒ `resolvedDate` must be null
+ * - `resolvedDate >= reportedDate`
  */
 const issueFields = z.object({
   id: uuidField(),
@@ -24,20 +27,15 @@ const issueFields = z.object({
   updatedAt: timestampField(),
 });
 
-const resolvedDateRefine = (value: {
-  reportedDate?: string;
-  resolvedDate?: string | null;
-}): boolean =>
-  value.resolvedDate == null ||
-  value.reportedDate == null ||
-  value.resolvedDate >= value.reportedDate;
-
-const resolvedDateError = {
-  message: 'resolvedDate must be on or after reportedDate',
-  path: ['resolvedDate'],
-};
-
-export const IssueSchema = issueFields.refine(resolvedDateRefine, resolvedDateError);
+export const IssueSchema = issueFields.superRefine((value, ctx) => {
+  if (value.resolvedDate != null && value.reportedDate != null && value.resolvedDate < value.reportedDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'resolvedDate must be on or after reportedDate',
+      path: ['resolvedDate'],
+    });
+  }
+});
 
 const issueCreateFields = issueFields.omit({
   id: true,
@@ -46,11 +44,55 @@ const issueCreateFields = issueFields.omit({
   updatedAt: true,
 });
 
-export const IssueCreateSchema = issueCreateFields.refine(resolvedDateRefine, resolvedDateError);
+export const IssueCreateSchema = issueCreateFields.superRefine((value, ctx) => {
+  if (value.status === 'resolved' && (value.resolvedDate == null || value.resolvedDate === '')) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'resolvedDate is required when status is resolved',
+      path: ['resolvedDate'],
+    });
+  }
+  if (value.status !== 'resolved' && value.resolvedDate != null && value.resolvedDate !== '') {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'resolvedDate must be null when status is not resolved',
+      path: ['resolvedDate'],
+    });
+  }
+  if (value.resolvedDate != null && value.resolvedDate !== '' && value.reportedDate != null && value.resolvedDate < value.reportedDate) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'resolvedDate must be on or after reportedDate',
+      path: ['resolvedDate'],
+    });
+  }
+});
 
 export const IssueUpdateSchema = issueCreateFields
   .partial()
-  .refine(resolvedDateRefine, resolvedDateError);
+  .superRefine((value, ctx) => {
+    if (value.status === 'resolved' && (value.resolvedDate == null || value.resolvedDate === '')) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'resolvedDate is required when status is resolved',
+        path: ['resolvedDate'],
+      });
+    }
+    if (value.status !== 'resolved' && value.resolvedDate != null && value.resolvedDate !== '') {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'resolvedDate must be null when status is not resolved',
+        path: ['resolvedDate'],
+      });
+    }
+    if (value.resolvedDate != null && value.resolvedDate !== '' && value.reportedDate != null && value.resolvedDate < value.reportedDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'resolvedDate must be on or after reportedDate',
+        path: ['resolvedDate'],
+      });
+    }
+  });
 
 export type Issue = z.infer<typeof IssueSchema>;
 export type IssueCreate = z.infer<typeof IssueCreateSchema>;

@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { validateEnv } from './config/env.js';
 import { DbModule } from './db/db.module.js';
 import { FuelLogsModule } from './fuel-logs/fuel-logs.module.js';
+import { IssuesModule } from './issues/issues.module.js';
 import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
 import { OpenApiModule } from './lib/openapi/index.js';
@@ -32,6 +33,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     FuelLogsModule,
     MileageReadingsModule,
     RemindersModule,
+    IssuesModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })
