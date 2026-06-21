@@ -207,3 +207,13 @@ function MyForm() {
 The PWA layer (T-012) is a separate ticket. Don't pull it in ahead of its
 ticket. Routing and TanStack Query landed in T-009, i18n landed in T-010, and
 the typesafe API client landed in T-011.
+
+## PWA (T-012)
+
+The installable PWA baseline landed in T-012:
+
+- `apps/web/public/manifest.webmanifest` — hand-authored; do not let vite-plugin-pwa overwrite it (manifest is set to `false` in `VitePWA()`).
+- `apps/web/public/icons/` — placeholder icons. Replace with brand assets when the design decision is made.
+- Service worker is registered by `vite-plugin-pwa` (`registerType: 'autoUpdate'`, `workbox: { runtimeCaching: [] }`).
+
+**Do not add offline caching, background sync, or push notifications in this ticket — those live behind their own ADRs and tickets (see T-054, T-055).**
