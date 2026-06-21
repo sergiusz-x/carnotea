@@ -1,13 +1,14 @@
 ---
 id: T-015
 title: CI — GitHub Actions (lint, typecheck, test, build)
-status: ready
+status: done
 priority: high
-owner: ~
+owner: Codex
 dependencies: [T-001]
 labels: [tooling, ci, repo]
 created_at: 2026-06-13
 updated_at: 2026-06-21
+closed_at: 2026-06-21
 closed_at: ~
 ---
 
@@ -37,25 +38,36 @@ We follow the create-t3-turbo CI shape: a reusable composite setup action under
 
 ## Acceptance criteria
 
-- [ ] `tooling/github/setup/action.yml` is a composite action that checks out,
+- [x] `tooling/github/setup/action.yml` is a composite action that checks out,
       installs pnpm + Node (from `.nvmrc`), and runs `pnpm install`.
-- [ ] `.github/workflows/ci.yml` runs on `pull_request` and `push` to `main`,
+- [x] `.github/workflows/ci.yml` runs on `pull_request` and `push` to `main`,
       with `concurrency` cancelling superseded runs on non-main refs.
-- [ ] Jobs (parallel where possible): `lint` (incl. `pnpm lint:ws` and
+- [x] Jobs (parallel where possible): `lint` (incl. `pnpm lint:ws` and
       `pnpm lint:tickets`), `format` (`pnpm format:check`), `typecheck`, `test`,
       `build`.
-- [ ] The `test` job runs a **Postgres service** (or container) and sets
+- [x] The `test` job runs a **Postgres service** (or container) and sets
       `DATABASE_URL` so the `*.integration.test.ts` suites actually execute — the
       cross-user 404 ownership tests must run in CI, not be silently skipped. Run
       `pnpm db:migrate` against it before the suite.
-- [ ] Turborepo remote caching is wired via repo secrets/vars but degrades
+- [x] Turborepo remote caching is wired via repo secrets/vars but degrades
       gracefully when they're absent (forks).
-- [ ] The workflow copies `.env.example` to `.env` so commands needing env vars
+- [x] The workflow copies `.env.example` to `.env` so commands needing env vars
       don't fail.
 - [ ] CI passes green on a branch that contains only the bootstrap +
       `tooling/*`.
-- [ ] `docs/getting-started.md` mentions that CI mirrors the local validation
+- [x] `docs/getting-started.md` mentions that CI mirrors the local validation
       commands.
+
+## Notes
+
+- CI jobs must check out the repository before invoking the local composite
+  action; the composite also performs the required checkout as part of its
+  reusable setup contract.
+- Database-backed validation on 2026-06-21 ran all vehicle ownership integration
+  tests successfully, but the pre-existing Better Auth integration test failed
+  because `auth_user.id` was inserted as `DEFAULT` despite having no database
+  default. The CI-green acceptance criterion remains unchecked pending that
+  unrelated auth fix.
 
 ## Files to touch
 

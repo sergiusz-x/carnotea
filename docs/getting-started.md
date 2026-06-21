@@ -108,6 +108,9 @@ working tree differs, matching the CI freshness check.
 | Run all tests    | `pnpm test`                     |
 | Run a single app | `pnpm --filter <name> <script>` |
 
+CI (GitHub Actions) runs the same commands on every PR — see
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
+
 ## 7. Browser automation (agent-browser)
 
 For AI-assisted UI verification, manual browser exploration, and natural-language
