@@ -25,12 +25,17 @@ single source of truth for vehicle totals.
 ## Context
 
 The `expenses` table carries `sourceType`
-(`fuel_log | charging_session | service_record | manual | other`) and a nullable
-`sourceId`, with a partial unique index over `(sourceType, sourceId)` for
+(`fuel_log | charging_session | service_record | manual`) and `sourceId`, with
+`sourceId` nullable **only** for manual rows and required for every synced source
+row. It also has a partial unique index over `(sourceType, sourceId)` for
 non-`manual` rows. That schema exists precisely so cost-bearing entries
 (T-022/T-023/T-024) project into one normalized ledger instead of every analytics
 query summing four tables. This ticket makes that projection real and owns the
 manual-expense API on top of it.
+
+`other` is an expense category, not a source type. If a future integration needs a
+new external source type, add it under its own ticket with a concrete `sourceId`
+contract.
 
 `size: L` — it adds a resource **and** wires sync hooks into three existing
 services. Follows
@@ -40,13 +45,13 @@ services. Follows
 
 ### Endpoints
 
-| Method | Path                                  | Auth    | Success         | Errors                                   |
-| ------ | ------------------------------------- | ------- | --------------- | ---------------------------------------- |
-| GET    | `/vehicles/{vehicleId}/expenses`      | session | 200 `Expense[]` | 401, 404 NOT_FOUND                       |
-| POST   | `/vehicles/{vehicleId}/expenses`      | session | 201 `Expense`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
-| GET    | `/vehicles/{vehicleId}/expenses/{id}` | session | 200 `Expense`   | 401, 404 NOT_FOUND                       |
-| PATCH  | `/vehicles/{vehicleId}/expenses/{id}` | session | 200 `Expense`   | 400, 401, 404, 409 CONFLICT              |
-| DELETE | `/vehicles/{vehicleId}/expenses/{id}` | session | 204             | 401, 404, 409 CONFLICT                   |
+| Method | Path                                      | Auth    | Success         | Errors                                   |
+| ------ | ----------------------------------------- | ------- | --------------- | ---------------------------------------- |
+| GET    | `/api/vehicles/{vehicleId}/expenses`      | session | 200 `Expense[]` | 401, 404 NOT_FOUND                       |
+| POST   | `/api/vehicles/{vehicleId}/expenses`      | session | 201 `Expense`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
+| GET    | `/api/vehicles/{vehicleId}/expenses/{id}` | session | 200 `Expense`   | 401, 404 NOT_FOUND                       |
+| PATCH  | `/api/vehicles/{vehicleId}/expenses/{id}` | session | 200 `Expense`   | 400, 401, 404, 409 CONFLICT              |
+| DELETE | `/api/vehicles/{vehicleId}/expenses/{id}` | session | 204             | 401, 404, 409 CONFLICT                   |
 
 List newest-first on `expenseDate`. PATCH/DELETE on an auto-synced row (`sourceType
 <> 'manual'`) returns **409 CONFLICT** (`code: CONFLICT`, message: edit the source
@@ -85,6 +90,10 @@ entry). GET list supports `?source=` filter (`manual` or a specific source type)
       upserts/deletes a matching expense row keyed by `(sourceType, sourceId)` with
       `amount = totalCost`, `expenseDate = entry date`, category `fuel` /
       `electricity` / `service`.
+- [ ] The expenses schema mirrors `mileage_readings`: `(sourceType = 'manual' AND
+sourceId IS NULL) OR (sourceType <> 'manual' AND sourceId IS NOT NULL)` is
+      enforced in DB schema + migration and covered by tests; `other` is removed
+      as an expense `sourceType` unless a concrete source contract is added first.
 - [ ] Auto-synced rows (`sourceType <> 'manual'`) are read-only through the expense
       write endpoints — PATCH/DELETE on them is rejected with 409.
 - [ ] Listing returns both manual and auto-synced expenses; `?source=` filter works.
@@ -95,16 +104,17 @@ entry). GET list supports `?source=` filter (`manual` or a specific source type)
 
 Inherits the baseline matrix, plus:
 
-| Case                          | Input                        | Expected                                         |
-| ----------------------------- | ---------------------------- | ------------------------------------------------ |
-| manual expense create         | valid `categoryCode`, amount | 201, row with `sourceType=manual`                |
-| fuel log creates expense      | create a fuel log (T-022)    | expense row, `amount=totalCost`, category `fuel` |
-| source edit updates expense   | edit the fuel log's cost     | expense `amount` follows                         |
-| source delete removes expense | delete the fuel log          | expense row gone                                 |
-| auto-synced row is read-only  | PATCH an auto-synced expense | 409 CONFLICT                                     |
-| upsert idempotent             | re-sync same `(type,id)`     | one row                                          |
-| unknown category code         | `categoryCode="nope"`        | 400 VALIDATION_ERROR                             |
-| cross-user isolation          | another user's `vehicleId`   | 404 NOT_FOUND                                    |
+| Case                          | Input                                        | Expected                                         |
+| ----------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| manual expense create         | valid `categoryCode`, amount                 | 201, row with `sourceType=manual`                |
+| fuel log creates expense      | create a fuel log (T-022)                    | expense row, `amount=totalCost`, category `fuel` |
+| synced expense needs sourceId | direct insert/source sync without `sourceId` | DB/schema validation rejects it                  |
+| source edit updates expense   | edit the fuel log's cost                     | expense `amount` follows                         |
+| source delete removes expense | delete the fuel log                          | expense row gone                                 |
+| auto-synced row is read-only  | PATCH an auto-synced expense                 | 409 CONFLICT                                     |
+| upsert idempotent             | re-sync same `(type,id)`                     | one row                                          |
+| unknown category code         | `categoryCode="nope"`                        | 400 VALIDATION_ERROR                             |
+| cross-user isolation          | another user's `vehicleId`                   | 404 NOT_FOUND                                    |
 
 ## Files to touch
 
@@ -114,6 +124,8 @@ Inherits the baseline matrix, plus:
   `apps/api/src/service-records/` — hook the sync into their services
 - `apps/api/src/expenses/*.test.ts` (co-located; **no** `apps/api/test/*.e2e-spec.ts`)
 - `packages/shared/src/schemas/expense.ts`
+- `packages/db/src/schema/expenses.ts` + generated migration for the source-id
+  invariant
 
 ## Out of scope
 
@@ -129,7 +141,8 @@ Inherits the baseline matrix, plus:
   method; deletion cascades via the source row's `onDelete: 'cascade'` FK, but the
   explicit helper keeps behaviour testable.
 - Use `INSERT ... ON CONFLICT (source_type, source_id) DO UPDATE` to respect the
-  partial unique index.
+  partial unique index. The source-id check must be present before relying on this
+  upsert path; otherwise multiple `NULL` source ids can bypass uniqueness.
 - Service records: `totalCost` already includes parts + labor (T-024), so sync the
   record's `totalCost`, not a recomputed sum.
 

@@ -112,7 +112,7 @@ See [ADR-0007](./adr/0007-i18n-pl-en.md).
 
 1. User opens the "Add refuel" form on the web app.
 2. `react-hook-form` validates with the same Zod schema the API uses.
-3. `POST /vehicles/{id}/fuel-logs` is called via the typed client.
+3. `POST /api/vehicles/{id}/fuel-logs` is called via the typed client.
 4. The API authenticates through better-auth (`AuthGuard` → `request.user`),
    runs the Zod parser, asserts the vehicle is owned, and inserts the fuel log
    with a Drizzle query (`totalCost` is computed server-side, never trusted from

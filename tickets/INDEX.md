@@ -61,7 +61,7 @@ _None._
 
 ## In progress
 
-_None._
+- 🔴 [T-063 — Align API paths, vehicle energy invariant, and README](./T-063-api-prefix-energy-invariant-readme-cleanup.md)
 
 ## Blocked
 

@@ -37,13 +37,13 @@ Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-
 
 ### Endpoints
 
-| Method | Path                                           | Auth    | Success                 | Errors                                   |
-| ------ | ---------------------------------------------- | ------- | ----------------------- | ---------------------------------------- |
-| GET    | `/vehicles/{vehicleId}/charging-sessions`      | session | 200 `ChargingSession[]` | 401, 404 NOT_FOUND                       |
-| POST   | `/vehicles/{vehicleId}/charging-sessions`      | session | 201 `ChargingSession`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
-| GET    | `/vehicles/{vehicleId}/charging-sessions/{id}` | session | 200 `ChargingSession`   | 401, 404 NOT_FOUND                       |
-| PATCH  | `/vehicles/{vehicleId}/charging-sessions/{id}` | session | 200 `ChargingSession`   | 400, 401, 404 NOT_FOUND                  |
-| DELETE | `/vehicles/{vehicleId}/charging-sessions/{id}` | session | 204                     | 401, 404 NOT_FOUND                       |
+| Method | Path                                               | Auth    | Success                 | Errors                                   |
+| ------ | -------------------------------------------------- | ------- | ----------------------- | ---------------------------------------- |
+| GET    | `/api/vehicles/{vehicleId}/charging-sessions`      | session | 200 `ChargingSession[]` | 401, 404 NOT_FOUND                       |
+| POST   | `/api/vehicles/{vehicleId}/charging-sessions`      | session | 201 `ChargingSession`   | 400 VALIDATION_ERROR, 401, 404 NOT_FOUND |
+| GET    | `/api/vehicles/{vehicleId}/charging-sessions/{id}` | session | 200 `ChargingSession`   | 401, 404 NOT_FOUND                       |
+| PATCH  | `/api/vehicles/{vehicleId}/charging-sessions/{id}` | session | 200 `ChargingSession`   | 400, 401, 404 NOT_FOUND                  |
+| DELETE | `/api/vehicles/{vehicleId}/charging-sessions/{id}` | session | 204                     | 401, 404 NOT_FOUND                       |
 
 List newest-first on `chargeDate`, tie-broken by `mileage`.
 

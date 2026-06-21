@@ -42,8 +42,8 @@ and reply-to must be configurable rather than hard-coded.
 - [ ] Verification and password-reset emails have **both** `pl` and `en`
       templates (subject + body), chosen from the user's persisted locale with
       `en` as fallback, per ADR-0007.
-- [ ] Templates render the correct action URL built from `BETTER_AUTH_URL` /
-      `VITE_API_URL`; links resolve to the right web routes.
+- [ ] Templates render the correct action URL from the canonical auth/web base
+      URL; links resolve to the right web routes.
 - [ ] Local dev uses **Mailpit** (added to `docker-compose.yml`) so emails are
       captured and previewable at its web UI without sending real mail.
 - [ ] `.env.example` documents the new `EMAIL_*` / SMTP vars with safe,

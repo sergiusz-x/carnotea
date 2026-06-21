@@ -64,7 +64,7 @@ exactly as before.
 - [ ] An OpenTelemetry Web SDK is initialised at app entry with `document-load`
       and `fetch`/XHR instrumentation.
 - [ ] W3C `traceparent` is propagated on `fetch` requests to the API origin
-      (`VITE_API_URL`) so a trace started in the browser **continues into the
+      (`/api` same-origin requests) so a trace started in the browser **continues into the
       API as one trace** (shared `trace_id`).
 - [ ] The web exporter is OTLP-HTTP configured via
       `VITE_OTEL_EXPORTER_OTLP_ENDPOINT`. When unset, telemetry is a **no-op**
