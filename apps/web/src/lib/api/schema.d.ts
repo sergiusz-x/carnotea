@@ -515,18 +515,74 @@ export interface paths {
         200: { content: {
           "application/json": {
             id: string;
-            email: string;
             firstName: string;
             lastName: string;
+            email: string;
+            localePref: "pl" | "en";
+            unitsPref: "metric" | "imperial";
+            currencyPref: string;
             createdAt: string;
             updatedAt: string;
           };
         } };
         401: { content: {
-
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
         } };
-        404: { content: {
-
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          firstName?: string;
+          lastName?: string;
+          localePref?: "pl" | "en";
+          unitsPref?: "metric" | "imperial";
+          currencyPref?: string;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            localePref: "pl" | "en";
+            unitsPref: "metric" | "imperial";
+            currencyPref: string;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
         } };
       };
     };

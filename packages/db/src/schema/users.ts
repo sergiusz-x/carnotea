@@ -20,13 +20,7 @@ export const users = pgTable(
     check('users_email_lowercase_chk', sql`${t.email} = lower(${t.email})`),
     check('users_email_format_chk', sql`position('@' in ${t.email}) > 1`),
     check('users_locale_pref_chk', sql`${t.localePref} in ('pl', 'en')`),
-    check(
-      'users_units_pref_chk',
-      sql`${t.unitsPref} in ('metric', 'imperial')`,
-    ),
-    check(
-      'users_currency_pref_chk',
-      sql`${t.currencyPref} ~ '^[A-Z]{3}$'`,
-    ),
+    check('users_units_pref_chk', sql`${t.unitsPref} in ('metric', 'imperial')`),
+    check('users_currency_pref_chk', sql`${t.currencyPref} ~ '^[A-Z]{3}$'`),
   ],
 );

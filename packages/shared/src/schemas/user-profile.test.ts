@@ -8,6 +8,9 @@ describe('UserProfileCreateSchema', () => {
       firstName: 'Ada',
       lastName: 'Lovelace',
       email: 'Ada@Example.COM',
+      localePref: 'en',
+      unitsPref: 'metric',
+      currencyPref: 'EUR',
     });
     expect(parsed.email).toBe('ada@example.com');
   });
