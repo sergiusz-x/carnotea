@@ -96,29 +96,33 @@ export class FuelLogsService {
 
     const totalCost = computeTotalCost(input.liters, input.pricePerLiter);
 
-    const inserted = await this.db
-      .insert(fuelLogs)
-      .values({
+    const created = await this.db.transaction(async (tx) => {
+      const inserted = await tx
+        .insert(fuelLogs)
+        .values({
+          vehicleId,
+          fuelDate: input.fuelDate,
+          mileage: input.mileage,
+          liters: String(input.liters),
+          pricePerLiter: String(input.pricePerLiter),
+          totalCost: String(totalCost),
+          stationName: input.stationName ?? null,
+          isFullTank: input.isFullTank,
+        })
+        .returning({ id: fuelLogs.id });
+
+      const row = inserted.at(0);
+      if (!row) throw new Error('Fuel log insert returned no row');
+
+      await this.mileageSync.syncDerivedReading(tx, {
         vehicleId,
-        fuelDate: input.fuelDate,
+        sourceType: 'fuel_log',
+        sourceId: row.id,
         mileage: input.mileage,
-        liters: String(input.liters),
-        pricePerLiter: String(input.pricePerLiter),
-        totalCost: String(totalCost),
-        stationName: input.stationName ?? null,
-        isFullTank: input.isFullTank,
-      })
-      .returning({ id: fuelLogs.id });
+        date: input.fuelDate,
+      });
 
-    const created = inserted.at(0);
-    if (!created) throw new Error('Fuel log insert returned no row');
-
-    await this.mileageSync.syncDerivedReading({
-      vehicleId,
-      sourceType: 'fuel_log',
-      sourceId: created.id,
-      mileage: input.mileage,
-      date: input.fuelDate,
+      return row;
     });
 
     return this.getOwnedOrThrow(userId, vehicleId, created.id);
@@ -156,20 +160,22 @@ export class FuelLogsService {
     if (input.isFullTank !== undefined) updates.isFullTank = input.isFullTank;
     updates.totalCost = String(totalCost);
 
-    const affected = await this.db
-      .update(fuelLogs)
-      .set(updates)
-      .where(and(eq(fuelLogs.id, id), eq(fuelLogs.vehicleId, vehicleId)))
-      .returning({ id: fuelLogs.id });
+    await this.db.transaction(async (tx) => {
+      const affected = await tx
+        .update(fuelLogs)
+        .set(updates)
+        .where(and(eq(fuelLogs.id, id), eq(fuelLogs.vehicleId, vehicleId)))
+        .returning({ id: fuelLogs.id });
 
-    if (affected.length === 0) throw this.notFound();
+      if (affected.length === 0) throw this.notFound();
 
-    await this.mileageSync.syncDerivedReading({
-      vehicleId,
-      sourceType: 'fuel_log',
-      sourceId: id,
-      mileage: newMileage,
-      date: newFuelDate,
+      await this.mileageSync.syncDerivedReading(tx, {
+        vehicleId,
+        sourceType: 'fuel_log',
+        sourceId: id,
+        mileage: newMileage,
+        date: newFuelDate,
+      });
     });
 
     return this.getOwnedOrThrow(userId, vehicleId, id);
@@ -178,17 +184,19 @@ export class FuelLogsService {
   async remove(userId: string, vehicleId: string, id: string): Promise<void> {
     await this.assertVehicleOwned(userId, vehicleId);
 
-    const deleted = await this.db
-      .delete(fuelLogs)
-      .where(and(eq(fuelLogs.id, id), eq(fuelLogs.vehicleId, vehicleId)))
-      .returning({ id: fuelLogs.id });
+    await this.db.transaction(async (tx) => {
+      const deleted = await tx
+        .delete(fuelLogs)
+        .where(and(eq(fuelLogs.id, id), eq(fuelLogs.vehicleId, vehicleId)))
+        .returning({ id: fuelLogs.id });
 
-    if (deleted.length === 0) throw this.notFound();
+      if (deleted.length === 0) throw this.notFound();
 
-    await this.mileageSync.removeDerivedReading({
-      vehicleId,
-      sourceType: 'fuel_log',
-      sourceId: id,
+      await this.mileageSync.removeDerivedReading(tx, {
+        vehicleId,
+        sourceType: 'fuel_log',
+        sourceId: id,
+      });
     });
   }
 
