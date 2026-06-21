@@ -1,16 +1,16 @@
 ---
 id: T-021
 title: API — Mileage readings + odometer sync rule
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
-owner: ~
+owner: claude-code
 dependencies: [T-020]
 labels: [api, feature]
 created_at: 2026-06-15
 updated_at: 2026-06-21
-closed_at: ~
+closed_at: 2026-06-21
 ---
 
 # T-021 — API: Mileage readings + mileage sync

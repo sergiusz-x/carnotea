@@ -1,0 +1,201 @@
+import { NotFoundException } from '@nestjs/common';
+import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
+import { Test } from '@nestjs/testing';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+
+import { AUTH } from '../auth/auth.constants.js';
+import { AuthGuard } from '../auth/auth.guard.js';
+
+import { MileageReadingsController } from './mileage-readings.controller.js';
+import { MileageReadingsService, type MileageReadingResponse } from './mileage-readings.service.js';
+
+const userId = '11111111-1111-4111-8111-111111111111';
+const vehicleId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+const existingId = '22222222-2222-4222-8222-222222222222';
+const missingId = '33333333-3333-4333-8333-333333333333';
+
+const sampleReading: MileageReadingResponse = {
+  id: existingId,
+  vehicleId,
+  readingDate: '2026-02-01',
+  mileage: 50000,
+  sourceType: 'manual',
+  sourceId: null,
+  note: 'after road trip',
+  createdAt: '2026-02-01T10:00:00.000Z',
+};
+
+let currentSession: { user: { id: string; email: string } } | null = null;
+const authStub = {
+  api: { getSession: (): Promise<typeof currentSession> => Promise.resolve(currentSession) },
+};
+
+interface ServiceCall {
+  method: string;
+  args: unknown[];
+}
+let calls: ServiceCall[] = [];
+
+const serviceStub = {
+  list: (uid: string, vid: string) => {
+    calls.push({ method: 'list', args: [uid, vid] });
+    return Promise.resolve([sampleReading]);
+  },
+  getOwnedOrThrow: (uid: string, vid: string, id: string) => {
+    calls.push({ method: 'getOwnedOrThrow', args: [uid, vid, id] });
+    if (id === missingId) {
+      return Promise.reject(
+        new NotFoundException({ code: 'NOT_FOUND', message: 'Mileage reading not found' }),
+      );
+    }
+    return Promise.resolve(sampleReading);
+  },
+  create: (uid: string, vid: string, body: unknown) => {
+    calls.push({ method: 'create', args: [uid, vid, body] });
+    return Promise.resolve(sampleReading);
+  },
+  remove: (uid: string, vid: string, id: string) => {
+    calls.push({ method: 'remove', args: [uid, vid, id] });
+    return Promise.resolve();
+  },
+};
+
+describe('MileageReadingsController', () => {
+  let app: NestFastifyApplication;
+
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      controllers: [MileageReadingsController],
+      providers: [
+        AuthGuard,
+        { provide: AUTH, useValue: authStub },
+        { provide: MileageReadingsService, useValue: serviceStub },
+      ],
+    }).compile();
+
+    app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());
+    await app.init();
+    await app.getHttpAdapter().getInstance().ready();
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  beforeEach(() => {
+    calls = [];
+    currentSession = { user: { id: userId, email: 'owner@example.com' } };
+  });
+
+  it('rejects an unauthenticated request with 401', async () => {
+    currentSession = null;
+
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/mileage-readings` });
+
+    expect(res.statusCode).toBe(401);
+  });
+
+  it('GET /api/vehicles/:vehicleId/mileage-readings lists readings', async () => {
+    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/mileage-readings` });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual([sampleReading]);
+    expect(calls).toEqual([{ method: 'list', args: [userId, vehicleId] }]);
+  });
+
+  it('GET /api/vehicles/:vehicleId/mileage-readings rejects non-uuid vehicleId with 400', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/vehicles/not-a-uuid/mileage-readings' });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
+    expect(calls).toEqual([]);
+  });
+
+  it('GET /api/vehicles/:vehicleId/mileage-readings/:id returns the reading', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/mileage-readings/${existingId}`,
+    });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual(sampleReading);
+    expect(calls).toEqual([{ method: 'getOwnedOrThrow', args: [userId, vehicleId, existingId] }]);
+  });
+
+  it('GET /api/vehicles/:vehicleId/mileage-readings/:id surfaces 404 from service', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/mileage-readings/${missingId}`,
+    });
+
+    expect(res.statusCode).toBe(404);
+    expect(res.json()).toMatchObject({ code: 'NOT_FOUND', message: 'Mileage reading not found' });
+  });
+
+  it('POST /api/vehicles/:vehicleId/mileage-readings takes owner from session', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/vehicles/${vehicleId}/mileage-readings`,
+      payload: {
+        readingDate: '2026-02-01',
+        mileage: 50000,
+      },
+    });
+
+    expect(res.statusCode).toBe(201);
+    const createCall = calls.find((c) => c.method === 'create');
+    expect(createCall?.args[0]).toBe(userId);
+    expect(createCall?.args[1]).toBe(vehicleId);
+    expect(createCall?.args[2]).toMatchObject({
+      readingDate: '2026-02-01',
+      mileage: 50000,
+    });
+  });
+
+  it('POST /api/vehicles/:vehicleId/mileage-readings rejects invalid body with 400', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/vehicles/${vehicleId}/mileage-readings`,
+      payload: { readingDate: '2026-02-01' },
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
+    expect(calls).toEqual([]);
+  });
+
+  it('POST rejects mileage < 0 with 400', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/vehicles/${vehicleId}/mileage-readings`,
+      payload: { readingDate: '2026-02-01', mileage: -1 },
+    });
+
+    expect(res.statusCode).toBe(400);
+    expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
+    expect(calls).toEqual([]);
+  });
+
+  it('POST body with sourceType is stripped — schema does not include it', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/vehicles/${vehicleId}/mileage-readings`,
+      payload: { readingDate: '2026-02-01', mileage: 50000, sourceType: 'fuel_log' },
+    });
+
+    expect(res.statusCode).toBe(201);
+    const createCall = calls.find((c) => c.method === 'create');
+    expect(createCall?.args[2]).not.toHaveProperty('sourceType');
+  });
+
+  it('DELETE /api/vehicles/:vehicleId/mileage-readings/:id returns 204', async () => {
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `/api/vehicles/${vehicleId}/mileage-readings/${existingId}`,
+    });
+
+    expect(res.statusCode).toBe(204);
+    expect(res.body).toBe('');
+    expect(calls).toEqual([{ method: 'remove', args: [userId, vehicleId, existingId] }]);
+  });
+});
