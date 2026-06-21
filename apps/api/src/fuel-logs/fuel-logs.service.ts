@@ -4,7 +4,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq, lt } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
-import { MileageSyncService } from '../mileage/mileage-sync.service.js';
+import { MileageSyncService, type DbTx } from '../mileage/mileage-sync.service.js';
 
 export interface FuelLogResponse {
   id: string;
@@ -96,7 +96,7 @@ export class FuelLogsService {
 
     const totalCost = computeTotalCost(input.liters, input.pricePerLiter);
 
-    const created = await this.db.transaction(async (tx) => {
+    const createdId = await this.db.transaction(async (tx: DbTx) => {
       const inserted = await tx
         .insert(fuelLogs)
         .values({
@@ -111,21 +111,21 @@ export class FuelLogsService {
         })
         .returning({ id: fuelLogs.id });
 
-      const row = inserted.at(0);
-      if (!row) throw new Error('Fuel log insert returned no row');
+      const created = inserted.at(0);
+      if (!created) throw new Error('Fuel log insert returned no row');
 
       await this.mileageSync.syncDerivedReading(tx, {
         vehicleId,
         sourceType: 'fuel_log',
-        sourceId: row.id,
+        sourceId: created.id,
         mileage: input.mileage,
         date: input.fuelDate,
       });
 
-      return row;
+      return created.id;
     });
 
-    return this.getOwnedOrThrow(userId, vehicleId, created.id);
+    return this.getOwnedOrThrow(userId, vehicleId, createdId);
   }
 
   async update(
@@ -151,16 +151,16 @@ export class FuelLogsService {
     const newFuelDate = input.fuelDate ?? existing.fuelDate;
     const totalCost = computeTotalCost(newLiters, newPricePerLiter);
 
-    const updates: Partial<typeof fuelLogs.$inferInsert> = {};
-    if (input.fuelDate !== undefined) updates.fuelDate = input.fuelDate;
-    if (input.mileage !== undefined) updates.mileage = input.mileage;
-    if (input.liters !== undefined) updates.liters = String(input.liters);
-    if (input.pricePerLiter !== undefined) updates.pricePerLiter = String(input.pricePerLiter);
-    if (input.stationName !== undefined) updates.stationName = input.stationName ?? null;
-    if (input.isFullTank !== undefined) updates.isFullTank = input.isFullTank;
-    updates.totalCost = String(totalCost);
+    await this.db.transaction(async (tx: DbTx) => {
+      const updates: Partial<typeof fuelLogs.$inferInsert> = {};
+      if (input.fuelDate !== undefined) updates.fuelDate = input.fuelDate;
+      if (input.mileage !== undefined) updates.mileage = input.mileage;
+      if (input.liters !== undefined) updates.liters = String(input.liters);
+      if (input.pricePerLiter !== undefined) updates.pricePerLiter = String(input.pricePerLiter);
+      if (input.stationName !== undefined) updates.stationName = input.stationName ?? null;
+      if (input.isFullTank !== undefined) updates.isFullTank = input.isFullTank;
+      updates.totalCost = String(totalCost);
 
-    await this.db.transaction(async (tx) => {
       const affected = await tx
         .update(fuelLogs)
         .set(updates)
@@ -184,7 +184,7 @@ export class FuelLogsService {
   async remove(userId: string, vehicleId: string, id: string): Promise<void> {
     await this.assertVehicleOwned(userId, vehicleId);
 
-    await this.db.transaction(async (tx) => {
+    await this.db.transaction(async (tx: DbTx) => {
       const deleted = await tx
         .delete(fuelLogs)
         .where(and(eq(fuelLogs.id, id), eq(fuelLogs.vehicleId, vehicleId)))

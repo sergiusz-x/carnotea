@@ -1,9 +1,8 @@
-import { mileageReadings, vehicles, type Db, type Tx } from '@carnotea/db';
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment -- Tx is a complex generic; drizzle's query-builder pattern breaks strict type-checking */
-import { Inject, Injectable } from '@nestjs/common';
+import { mileageReadings, vehicles, type Db } from '@carnotea/db';
+import { Injectable } from '@nestjs/common';
 import { and, eq, max, sql } from 'drizzle-orm';
 
-import { DB } from '../db/db.constants.js';
+export type DbTx = Parameters<Parameters<Db['transaction']>[0]>[0];
 
 export interface SyncDerivedReadingParams {
   vehicleId: string;
@@ -21,9 +20,7 @@ export interface RemoveDerivedReadingParams {
 
 @Injectable()
 export class MileageSyncService {
-  constructor(@Inject(DB) private readonly db: Db) {}
-
-  async syncDerivedReading(tx: Tx, params: SyncDerivedReadingParams): Promise<void> {
+  async syncDerivedReading(tx: DbTx, params: SyncDerivedReadingParams): Promise<void> {
     await tx
       .insert(mileageReadings)
       .values({
@@ -43,18 +40,10 @@ export class MileageSyncService {
         },
       });
 
-    const agg = await tx
-      .select({ maxMileage: max(mileageReadings.mileage) })
-      .from(mileageReadings)
-      .where(eq(mileageReadings.vehicleId, params.vehicleId));
-
-    await tx
-      .update(vehicles)
-      .set({ currentMileage: agg.at(0)?.maxMileage ?? 0, updatedAt: new Date() })
-      .where(eq(vehicles.id, params.vehicleId));
+    await this.recomputeCurrentMileage(tx, params.vehicleId);
   }
 
-  async removeDerivedReading(tx: Tx, params: RemoveDerivedReadingParams): Promise<void> {
+  async removeDerivedReading(tx: DbTx, params: RemoveDerivedReadingParams): Promise<void> {
     await tx
       .delete(mileageReadings)
       .where(
@@ -65,18 +54,10 @@ export class MileageSyncService {
         ),
       );
 
-    const agg = await tx
-      .select({ maxMileage: max(mileageReadings.mileage) })
-      .from(mileageReadings)
-      .where(eq(mileageReadings.vehicleId, params.vehicleId));
-
-    await tx
-      .update(vehicles)
-      .set({ currentMileage: agg.at(0)?.maxMileage ?? 0, updatedAt: new Date() })
-      .where(eq(vehicles.id, params.vehicleId));
+    await this.recomputeCurrentMileage(tx, params.vehicleId);
   }
 
-  async recomputeCurrentMileage(tx: Tx, vehicleId: string): Promise<void> {
+  async recomputeCurrentMileage(tx: DbTx, vehicleId: string): Promise<void> {
     const agg = await tx
       .select({ maxMileage: max(mileageReadings.mileage) })
       .from(mileageReadings)
