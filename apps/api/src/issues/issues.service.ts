@@ -143,7 +143,7 @@ export class IssuesService {
     if (input.description !== undefined) {
       values.description = input.description;
     }
-    if (input.relatedServiceRecordId !== undefined) {
+    if (input.relatedServiceRecordId !== undefined && input.relatedServiceRecordId !== null) {
       // Validate the related service record belongs to the same vehicle
       await this.assertServiceRecordOnVehicle(input.relatedServiceRecordId, vehicleId);
       values.relatedServiceRecordId = input.relatedServiceRecordId;

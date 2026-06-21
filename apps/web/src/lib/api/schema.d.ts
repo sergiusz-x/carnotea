@@ -272,171 +272,6 @@ export interface paths {
       };
     };
   };
-  "/api/vehicles/{vehicleId}/mileage-readings": {
-    get: {
-      responses: {
-        200: { content: {
-          "application/json": ({
-            id: string;
-            vehicleId: string;
-            readingDate: string;
-            mileage: number;
-            sourceType: string;
-            sourceId: string | null;
-            note: string | null;
-            createdAt: string;
-          })[];
-        } };
-        401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        404: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-      };
-    };
-    post: {
-      requestBody: { content: {
-        "application/json": {
-          readingDate: string;
-          mileage: number;
-          note?: string | null;
-        };
-      } };
-      responses: {
-        201: { content: {
-          "application/json": {
-            id: string;
-            vehicleId: string;
-            readingDate: string;
-            mileage: number;
-            sourceType: string;
-            sourceId: string | null;
-            note: string | null;
-            createdAt: string;
-          };
-        } };
-        400: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        404: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-      };
-    };
-  };
-  "/api/vehicles/{vehicleId}/mileage-readings/{id}": {
-    get: {
-      responses: {
-        200: { content: {
-          "application/json": {
-            id: string;
-            vehicleId: string;
-            readingDate: string;
-            mileage: number;
-            sourceType: string;
-            sourceId: string | null;
-            note: string | null;
-            createdAt: string;
-          };
-        } };
-        401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        404: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-      };
-    };
-    delete: {
-      responses: {
-        204: { content: {
-
-        } };
-        401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        404: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-      };
-    };
-  };
   "/api/vehicles/{vehicleId}/reminders": {
     get: {
       responses: {
@@ -680,74 +515,18 @@ export interface paths {
         200: { content: {
           "application/json": {
             id: string;
+            email: string;
             firstName: string;
             lastName: string;
-            email: string;
-            localePref: "pl" | "en";
-            unitsPref: "metric" | "imperial";
-            currencyPref: string;
             createdAt: string;
             updatedAt: string;
           };
         } };
         401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
+
         } };
-      };
-    };
-    patch: {
-      requestBody: { content: {
-        "application/json": {
-          firstName?: string;
-          lastName?: string;
-          localePref?: "pl" | "en";
-          unitsPref?: "metric" | "imperial";
-          currencyPref?: string;
-        };
-      } };
-      responses: {
-        200: { content: {
-          "application/json": {
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-            localePref: "pl" | "en";
-            unitsPref: "metric" | "imperial";
-            currencyPref: string;
-            createdAt: string;
-            updatedAt: string;
-          };
-        } };
-        400: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
+        404: { content: {
+
         } };
       };
     };
