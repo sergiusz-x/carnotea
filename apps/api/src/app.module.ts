@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { ChargingSessionsModule } from './charging-sessions/charging-sessions.module.js';
 import { validateEnv } from './config/env.js';
 import { DbModule } from './db/db.module.js';
+import { ExpensesModule } from './expenses/expenses.module.js';
 import { FuelLogsModule } from './fuel-logs/fuel-logs.module.js';
 import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
@@ -38,6 +39,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     RemindersModule,
     IssuesModule,
     ServiceRecordsModule,
+    ExpensesModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })

@@ -4,6 +4,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq, lt } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
+import { CostSyncService } from '../expenses/cost-sync.service.js';
 import { MileageSyncService, type DbTx } from '../mileage/mileage-sync.service.js';
 
 export interface FuelLogResponse {
@@ -54,6 +55,7 @@ export class FuelLogsService {
   constructor(
     @Inject(DB) private readonly db: Db,
     private readonly mileageSync: MileageSyncService,
+    private readonly costSync: CostSyncService,
   ) {}
 
   async list(userId: string, vehicleId: string): Promise<FuelLogResponse[]> {
@@ -122,6 +124,15 @@ export class FuelLogsService {
         date: input.fuelDate,
       });
 
+      await this.costSync.upsertFromSource(tx, {
+        vehicleId,
+        sourceType: 'fuel_log',
+        sourceId: created.id,
+        amount: totalCost,
+        date: input.fuelDate,
+        categoryCode: 'fuel',
+      });
+
       return created.id;
     });
 
@@ -176,6 +187,15 @@ export class FuelLogsService {
         mileage: newMileage,
         date: newFuelDate,
       });
+
+      await this.costSync.upsertFromSource(tx, {
+        vehicleId,
+        sourceType: 'fuel_log',
+        sourceId: id,
+        amount: totalCost,
+        date: newFuelDate,
+        categoryCode: 'fuel',
+      });
     });
 
     return this.getOwnedOrThrow(userId, vehicleId, id);
@@ -194,6 +214,11 @@ export class FuelLogsService {
 
       await this.mileageSync.removeDerivedReading(tx, {
         vehicleId,
+        sourceType: 'fuel_log',
+        sourceId: id,
+      });
+
+      await this.costSync.removeForSource(tx, {
         sourceType: 'fuel_log',
         sourceId: id,
       });

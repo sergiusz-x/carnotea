@@ -4,6 +4,7 @@ import { ConflictException, Inject, Injectable, NotFoundException } from '@nestj
 import { and, desc, eq, inArray } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
+import { CostSyncService } from '../expenses/cost-sync.service.js';
 import { type DbTx, MileageSyncService } from '../mileage/mileage-sync.service.js';
 
 export interface ServicePartLineResponse {
@@ -77,6 +78,7 @@ export class ServiceRecordsService {
   constructor(
     @Inject(DB) private readonly db: Db,
     private readonly mileageSync: MileageSyncService,
+    private readonly costSync: CostSyncService,
   ) {}
 
   async list(userId: string, vehicleId: string): Promise<ServiceRecordResponse[]> {
@@ -200,6 +202,15 @@ export class ServiceRecordsService {
         date: input.serviceDate,
       });
 
+      await this.costSync.upsertFromSource(tx, {
+        vehicleId,
+        sourceType: 'service_record',
+        sourceId: record.id,
+        amount: totalCost,
+        date: input.serviceDate,
+        categoryCode: 'service',
+      });
+
       return record.id;
     });
 
@@ -261,6 +272,15 @@ export class ServiceRecordsService {
         mileage: newMileage,
         date: newServiceDate,
       });
+
+      await this.costSync.upsertFromSource(tx, {
+        vehicleId,
+        sourceType: 'service_record',
+        sourceId: id,
+        amount: Number(updates.totalCost ?? existing.totalCost),
+        date: newServiceDate,
+        categoryCode: 'service',
+      });
     });
 
     return this.getOwnedOrThrow(userId, vehicleId, id);
@@ -279,6 +299,11 @@ export class ServiceRecordsService {
 
       await this.mileageSync.removeDerivedReading(tx, {
         vehicleId,
+        sourceType: 'service_record',
+        sourceId: id,
+      });
+
+      await this.costSync.removeForSource(tx, {
         sourceType: 'service_record',
         sourceId: id,
       });
