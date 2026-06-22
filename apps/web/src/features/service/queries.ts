@@ -20,10 +20,10 @@ async function fetchServiceRecords(vehicleId: string) {
 }
 
 async function fetchServiceRecord(vehicleId: string, id: string) {
-  const { data } = await apiClient.GET(
-    '/api/vehicles/{vehicleId}/service-records/{id}',
-    { vehicleId, id },
-  );
+  const { data } = await apiClient.GET('/api/vehicles/{vehicleId}/service-records/{id}', {
+    vehicleId,
+    id,
+  });
   return data;
 }
 

@@ -53,7 +53,9 @@ function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
   if (totalCost === null) return null;
 
   return (
-    <p className="text-sm text-muted-foreground">{t('form.totalCostPreview', { cost: totalCost })}</p>
+    <p className="text-sm text-muted-foreground">
+      {t('form.totalCostPreview', { cost: totalCost })}
+    </p>
   );
 }
 
@@ -89,9 +91,7 @@ function PartsEditor({ form }: { form: ReturnType<typeof useZodForm> }) {
         </Button>
       </div>
 
-      {fields.length === 0 && (
-        <p className="text-sm text-muted-foreground">{t('list.noParts')}</p>
-      )}
+      {fields.length === 0 && <p className="text-sm text-muted-foreground">{t('list.noParts')}</p>}
 
       {fields.map((field, index) => (
         <div key={field.id} className="space-y-2 rounded-md border p-3">
@@ -169,35 +169,12 @@ function FormShell({
 
       <AppForm form={form} onSubmit={onSubmit}>
         <DateField name="serviceDate" label="Service date" disabled={isEditing} />
-        <NumberField
-          name="mileage"
-          label="Mileage (km)"
-          placeholder="Mileage (km)"
-          min={0}
-        />
-        <TextField
-          name="title"
-          label="Title"
-          placeholder="Title"
-        />
-        <TextField
-          name="description"
-          label="Description"
-          placeholder="Description"
-        />
-        <NumberField
-          name="laborCost"
-          label="Labor cost"
-          placeholder="0.00"
-          min={0}
-          step={0.01}
-        />
+        <NumberField name="mileage" label="Mileage (km)" placeholder="Mileage (km)" min={0} />
+        <TextField name="title" label="Title" placeholder="Title" />
+        <TextField name="description" label="Description" placeholder="Description" />
+        <NumberField name="laborCost" label="Labor cost" placeholder="0.00" min={0} step={0.01} />
         <TotalCostPreview form={form} />
-        <TextField
-          name="workshopName"
-          label="Workshop"
-          placeholder="Workshop"
-        />
+        <TextField name="workshopName" label="Workshop" placeholder="Workshop" />
         <PartsEditor form={form} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
