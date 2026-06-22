@@ -257,6 +257,115 @@ export interface paths {
       };
     };
   };
+  "/api/dashboard/overview": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            totalVehicles: number;
+            totalExpenses: number | null;
+            totalFuelCost: number | null;
+            avgFuelConsumption: number | null;
+            currency: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/dashboard/expenses-by-category": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            items: ({
+              category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+              total: number | null;
+              count: number;
+            })[];
+            currency: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/dashboard/monthly-spend": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            year: number;
+            month: number;
+            total: number | null;
+            currency: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/dashboard/upcoming-reminders": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            title: string;
+            description: string | null;
+            dueDate: string | null;
+            dueMileage: number | null;
+            status: string;
+            dueState: "overdue" | "due_soon";
+            createdAt: string;
+            updatedAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/expenses": {
     get: {
       responses: {

@@ -22,4 +22,10 @@ export const ROUTES = {
   serviceRecordById: '/api/vehicles/{vehicleId}/service-records/{id}',
   expensesByVehicle: '/api/vehicles/{vehicleId}/expenses',
   expenseById: '/api/vehicles/{vehicleId}/expenses/{id}',
+
+  // Dashboard (read-only, user-scoped, no vehicleId prefix)
+  dashboardOverview: '/api/dashboard/overview',
+  dashboardExpensesByCategory: '/api/dashboard/expenses-by-category',
+  dashboardMonthlySpend: '/api/dashboard/monthly-spend',
+  dashboardUpcomingReminders: '/api/dashboard/upcoming-reminders',
 } as const;

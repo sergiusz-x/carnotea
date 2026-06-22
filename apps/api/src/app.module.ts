@@ -5,6 +5,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module.js';
 import { ChargingSessionsModule } from './charging-sessions/charging-sessions.module.js';
 import { validateEnv } from './config/env.js';
+import { DashboardModule } from './dashboard/dashboard.module.js';
 import { DbModule } from './db/db.module.js';
 import { ExpensesModule } from './expenses/expenses.module.js';
 import { FuelLogsModule } from './fuel-logs/fuel-logs.module.js';
@@ -40,6 +41,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     IssuesModule,
     ServiceRecordsModule,
     ExpensesModule,
+    DashboardModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })
