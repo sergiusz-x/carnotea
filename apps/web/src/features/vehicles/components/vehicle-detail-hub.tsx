@@ -316,37 +316,37 @@ export function VehicleDetailPage() {
             aria-label={t('detail.logsSection')}
           >
             <a
-              href={`/vehicles/${String(vehicleId)}/fuel`}
+              href={`/vehicles/${vehicleId}/fuel`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.fuel')}
             </a>
             <a
-              href={`/vehicles/${String(vehicleId)}/charging`}
+              href={`/vehicles/${vehicleId}/charging`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.charging')}
             </a>
             <a
-              href={`/vehicles/${String(vehicleId)}/service`}
+              href={`/vehicles/${vehicleId}/service`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.service')}
             </a>
             <a
-              href={`/vehicles/${String(vehicleId)}/issues`}
+              href={`/vehicles/${vehicleId}/issues`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.issues')}
             </a>
             <a
-              href={`/vehicles/${String(vehicleId)}/expenses`}
+              href={`/vehicles/${vehicleId}/expenses`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.expenses')}
             </a>
             <a
-              href={`/vehicles/${String(vehicleId)}/reminders`}
+              href={`/vehicles/${vehicleId}/reminders`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.reminders')}
