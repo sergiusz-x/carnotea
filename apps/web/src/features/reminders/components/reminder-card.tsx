@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 
 // Due-state badge key lookup — avoids template-literal type-widening issues with i18next.
-const dueStateKey = (ds: string): `dueState.${DueState}` =>
-  `dueState.${ds as DueState}`;
+const dueStateKey = (ds: string): `dueState.${DueState}` => `dueState.${ds as DueState}`;
 
 interface ReminderCardProps {
   id: string;
