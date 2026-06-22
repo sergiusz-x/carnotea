@@ -1,0 +1,70 @@
+{
+  "pageTitle": "Przypomnienia",
+  "addReminder": "Dodaj przypomnienie",
+  "loading": "Ładowanie przypomnień…",
+  "empty": {
+    "title": "Brak przypomnień",
+    "description": "Dodaj pierwsze przypomnienie, aby śledzić nadchodzące zadania.",
+    "cta": "Dodaj przypomnienie"
+  },
+  "error": {
+    "load": "Nie udało się załadować przypomnień. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "title": "Tytuł",
+    "description": "Opis",
+    "status": "Status",
+    "dueDate": "Termin",
+    "dueMileage": "Przebieg (km)",
+    "notifiedAt": "Powiadomiono",
+    "dueState": "Stan terminu"
+  },
+  "status": {
+    "pending": "Oczekujące",
+    "done": "Zrealizowane",
+    "cancelled": "Anulowane"
+  },
+  "dueState": {
+    "overdue": "Po terminie",
+    "due_soon": "Wkrótce",
+    "ok": "OK"
+  },
+  "list": {
+    "dueDate": "Termin: {{date}}",
+    "dueMileage": "Przebieg: {{value}} km",
+    "noDueDate": "Brak terminu",
+    "noDueMileage": "Brak celu przebiegu",
+    "markDone": "Oznacz jako zrealizowane",
+    "marking": "Oznaczanie…"
+  },
+  "detail": {
+    "title": "Przypomnienie: {{title}}",
+    "backToReminders": "Powrót do przypomnień",
+    "description": "Opis"
+  },
+  "create": {
+    "title": "Dodaj przypomnienie",
+    "submit": "Zapisz przypomnienie",
+    "success": "Przypomnienie dodane pomyślnie.",
+    "atLeastOneTrigger": "Wymagany jest co najmniej jeden wyzwalacz (termin lub przebieg)."
+  },
+  "edit": {
+    "title": "Edytuj przypomnienie",
+    "submit": "Zapisz zmiany",
+    "success": "Przypomnienie zaktualizowane pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń przypomnienie",
+    "confirmMessage": "Czy na pewno chcesz usunąć to przypomnienie: {{title}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "filter": {
+    "all": "Wszystkie",
+    "pending": "Oczekujące",
+    "done": "Zrealizowane",
+    "cancelled": "Anulowane"
+  },
+  "triggerWarning": "Musisz podać termin lub przebieg docelowy."
+}
