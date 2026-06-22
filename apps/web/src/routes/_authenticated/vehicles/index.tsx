@@ -6,6 +6,10 @@ import { VehicleListPage } from '@/features/vehicles/components/vehicle-list';
 
 import { authenticatedLayoutRoute } from '../../_authenticated';
 
+import { createFuelLogRoutes } from './$vehicleId/fuel/$fuelId/index';
+import { createFuelListRoute } from './$vehicleId/fuel/index';
+import { createFuelNewRoute } from './$vehicleId/fuel/new';
+
 // ─── Parent route: /vehicles ──────────────────────────────────────────────────
 
 const vehicleParentRoute = createRoute({
@@ -27,7 +31,7 @@ const vehicleCreateRoute = createRoute({
   component: VehicleCreatePage,
 });
 
-const vehicleDetailRoute = createRoute({
+export const vehicleDetailRoute = createRoute({
   getParentRoute: () => vehicleParentRoute,
   path: '/$vehicleId',
   component: VehicleDetailPage,
@@ -39,10 +43,21 @@ const vehicleEditRoute = createRoute({
   component: VehicleEditPage,
 });
 
+// ─── Fuel routes (factories, no circular import) ───────────────────────────────
+
+const fuelListRoute = createFuelListRoute(vehicleDetailRoute);
+const fuelNewRoute = createFuelNewRoute(vehicleDetailRoute);
+const { fuelDetailParentRouteNode } = createFuelLogRoutes(vehicleDetailRoute);
+
 // ─── Assembled tree ────────────────────────────────────────────────────────────
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
   vehicleListRoute,
   vehicleCreateRoute,
-  vehicleDetailRoute.addChildren([vehicleEditRoute]),
+  vehicleDetailRoute.addChildren([
+    vehicleEditRoute,
+    fuelListRoute,
+    fuelNewRoute,
+    fuelDetailParentRouteNode,
+  ]),
 ]);
