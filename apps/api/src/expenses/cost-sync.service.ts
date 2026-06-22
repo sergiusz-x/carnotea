@@ -60,10 +60,7 @@ export class CostSyncService {
     await tx
       .delete(expenses)
       .where(
-        and(
-          eq(expenses.sourceType, params.sourceType),
-          eq(expenses.sourceId, params.sourceId),
-        ),
+        and(eq(expenses.sourceType, params.sourceType), eq(expenses.sourceId, params.sourceId)),
       );
   }
 }

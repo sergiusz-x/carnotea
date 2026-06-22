@@ -1,8 +1,5 @@
 import { expenseCategories, expenses, vehicles, type Db } from '@carnotea/db';
-import {
-  type ExpenseCreate,
-  type ExpenseUpdate,
-} from '@carnotea/shared';
+import { type ExpenseCreate, type ExpenseUpdate } from '@carnotea/shared';
 import {
   BadRequestException,
   ConflictException,
@@ -45,11 +42,7 @@ interface ExpenseJoinRow {
 export class ExpensesService {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  async list(
-    userId: string,
-    vehicleId: string,
-    source?: string,
-  ): Promise<ExpenseResponse[]> {
+  async list(userId: string, vehicleId: string, source?: string): Promise<ExpenseResponse[]> {
     await this.assertVehicleOwned(userId, vehicleId);
 
     const conditions = [eq(expenses.vehicleId, vehicleId)];
@@ -74,14 +67,12 @@ export class ExpensesService {
       .where(and(...conditions))
       .orderBy(desc(expenses.expenseDate), desc(expenses.createdAt));
 
-    return rows.map((row) => this.toResponse({ ...row, updatedAt: new Date() } as unknown as ExpenseJoinRow));
+    return rows.map((row) =>
+      this.toResponse({ ...row, updatedAt: new Date() } as unknown as ExpenseJoinRow),
+    );
   }
 
-  async getOwnedOrThrow(
-    userId: string,
-    vehicleId: string,
-    id: string,
-  ): Promise<ExpenseResponse> {
+  async getOwnedOrThrow(userId: string, vehicleId: string, id: string): Promise<ExpenseResponse> {
     await this.assertVehicleOwned(userId, vehicleId);
 
     const rows = await this.db
@@ -107,11 +98,7 @@ export class ExpensesService {
     return this.toResponse({ ...row, updatedAt: new Date() } as unknown as ExpenseJoinRow);
   }
 
-  async create(
-    userId: string,
-    vehicleId: string,
-    input: ExpenseCreate,
-  ): Promise<ExpenseResponse> {
+  async create(userId: string, vehicleId: string, input: ExpenseCreate): Promise<ExpenseResponse> {
     await this.assertVehicleOwned(userId, vehicleId);
 
     const categoryId = await this.resolveCategoryId(input.category);

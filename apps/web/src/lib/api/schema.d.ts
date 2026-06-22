@@ -1190,7 +1190,7 @@ export interface paths {
               manufacturer: string | null;
               partNumber: string | null;
               quantity: number;
-              unitPrice: number;
+              unitPrice: number | null;
               totalPrice: number | null;
             })[];
             createdAt: string;
@@ -1235,7 +1235,7 @@ export interface paths {
             manufacturer?: string | null;
             partNumber?: string | null;
             quantity?: number;
-            unitPrice: number;
+            unitPrice: number | null;
           })[];
         };
       } };
@@ -1259,7 +1259,7 @@ export interface paths {
               manufacturer: string | null;
               partNumber: string | null;
               quantity: number;
-              unitPrice: number;
+              unitPrice: number | null;
               totalPrice: number | null;
             })[];
             createdAt: string;
@@ -1335,7 +1335,7 @@ export interface paths {
               manufacturer: string | null;
               partNumber: string | null;
               quantity: number;
-              unitPrice: number;
+              unitPrice: number | null;
               totalPrice: number | null;
             })[];
             createdAt: string;
@@ -1426,7 +1426,7 @@ export interface paths {
               manufacturer: string | null;
               partNumber: string | null;
               quantity: number;
-              unitPrice: number;
+              unitPrice: number | null;
               totalPrice: number | null;
             })[];
             createdAt: string;
