@@ -272,6 +272,247 @@ export interface paths {
       };
     };
   };
+  "/api/vehicles/{vehicleId}/issues": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
+            title: string;
+            description: string | null;
+            status: string;
+            priority: string;
+            relatedServiceRecordId: string | null;
+            createdAt: string;
+            updatedAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          reportedDate: string;
+          resolvedDate?: string | null;
+          title: string;
+          description?: string | null;
+          status: "open" | "in_progress" | "resolved" | "cancelled";
+          priority: "low" | "medium" | "high" | "critical";
+          relatedServiceRecordId?: string | null;
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
+            title: string;
+            description: string | null;
+            status: string;
+            priority: string;
+            relatedServiceRecordId: string | null;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/issues/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
+            title: string;
+            description: string | null;
+            status: string;
+            priority: string;
+            relatedServiceRecordId: string | null;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          reportedDate?: string;
+          resolvedDate?: string | null;
+          title?: string;
+          description?: string | null;
+          status?: "open" | "in_progress" | "resolved" | "cancelled";
+          priority?: "low" | "medium" | "high" | "critical";
+          relatedServiceRecordId?: string | null;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            reportedDate: string;
+            resolvedDate: string | null;
+            title: string;
+            description: string | null;
+            status: string;
+            priority: string;
+            relatedServiceRecordId: string | null;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/mileage-readings": {
     get: {
       responses: {
