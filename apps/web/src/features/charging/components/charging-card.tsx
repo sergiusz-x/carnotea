@@ -22,14 +22,15 @@ interface ChargingCardProps {
   isDeleting: boolean;
 }
 
-const chargerTypeBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  home_socket: 'secondary',
-  ac_type2: 'default',
-  dc_ccs: 'outline',
-  dc_chademo: 'outline',
-  tesla_sc: 'default',
-  other: 'secondary',
-};
+const chargerTypeBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> =
+  {
+    home_socket: 'secondary',
+    ac_type2: 'default',
+    dc_ccs: 'outline',
+    dc_chademo: 'outline',
+    tesla_sc: 'default',
+    other: 'secondary',
+  };
 
 export function ChargingCard({
   id,
@@ -78,9 +79,7 @@ export function ChargingCard({
               <span className="font-medium">{t('list.cost', { cost: totalCost })}</span>
               <span className="text-muted-foreground">{t('fields.stationName')}</span>
               <span>
-                {stationName
-                  ? t('list.station', { station: stationName })
-                  : t('list.noStation')}
+                {stationName ? t('list.station', { station: stationName }) : t('list.noStation')}
               </span>
               {(socStartPercent != null || socEndPercent != null) && (
                 <>

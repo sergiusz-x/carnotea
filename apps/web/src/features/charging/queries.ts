@@ -14,7 +14,9 @@ export const chargingKeys = {
 // ─── Fetch functions ───────────────────────────────────────────────────────────
 
 async function fetchChargingSessions(vehicleId: string) {
-  const { data } = await apiClient.GET('/api/vehicles/{vehicleId}/charging-sessions', { vehicleId });
+  const { data } = await apiClient.GET('/api/vehicles/{vehicleId}/charging-sessions', {
+    vehicleId,
+  });
   return data;
 }
 
