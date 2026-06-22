@@ -1,15 +1,15 @@
 ---
 id: T-033
 title: Web vehicles screens — list, detail hub, create/edit/delete
-status: ready
+status: in_progress
 priority: high
 size: L
 spec_version: 1
-owner: ~
+owner: antigravity
 dependencies: [T-031, T-032, T-020, T-011]
 labels: [web, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-22
 closed_at: ~
 ---
 

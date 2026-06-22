@@ -1,0 +1,81 @@
+{
+  "pageTitle": "Pojazdy",
+  "addVehicle": "Dodaj pojazd",
+  "loading": "Ładowanie pojazdów…",
+  "empty": {
+    "title": "Brak pojazdów",
+    "description": "Dodaj swój pierwszy pojazd, aby śledzić paliwo, serwis i wiele więcej.",
+    "cta": "Dodaj pojazd"
+  },
+  "error": {
+    "load": "Nie udało się załadować pojazdów. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "brand": "Marka",
+    "model": "Model",
+    "generation": "Generacja",
+    "productionYear": "Rok produkcji",
+    "engine": "Silnik",
+    "fuelType": "Rodzaj paliwa",
+    "vin": "VIN",
+    "registrationNumber": "Numer rejestracyjny",
+    "currencyCode": "Waluta",
+    "currentMileage": "Aktualny przebieg"
+  },
+  "fuelTypes": {
+    "petrol": "Benzyna",
+    "diesel": "Diesel",
+    "hybrid": "Hybryda",
+    "electric": "Elektryczny",
+    "lpg": "LPG",
+    "other": "Inne"
+  },
+  "list": {
+    "mileage": "{{mileage}} km"
+  },
+  "detail": {
+    "title": "{{brand}} {{model}}",
+    "editButton": "Edytuj",
+    "deleteButton": "Usuń",
+    "mileageSection": "Przebieg",
+    "logsSection": "Logi",
+    "nav": {
+      "fuel": "Logi paliwa",
+      "charging": "Ładowanie",
+      "service": "Serwis",
+      "issues": "Usterki",
+      "expenses": "Wydatki",
+      "reminders": "Przypomnienia"
+    },
+    "mileage": {
+      "current": "Aktualny przebieg",
+      "history": "Historia odczytów",
+      "addReading": "Dodaj odczyt",
+      "noReadings": "Brak zarejestrowanych odczytów.",
+      "source": "Źródło: {{source}}"
+    }
+  },
+  "create": {
+    "title": "Dodaj pojazd",
+    "submit": "Zapisz pojazd",
+    "success": "Pojazd dodany pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj pojazd",
+    "submit": "Zapisz zmiany",
+    "success": "Pojazd zaktualizowany pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń pojazd",
+    "confirmMessage": "Czy na pewno chcesz usunąć {{brand}} {{model}}? Wszystkie powiązane logi (paliwo, serwis, wydatki itp.) zostaną trwale usunięte.",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "mileageForm": {
+    "readingDate": "Data odczytu",
+    "mileage": "Przebieg (km)",
+    "note": "Notatka",
+    "submit": "Dodaj odczyt"
+  }
+}

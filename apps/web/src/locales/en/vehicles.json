@@ -1,0 +1,81 @@
+{
+  "pageTitle": "Vehicles",
+  "addVehicle": "Add vehicle",
+  "loading": "Loading vehicles…",
+  "empty": {
+    "title": "No vehicles yet",
+    "description": "Add your first vehicle to start tracking fuel, service and more.",
+    "cta": "Add vehicle"
+  },
+  "error": {
+    "load": "Failed to load vehicles. Please try again.",
+    "retry": "Retry"
+  },
+  "fields": {
+    "brand": "Make",
+    "model": "Model",
+    "generation": "Generation",
+    "productionYear": "Year",
+    "engine": "Engine",
+    "fuelType": "Fuel type",
+    "vin": "VIN",
+    "registrationNumber": "Registration number",
+    "currencyCode": "Currency",
+    "currentMileage": "Current mileage"
+  },
+  "fuelTypes": {
+    "petrol": "Petrol",
+    "diesel": "Diesel",
+    "hybrid": "Hybrid",
+    "electric": "Electric",
+    "lpg": "LPG",
+    "other": "Other"
+  },
+  "list": {
+    "mileage": "{{mileage}} km"
+  },
+  "detail": {
+    "title": "{{brand}} {{model}}",
+    "editButton": "Edit",
+    "deleteButton": "Delete",
+    "mileageSection": "Mileage",
+    "logsSection": "Logs",
+    "nav": {
+      "fuel": "Fuel logs",
+      "charging": "Charging",
+      "service": "Service records",
+      "issues": "Issues",
+      "expenses": "Expenses",
+      "reminders": "Reminders"
+    },
+    "mileage": {
+      "current": "Current mileage",
+      "history": "Reading history",
+      "addReading": "Add reading",
+      "noReadings": "No readings recorded yet.",
+      "source": "Source: {{source}}"
+    }
+  },
+  "create": {
+    "title": "Add vehicle",
+    "submit": "Save vehicle",
+    "success": "Vehicle added successfully."
+  },
+  "edit": {
+    "title": "Edit vehicle",
+    "submit": "Save changes",
+    "success": "Vehicle updated successfully."
+  },
+  "delete": {
+    "confirmTitle": "Delete vehicle",
+    "confirmMessage": "Are you sure you want to delete {{brand}} {{model}}? All linked logs (fuel, service, expenses, etc.) will also be permanently deleted.",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "mileageForm": {
+    "readingDate": "Reading date",
+    "mileage": "Mileage (km)",
+    "note": "Note",
+    "submit": "Add reading"
+  }
+}
