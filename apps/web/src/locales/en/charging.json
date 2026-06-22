@@ -1,0 +1,63 @@
+{
+  "pageTitle": "Charging sessions",
+  "addChargingSession": "Add charging session",
+  "loading": "Loading charging sessions…",
+  "empty": {
+    "title": "No charging sessions yet",
+    "description": "Add your first charging session to start tracking energy costs.",
+    "cta": "Add charging session"
+  },
+  "error": {
+    "load": "Failed to load charging sessions. Please try again.",
+    "retry": "Retry"
+  },
+  "fields": {
+    "chargeDate": "Date",
+    "mileage": "Mileage (km)",
+    "energyKwh": "Energy (kWh)",
+    "pricePerKwh": "Price per kWh",
+    "totalCost": "Total cost",
+    "chargerType": "Charger type",
+    "selectChargerType": "Select charger type",
+    "socStartPercent": "SoC start (%)",
+    "socEndPercent": "SoC end (%)",
+    "soc": "State of charge",
+    "stationName": "Station / Location",
+    "isFullCharge": "Full charge"
+  },
+  "chargerType": {
+    "home_socket": "Home socket",
+    "ac_type2": "AC Type 2",
+    "dc_ccs": "DC CCS",
+    "dc_chademo": "DC CHAdeMO",
+    "tesla_sc": "Tesla Supercharger",
+    "other": "Other"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "energy": "{{energy}} kWh",
+    "price": "{{price}}/kWh",
+    "cost": "{{cost}}",
+    "fullCharge": "Full charge",
+    "partialCharge": "Partial charge",
+    "station": "{{station}}",
+    "noStation": "—"
+  },
+  "create": {
+    "title": "Add charging session",
+    "submit": "Save charging session",
+    "success": "Charging session added successfully."
+  },
+  "edit": {
+    "title": "Edit charging session",
+    "submit": "Save changes",
+    "success": "Charging session updated successfully."
+  },
+  "delete": {
+    "confirmTitle": "Delete charging session",
+    "confirmMessage": "Are you sure you want to delete this charging session from {{date}}?",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "totalCostPreview": "Total cost (computed): {{cost}}"
+}

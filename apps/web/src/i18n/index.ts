@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 
 import { configureZodErrorMap } from '../lib/forms/zod-i18n';
 import enAuth from '../locales/en/auth.json';
+import enCharging from '../locales/en/charging.json';
 import enCommon from '../locales/en/common.json';
 import enForms from '../locales/en/forms.json';
 import enFuelLogs from '../locales/en/fuel-logs.json';
@@ -15,6 +16,7 @@ import enProfile from '../locales/en/profile.json';
 import enReminders from '../locales/en/reminders.json';
 import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
+import plCharging from '../locales/pl/charging.json';
 import plCommon from '../locales/pl/common.json';
 import plForms from '../locales/pl/forms.json';
 import plFuelLogs from '../locales/pl/fuel-logs.json';
@@ -44,6 +46,7 @@ export const resources = {
     reminders: enReminders,
     vehicles: enVehicles,
     'fuel-logs': enFuelLogs,
+    charging: enCharging,
   },
   pl: {
     common: plCommon,
@@ -57,6 +60,7 @@ export const resources = {
     reminders: plReminders,
     vehicles: plVehicles,
     'fuel-logs': plFuelLogs,
+    charging: plCharging,
   },
 } as const;
 
@@ -82,6 +86,7 @@ void i18n
       'reminders',
       'vehicles',
       'fuel-logs',
+      'charging',
     ],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense

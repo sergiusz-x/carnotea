@@ -6,6 +6,9 @@ import { VehicleListPage } from '@/features/vehicles/components/vehicle-list';
 
 import { authenticatedLayoutRoute } from '../../_authenticated';
 
+import { createChargingEditRoute } from './$vehicleId/charging/$sessionId/edit';
+import { createChargingListRoute } from './$vehicleId/charging/index';
+import { createChargingNewRoute } from './$vehicleId/charging/new';
 import { createFuelLogRoutes } from './$vehicleId/fuel/$fuelId/index';
 import { createFuelListRoute } from './$vehicleId/fuel/index';
 import { createFuelNewRoute } from './$vehicleId/fuel/new';
@@ -71,6 +74,12 @@ const reminderNewRoute = createReminderNewRoute(vehicleDetailRoute);
 const reminderDetailRoute = createReminderDetailRoute(vehicleDetailRoute);
 const reminderEditRoute = createReminderEditRoute(vehicleDetailRoute);
 
+// ─── Charging routes (factories, no circular import) ──────────────────────────
+
+const chargingListRoute = createChargingListRoute(vehicleDetailRoute);
+const chargingNewRoute = createChargingNewRoute(vehicleDetailRoute);
+const chargingEditRoute = createChargingEditRoute(vehicleDetailRoute);
+
 // ─── Assembled tree ────────────────────────────────────────────────────────────
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
@@ -89,5 +98,8 @@ export const vehiclesRoute = vehicleParentRoute.addChildren([
     reminderNewRoute,
     reminderDetailRoute,
     reminderEditRoute,
+    chargingListRoute,
+    chargingNewRoute,
+    chargingEditRoute,
   ]),
 ]);
