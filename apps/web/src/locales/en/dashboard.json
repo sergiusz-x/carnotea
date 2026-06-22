@@ -1,0 +1,36 @@
+{
+  "pageTitle": "Dashboard",
+  "loading": "Loading dashboard…",
+  "error": {
+    "load": "Failed to load dashboard data. Please try again.",
+    "retry": "Retry"
+  },
+  "overview": {
+    "totalVehicles": "Total vehicles",
+    "totalExpenses": "Total expenses",
+    "totalFuelCost": "Total fuel cost",
+    "avgFuelConsumption": "Avg fuel consumption",
+    "unit": "{{currency}} {{value}}",
+    "consumptionUnit": "{{value}} L/100km",
+    "noData": "—"
+  },
+  "expensesByCategory": {
+    "title": "Expenses by category",
+    "total": "{{count}} expense ({{currency}} {{total}})",
+    "total_plural": "{{count}} expenses ({{currency}} {{total}})"
+  },
+  "monthlySpend": {
+    "title": "Monthly spend",
+    "month": "{{year}}-{{month}}",
+    "total": "{{currency}} {{total}}"
+  },
+  "upcomingReminders": {
+    "title": "Upcoming reminders",
+    "empty": "No upcoming reminders",
+    "dueDate": "Due: {{date}}",
+    "dueMileage": "Mileage: {{value}} km",
+    "overdue": "Overdue",
+    "dueSoon": "Due soon",
+    "viewVehicle": "View vehicle"
+  }
+}
