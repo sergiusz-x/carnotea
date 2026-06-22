@@ -19,6 +19,7 @@
     "@carnotea/shared": "workspace:*",
     "@hookform/resolvers": "catalog:",
     "@radix-ui/react-label": "catalog:",
+    "@radix-ui/react-select": "^2.3.1",
     "@radix-ui/react-slot": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "catalog:",
