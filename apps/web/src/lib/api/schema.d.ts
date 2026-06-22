@@ -4,6 +4,259 @@
  */
 
 export interface paths {
+  "/api/vehicles/{vehicleId}/charging-sessions": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            chargeDate: string;
+            mileage: number;
+            energyKwh: number;
+            pricePerKwh: number;
+            totalCost: number;
+            chargerType: string;
+            socStartPercent: number | null;
+            socEndPercent: number | null;
+            stationName: string | null;
+            isFullCharge: boolean;
+            createdAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          chargeDate: string;
+          mileage: number;
+          energyKwh: number;
+          pricePerKwh: number;
+          chargerType: "home_socket" | "ac_type2" | "dc_ccs" | "dc_chademo" | "tesla_sc" | "other";
+          socStartPercent?: number | null;
+          socEndPercent?: number | null;
+          stationName?: string | null;
+          isFullCharge?: boolean;
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            chargeDate: string;
+            mileage: number;
+            energyKwh: number;
+            pricePerKwh: number;
+            totalCost: number;
+            chargerType: string;
+            socStartPercent: number | null;
+            socEndPercent: number | null;
+            stationName: string | null;
+            isFullCharge: boolean;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/charging-sessions/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            chargeDate: string;
+            mileage: number;
+            energyKwh: number;
+            pricePerKwh: number;
+            totalCost: number;
+            chargerType: string;
+            socStartPercent: number | null;
+            socEndPercent: number | null;
+            stationName: string | null;
+            isFullCharge: boolean;
+            createdAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          chargeDate?: string;
+          mileage?: number;
+          energyKwh?: number;
+          pricePerKwh?: number;
+          chargerType?: "home_socket" | "ac_type2" | "dc_ccs" | "dc_chademo" | "tesla_sc" | "other";
+          socStartPercent?: number | null;
+          socEndPercent?: number | null;
+          stationName?: string | null;
+          isFullCharge?: boolean;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            chargeDate: string;
+            mileage: number;
+            energyKwh: number;
+            pricePerKwh: number;
+            totalCost: number;
+            chargerType: string;
+            socStartPercent: number | null;
+            socEndPercent: number | null;
+            stationName: string | null;
+            isFullCharge: boolean;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/fuel-logs": {
     get: {
       responses: {
