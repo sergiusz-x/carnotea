@@ -1,6 +1,7 @@
 import 'i18next';
 
 import type auth from '../locales/en/auth.json';
+import type charging from '../locales/en/charging.json';
 import type common from '../locales/en/common.json';
 import type forms from '../locales/en/forms.json';
 import type fuelLogs from '../locales/en/fuel-logs.json';
@@ -29,6 +30,7 @@ declare module 'i18next' {
       reminders: typeof reminders;
       vehicles: typeof vehicles;
       'fuel-logs': typeof fuelLogs;
+      charging: typeof charging;
     };
   }
 }

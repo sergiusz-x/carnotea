@@ -1,0 +1,63 @@
+{
+  "pageTitle": "Sesje ładowania",
+  "addChargingSession": "Dodaj sesję ładowania",
+  "loading": "Ładowanie sesji ładowania…",
+  "empty": {
+    "title": "Brak sesji ładowania",
+    "description": "Dodaj pierwszą sesję ładowania, aby śledzić koszty energii.",
+    "cta": "Dodaj sesję ładowania"
+  },
+  "error": {
+    "load": "Nie udało się załadować sesji ładowania. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "chargeDate": "Data",
+    "mileage": "Przebieg (km)",
+    "energyKwh": "Energia (kWh)",
+    "pricePerKwh": "Cena za kWh",
+    "totalCost": "Koszt całkowity",
+    "chargerType": "Typ ładowarki",
+    "selectChargerType": "Wybierz typ ładowarki",
+    "socStartPercent": "Poziom baterii pocz. (%)",
+    "socEndPercent": "Poziom baterii końc. (%)",
+    "soc": "Poziom naładowania",
+    "stationName": "Stacja / Lokalizacja",
+    "isFullCharge": "Pełne ładowanie"
+  },
+  "chargerType": {
+    "home_socket": "Gniazdko domowe",
+    "ac_type2": "AC Typ 2",
+    "dc_ccs": "DC CCS",
+    "dc_chademo": "DC CHAdeMO",
+    "tesla_sc": "Tesla Supercharger",
+    "other": "Inne"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "energy": "{{energy}} kWh",
+    "price": "{{price}}/kWh",
+    "cost": "{{cost}}",
+    "fullCharge": "Pełne ładowanie",
+    "partialCharge": "Częściowe ładowanie",
+    "station": "{{station}}",
+    "noStation": "—"
+  },
+  "create": {
+    "title": "Dodaj sesję ładowania",
+    "submit": "Zapisz sesję ładowania",
+    "success": "Sesja ładowania dodana pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj sesję ładowania",
+    "submit": "Zapisz zmiany",
+    "success": "Sesja ładowania zaktualizowana pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń sesję ładowania",
+    "confirmMessage": "Czy na pewno chcesz usunąć sesję ładowania z {{date}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "totalCostPreview": "Koszt całkowity (obliczony): {{cost}}"
+}
