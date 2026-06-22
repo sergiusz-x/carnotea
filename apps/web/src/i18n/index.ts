@@ -8,6 +8,7 @@ import enCommon from '../locales/en/common.json';
 import enForms from '../locales/en/forms.json';
 import enFuelLogs from '../locales/en/fuel-logs.json';
 import enHealth from '../locales/en/health.json';
+import enIssues from '../locales/en/issues.json';
 import enLanding from '../locales/en/landing.json';
 import enNav from '../locales/en/nav.json';
 import enVehicles from '../locales/en/vehicles.json';
@@ -16,6 +17,7 @@ import plCommon from '../locales/pl/common.json';
 import plForms from '../locales/pl/forms.json';
 import plFuelLogs from '../locales/pl/fuel-logs.json';
 import plHealth from '../locales/pl/health.json';
+import plIssues from '../locales/pl/issues.json';
 import plLanding from '../locales/pl/landing.json';
 import plNav from '../locales/pl/nav.json';
 import plVehicles from '../locales/pl/vehicles.json';
@@ -30,6 +32,7 @@ export const resources = {
     common: enCommon,
     forms: enForms,
     health: enHealth,
+    issues: enIssues,
     landing: enLanding,
     auth: enAuth,
     nav: enNav,
@@ -40,6 +43,7 @@ export const resources = {
     common: plCommon,
     forms: plForms,
     health: plHealth,
+    issues: plIssues,
     landing: plLanding,
     auth: plAuth,
     nav: plNav,
@@ -58,7 +62,7 @@ void i18n
     // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
-    ns: ['common', 'forms', 'health', 'landing', 'auth', 'nav', 'vehicles', 'fuel-logs'],
+    ns: ['common', 'forms', 'health', 'issues', 'landing', 'auth', 'nav', 'vehicles', 'fuel-logs'],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
     // boundary is needed and tests render translated text immediately.

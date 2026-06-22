@@ -1,0 +1,69 @@
+{
+  "pageTitle": "Zgłoszenia",
+  "addIssue": "Dodaj zgłoszenie",
+  "loading": "Ładowanie zgłoszeń…",
+  "empty": {
+    "title": "Brak zgłoszeń",
+    "description": "Dodaj pierwsze zgłoszenie, aby śledzić problemy z pojazdem.",
+    "cta": "Dodaj zgłoszenie"
+  },
+  "error": {
+    "load": "Nie udało się załadować zgłoszeń. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "title": "Tytuł",
+    "description": "Opis",
+    "status": "Status",
+    "priority": "Priorytet",
+    "reportedDate": "Data zgłoszenia",
+    "resolvedDate": "Data rozwiązania",
+    "relatedServiceRecordId": "Powiązany wpis serwisowy"
+  },
+  "status": {
+    "open": "Otwarte",
+    "in_progress": "W trakcie",
+    "resolved": "Rozwiązane",
+    "cancelled": "Anulowane"
+  },
+  "priority": {
+    "low": "Niski",
+    "medium": "Średni",
+    "high": "Wysoki",
+    "critical": "Krytyczny"
+  },
+  "list": {
+    "reportedDate": "Zgłoszono: {{date}}",
+    "resolvedDate": "Rozwiązano: {{date}}"
+  },
+  "detail": {
+    "title": "Zgłoszenie: {{title}}",
+    "backToIssues": "Powrót do zgłoszeń",
+    "description": "Opis",
+    "relatedRecord": "Powiązany wpis serwisowy",
+    "noRelatedRecord": "Brak"
+  },
+  "create": {
+    "title": "Dodaj zgłoszenie",
+    "submit": "Zapisz zgłoszenie",
+    "success": "Zgłoszenie dodane pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj zgłoszenie",
+    "submit": "Zapisz zmiany",
+    "success": "Zgłoszenie zaktualizowane pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń zgłoszenie",
+    "confirmMessage": "Czy na pewno chcesz usunąć to zgłoszenie: {{title}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "filter": {
+    "all": "Wszystkie",
+    "open": "Otwarte",
+    "in_progress": "W trakcie",
+    "resolved": "Rozwiązane",
+    "cancelled": "Anulowane"
+  }
+}

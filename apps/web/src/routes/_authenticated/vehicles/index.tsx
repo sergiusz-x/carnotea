@@ -9,6 +9,10 @@ import { authenticatedLayoutRoute } from '../../_authenticated';
 import { createFuelLogRoutes } from './$vehicleId/fuel/$fuelId/index';
 import { createFuelListRoute } from './$vehicleId/fuel/index';
 import { createFuelNewRoute } from './$vehicleId/fuel/new';
+import { createIssueEditRoute } from './$vehicleId/issues/$issueId/edit';
+import { createIssueDetailRoute } from './$vehicleId/issues/$issueId/index';
+import { createIssueListRoute } from './$vehicleId/issues/index';
+import { createIssueNewRoute } from './$vehicleId/issues/new';
 
 // ─── Parent route: /vehicles ──────────────────────────────────────────────────
 
@@ -49,6 +53,13 @@ const fuelListRoute = createFuelListRoute(vehicleDetailRoute);
 const fuelNewRoute = createFuelNewRoute(vehicleDetailRoute);
 const { fuelDetailParentRouteNode } = createFuelLogRoutes(vehicleDetailRoute);
 
+// ─── Issue routes (factories, no circular import) ──────────────────────────────
+
+const issueListRoute = createIssueListRoute(vehicleDetailRoute);
+const issueNewRoute = createIssueNewRoute(vehicleDetailRoute);
+const issueDetailRoute = createIssueDetailRoute(vehicleDetailRoute);
+const issueEditRoute = createIssueEditRoute(vehicleDetailRoute);
+
 // ─── Assembled tree ────────────────────────────────────────────────────────────
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
@@ -59,5 +70,9 @@ export const vehiclesRoute = vehicleParentRoute.addChildren([
     fuelListRoute,
     fuelNewRoute,
     fuelDetailParentRouteNode,
+    issueListRoute,
+    issueNewRoute,
+    issueDetailRoute,
+    issueEditRoute,
   ]),
 ]);
