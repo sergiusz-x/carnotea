@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  fuelLogsQueryOptions,
-  useDeleteFuelLog,
-} from '@/features/fuel/queries';
+import { fuelLogsQueryOptions, useDeleteFuelLog } from '@/features/fuel/queries';
 
 export function FuelLogListPage() {
   const { vehicleId }: { vehicleId: string } = useParams({
@@ -110,37 +107,21 @@ export function FuelLogListPage() {
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{log.fuelDate}</span>
                         <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                          {log.isFullTank
-                            ? t('list.fullTank')
-                            : t('list.partialFill')}
+                          {log.isFullTank ? t('list.fullTank') : t('list.partialFill')}
                         </span>
                       </div>
                       <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-                        <span className="text-muted-foreground">
-                          {t('fields.mileage')}
-                        </span>
-                        <span>
-                          {t('list.mileage', { mileage: log.mileage })}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {t('fields.liters')}
-                        </span>
+                        <span className="text-muted-foreground">{t('fields.mileage')}</span>
+                        <span>{t('list.mileage', { mileage: log.mileage })}</span>
+                        <span className="text-muted-foreground">{t('fields.liters')}</span>
                         <span>{t('list.liters', { liters: log.liters })}</span>
-                        <span className="text-muted-foreground">
-                          {t('fields.pricePerLiter')}
-                        </span>
-                        <span>
-                          {t('list.price', { price: log.pricePerLiter })}
-                        </span>
-                        <span className="text-muted-foreground">
-                          {t('fields.totalCost')}
-                        </span>
+                        <span className="text-muted-foreground">{t('fields.pricePerLiter')}</span>
+                        <span>{t('list.price', { price: log.pricePerLiter })}</span>
+                        <span className="text-muted-foreground">{t('fields.totalCost')}</span>
                         <span className="font-medium">
                           {t('list.cost', { cost: log.totalCost })}
                         </span>
-                        <span className="text-muted-foreground">
-                          {t('fields.stationName')}
-                        </span>
+                        <span className="text-muted-foreground">{t('fields.stationName')}</span>
                         <span>
                           {log.stationName
                             ? t('list.station', { station: log.stationName })

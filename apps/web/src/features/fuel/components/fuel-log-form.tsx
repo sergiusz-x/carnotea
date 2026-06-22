@@ -14,20 +14,14 @@ import {
   setServerErrors,
   useZodForm,
 } from '@/components/form';
-import {
-  fuelLogQueryOptions,
-  useCreateFuelLog,
-  useUpdateFuelLog,
-} from '@/features/fuel/queries';
+import { fuelLogQueryOptions, useCreateFuelLog, useUpdateFuelLog } from '@/features/fuel/queries';
 import type { ApiError } from '@/lib/api/client';
 
 // ─── Preview of computed totalCost ────────────────────────────────────────────
 
 function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
   const { t } = useTranslation('fuel-logs');
-  const liters = useWatch({ control: form.control, name: 'liters' }) as
-    | number
-    | undefined;
+  const liters = useWatch({ control: form.control, name: 'liters' }) as number | undefined;
   const pricePerLiter = useWatch({
     control: form.control,
     name: 'pricePerLiter',
@@ -36,19 +30,14 @@ function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
   const parsedLiters = Number(liters);
   const parsedPrice = Number(pricePerLiter);
   const totalCost =
-    !Number.isNaN(parsedLiters) &&
-    !Number.isNaN(parsedPrice) &&
-    parsedLiters > 0 &&
-    parsedPrice > 0
+    !Number.isNaN(parsedLiters) && !Number.isNaN(parsedPrice) && parsedLiters > 0 && parsedPrice > 0
       ? (parsedLiters * parsedPrice).toFixed(2)
       : null;
 
   if (totalCost === null) return null;
 
   return (
-    <p className="text-sm text-muted-foreground">
-      {t('totalCostPreview', { cost: totalCost })}
-    </p>
+    <p className="text-sm text-muted-foreground">{t('totalCostPreview', { cost: totalCost })}</p>
   );
 }
 
@@ -71,9 +60,7 @@ export function FuelLogCreatePage() {
 
   async function onSubmit(values: Record<string, unknown>) {
     try {
-      await createMutation.mutateAsync(
-        values as Parameters<typeof createMutation.mutateAsync>[0],
-      );
+      await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
     } catch (error: unknown) {
       const apiError = error as ApiError;
       if (apiError.issues?.length) {
@@ -107,9 +94,7 @@ export function FuelLogEditPage() {
   });
   const { t } = useTranslation('fuel-logs');
 
-  const { data: existingLog } = useSuspenseQuery(
-    fuelLogQueryOptions(vehicleId, fuelId),
-  );
+  const { data: existingLog } = useSuspenseQuery(fuelLogQueryOptions(vehicleId, fuelId));
 
   const updateMutation = useUpdateFuelLog(vehicleId, fuelId);
 
@@ -126,9 +111,7 @@ export function FuelLogEditPage() {
 
   async function onSubmit(values: Record<string, unknown>) {
     try {
-      await updateMutation.mutateAsync(
-        values,
-      );
+      await updateMutation.mutateAsync(values);
     } catch (error: unknown) {
       const apiError = error as ApiError;
       if (apiError.issues?.length) {
@@ -176,11 +159,7 @@ function FormShell({
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
-        <DateField
-          name="fuelDate"
-          label={t('fields.fuelDate')}
-          disabled={isEditing}
-        />
+        <DateField name="fuelDate" label={t('fields.fuelDate')} disabled={isEditing} />
         <NumberField
           name="mileage"
           label={t('fields.mileage')}
@@ -207,10 +186,7 @@ function FormShell({
           label={t('fields.stationName')}
           placeholder={t('fields.stationName')}
         />
-        <CheckboxField
-          name="isFullTank"
-          label={t('fields.isFullTank')}
-        />
+        <CheckboxField name="isFullTank" label={t('fields.isFullTank')} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
     </div>

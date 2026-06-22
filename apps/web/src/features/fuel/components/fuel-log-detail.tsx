@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  fuelLogQueryOptions,
-  useDeleteFuelLog,
-} from '@/features/fuel/queries';
+import { fuelLogQueryOptions, useDeleteFuelLog } from '@/features/fuel/queries';
 
 export function FuelLogDetailPage() {
   const { vehicleId, fuelId }: { vehicleId: string; fuelId: string } = useParams({
@@ -74,22 +71,13 @@ export function FuelLogDetailPage() {
           >
             {t('detail.backToFuelLogs')}
           </Link>
-          <h1 className="mt-1 text-2xl font-bold">
-            {t('detail.title', { date: log.fuelDate })}
-          </h1>
+          <h1 className="mt-1 text-2xl font-bold">{t('detail.title', { date: log.fuelDate })}</h1>
         </div>
         <div className="flex gap-2">
-          <Link
-            to="/vehicles/$vehicleId/fuel/$fuelId/edit"
-            params={{ vehicleId, fuelId }}
-          >
+          <Link to="/vehicles/$vehicleId/fuel/$fuelId/edit" params={{ vehicleId, fuelId }}>
             <Button variant="outline">{t('edit.submit')}</Button>
           </Link>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleteMutation.isPending}
-          >
+          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
             {t('delete.confirm')}
           </Button>
         </div>
@@ -98,9 +86,7 @@ export function FuelLogDetailPage() {
       {/* Detail card */}
       <Card>
         <CardHeader>
-          <CardTitle>
-            {t('detail.title', { date: log.fuelDate })}
-          </CardTitle>
+          <CardTitle>{t('detail.title', { date: log.fuelDate })}</CardTitle>
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-2 gap-2 text-sm">
@@ -113,39 +99,25 @@ export function FuelLogDetailPage() {
             <dt className="text-muted-foreground">{t('fields.liters')}</dt>
             <dd>{t('list.liters', { liters: log.liters })}</dd>
 
-            <dt className="text-muted-foreground">
-              {t('fields.pricePerLiter')}
-            </dt>
+            <dt className="text-muted-foreground">{t('fields.pricePerLiter')}</dt>
             <dd>{t('list.price', { price: log.pricePerLiter })}</dd>
 
             <dt className="text-muted-foreground">{t('fields.totalCost')}</dt>
-            <dd className="font-medium">
-              {t('list.cost', { cost: log.totalCost })}
-            </dd>
+            <dd className="font-medium">{t('list.cost', { cost: log.totalCost })}</dd>
 
-            <dt className="text-muted-foreground">
-              {t('fields.stationName')}
-            </dt>
+            <dt className="text-muted-foreground">{t('fields.stationName')}</dt>
             <dd>
               {log.stationName
                 ? t('list.station', { station: log.stationName })
                 : t('list.noStation')}
             </dd>
 
-            <dt className="text-muted-foreground">
-              {t('fields.isFullTank')}
-            </dt>
-            <dd>
-              {log.isFullTank
-                ? t('list.fullTank')
-                : t('list.partialFill')}
-            </dd>
+            <dt className="text-muted-foreground">{t('fields.isFullTank')}</dt>
+            <dd>{log.isFullTank ? t('list.fullTank') : t('list.partialFill')}</dd>
 
             {log.consumptionHint !== null && (
               <>
-                <dt className="text-muted-foreground">
-                  {t('fields.consumptionHint')}
-                </dt>
+                <dt className="text-muted-foreground">{t('fields.consumptionHint')}</dt>
                 <dd>
                   {t('detail.consumptionHint', {
                     hint: log.consumptionHint,
