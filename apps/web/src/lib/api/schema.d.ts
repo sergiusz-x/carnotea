@@ -1168,6 +1168,307 @@ export interface paths {
       };
     };
   };
+  "/api/vehicles/{vehicleId}/service-records": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            serviceDate: string;
+            mileage: number;
+            title: string;
+            description: string | null;
+            laborCost: number;
+            totalCost: number;
+            workshopName: string | null;
+            parts: ({
+              id: string;
+              serviceRecordId: string;
+              partId: string;
+              name: string;
+              manufacturer: string | null;
+              partNumber: string | null;
+              quantity: number;
+              unitPrice: number;
+              totalPrice: number | null;
+            })[];
+            createdAt: string;
+            updatedAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          serviceDate: string;
+          mileage: number;
+          title: string;
+          description?: string | null;
+          laborCost?: number | null;
+          workshopName?: string | null;
+          parts?: ({
+            name: string;
+            manufacturer?: string | null;
+            partNumber?: string | null;
+            quantity?: number;
+            unitPrice: number;
+          })[];
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            serviceDate: string;
+            mileage: number;
+            title: string;
+            description: string | null;
+            laborCost: number;
+            totalCost: number;
+            workshopName: string | null;
+            parts: ({
+              id: string;
+              serviceRecordId: string;
+              partId: string;
+              name: string;
+              manufacturer: string | null;
+              partNumber: string | null;
+              quantity: number;
+              unitPrice: number;
+              totalPrice: number | null;
+            })[];
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        409: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/service-records/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            serviceDate: string;
+            mileage: number;
+            title: string;
+            description: string | null;
+            laborCost: number;
+            totalCost: number;
+            workshopName: string | null;
+            parts: ({
+              id: string;
+              serviceRecordId: string;
+              partId: string;
+              name: string;
+              manufacturer: string | null;
+              partNumber: string | null;
+              quantity: number;
+              unitPrice: number;
+              totalPrice: number | null;
+            })[];
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          serviceDate?: string;
+          mileage?: number;
+          title?: string;
+          description?: string | null;
+          laborCost?: number | null;
+          workshopName?: string | null;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            serviceDate: string;
+            mileage: number;
+            title: string;
+            description: string | null;
+            laborCost: number;
+            totalCost: number;
+            workshopName: string | null;
+            parts: ({
+              id: string;
+              serviceRecordId: string;
+              partId: string;
+              name: string;
+              manufacturer: string | null;
+              partNumber: string | null;
+              quantity: number;
+              unitPrice: number;
+              totalPrice: number | null;
+            })[];
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/me": {
     get: {
       responses: {

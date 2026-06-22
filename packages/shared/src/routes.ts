@@ -18,4 +18,6 @@ export const ROUTES = {
   chargingSessionById: '/api/vehicles/{vehicleId}/charging-sessions/{id}',
   issuesByVehicle: '/api/vehicles/{vehicleId}/issues',
   issueById: '/api/vehicles/{vehicleId}/issues/{id}',
+  serviceRecordsByVehicle: '/api/vehicles/{vehicleId}/service-records',
+  serviceRecordById: '/api/vehicles/{vehicleId}/service-records/{id}',
 } as const;
