@@ -13,6 +13,10 @@ import { createIssueEditRoute } from './$vehicleId/issues/$issueId/edit';
 import { createIssueDetailRoute } from './$vehicleId/issues/$issueId/index';
 import { createIssueListRoute } from './$vehicleId/issues/index';
 import { createIssueNewRoute } from './$vehicleId/issues/new';
+import { createReminderEditRoute } from './$vehicleId/reminders/$reminderId/edit';
+import { createReminderDetailRoute } from './$vehicleId/reminders/$reminderId/index';
+import { createReminderListRoute } from './$vehicleId/reminders/index';
+import { createReminderNewRoute } from './$vehicleId/reminders/new';
 
 // ─── Parent route: /vehicles ──────────────────────────────────────────────────
 
@@ -60,6 +64,13 @@ const issueNewRoute = createIssueNewRoute(vehicleDetailRoute);
 const issueDetailRoute = createIssueDetailRoute(vehicleDetailRoute);
 const issueEditRoute = createIssueEditRoute(vehicleDetailRoute);
 
+// ─── Reminder routes (factories, no circular import) ───────────────────────────
+
+const reminderListRoute = createReminderListRoute(vehicleDetailRoute);
+const reminderNewRoute = createReminderNewRoute(vehicleDetailRoute);
+const reminderDetailRoute = createReminderDetailRoute(vehicleDetailRoute);
+const reminderEditRoute = createReminderEditRoute(vehicleDetailRoute);
+
 // ─── Assembled tree ────────────────────────────────────────────────────────────
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
@@ -74,5 +85,9 @@ export const vehiclesRoute = vehicleParentRoute.addChildren([
     issueNewRoute,
     issueDetailRoute,
     issueEditRoute,
+    reminderListRoute,
+    reminderNewRoute,
+    reminderDetailRoute,
+    reminderEditRoute,
   ]),
 ]);

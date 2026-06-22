@@ -11,6 +11,7 @@ import enHealth from '../locales/en/health.json';
 import enIssues from '../locales/en/issues.json';
 import enLanding from '../locales/en/landing.json';
 import enNav from '../locales/en/nav.json';
+import enReminders from '../locales/en/reminders.json';
 import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
 import plCommon from '../locales/pl/common.json';
@@ -20,6 +21,7 @@ import plHealth from '../locales/pl/health.json';
 import plIssues from '../locales/pl/issues.json';
 import plLanding from '../locales/pl/landing.json';
 import plNav from '../locales/pl/nav.json';
+import plReminders from '../locales/pl/reminders.json';
 import plVehicles from '../locales/pl/vehicles.json';
 
 export const SUPPORTED_LANGUAGES = ['pl', 'en'] as const;
@@ -36,6 +38,7 @@ export const resources = {
     landing: enLanding,
     auth: enAuth,
     nav: enNav,
+    reminders: enReminders,
     vehicles: enVehicles,
     'fuel-logs': enFuelLogs,
   },
@@ -47,6 +50,7 @@ export const resources = {
     landing: plLanding,
     auth: plAuth,
     nav: plNav,
+    reminders: plReminders,
     vehicles: plVehicles,
     'fuel-logs': plFuelLogs,
   },
@@ -62,7 +66,18 @@ void i18n
     // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
-    ns: ['common', 'forms', 'health', 'issues', 'landing', 'auth', 'nav', 'vehicles', 'fuel-logs'],
+    ns: [
+      'common',
+      'forms',
+      'health',
+      'issues',
+      'landing',
+      'auth',
+      'nav',
+      'reminders',
+      'vehicles',
+      'fuel-logs',
+    ],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
     // boundary is needed and tests render translated text immediately.
