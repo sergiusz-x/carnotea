@@ -13,6 +13,7 @@ import { IssuesModule } from './issues/issues.module.js';
 import { OpenApiModule } from './lib/openapi/index.js';
 import { MileageReadingsModule } from './mileage-readings/mileage-readings.module.js';
 import { RemindersModule } from './reminders/reminders.module.js';
+import { ServiceRecordsModule } from './service-records/service-records.module.js';
 import { MeController } from './users/me.controller.js';
 import { VehiclesModule } from './vehicles/vehicles.module.js';
 
@@ -36,6 +37,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     MileageReadingsModule,
     RemindersModule,
     IssuesModule,
+    ServiceRecordsModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })
