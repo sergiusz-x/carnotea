@@ -1,0 +1,66 @@
+{
+  "pageTitle": "Service records",
+  "addService": "Add service record",
+  "loading": "Loading service records…",
+  "empty": {
+    "title": "No service records yet",
+    "description": "Add your first service record to track maintenance and repairs.",
+    "cta": "Add service record"
+  },
+  "error": {
+    "load": "Failed to load service records. Please try again.",
+    "retry": "Retry"
+  },
+  "fields": {
+    "serviceDate": "Service date",
+    "mileage": "Mileage (km)",
+    "title": "Title",
+    "description": "Description",
+    "laborCost": "Labor cost",
+    "totalCost": "Total cost",
+    "workshopName": "Workshop",
+    "parts": "Parts",
+    "partName": "Part name",
+    "manufacturer": "Manufacturer",
+    "partNumber": "Part number",
+    "quantity": "Quantity",
+    "unitPrice": "Unit price",
+    "totalPrice": "Total price"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "cost": "{{cost}}",
+    "workshop": "{{workshop}}",
+    "noWorkshop": "—",
+    "partCount": "{{count}} part(s)",
+    "noParts": "No parts"
+  },
+  "detail": {
+    "title": "Service: {{title}}",
+    "backToServices": "Back to service records",
+    "description": "Description",
+    "noDescription": "No description"
+  },
+  "create": {
+    "title": "Add service record",
+    "submit": "Save service record",
+    "success": "Service record added successfully."
+  },
+  "edit": {
+    "title": "Edit service record",
+    "submit": "Save changes",
+    "success": "Service record updated successfully."
+  },
+  "delete": {
+    "confirmTitle": "Delete service record",
+    "confirmMessage": "Are you sure you want to delete this service record: {{title}}?",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "form": {
+    "addPart": "Add part",
+    "removePart": "Remove",
+    "partIndex": "Part #{{index}}",
+    "totalCostPreview": "Total cost (labor + parts): {{cost}}"
+  }
+}

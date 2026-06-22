@@ -20,6 +20,9 @@ import { createReminderEditRoute } from './$vehicleId/reminders/$reminderId/edit
 import { createReminderDetailRoute } from './$vehicleId/reminders/$reminderId/index';
 import { createReminderListRoute } from './$vehicleId/reminders/index';
 import { createReminderNewRoute } from './$vehicleId/reminders/new';
+import { createServiceEditRoute } from './$vehicleId/service/$recordId/edit';
+import { createServiceListRoute } from './$vehicleId/service/index';
+import { createServiceNewRoute } from './$vehicleId/service/new';
 
 // ─── Parent route: /vehicles ──────────────────────────────────────────────────
 
@@ -80,6 +83,12 @@ const chargingListRoute = createChargingListRoute(vehicleDetailRoute);
 const chargingNewRoute = createChargingNewRoute(vehicleDetailRoute);
 const chargingEditRoute = createChargingEditRoute(vehicleDetailRoute);
 
+// ─── Service routes (factories, no circular import) ──────────────────────────
+
+const serviceListRoute = createServiceListRoute(vehicleDetailRoute);
+const serviceNewRoute = createServiceNewRoute(vehicleDetailRoute);
+const serviceEditRoute = createServiceEditRoute(vehicleDetailRoute);
+
 // ─── Assembled tree ────────────────────────────────────────────────────────────
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
@@ -101,5 +110,8 @@ export const vehiclesRoute = vehicleParentRoute.addChildren([
     chargingListRoute,
     chargingNewRoute,
     chargingEditRoute,
+    serviceListRoute,
+    serviceNewRoute,
+    serviceEditRoute,
   ]),
 ]);

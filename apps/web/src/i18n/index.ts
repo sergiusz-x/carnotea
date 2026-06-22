@@ -14,6 +14,7 @@ import enLanding from '../locales/en/landing.json';
 import enNav from '../locales/en/nav.json';
 import enProfile from '../locales/en/profile.json';
 import enReminders from '../locales/en/reminders.json';
+import enService from '../locales/en/service.json';
 import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
 import plCharging from '../locales/pl/charging.json';
@@ -26,6 +27,7 @@ import plLanding from '../locales/pl/landing.json';
 import plNav from '../locales/pl/nav.json';
 import plProfile from '../locales/pl/profile.json';
 import plReminders from '../locales/pl/reminders.json';
+import plService from '../locales/pl/service.json';
 import plVehicles from '../locales/pl/vehicles.json';
 
 export const SUPPORTED_LANGUAGES = ['pl', 'en'] as const;
@@ -47,6 +49,7 @@ export const resources = {
     vehicles: enVehicles,
     'fuel-logs': enFuelLogs,
     charging: enCharging,
+    service: enService,
   },
   pl: {
     common: plCommon,
@@ -61,6 +64,7 @@ export const resources = {
     vehicles: plVehicles,
     'fuel-logs': plFuelLogs,
     charging: plCharging,
+    service: plService,
   },
 } as const;
 
@@ -87,6 +91,7 @@ void i18n
       'vehicles',
       'fuel-logs',
       'charging',
+      'service',
     ],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
