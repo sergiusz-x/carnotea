@@ -23,11 +23,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
   const { t } = useTranslation('vehicles');
 
   return (
-    <Link
-      to="/vehicles/$vehicleId"
-      params={{ vehicleId: vehicle.id }}
-      className="block"
-    >
+    <Link to="/vehicles/$vehicleId" params={{ vehicleId: vehicle.id }} className="block">
       <Card className="transition-shadow hover:shadow-md">
         <CardHeader>
           <CardTitle>

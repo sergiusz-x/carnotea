@@ -2,7 +2,6 @@ import { type VehicleCreate, type VehicleUpdate } from '@carnotea/shared';
 import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 
-
 import { apiClient } from '@/lib/api/client';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
@@ -69,8 +68,7 @@ export function useUpdateVehicle(id: string) {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (body: VehicleUpdate) =>
-      apiClient.PATCH('/api/vehicles/{id}', body, { id }),
+    mutationFn: (body: VehicleUpdate) => apiClient.PATCH('/api/vehicles/{id}', body, { id }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehicleKeys.detail(id) });
       await navigate({ to: '/vehicles/$vehicleId', params: { vehicleId: id } });

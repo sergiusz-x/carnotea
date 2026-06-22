@@ -16,9 +16,7 @@ import {
 
 function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
   const { t } = useTranslation('vehicles');
-  const { data: mileageReadings } = useQuery(
-    mileageReadingsQueryOptions(vehicleId),
-  );
+  const { data: mileageReadings } = useQuery(mileageReadingsQueryOptions(vehicleId));
   const addReading = useAddMileageReading(vehicleId);
   const [readingDate, setReadingDate] = useState(new Date().toISOString().slice(0, 10));
   const [mileage, setMileage] = useState('');
@@ -26,16 +24,19 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
 
   function handleAddReading(e: SyntheticEvent) {
     e.preventDefault();
-    addReading.mutateAsync({
-      readingDate,
-      mileage: Number(mileage),
-      note: note || null,
-    }).then(() => {
-      setMileage('');
-      setNote('');
-    }).catch(() => {
-      // Error handled by mutation
-    });
+    addReading
+      .mutateAsync({
+        readingDate,
+        mileage: Number(mileage),
+        note: note || null,
+      })
+      .then(() => {
+        setMileage('');
+        setNote('');
+      })
+      .catch(() => {
+        // Error handled by mutation
+      });
   }
 
   const readings = Array.isArray(mileageReadings) ? mileageReadings : [];
@@ -56,7 +57,9 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               id="mileage-reading-date"
               type="date"
               value={readingDate}
-              onChange={(e) => { setReadingDate(e.target.value); }}
+              onChange={(e) => {
+                setReadingDate(e.target.value);
+              }}
               className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors"
               required
             />
@@ -69,7 +72,9 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               id="mileage-reading-value"
               type="number"
               value={mileage}
-              onChange={(e) => { setMileage(e.target.value); }}
+              onChange={(e) => {
+                setMileage(e.target.value);
+              }}
               className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors"
               placeholder={t('mileageForm.mileage')}
               min={0}
@@ -84,7 +89,9 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               id="mileage-reading-note"
               type="text"
               value={note}
-              onChange={(e) => { setNote(e.target.value); }}
+              onChange={(e) => {
+                setNote(e.target.value);
+              }}
               className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors"
               placeholder={t('mileageForm.note')}
             />
@@ -101,26 +108,28 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
             <p className="text-sm text-muted-foreground">{t('detail.mileage.noReadings')}</p>
           ) : (
             <div className="max-h-64 space-y-1 overflow-y-auto">
-              {readings.map((reading: {
-                id: string;
-                readingDate: string;
-                mileage: number;
-                sourceType: string;
-                note: string | null;
-              }) => (
-                <div
-                  key={reading.id}
-                  className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
-                >
-                  <span>{reading.readingDate}</span>
-                  <span className="font-medium">
-                    {t('list.mileage', { mileage: reading.mileage })}
-                  </span>
-                  {reading.note && (
-                    <span className="text-xs text-muted-foreground">{reading.note}</span>
-                  )}
-                </div>
-              ))}
+              {readings.map(
+                (reading: {
+                  id: string;
+                  readingDate: string;
+                  mileage: number;
+                  sourceType: string;
+                  note: string | null;
+                }) => (
+                  <div
+                    key={reading.id}
+                    className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
+                  >
+                    <span>{reading.readingDate}</span>
+                    <span className="font-medium">
+                      {t('list.mileage', { mileage: reading.mileage })}
+                    </span>
+                    {reading.note && (
+                      <span className="text-xs text-muted-foreground">{reading.note}</span>
+                    )}
+                  </div>
+                ),
+              )}
             </div>
           )}
         </div>
@@ -136,9 +145,13 @@ export function VehicleDetailPage() {
   const { t } = useTranslation('vehicles');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const { data: vehicle, isLoading, isError, error, refetch } = useQuery(
-    vehicleQueryOptions(vehicleId),
-  );
+  const {
+    data: vehicle,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery(vehicleQueryOptions(vehicleId));
 
   const deleteMutation = useDeleteVehicle();
 
@@ -162,7 +175,13 @@ export function VehicleDetailPage() {
           <p className="text-sm text-muted-foreground">
             {error instanceof Error ? error.message : String(error)}
           </p>
-          <button type="button" className="btn" onClick={() => { void refetch(); }}>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              void refetch();
+            }}
+          >
             {t('error.retry')}
           </button>
         </div>
@@ -191,7 +210,9 @@ export function VehicleDetailPage() {
           </Link>
           <Button
             variant="destructive"
-            onClick={() => { setShowDeleteConfirm(true); }}
+            onClick={() => {
+              setShowDeleteConfirm(true);
+            }}
           >
             {t('detail.deleteButton')}
           </Button>
@@ -214,14 +235,18 @@ export function VehicleDetailPage() {
             <div className="flex gap-2">
               <Button
                 variant="destructive"
-                onClick={() => { handleDelete(); }}
+                onClick={() => {
+                  handleDelete();
+                }}
                 disabled={deleteMutation.isPending}
               >
                 {t('delete.confirm')}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => { setShowDeleteConfirm(false); }}
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                }}
               >
                 {t('delete.cancel')}
               </Button>
@@ -286,7 +311,10 @@ export function VehicleDetailPage() {
           <CardTitle>{t('detail.logsSection')}</CardTitle>
         </CardHeader>
         <CardContent>
-          <nav className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" aria-label={t('detail.logsSection')}>
+          <nav
+            className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
+            aria-label={t('detail.logsSection')}
+          >
             <a
               href={`/vehicles/${String(vehicleId)}/fuel`}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"

@@ -3,7 +3,6 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-
 import {
   AppForm,
   FormSubmit,
@@ -77,9 +76,7 @@ export function VehicleEditPage() {
   const { t } = useTranslation('vehicles');
   const fuelTypeOptions = useFuelTypeOptions();
 
-  const { data: existingVehicle } = useSuspenseQuery(
-    vehicleQueryOptions(vehicleId),
-  );
+  const { data: existingVehicle } = useSuspenseQuery(vehicleQueryOptions(vehicleId));
 
   const updateMutation = useUpdateVehicle(vehicleId);
 
@@ -127,7 +124,13 @@ export function VehicleEditPage() {
 
 // ─── Shared form shell ─────────────────────────────────────────────────────────
 
-function FormShell({ title, submitLabel, form, onSubmit, fuelTypeOptions }: {
+function FormShell({
+  title,
+  submitLabel,
+  form,
+  onSubmit,
+  fuelTypeOptions,
+}: {
   title: string;
   submitLabel: string;
   form: ReturnType<typeof useZodForm>;
@@ -143,7 +146,11 @@ function FormShell({ title, submitLabel, form, onSubmit, fuelTypeOptions }: {
       <AppForm form={form} onSubmit={onSubmit}>
         <TextField name="brand" label={t('fields.brand')} placeholder={t('fields.brand')} />
         <TextField name="model" label={t('fields.model')} placeholder={t('fields.model')} />
-        <TextField name="generation" label={t('fields.generation')} placeholder={t('fields.generation')} />
+        <TextField
+          name="generation"
+          label={t('fields.generation')}
+          placeholder={t('fields.generation')}
+        />
         <NumberField
           name="productionYear"
           label={t('fields.productionYear')}
