@@ -23,7 +23,7 @@ zodRoute({
   method: 'get',
   path: ROUTES.dashboardOverview,
   operationId: 'getDashboardOverview',
-  summary: "Account-wide dashboard overview — vehicle count, expenses, fuel stats",
+  summary: 'Account-wide dashboard overview — vehicle count, expenses, fuel stats',
   tags: ['Dashboard'],
   request: {},
   responses: {

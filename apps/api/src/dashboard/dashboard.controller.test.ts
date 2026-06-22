@@ -8,7 +8,6 @@ import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fa
 import { Test } from '@nestjs/testing';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
-
 import { AUTH } from '../auth/auth.constants.js';
 import { AuthGuard } from '../auth/auth.guard.js';
 

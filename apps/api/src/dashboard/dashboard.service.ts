@@ -1,4 +1,12 @@
-import { expenseCategories, expenses, fuelLogs, reminderStatuses, reminders, vehicles, type Db } from '@carnotea/db';
+import {
+  expenseCategories,
+  expenses,
+  fuelLogs,
+  reminderStatuses,
+  reminders,
+  vehicles,
+  type Db,
+} from '@carnotea/db';
 import {
   computeDueState,
   type DashboardOverview,
@@ -52,7 +60,13 @@ export class DashboardService {
     const totalVehicles = vehicleCountRows.at(0)?.count ?? 0;
 
     if (totalVehicles === 0) {
-      return { totalVehicles: 0, totalExpenses: 0, totalFuelCost: 0, avgFuelConsumption: null, currency: 'EUR' };
+      return {
+        totalVehicles: 0,
+        totalExpenses: 0,
+        totalFuelCost: 0,
+        avgFuelConsumption: null,
+        currency: 'EUR',
+      };
     }
 
     // Get user's vehicle IDs
@@ -127,7 +141,8 @@ export class DashboardService {
       totalVehicles,
       totalExpenses,
       totalFuelCost,
-      avgFuelConsumption: avgFuelConsumption !== null ? Math.round(avgFuelConsumption * 100) / 100 : null,
+      avgFuelConsumption:
+        avgFuelConsumption !== null ? Math.round(avgFuelConsumption * 100) / 100 : null,
       currency,
     };
   }
@@ -135,7 +150,9 @@ export class DashboardService {
   /**
    * GET /api/dashboard/expenses-by-category — last 12 months grouped by category.
    */
-  async getExpensesByCategory(userId: string): Promise<{ items: ExpenseByCategory[]; currency: string }> {
+  async getExpensesByCategory(
+    userId: string,
+  ): Promise<{ items: ExpenseByCategory[]; currency: string }> {
     const userVehicleRows = await this.db
       .select({ id: vehicles.id, currencyCode: vehicles.currencyCode })
       .from(vehicles)
@@ -166,7 +183,11 @@ export class DashboardService {
       .orderBy(desc(sql`coalesce(sum(${expenses.amount}), '0')`));
 
     return {
-      items: rows.map((r) => ({ category: r.category as ExpenseCategoryCode, total: Number(r.total), count: r.count })),
+      items: rows.map((r) => ({
+        category: r.category as ExpenseCategoryCode,
+        total: Number(r.total),
+        count: r.count,
+      })),
       currency,
     };
   }
