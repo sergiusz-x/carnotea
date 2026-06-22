@@ -8,7 +8,9 @@ import plNav from './pl/nav.json';
 function flatKeys(obj: Record<string, unknown>, prefix = ''): string[] {
   return Object.entries(obj).flatMap(([k, v]) => {
     const full = prefix ? `${prefix}.${k}` : k;
-    return v !== null && typeof v === 'object' ? flatKeys(v as Record<string, unknown>, full) : [full];
+    return v !== null && typeof v === 'object'
+      ? flatKeys(v as Record<string, unknown>, full)
+      : [full];
   });
 }
 

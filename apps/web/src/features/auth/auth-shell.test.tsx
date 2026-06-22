@@ -26,7 +26,6 @@ vi.mock('@/lib/auth-client', () => ({
   },
 }));
 
-
 const mockSession = {
   user: { id: '1', name: 'Test User', email: 'test@example.com' },
   session: { id: 'sess1', userId: '1', token: 'tok' },
