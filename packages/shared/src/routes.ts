@@ -14,6 +14,8 @@ export const ROUTES = {
   reminderById: '/api/vehicles/{vehicleId}/reminders/{id}',
   mileageReadingsByVehicle: '/api/vehicles/{vehicleId}/mileage-readings',
   mileageReadingById: '/api/vehicles/{vehicleId}/mileage-readings/{id}',
+  chargingSessionsByVehicle: '/api/vehicles/{vehicleId}/charging-sessions',
+  chargingSessionById: '/api/vehicles/{vehicleId}/charging-sessions/{id}',
   issuesByVehicle: '/api/vehicles/{vehicleId}/issues',
   issueById: '/api/vehicles/{vehicleId}/issues/{id}',
 } as const;
