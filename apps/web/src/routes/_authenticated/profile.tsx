@@ -1,6 +1,5 @@
 import { createRoute } from '@tanstack/react-router';
 
-
 import { ProfileScreen } from '@/features/profile/components/profile-screen';
 import { profileQueryOptions } from '@/features/profile/queries';
 

@@ -29,8 +29,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (body: UserProfileUpdate) =>
-      apiClient.PATCH('/api/me', body),
+    mutationFn: (body: UserProfileUpdate) => apiClient.PATCH('/api/me', body),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: profileKeys.me(),

@@ -4,7 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AppForm, FormSubmit, SelectField, TextField, useZodForm, setServerErrors } from '@/components/form';
+import {
+  AppForm,
+  FormSubmit,
+  SelectField,
+  TextField,
+  useZodForm,
+  setServerErrors,
+} from '@/components/form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -63,7 +70,11 @@ export function ProfileScreen() {
       if (err && typeof err === 'object' && 'code' in err && 'message' in err) {
         setServerErrors(
           form.setError,
-          err as { code: string; message: string; issues?: Array<{ code: string; path: (string | number)[]; message: string }> },
+          err as {
+            code: string;
+            message: string;
+            issues?: Array<{ code: string; path: (string | number)[]; message: string }>;
+          },
         );
       } else {
         form.setError('root', { message: t('error.saveFailed') });
@@ -124,7 +135,8 @@ export function ProfileScreen() {
 
             {profile?.createdAt && (
               <p className="text-sm text-muted-foreground pt-2">
-                {t('account.memberSince')}{':'}{' '}
+                {t('account.memberSince')}
+                {':'}{' '}
                 {new Date(profile.createdAt).toLocaleDateString(i18n.resolvedLanguage ?? 'en', {
                   year: 'numeric',
                   month: 'long',
