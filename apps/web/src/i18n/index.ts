@@ -6,6 +6,7 @@ import { configureZodErrorMap } from '../lib/forms/zod-i18n';
 import enAuth from '../locales/en/auth.json';
 import enCharging from '../locales/en/charging.json';
 import enCommon from '../locales/en/common.json';
+import enExpenses from '../locales/en/expenses.json';
 import enForms from '../locales/en/forms.json';
 import enFuelLogs from '../locales/en/fuel-logs.json';
 import enHealth from '../locales/en/health.json';
@@ -19,6 +20,7 @@ import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
 import plCharging from '../locales/pl/charging.json';
 import plCommon from '../locales/pl/common.json';
+import plExpenses from '../locales/pl/expenses.json';
 import plForms from '../locales/pl/forms.json';
 import plFuelLogs from '../locales/pl/fuel-logs.json';
 import plHealth from '../locales/pl/health.json';
@@ -50,6 +52,7 @@ export const resources = {
     'fuel-logs': enFuelLogs,
     charging: enCharging,
     service: enService,
+    expenses: enExpenses,
   },
   pl: {
     common: plCommon,
@@ -65,6 +68,7 @@ export const resources = {
     'fuel-logs': plFuelLogs,
     charging: plCharging,
     service: plService,
+    expenses: plExpenses,
   },
 } as const;
 
@@ -92,6 +96,7 @@ void i18n
       'fuel-logs',
       'charging',
       'service',
+      'expenses',
     ],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense

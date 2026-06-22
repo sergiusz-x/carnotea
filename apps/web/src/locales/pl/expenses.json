@@ -1,0 +1,63 @@
+{
+  "pageTitle": "Wydatki",
+  "addExpense": "Dodaj wydatek",
+  "loading": "Ładowanie wydatków…",
+  "empty": {
+    "title": "Brak wydatków",
+    "description": "Dodaj pierwszy wydatek, aby śledzić wszystkie koszty związane z tym pojazdem.",
+    "cta": "Dodaj wydatek"
+  },
+  "error": {
+    "load": "Nie udało się załadować wydatków. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "category": "Kategoria",
+    "expenseDate": "Data",
+    "amount": "Kwota",
+    "description": "Opis",
+    "sourceType": "Źródło"
+  },
+  "list": {
+    "amount": "{{amount}}",
+    "autoSynced": "Automatyczny",
+    "manual": "Ręczny",
+    "noDescription": "—",
+    "unknownSource": "Nieznane"
+  },
+  "detail": {
+    "title": "Wydatek z {{date}}",
+    "backToExpenses": "Powrót do wydatków"
+  },
+  "create": {
+    "title": "Dodaj wydatek",
+    "submit": "Zapisz wydatek",
+    "success": "Wydatek dodany pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj wydatek",
+    "submit": "Zapisz zmiany",
+    "success": "Wydatek zaktualizowany pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń wydatek",
+    "confirmMessage": "Czy na pewno chcesz usunąć ten wydatek z {{date}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "categories": {
+    "fuel": "Paliwo",
+    "electricity": "Elektryczność",
+    "service": "Serwis",
+    "parts": "Części",
+    "insurance": "Ubezpieczenie",
+    "inspection": "Przegląd",
+    "other": "Inne"
+  },
+  "sources": {
+    "manual": "Ręczny",
+    "fuel_log": "Log paliwa",
+    "service_record": "Serwis",
+    "charging_session": "Ładowanie"
+  }
+}
