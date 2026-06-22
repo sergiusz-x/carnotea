@@ -1,11 +1,6 @@
 import { parts, serviceParts, serviceRecords, vehicles, type Db } from '@carnotea/db';
 import { type ServiceRecordCreate, type ServiceRecordUpdate } from '@carnotea/shared';
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq, inArray } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
@@ -247,10 +242,7 @@ export class ServiceRecordsService {
         .from(serviceParts)
         .where(eq(serviceParts.serviceRecordId, id));
 
-      const partsTotal = currentParts.reduce(
-        (acc, p) => acc + Number(p.totalPrice),
-        0,
-      );
+      const partsTotal = currentParts.reduce((acc, p) => acc + Number(p.totalPrice), 0);
       updates.totalCost = String(newLaborCost + partsTotal);
       updates.updatedAt = new Date();
 
@@ -293,20 +285,14 @@ export class ServiceRecordsService {
     });
   }
 
-  private async resolveOrCreatePart(
-    tx: DbTx,
-    line: PartLineInput,
-  ): Promise<string> {
+  private async resolveOrCreatePart(tx: DbTx, line: PartLineInput): Promise<string> {
     // If manufacturer and partNumber are both provided, try to find existing
     if (line.manufacturer && line.partNumber) {
       const existing = await tx
         .select({ id: parts.id })
         .from(parts)
         .where(
-          and(
-            eq(parts.manufacturer, line.manufacturer),
-            eq(parts.partNumber, line.partNumber),
-          ),
+          and(eq(parts.manufacturer, line.manufacturer), eq(parts.partNumber, line.partNumber)),
         )
         .limit(1);
 
@@ -359,9 +345,7 @@ export class ServiceRecordsService {
     return map;
   }
 
-  private async fetchPartsByRecordId(
-    recordId: string,
-  ): Promise<ServicePartLineResponse[]> {
+  private async fetchPartsByRecordId(recordId: string): Promise<ServicePartLineResponse[]> {
     const rows = await this.db
       .select({
         id: serviceParts.id,

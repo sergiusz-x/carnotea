@@ -25,10 +25,7 @@ import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
 
-import {
-  ServiceRecordsService,
-  type ServiceRecordResponse,
-} from './service-records.service.js';
+import { ServiceRecordsService, type ServiceRecordResponse } from './service-records.service.js';
 
 const vehicleIdParam = z.object({ vehicleId: z.uuid() });
 const serviceRecordIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
@@ -65,7 +62,10 @@ zodRoute({
   tags: ['Service Records'],
   request: { params: vehicleIdParam },
   responses: {
-    '200': { description: 'Service records for the vehicle', schema: z.array(ServiceRecordResponseSchema) },
+    '200': {
+      description: 'Service records for the vehicle',
+      schema: z.array(ServiceRecordResponseSchema),
+    },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Vehicle not found', schema: ErrorResponseSchema },
   },

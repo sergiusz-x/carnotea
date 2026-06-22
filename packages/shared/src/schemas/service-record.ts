@@ -1,6 +1,13 @@
 import { z } from 'zod';
 
-import { dateField, mileageField, moneyField, timestampField, uuidField, positiveDecimalField } from './_shared.js';
+import {
+  dateField,
+  mileageField,
+  moneyField,
+  timestampField,
+  uuidField,
+  positiveDecimalField,
+} from './_shared.js';
 
 /**
  * A part line attached to a service record, as sent in the request.
@@ -12,7 +19,7 @@ export const ServicePartLineRequestSchema = z.object({
   manufacturer: z.string().max(120).nullish(),
   partNumber: z.string().max(80).nullish(),
   quantity: positiveDecimalField(10).default(1),
-  unitPrice: moneyField(10),
+  unitPrice: moneyField(10).positive(),
 });
 
 /**
@@ -27,7 +34,7 @@ export const ServicePartLineResponseSchema = z.object({
   manufacturer: z.string().max(120).nullable(),
   partNumber: z.string().max(80).nullable(),
   quantity: positiveDecimalField(10),
-  unitPrice: moneyField(10),
+  unitPrice: moneyField(10).positive(),
   totalPrice: moneyField(10),
 });
 

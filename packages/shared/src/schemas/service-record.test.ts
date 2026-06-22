@@ -20,7 +20,13 @@ describe('ServiceRecordCreateSchema', () => {
       title: 'Oil change',
       laborCost: 50,
       parts: [
-        { name: 'Oil filter', manufacturer: 'Mann', partNumber: 'HU 711/6 x', quantity: 1, unitPrice: 12.99 },
+        {
+          name: 'Oil filter',
+          manufacturer: 'Mann',
+          partNumber: 'HU 711/6 x',
+          quantity: 1,
+          unitPrice: 12.99,
+        },
         { name: 'Engine oil 5W-30', quantity: 5, unitPrice: 8.5 },
       ],
     });

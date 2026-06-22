@@ -114,13 +114,19 @@ describe('ServiceRecordsController', () => {
   it('rejects an unauthenticated request with 401', async () => {
     currentSession = null;
 
-    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/service-records` });
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/service-records`,
+    });
 
     expect(res.statusCode).toBe(401);
   });
 
   it('GET /api/vehicles/:vehicleId/service-records lists records', async () => {
-    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/service-records` });
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/service-records`,
+    });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual([sampleRecord]);
@@ -128,7 +134,10 @@ describe('ServiceRecordsController', () => {
   });
 
   it('GET /api/vehicles/:vehicleId/service-records rejects non-uuid vehicleId with 400', async () => {
-    const res = await app.inject({ method: 'GET', url: '/api/vehicles/not-a-uuid/service-records' });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/vehicles/not-a-uuid/service-records',
+    });
 
     expect(res.statusCode).toBe(400);
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
@@ -201,7 +210,13 @@ describe('ServiceRecordsController', () => {
         title: 'Oil change',
         laborCost: 50,
         parts: [
-          { name: 'Oil filter', manufacturer: 'Mann', partNumber: 'HU 711/6 x', quantity: 1, unitPrice: 12.99 },
+          {
+            name: 'Oil filter',
+            manufacturer: 'Mann',
+            partNumber: 'HU 711/6 x',
+            quantity: 1,
+            unitPrice: 12.99,
+          },
         ],
       },
     });
