@@ -4,6 +4,7 @@ import { BadRequestException, Inject, Injectable, NotFoundException } from '@nes
 import { and, desc, eq } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
+import { CostSyncService } from '../expenses/cost-sync.service.js';
 import { type DbTx, MileageSyncService } from '../mileage/mileage-sync.service.js';
 
 export interface ChargingSessionResponse {
@@ -47,6 +48,7 @@ export class ChargingSessionsService {
   constructor(
     @Inject(DB) private readonly db: Db,
     private readonly mileageSync: MileageSyncService,
+    private readonly costSync: CostSyncService,
   ) {}
 
   async list(userId: string, vehicleId: string): Promise<ChargingSessionResponse[]> {
@@ -149,6 +151,15 @@ export class ChargingSessionsService {
         date: input.chargeDate,
       });
 
+      await this.costSync.upsertFromSource(tx, {
+        vehicleId,
+        sourceType: 'charging_session',
+        sourceId: created.id,
+        amount: totalCost,
+        date: input.chargeDate,
+        categoryCode: 'electricity',
+      });
+
       return created.id;
     });
 
@@ -220,6 +231,15 @@ export class ChargingSessionsService {
         mileage: newMileage,
         date: newChargeDate,
       });
+
+      await this.costSync.upsertFromSource(tx, {
+        vehicleId,
+        sourceType: 'charging_session',
+        sourceId: id,
+        amount: totalCost,
+        date: newChargeDate,
+        categoryCode: 'electricity',
+      });
     });
 
     return this.getOwnedOrThrow(userId, vehicleId, id);
@@ -238,6 +258,11 @@ export class ChargingSessionsService {
 
       await this.mileageSync.removeDerivedReading(tx, {
         vehicleId,
+        sourceType: 'charging_session',
+        sourceId: id,
+      });
+
+      await this.costSync.removeForSource(tx, {
         sourceType: 'charging_session',
         sourceId: id,
       });

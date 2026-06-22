@@ -40,18 +40,23 @@ export const expenses = pgTable(
     sourceType: varchar({ length: 40 }).notNull().default('manual'),
     sourceId: uuid(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [
     check('expenses_amount_chk', sql`${t.amount} >= 0`),
     check(
       'expenses_source_type_chk',
-      sql`${t.sourceType} IN ('fuel_log', 'service_record', 'manual', 'other', 'charging_session')`,
+      sql`${t.sourceType} IN ('fuel_log', 'service_record', 'manual', 'charging_session')`,
+    ),
+    check(
+      'expenses_source_id_chk',
+      sql`(${t.sourceType} = 'manual' AND ${t.sourceId} IS NULL) OR (${t.sourceType} <> 'manual' AND ${t.sourceId} IS NOT NULL)`,
     ),
     index('idx_expenses_vehicle_id').on(t.vehicleId),
     index('idx_expenses_expense_date').on(t.expenseDate),
     index('idx_expenses_category_id').on(t.categoryId),
     uniqueIndex('idx_expenses_source_unique')
-      .on(t.sourceType, t.sourceId)
+      .on(t.vehicleId, t.sourceType, t.sourceId)
       .where(sql`${t.sourceType} <> 'manual'`),
   ],
 );

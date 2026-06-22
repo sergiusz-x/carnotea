@@ -12,7 +12,6 @@ import { dateField, moneyField, timestampField, uuidField } from './_shared.js';
  */
 export const EXPENSE_SOURCE_TYPES = [
   'manual',
-  'other',
   'fuel_log',
   'service_record',
   'charging_session',
@@ -27,7 +26,9 @@ const expenseFields = z.object({
   description: z.string().nullish(),
   sourceType: z.enum(EXPENSE_SOURCE_TYPES),
   sourceId: uuidField().nullish(),
+  isAutoSynced: z.boolean(),
   createdAt: timestampField(),
+  updatedAt: timestampField(),
 });
 
 export const ExpenseSchema = expenseFields;
@@ -37,11 +38,21 @@ export const ExpenseCreateSchema = expenseFields.omit({
   vehicleId: true,
   sourceType: true,
   sourceId: true,
+  isAutoSynced: true,
   createdAt: true,
+  updatedAt: true,
 });
 
 export const ExpenseUpdateSchema = ExpenseCreateSchema.partial();
 
+/**
+ * Query params for listing expenses: optional `source` filter.
+ */
+export const ExpenseListQuery = z.object({
+  source: z.enum(EXPENSE_SOURCE_TYPES).optional(),
+});
+
 export type Expense = z.infer<typeof ExpenseSchema>;
 export type ExpenseCreate = z.infer<typeof ExpenseCreateSchema>;
 export type ExpenseUpdate = z.infer<typeof ExpenseUpdateSchema>;
+export type ExpenseListQueryType = z.infer<typeof ExpenseListQuery>;

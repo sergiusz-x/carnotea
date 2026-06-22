@@ -257,6 +257,263 @@ export interface paths {
       };
     };
   };
+  "/api/vehicles/{vehicleId}/expenses": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            category: string;
+            expenseDate: string;
+            amount: number;
+            description: string | null;
+            sourceType: string;
+            sourceId: string | null;
+            isAutoSynced: boolean;
+            createdAt: string;
+            updatedAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+          expenseDate: string;
+          amount: number | null;
+          description?: string | null;
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            category: string;
+            expenseDate: string;
+            amount: number;
+            description: string | null;
+            sourceType: string;
+            sourceId: string | null;
+            isAutoSynced: boolean;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/expenses/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            category: string;
+            expenseDate: string;
+            amount: number;
+            description: string | null;
+            sourceType: string;
+            sourceId: string | null;
+            isAutoSynced: boolean;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        409: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          category?: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+          expenseDate?: string;
+          amount?: number | null;
+          description?: string | null;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            category: string;
+            expenseDate: string;
+            amount: number;
+            description: string | null;
+            sourceType: string;
+            sourceId: string | null;
+            isAutoSynced: boolean;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        409: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/fuel-logs": {
     get: {
       responses: {

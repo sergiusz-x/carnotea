@@ -9,7 +9,7 @@ interface ServicePart {
   manufacturer: string | null;
   partNumber: string | null;
   quantity: number;
-  unitPrice: number;
+  unitPrice: number | null;
   totalPrice: number | null;
 }
 
