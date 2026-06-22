@@ -24,7 +24,10 @@ import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
 
-import { ChargingSessionsService, type ChargingSessionResponse } from './charging-sessions.service.js';
+import {
+  ChargingSessionsService,
+  type ChargingSessionResponse,
+} from './charging-sessions.service.js';
 
 const vehicleIdParam = z.object({ vehicleId: z.uuid() });
 const chargingSessionIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
@@ -62,7 +65,10 @@ zodRoute({
   tags: ['Charging Sessions'],
   request: { params: vehicleIdParam },
   responses: {
-    '200': { description: 'Charging sessions for the vehicle', schema: z.array(ChargingSessionResponseSchema) },
+    '200': {
+      description: 'Charging sessions for the vehicle',
+      schema: z.array(ChargingSessionResponseSchema),
+    },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Vehicle not found', schema: ErrorResponseSchema },
   },

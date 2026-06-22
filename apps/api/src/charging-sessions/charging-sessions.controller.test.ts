@@ -7,7 +7,10 @@ import { AUTH } from '../auth/auth.constants.js';
 import { AuthGuard } from '../auth/auth.guard.js';
 
 import { ChargingSessionsController } from './charging-sessions.controller.js';
-import { ChargingSessionsService, type ChargingSessionResponse } from './charging-sessions.service.js';
+import {
+  ChargingSessionsService,
+  type ChargingSessionResponse,
+} from './charging-sessions.service.js';
 
 // DB-free controller test — the service is stubbed and the real AuthGuard runs
 // against a stubbed better-auth session. It pins routing, auth enforcement,
@@ -103,13 +106,19 @@ describe('ChargingSessionsController', () => {
   it('rejects an unauthenticated request with 401', async () => {
     currentSession = null;
 
-    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/charging-sessions` });
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/charging-sessions`,
+    });
 
     expect(res.statusCode).toBe(401);
   });
 
   it('GET /api/vehicles/:vehicleId/charging-sessions lists charging sessions', async () => {
-    const res = await app.inject({ method: 'GET', url: `/api/vehicles/${vehicleId}/charging-sessions` });
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/vehicles/${vehicleId}/charging-sessions`,
+    });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual([sampleSession]);
@@ -117,7 +126,10 @@ describe('ChargingSessionsController', () => {
   });
 
   it('GET /api/vehicles/:vehicleId/charging-sessions rejects non-uuid vehicleId with 400', async () => {
-    const res = await app.inject({ method: 'GET', url: '/api/vehicles/not-a-uuid/charging-sessions' });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/vehicles/not-a-uuid/charging-sessions',
+    });
 
     expect(res.statusCode).toBe(400);
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
@@ -201,7 +213,13 @@ describe('ChargingSessionsController', () => {
     const res = await app.inject({
       method: 'POST',
       url: `/api/vehicles/${vehicleId}/charging-sessions`,
-      payload: { chargeDate: '2026-04-01', mileage: 50000, energyKwh: 0, pricePerKwh: 0.45, chargerType: 'dc_ccs' },
+      payload: {
+        chargeDate: '2026-04-01',
+        mileage: 50000,
+        energyKwh: 0,
+        pricePerKwh: 0.45,
+        chargerType: 'dc_ccs',
+      },
     });
 
     expect(res.statusCode).toBe(400);
@@ -212,7 +230,13 @@ describe('ChargingSessionsController', () => {
     const res = await app.inject({
       method: 'POST',
       url: `/api/vehicles/${vehicleId}/charging-sessions`,
-      payload: { chargeDate: '2026-04-01', mileage: 50000, energyKwh: 40, pricePerKwh: 0, chargerType: 'dc_ccs' },
+      payload: {
+        chargeDate: '2026-04-01',
+        mileage: 50000,
+        energyKwh: 40,
+        pricePerKwh: 0,
+        chargerType: 'dc_ccs',
+      },
     });
 
     expect(res.statusCode).toBe(400);
@@ -223,7 +247,13 @@ describe('ChargingSessionsController', () => {
     const res = await app.inject({
       method: 'POST',
       url: `/api/vehicles/${vehicleId}/charging-sessions`,
-      payload: { chargeDate: '2026-04-01', mileage: -1, energyKwh: 40, pricePerKwh: 0.45, chargerType: 'dc_ccs' },
+      payload: {
+        chargeDate: '2026-04-01',
+        mileage: -1,
+        energyKwh: 40,
+        pricePerKwh: 0.45,
+        chargerType: 'dc_ccs',
+      },
     });
 
     expect(res.statusCode).toBe(400);
@@ -234,7 +264,13 @@ describe('ChargingSessionsController', () => {
     const res = await app.inject({
       method: 'POST',
       url: `/api/vehicles/${vehicleId}/charging-sessions`,
-      payload: { chargeDate: '2026-04-01', mileage: 50000, energyKwh: 40, pricePerKwh: 0.45, chargerType: 'nope' },
+      payload: {
+        chargeDate: '2026-04-01',
+        mileage: 50000,
+        energyKwh: 40,
+        pricePerKwh: 0.45,
+        chargerType: 'nope',
+      },
     });
 
     expect(res.statusCode).toBe(400);

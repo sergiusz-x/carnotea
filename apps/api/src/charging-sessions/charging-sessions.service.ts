@@ -1,14 +1,6 @@
 import { chargerTypes, chargingSessions, vehicles, type Db } from '@carnotea/db';
-import {
-  type ChargingSessionCreate,
-  type ChargingSessionUpdate,
-} from '@carnotea/shared';
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { type ChargingSessionCreate, type ChargingSessionUpdate } from '@carnotea/shared';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
@@ -206,7 +198,8 @@ export class ChargingSessionsService {
       if (input.chargerType !== undefined) {
         updates.chargerTypeId = await this.resolveChargerTypeId(input.chargerType);
       }
-      if (input.socStartPercent !== undefined) updates.socStartPercent = input.socStartPercent ?? null;
+      if (input.socStartPercent !== undefined)
+        updates.socStartPercent = input.socStartPercent ?? null;
       if (input.socEndPercent !== undefined) updates.socEndPercent = input.socEndPercent ?? null;
       if (input.stationName !== undefined) updates.stationName = input.stationName ?? null;
       if (input.isFullCharge !== undefined) updates.isFullCharge = input.isFullCharge;
