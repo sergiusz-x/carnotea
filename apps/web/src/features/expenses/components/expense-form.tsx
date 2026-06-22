@@ -19,7 +19,11 @@ import {
   useZodForm,
   type SelectOption,
 } from '@/components/form';
-import { expenseQueryOptions, useCreateExpense, useUpdateExpense } from '@/features/expenses/queries';
+import {
+  expenseQueryOptions,
+  useCreateExpense,
+  useUpdateExpense,
+} from '@/features/expenses/queries';
 import type { ApiError } from '@/lib/api/client';
 
 // ─── Category options ─────────────────────────────────────────────────────────
@@ -87,9 +91,7 @@ export function ExpenseEditPage() {
   });
   const { t } = useTranslation('expenses');
 
-  const { data: existingExpense } = useSuspenseQuery(
-    expenseQueryOptions(vehicleId, expenseId),
-  );
+  const { data: existingExpense } = useSuspenseQuery(expenseQueryOptions(vehicleId, expenseId));
 
   const updateMutation = useUpdateExpense(vehicleId, expenseId);
   const categoryOptions = useCategoryOptions();
@@ -153,10 +155,7 @@ function FormShell({
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
-        <DateField
-          name="expenseDate"
-          label={t('fields.expenseDate')}
-        />
+        <DateField name="expenseDate" label={t('fields.expenseDate')} />
         <SelectField
           name="category"
           label={t('fields.category')}
