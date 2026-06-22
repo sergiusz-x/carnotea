@@ -8,6 +8,7 @@ import type health from '../locales/en/health.json';
 import type issues from '../locales/en/issues.json';
 import type landing from '../locales/en/landing.json';
 import type nav from '../locales/en/nav.json';
+import type profile from '../locales/en/profile.json';
 import type reminders from '../locales/en/reminders.json';
 import type vehicles from '../locales/en/vehicles.json';
 
@@ -24,6 +25,7 @@ declare module 'i18next' {
       landing: typeof landing;
       auth: typeof auth;
       nav: typeof nav;
+      profile: typeof profile;
       reminders: typeof reminders;
       vehicles: typeof vehicles;
       'fuel-logs': typeof fuelLogs;

@@ -1,0 +1,40 @@
+{
+  "title": "Profile",
+  "description": "Manage your account details and preferences",
+  "account": {
+    "title": "Account",
+    "description": "Your personal information",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "memberSince": "Member since"
+  },
+  "preferences": {
+    "title": "Preferences",
+    "description": "Customise how CarNotea presents data",
+    "locale": "Language",
+    "localeEnglish": "English",
+    "localePolish": "Polski",
+    "units": "Units",
+    "unitsMetric": "Metric",
+    "unitsImperial": "Imperial",
+    "currency": "Default currency",
+    "saving": "Saving…",
+    "saved": "Preferences saved"
+  },
+  "data": {
+    "title": "Your data",
+    "description": "Export or delete your personal data",
+    "export": "Export my data",
+    "exportDescription": "Download all your CarNotea data as a JSON file",
+    "delete": "Delete account",
+    "deleteDescription": "Permanently delete your account and all associated data",
+    "comingSoon": "Coming soon"
+  },
+  "loading": "Loading profile…",
+  "error": {
+    "loadFailed": "Failed to load profile. Please try again.",
+    "retry": "Retry",
+    "saveFailed": "Failed to save preferences. Please try again."
+  }
+}

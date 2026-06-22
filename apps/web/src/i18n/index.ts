@@ -11,6 +11,7 @@ import enHealth from '../locales/en/health.json';
 import enIssues from '../locales/en/issues.json';
 import enLanding from '../locales/en/landing.json';
 import enNav from '../locales/en/nav.json';
+import enProfile from '../locales/en/profile.json';
 import enReminders from '../locales/en/reminders.json';
 import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
@@ -21,6 +22,7 @@ import plHealth from '../locales/pl/health.json';
 import plIssues from '../locales/pl/issues.json';
 import plLanding from '../locales/pl/landing.json';
 import plNav from '../locales/pl/nav.json';
+import plProfile from '../locales/pl/profile.json';
 import plReminders from '../locales/pl/reminders.json';
 import plVehicles from '../locales/pl/vehicles.json';
 
@@ -38,6 +40,7 @@ export const resources = {
     landing: enLanding,
     auth: enAuth,
     nav: enNav,
+    profile: enProfile,
     reminders: enReminders,
     vehicles: enVehicles,
     'fuel-logs': enFuelLogs,
@@ -50,6 +53,7 @@ export const resources = {
     landing: plLanding,
     auth: plAuth,
     nav: plNav,
+    profile: plProfile,
     reminders: plReminders,
     vehicles: plVehicles,
     'fuel-logs': plFuelLogs,
@@ -74,6 +78,7 @@ void i18n
       'landing',
       'auth',
       'nav',
+      'profile',
       'reminders',
       'vehicles',
       'fuel-logs',
