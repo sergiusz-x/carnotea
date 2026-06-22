@@ -6,6 +6,7 @@ import { configureZodErrorMap } from '../lib/forms/zod-i18n';
 import enAuth from '../locales/en/auth.json';
 import enCommon from '../locales/en/common.json';
 import enForms from '../locales/en/forms.json';
+import enFuelLogs from '../locales/en/fuel-logs.json';
 import enHealth from '../locales/en/health.json';
 import enLanding from '../locales/en/landing.json';
 import enNav from '../locales/en/nav.json';
@@ -13,6 +14,7 @@ import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
 import plCommon from '../locales/pl/common.json';
 import plForms from '../locales/pl/forms.json';
+import plFuelLogs from '../locales/pl/fuel-logs.json';
 import plHealth from '../locales/pl/health.json';
 import plLanding from '../locales/pl/landing.json';
 import plNav from '../locales/pl/nav.json';
@@ -32,6 +34,7 @@ export const resources = {
     auth: enAuth,
     nav: enNav,
     vehicles: enVehicles,
+    'fuel-logs': enFuelLogs,
   },
   pl: {
     common: plCommon,
@@ -41,6 +44,7 @@ export const resources = {
     auth: plAuth,
     nav: plNav,
     vehicles: plVehicles,
+    'fuel-logs': plFuelLogs,
   },
 } as const;
 
@@ -54,7 +58,7 @@ void i18n
     // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
-    ns: ['common', 'forms', 'health', 'landing', 'auth', 'nav', 'vehicles'],
+    ns: ['common', 'forms', 'health', 'landing', 'auth', 'nav', 'vehicles', 'fuel-logs'],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
     // boundary is needed and tests render translated text immediately.

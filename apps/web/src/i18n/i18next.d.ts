@@ -3,6 +3,7 @@ import 'i18next';
 import type auth from '../locales/en/auth.json';
 import type common from '../locales/en/common.json';
 import type forms from '../locales/en/forms.json';
+import type fuelLogs from '../locales/en/fuel-logs.json';
 import type health from '../locales/en/health.json';
 import type landing from '../locales/en/landing.json';
 import type nav from '../locales/en/nav.json';
@@ -21,6 +22,7 @@ declare module 'i18next' {
       auth: typeof auth;
       nav: typeof nav;
       vehicles: typeof vehicles;
+      'fuel-logs': typeof fuelLogs;
     };
   }
 }

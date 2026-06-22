@@ -1,0 +1,56 @@
+{
+  "pageTitle": "Logi paliwa",
+  "addFuelLog": "Dodaj log paliwa",
+  "loading": "Ładowanie logów paliwa…",
+  "empty": {
+    "title": "Brak logów paliwa",
+    "description": "Dodaj pierwszy log paliwa, aby śledzić zużycie i koszty.",
+    "cta": "Dodaj log paliwa"
+  },
+  "error": {
+    "load": "Nie udało się załadować logów paliwa. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "fuelDate": "Data",
+    "mileage": "Przebieg (km)",
+    "liters": "Litry",
+    "pricePerLiter": "Cena za litr",
+    "totalCost": "Całkowity koszt",
+    "stationName": "Stacja",
+    "isFullTank": "Pełny zbiornik",
+    "consumptionHint": "Obliczone spalanie"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "liters": "{{liters}} L",
+    "price": "{{price}}/L",
+    "cost": "{{cost}}",
+    "fullTank": "Pełny zbiornik",
+    "partialFill": "Częściowe tankowanie",
+    "station": "{{station}}",
+    "noStation": "—"
+  },
+  "detail": {
+    "title": "Log paliwa z {{date}}",
+    "consumptionHint": "Spalanie: {{hint}} L/100km",
+    "backToFuelLogs": "Powrót do logów paliwa"
+  },
+  "create": {
+    "title": "Dodaj log paliwa",
+    "submit": "Zapisz log paliwa",
+    "success": "Log paliwa dodany pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj log paliwa",
+    "submit": "Zapisz zmiany",
+    "success": "Log paliwa zaktualizowany pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń log paliwa",
+    "confirmMessage": "Czy na pewno chcesz usunąć ten log paliwa z {{date}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "totalCostPreview": "Całkowity koszt (obliczony): {{cost}}"
+}
