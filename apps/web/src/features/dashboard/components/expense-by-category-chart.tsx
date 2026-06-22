@@ -73,8 +73,10 @@ export function ExpenseByCategoryChart() {
                 variant={CATEGORY_VARIANTS[item.category] ?? 'secondary'}
                 className="px-3 py-1.5 text-sm"
               >
-                {t(`expenses.categories.${item.category}`, { ns: 'expenses', defaultValue: item.category })}
-                {' '}
+                {t(`expenses.categories.${item.category}`, {
+                  ns: 'expenses',
+                  defaultValue: item.category,
+                })}{' '}
                 {t('expensesByCategory.total', {
                   count: item.count,
                   currency,
