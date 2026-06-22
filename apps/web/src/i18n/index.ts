@@ -66,7 +66,18 @@ void i18n
     // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
-    ns: ['common', 'forms', 'health', 'issues', 'landing', 'auth', 'nav', 'reminders', 'vehicles', 'fuel-logs'],
+    ns: [
+      'common',
+      'forms',
+      'health',
+      'issues',
+      'landing',
+      'auth',
+      'nav',
+      'reminders',
+      'vehicles',
+      'fuel-logs',
+    ],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
     // boundary is needed and tests render translated text immediately.

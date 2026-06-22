@@ -14,7 +14,7 @@ import {
 
 // Due-state badge key lookup — avoids template-literal type-widening issues with i18next.
 const dueStateKey = (ds: string): `dueState.${DueState}` =>
-  `dueState.${ds as DueState}` as `dueState.${DueState}`;
+  `dueState.${ds as DueState}`;
 
 const statusBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
   pending: 'default',
@@ -98,7 +98,9 @@ export function ReminderDetailPage() {
           >
             {t('detail.backToReminders')}
           </Link>
-          <h1 className="mt-1 text-2xl font-bold">{t('detail.title', { title: reminder.title })}</h1>
+          <h1 className="mt-1 text-2xl font-bold">
+            {t('detail.title', { title: reminder.title })}
+          </h1>
         </div>
         <div className="flex gap-2">
           {reminder.status === 'pending' && (
@@ -116,11 +118,7 @@ export function ReminderDetailPage() {
           >
             <Button variant="outline">{t('edit.submit')}</Button>
           </Link>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleteMutation.isPending}
-          >
+          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
             {t('delete.confirm')}
           </Button>
         </div>

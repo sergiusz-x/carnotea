@@ -94,9 +94,7 @@ export function ReminderEditPage() {
   });
   const { t } = useTranslation('reminders');
 
-  const { data: existingReminder } = useSuspenseQuery(
-    reminderQueryOptions(vehicleId, reminderId),
-  );
+  const { data: existingReminder } = useSuspenseQuery(reminderQueryOptions(vehicleId, reminderId));
 
   const updateMutation = useUpdateReminder(vehicleId, reminderId);
   const statusOptions = useStatusOptions();
