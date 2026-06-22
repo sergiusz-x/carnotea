@@ -11,6 +11,7 @@ import type landing from '../locales/en/landing.json';
 import type nav from '../locales/en/nav.json';
 import type profile from '../locales/en/profile.json';
 import type reminders from '../locales/en/reminders.json';
+import type service from '../locales/en/service.json';
 import type vehicles from '../locales/en/vehicles.json';
 
 // Make `t()` keys type-safe and namespace-aware. English is the source of truth
@@ -31,6 +32,7 @@ declare module 'i18next' {
       vehicles: typeof vehicles;
       'fuel-logs': typeof fuelLogs;
       charging: typeof charging;
+      service: typeof service;
     };
   }
 }

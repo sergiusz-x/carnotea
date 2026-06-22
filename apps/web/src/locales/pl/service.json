@@ -1,0 +1,66 @@
+{
+  "pageTitle": "Wpisy serwisowe",
+  "addService": "Dodaj wpis serwisowy",
+  "loading": "Ładowanie wpisów serwisowych…",
+  "empty": {
+    "title": "Brak wpisów serwisowych",
+    "description": "Dodaj pierwszy wpis serwisowy, aby śledzić przeglądy i naprawy.",
+    "cta": "Dodaj wpis serwisowy"
+  },
+  "error": {
+    "load": "Nie udało się załadować wpisów serwisowych. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "serviceDate": "Data serwisu",
+    "mileage": "Przebieg (km)",
+    "title": "Tytuł",
+    "description": "Opis",
+    "laborCost": "Koszt robocizny",
+    "totalCost": "Całkowity koszt",
+    "workshopName": "Warsztat",
+    "parts": "Części",
+    "partName": "Nazwa części",
+    "manufacturer": "Producent",
+    "partNumber": "Numer części",
+    "quantity": "Ilość",
+    "unitPrice": "Cena jednostkowa",
+    "totalPrice": "Cena całkowita"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "cost": "{{cost}}",
+    "workshop": "{{workshop}}",
+    "noWorkshop": "—",
+    "partCount": "{{count}} szt.",
+    "noParts": "Brak części"
+  },
+  "detail": {
+    "title": "Serwis: {{title}}",
+    "backToServices": "Powrót do wpisów serwisowych",
+    "description": "Opis",
+    "noDescription": "Brak opisu"
+  },
+  "create": {
+    "title": "Dodaj wpis serwisowy",
+    "submit": "Zapisz wpis serwisowy",
+    "success": "Wpis serwisowy dodany pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj wpis serwisowy",
+    "submit": "Zapisz zmiany",
+    "success": "Wpis serwisowy zaktualizowany pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń wpis serwisowy",
+    "confirmMessage": "Czy na pewno chcesz usunąć ten wpis serwisowy: {{title}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "form": {
+    "addPart": "Dodaj część",
+    "removePart": "Usuń",
+    "partIndex": "Część #{{index}}",
+    "totalCostPreview": "Całkowity koszt (robocizna + części): {{cost}}"
+  }
+}
