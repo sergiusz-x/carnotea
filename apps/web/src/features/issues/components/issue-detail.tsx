@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
 import { issueQueryOptions, useDeleteIssue } from '@/features/issues/queries';
 
 const statusBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
@@ -88,15 +87,10 @@ export function IssueDetailPage() {
           >
             {t('detail.backToIssues')}
           </Link>
-          <h1 className="mt-1 text-2xl font-bold">
-            {t('detail.title', { title: issue.title })}
-          </h1>
+          <h1 className="mt-1 text-2xl font-bold">{t('detail.title', { title: issue.title })}</h1>
         </div>
         <div className="flex gap-2">
-          <Link
-            to="/vehicles/$vehicleId/issues/$issueId/edit"
-            params={{ vehicleId, issueId }}
-          >
+          <Link to="/vehicles/$vehicleId/issues/$issueId/edit" params={{ vehicleId, issueId }}>
             <Button variant="outline">{t('edit.submit')}</Button>
           </Link>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>

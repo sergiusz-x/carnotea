@@ -49,7 +49,9 @@ function ResolvedDateField({ form }: { form: ReturnType<typeof useZodForm> }) {
   const selectedStatus = useWatch({ control: form.control, name: 'status' }) as string | undefined;
   const showResolvedDate = selectedStatus === 'resolved';
 
-  const reportedDate = useWatch({ control: form.control, name: 'reportedDate' }) as string | undefined;
+  const reportedDate = useWatch({ control: form.control, name: 'reportedDate' }) as
+    | string
+    | undefined;
 
   return (
     <>
@@ -196,32 +198,16 @@ function FormShell({
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
-        <TextField
-          name="title"
-          label={t('fields.title')}
-          placeholder={t('fields.title')}
-        />
+        <TextField name="title" label={t('fields.title')} placeholder={t('fields.title')} />
         <TextField
           name="description"
           label={t('fields.description')}
           placeholder={t('fields.description')}
         />
-        <DateField
-          name="reportedDate"
-          label={t('fields.reportedDate')}
-          disabled={isEditing}
-        />
-        <SelectField
-          name="status"
-          label={t('fields.status')}
-          options={statusOptions}
-        />
+        <DateField name="reportedDate" label={t('fields.reportedDate')} disabled={isEditing} />
+        <SelectField name="status" label={t('fields.status')} options={statusOptions} />
         <ResolvedDateField form={form} />
-        <SelectField
-          name="priority"
-          label={t('fields.priority')}
-          options={priorityOptions}
-        />
+        <SelectField name="priority" label={t('fields.priority')} options={priorityOptions} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
     </div>

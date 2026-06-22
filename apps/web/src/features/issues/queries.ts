@@ -21,9 +21,10 @@ export const issueKeys = {
 // ─── Fetch functions ───────────────────────────────────────────────────────────
 
 async function fetchIssues(vehicleId: string, status?: string) {
-  const searchParams = status && status !== 'all' && ISSUE_STATUS_CODES.includes(status as IssueStatusCode)
-    ? `?status=${encodeURIComponent(status)}`
-    : '';
+  const searchParams =
+    status && status !== 'all' && ISSUE_STATUS_CODES.includes(status as IssueStatusCode)
+      ? `?status=${encodeURIComponent(status)}`
+      : '';
 
   const { data } = await apiClient.GET(
     `/api/vehicles/{vehicleId}/issues${searchParams}` as '/api/vehicles/{vehicleId}/issues',
@@ -33,10 +34,7 @@ async function fetchIssues(vehicleId: string, status?: string) {
 }
 
 async function fetchIssue(vehicleId: string, id: string) {
-  const { data } = await apiClient.GET(
-    '/api/vehicles/{vehicleId}/issues/{id}',
-    { vehicleId, id },
-  );
+  const { data } = await apiClient.GET('/api/vehicles/{vehicleId}/issues/{id}', { vehicleId, id });
   return data;
 }
 
