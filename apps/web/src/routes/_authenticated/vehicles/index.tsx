@@ -9,6 +9,9 @@ import { authenticatedLayoutRoute } from '../../_authenticated';
 import { createChargingEditRoute } from './$vehicleId/charging/$sessionId/edit';
 import { createChargingListRoute } from './$vehicleId/charging/index';
 import { createChargingNewRoute } from './$vehicleId/charging/new';
+import { createExpenseEditRoute } from './$vehicleId/expenses/$expenseId/edit';
+import { createExpenseListRoute } from './$vehicleId/expenses/index';
+import { createExpenseNewRoute } from './$vehicleId/expenses/new';
 import { createFuelLogRoutes } from './$vehicleId/fuel/$fuelId/index';
 import { createFuelListRoute } from './$vehicleId/fuel/index';
 import { createFuelNewRoute } from './$vehicleId/fuel/new';
@@ -83,6 +86,12 @@ const chargingListRoute = createChargingListRoute(vehicleDetailRoute);
 const chargingNewRoute = createChargingNewRoute(vehicleDetailRoute);
 const chargingEditRoute = createChargingEditRoute(vehicleDetailRoute);
 
+// ─── Expense routes (factories, no circular import) ──────────────────────────
+
+const expenseListRoute = createExpenseListRoute(vehicleDetailRoute);
+const expenseNewRoute = createExpenseNewRoute(vehicleDetailRoute);
+const expenseEditRoute = createExpenseEditRoute(vehicleDetailRoute);
+
 // ─── Service routes (factories, no circular import) ──────────────────────────
 
 const serviceListRoute = createServiceListRoute(vehicleDetailRoute);
@@ -110,6 +119,9 @@ export const vehiclesRoute = vehicleParentRoute.addChildren([
     chargingListRoute,
     chargingNewRoute,
     chargingEditRoute,
+    expenseListRoute,
+    expenseNewRoute,
+    expenseEditRoute,
     serviceListRoute,
     serviceNewRoute,
     serviceEditRoute,

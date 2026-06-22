@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import enAuth from './en/auth.json';
+import enExpenses from './en/expenses.json';
 import enFuelLogs from './en/fuel-logs.json';
 import enNav from './en/nav.json';
 import plAuth from './pl/auth.json';
+import plExpenses from './pl/expenses.json';
 import plFuelLogs from './pl/fuel-logs.json';
 import plNav from './pl/nav.json';
 
@@ -36,6 +38,14 @@ describe('i18n parity — fuel-logs namespace', () => {
   it('pl and en have the same keys', () => {
     const plKeys = flatKeys(plFuelLogs).sort();
     const enKeys = flatKeys(enFuelLogs).sort();
+    expect(plKeys).toEqual(enKeys);
+  });
+});
+
+describe('i18n parity — expenses namespace', () => {
+  it('pl and en have the same keys', () => {
+    const plKeys = flatKeys(plExpenses).sort();
+    const enKeys = flatKeys(enExpenses).sort();
     expect(plKeys).toEqual(enKeys);
   });
 });

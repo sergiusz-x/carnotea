@@ -1,0 +1,63 @@
+{
+  "pageTitle": "Expenses",
+  "addExpense": "Add expense",
+  "loading": "Loading expenses…",
+  "empty": {
+    "title": "No expenses yet",
+    "description": "Add your first expense to track all costs associated with this vehicle.",
+    "cta": "Add expense"
+  },
+  "error": {
+    "load": "Failed to load expenses. Please try again.",
+    "retry": "Retry"
+  },
+  "fields": {
+    "category": "Category",
+    "expenseDate": "Date",
+    "amount": "Amount",
+    "description": "Description",
+    "sourceType": "Source"
+  },
+  "list": {
+    "amount": "{{amount}}",
+    "autoSynced": "Auto-synced",
+    "manual": "Manual",
+    "noDescription": "—",
+    "unknownSource": "Unknown"
+  },
+  "detail": {
+    "title": "Expense from {{date}}",
+    "backToExpenses": "Back to expenses"
+  },
+  "create": {
+    "title": "Add expense",
+    "submit": "Save expense",
+    "success": "Expense added successfully."
+  },
+  "edit": {
+    "title": "Edit expense",
+    "submit": "Save changes",
+    "success": "Expense updated successfully."
+  },
+  "delete": {
+    "confirmTitle": "Delete expense",
+    "confirmMessage": "Are you sure you want to delete this expense from {{date}}?",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "categories": {
+    "fuel": "Fuel",
+    "electricity": "Electricity",
+    "service": "Service",
+    "parts": "Parts",
+    "insurance": "Insurance",
+    "inspection": "Inspection",
+    "other": "Other"
+  },
+  "sources": {
+    "manual": "Manual",
+    "fuel_log": "Fuel log",
+    "service_record": "Service record",
+    "charging_session": "Charging session"
+  }
+}
