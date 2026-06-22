@@ -10,4 +10,5 @@ export * from './service-part.js';
 export * from './issue.js';
 export * from './expense.js';
 export * from './reminder.js';
+export * from './dashboard.js';
 export * from './user-profile.js';
