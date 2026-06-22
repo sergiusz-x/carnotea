@@ -1,0 +1,40 @@
+{
+  "title": "Profil",
+  "description": "Zarządzaj swoim kontem i preferencjami",
+  "account": {
+    "title": "Konto",
+    "description": "Twoje dane osobowe",
+    "firstName": "Imię",
+    "lastName": "Nazwisko",
+    "email": "E-mail",
+    "memberSince": "Użytkownik od"
+  },
+  "preferences": {
+    "title": "Preferencje",
+    "description": "Dostosuj sposób wyświetlania danych w CarNotea",
+    "locale": "Język",
+    "localeEnglish": "English",
+    "localePolish": "Polski",
+    "units": "Jednostki",
+    "unitsMetric": "Metryczne",
+    "unitsImperial": "Imperialne",
+    "currency": "Domyślna waluta",
+    "saving": "Zapisywanie…",
+    "saved": "Preferencje zapisane"
+  },
+  "data": {
+    "title": "Twoje dane",
+    "description": "Eksportuj lub usuń swoje dane osobowe",
+    "export": "Eksportuj dane",
+    "exportDescription": "Pobierz wszystkie dane z CarNotea jako plik JSON",
+    "delete": "Usuń konto",
+    "deleteDescription": "Trwale usuń konto i wszystkie powiązane dane",
+    "comingSoon": "Wkrótce"
+  },
+  "loading": "Ładowanie profilu…",
+  "error": {
+    "loadFailed": "Nie udało się załadować profilu. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie",
+    "saveFailed": "Nie udało się zapisać preferencji. Spróbuj ponownie."
+  }
+}
