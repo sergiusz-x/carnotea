@@ -6,6 +6,7 @@ import type forms from '../locales/en/forms.json';
 import type health from '../locales/en/health.json';
 import type landing from '../locales/en/landing.json';
 import type nav from '../locales/en/nav.json';
+import type vehicles from '../locales/en/vehicles.json';
 
 // Make `t()` keys type-safe and namespace-aware. English is the source of truth
 // for available keys; `pl` must mirror the same shape (ADR-0007).
@@ -19,6 +20,7 @@ declare module 'i18next' {
       landing: typeof landing;
       auth: typeof auth;
       nav: typeof nav;
+      vehicles: typeof vehicles;
     };
   }
 }

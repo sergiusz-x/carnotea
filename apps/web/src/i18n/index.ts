@@ -9,12 +9,14 @@ import enForms from '../locales/en/forms.json';
 import enHealth from '../locales/en/health.json';
 import enLanding from '../locales/en/landing.json';
 import enNav from '../locales/en/nav.json';
+import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
 import plCommon from '../locales/pl/common.json';
 import plForms from '../locales/pl/forms.json';
 import plHealth from '../locales/pl/health.json';
 import plLanding from '../locales/pl/landing.json';
 import plNav from '../locales/pl/nav.json';
+import plVehicles from '../locales/pl/vehicles.json';
 
 export const SUPPORTED_LANGUAGES = ['pl', 'en'] as const;
 export type SupportedLanguage = (typeof SUPPORTED_LANGUAGES)[number];
@@ -29,6 +31,7 @@ export const resources = {
     landing: enLanding,
     auth: enAuth,
     nav: enNav,
+    vehicles: enVehicles,
   },
   pl: {
     common: plCommon,
@@ -37,6 +40,7 @@ export const resources = {
     landing: plLanding,
     auth: plAuth,
     nav: plNav,
+    vehicles: plVehicles,
   },
 } as const;
 
@@ -50,7 +54,7 @@ void i18n
     // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
-    ns: ['common', 'forms', 'health', 'landing', 'auth', 'nav'],
+    ns: ['common', 'forms', 'health', 'landing', 'auth', 'nav', 'vehicles'],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense
     // boundary is needed and tests render translated text immediately.
