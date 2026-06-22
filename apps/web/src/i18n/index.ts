@@ -6,6 +6,7 @@ import { configureZodErrorMap } from '../lib/forms/zod-i18n';
 import enAuth from '../locales/en/auth.json';
 import enCharging from '../locales/en/charging.json';
 import enCommon from '../locales/en/common.json';
+import enDashboard from '../locales/en/dashboard.json';
 import enExpenses from '../locales/en/expenses.json';
 import enForms from '../locales/en/forms.json';
 import enFuelLogs from '../locales/en/fuel-logs.json';
@@ -20,6 +21,7 @@ import enVehicles from '../locales/en/vehicles.json';
 import plAuth from '../locales/pl/auth.json';
 import plCharging from '../locales/pl/charging.json';
 import plCommon from '../locales/pl/common.json';
+import plDashboard from '../locales/pl/dashboard.json';
 import plExpenses from '../locales/pl/expenses.json';
 import plForms from '../locales/pl/forms.json';
 import plFuelLogs from '../locales/pl/fuel-logs.json';
@@ -40,6 +42,7 @@ export const DEFAULT_NS = 'common';
 export const resources = {
   en: {
     common: enCommon,
+    dashboard: enDashboard,
     forms: enForms,
     health: enHealth,
     issues: enIssues,
@@ -56,6 +59,7 @@ export const resources = {
   },
   pl: {
     common: plCommon,
+    dashboard: plDashboard,
     forms: plForms,
     health: plHealth,
     issues: plIssues,
@@ -84,6 +88,7 @@ void i18n
     defaultNS: DEFAULT_NS,
     ns: [
       'common',
+      'dashboard',
       'forms',
       'health',
       'issues',

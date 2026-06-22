@@ -3,6 +3,7 @@ import 'i18next';
 import type auth from '../locales/en/auth.json';
 import type charging from '../locales/en/charging.json';
 import type common from '../locales/en/common.json';
+import type dashboard from '../locales/en/dashboard.json';
 import type expenses from '../locales/en/expenses.json';
 import type forms from '../locales/en/forms.json';
 import type fuelLogs from '../locales/en/fuel-logs.json';
@@ -22,6 +23,7 @@ declare module 'i18next' {
     defaultNS: 'common';
     resources: {
       common: typeof common;
+      dashboard: typeof dashboard;
       forms: typeof forms;
       health: typeof health;
       issues: typeof issues;

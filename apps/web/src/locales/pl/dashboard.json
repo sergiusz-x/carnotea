@@ -1,0 +1,36 @@
+{
+  "pageTitle": "Panel główny",
+  "loading": "Ładowanie panelu…",
+  "error": {
+    "load": "Nie udało się załadować danych panelu. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "overview": {
+    "totalVehicles": "Liczba pojazdów",
+    "totalExpenses": "Łączne wydatki",
+    "totalFuelCost": "Koszt paliwa",
+    "avgFuelConsumption": "Śr. zużycie paliwa",
+    "unit": "{{currency}} {{value}}",
+    "consumptionUnit": "{{value}} L/100km",
+    "noData": "—"
+  },
+  "expensesByCategory": {
+    "title": "Wydatki według kategorii",
+    "total": "{{count}} wydatek ({{currency}} {{total}})",
+    "total_plural": "{{count}} wydatki ({{currency}} {{total}})"
+  },
+  "monthlySpend": {
+    "title": "Miesięczne wydatki",
+    "month": "{{year}}-{{month}}",
+    "total": "{{currency}} {{total}}"
+  },
+  "upcomingReminders": {
+    "title": "Nadchodzące przypomnienia",
+    "empty": "Brak nadchodzących przypomnień",
+    "dueDate": "Termin: {{date}}",
+    "dueMileage": "Przebieg: {{value}} km",
+    "overdue": "Po terminie",
+    "dueSoon": "Wkrótce",
+    "viewVehicle": "Zobacz pojazd"
+  }
+}
