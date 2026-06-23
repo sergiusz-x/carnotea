@@ -20,7 +20,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./tooling/github/setup
       - run: pnpm lint
       - run: pnpm lint:ws
@@ -29,14 +29,14 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./tooling/github/setup
       - run: pnpm format:check
 
   typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./tooling/github/setup
       - run: pnpm typecheck
 
@@ -59,7 +59,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://carnotea:postgres@localhost:5432/carnotea
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./tooling/github/setup
       - run: cp .env.example .env
       - run: pnpm db:migrate
@@ -68,7 +68,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: ./tooling/github/setup
       - run: cp .env.example .env
       - run: pnpm build
