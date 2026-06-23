@@ -1,0 +1,55 @@
+# =============================================================================
+# Root .dockerignore for production Docker images
+# The build context is the repo root; this file keeps it small.
+# =============================================================================
+
+# Dependencies — never ship host node_modules
+node_modules
+.pnpm-store
+pnpm-store
+
+# Build artifacts
+dist
+.cache
+coverage
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Local development
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+
+# IDE and OS files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Tests and test fixtures
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+test-results
+__snapshots__
+
+# Documentation tickets
+tickets
+
+# Agent data
+.agent-browser
+
+# Dockerfiles and dockerignores (each app dir has its own)
+# Keep Dockerfile and .dockerignore in the build to let Docker read them
+# but exclude other Docker files from the context
+docker-compose*.yml
+docker-compose*.yaml

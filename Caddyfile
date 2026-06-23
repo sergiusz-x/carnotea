@@ -1,0 +1,51 @@
+# =============================================================================
+# Caddyfile — CarNotea production reverse proxy with auto TLS
+# =============================================================================
+# Replace DOMAIN_PLACEHOLDER with your actual domain before deploying.
+# Caddy automatically obtains and renews Let's Encrypt certificates.
+#
+# Reference: https://caddyserver.com/docs/
+# =============================================================================
+
+DOMAIN_PLACEHOLDER {
+    # Log all requests
+    log {
+        output file /data/caddy/logs/access.log
+    }
+
+    # ── Web (SPA) ────────────────────────────────────────────────────────────
+    @static {
+        path /assets/*
+    }
+    handle @static {
+        root * /srv/web
+        file_server
+        header Cache-Control "public, immutable, max-age=31536000"
+    }
+
+    handle {
+        root * /srv/web
+        try_files {path} /index.html
+        file_server
+    }
+
+    # ── API reverse proxy ────────────────────────────────────────────────────
+    handle_path /api/* {
+        reverse_proxy api:3001 {
+            # Forward the original host header
+            header_up Host {host}
+            # Forward the real IP
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    # ── Health check passthrough ─────────────────────────────────────────────
+    handle /healthz {
+        reverse_proxy api:3001
+    }
+    handle /readyz {
+        reverse_proxy api:3001
+    }
+}

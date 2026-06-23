@@ -1,0 +1,20 @@
+# ---------------------------------------------------------------------------
+# .dockerignore — keep the build context small and avoid shipping junk
+# ---------------------------------------------------------------------------
+.git
+.gitignore
+node_modules
+dist
+.cache
+coverage
+*.test.ts
+*.spec.ts
+*.test.tsx
+*.spec.tsx
+vitest.config.ts
+.eslintrc*
+.prettierrc*
+tsconfig*.json
+nest-cli.json
+README.md
+AGENTS.md

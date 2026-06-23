@@ -1,0 +1,98 @@
+# =============================================================================
+# CarNotea — Production Docker Compose stack
+# =============================================================================
+# Bring up on a VPS:
+#   docker compose -f docker-compose.prod.yml --env-file .env up -d
+#
+# Only the reverse proxy (Caddy) exposes ports 80/443 to the host.
+# All secrets/config come from environment (see .env.example).
+# =============================================================================
+
+name: carnotea-prod
+
+services:
+  # ── Database ──────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: carnotea-prod-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?err}
+      POSTGRES_USER: ${POSTGRES_USER:?err}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?err}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "${POSTGRES_USER}" -d "${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - carnotea-net
+    # No host ports exposed — only accessible via Docker network
+
+  # ── API ───────────────────────────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: carnotea-prod-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      API_HOST: 0.0.0.0
+      DATABASE_URL: ${DATABASE_URL:?err}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?err}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?err}
+    networks:
+      - carnotea-net
+    # No host ports exposed — accessed via Caddy reverse proxy
+
+  # ── Web (static SPA served by nginx) ──────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-/api}
+    container_name: carnotea-prod-web
+    restart: unless-stopped
+    networks:
+      - carnotea-net
+    # No host ports exposed — served by Caddy reverse proxy
+
+  # ── Reverse proxy (Caddy) with auto TLS ───────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: carnotea-prod-caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      # The domain is passed to the Caddyfile template via the {env.DOMAIN}
+      # directive, or you can hardcode it directly in Caddyfile.
+      # DOMAIN: ${DOMAIN:?err}
+    depends_on:
+      - api
+      - web
+    networks:
+      - carnotea-net
+
+networks:
+  carnotea-net:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+  caddy_data:
+  caddy_config:
