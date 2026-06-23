@@ -82,6 +82,10 @@ catalog:
   '@swc/core': ^1.15.41
   # Auth (apps/api) — better-auth, ADR-0004
   better-auth: ^1.6.20
+  # Security — T-049
+  '@fastify/helmet': ^13.0.2
+  '@fastify/rate-limit': ^11.0.0
+  '@fastify/cors': ^11.2.0
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.

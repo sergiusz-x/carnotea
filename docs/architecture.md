@@ -155,6 +155,36 @@ The development compose file (`docker-compose.yml` in the repo root) currently
 only starts Postgres. The production compose lives separately - that ticket
 comes later.
 
+## Security hardening
+
+The API applies a layered security posture driven by environment variables, so
+dev and prod differ by config only:
+
+- **HTTP security headers** — `@fastify/helmet` sets HSTS (1 year for prod),
+  `X-Content-Type-Options: nosniff`, frame-ancestors, a strict referrer policy,
+  and a CSP appropriate for the app. All headers are applied in
+  `apps/api/src/main.ts`.
+- **CORS** — `@fastify/cors` is configured with an environment-controlled
+  allow-list (`CORS_ORIGINS`). In development it's relaxed for localhost; in
+  production only the known web-app origin is allowed. The list explicitly
+  permits the `traceparent` and `tracestate` headers so OpenTelemetry
+  propagation (T-018) works cross-origin.
+- **Rate limiting** — `@fastify/rate-limit` enforces a global cap
+  (`RATE_LIMIT_MAX`, default 100) per IP per window, with a stricter limit on
+  auth endpoints (`RATE_LIMIT_AUTH_MAX`, default 10). The window is configurable
+  via `RATE_LIMIT_WINDOW_MS` (default 60 s).
+- **Body-size limit** — Oversized request payloads are rejected early via
+  Fastify's `bodyLimit` option (default 1 MB, configurable via `BODY_LIMIT`).
+- **Hardened auth cookies** — better-auth session cookies use `Secure`,
+  `HttpOnly`, and `SameSite=Lax` in production, scoped to the API path.
+- **Dependency audit** — `pnpm audit --prod --audit-level=high` runs in CI as
+  a required gate (see `.github/workflows/ci.yml`). Accepted advisories must be
+  waived by a documented follow-up ticket or dependency override, not ignored in
+  the workflow.
+
+Refer to `apps/api/src/main.ts`, `apps/api/src/auth/auth.ts`,
+`apps/api/src/config/env.ts`, and `.env.example` for the exact defaults.
+
 ## What's not in scope (yet)
 
 - Background workers / queues.
