@@ -223,3 +223,21 @@ The installable PWA baseline landed in T-012:
 - Service worker is registered by `vite-plugin-pwa` (`registerType: 'autoUpdate'`, `workbox: { runtimeCaching: [] }`).
 
 **Do not add offline caching, background sync, or push notifications in this ticket — those live behind their own ADRs and tickets (see T-054, T-055).**
+
+## Observability (T-018)
+
+OpenTelemetry web tracing is initialised in `src/otel.ts` and imported as the
+very first line of `main.tsx`. This ensures fetch / XHR instrumentation is in
+place before any application code runs.
+
+- **SDK:** `@opentelemetry/sdk-trace-web` with `getWebAutoInstrumentations`
+  (document-load, fetch, XHR).
+- **Trace propagation:** the `W3CTraceContextPropagator` automatically adds
+  `traceparent` and `tracestate` headers to every fetch / XHR request to the
+  API. The API already allows these headers in CORS (T-049).
+- **Default-off:** when `VITE_OTEL_EXPORTER_OTLP_ENDPOINT` is not set the
+  entire `if` block compiles to a dead branch that Vite eliminates from the
+  production bundle — zero cost when disabled.
+- **Exporter:** OTLP HTTP exporter via `VITE_OTEL_EXPORTER_OTLP_ENDPOINT`.
+
+See [ADR-0013](../../docs/adr/0013-opentelemetry-observability.md).

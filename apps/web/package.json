@@ -18,6 +18,13 @@
   "dependencies": {
     "@carnotea/shared": "workspace:*",
     "@hookform/resolvers": "catalog:",
+    "@opentelemetry/auto-instrumentations-web": "^0.64.0",
+    "@opentelemetry/core": "^2.8.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.219.0",
+    "@opentelemetry/instrumentation": "^0.219.0",
+    "@opentelemetry/resources": "^2.8.0",
+    "@opentelemetry/sdk-trace-web": "^2.8.0",
+    "@opentelemetry/semantic-conventions": "^1.41.1",
     "@radix-ui/react-label": "catalog:",
     "@radix-ui/react-select": "^2.3.1",
     "@radix-ui/react-slot": "catalog:",

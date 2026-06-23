@@ -15,6 +15,15 @@ export const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   // Body-size limit in bytes (1 MB default)
   BODY_LIMIT: z.coerce.number().int().positive().default(1_048_576),
+
+  // ── Observability: OpenTelemetry (all optional — absent → tracing disabled) ──
+  /** OTLP endpoint for exporting traces. When unset → tracing is a no-op. */
+  // eslint-disable-next-line @typescript-eslint/no-deprecated -- z.url() returns URL, breaking string contract
+  OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
+  /** Overrides `service.name` on the tracer resource (default: carnotea-api). */
+  OTEL_SERVICE_NAME: z.string().optional(),
+  /** Extra comma-separated key=value resource attributes. */
+  OTEL_RESOURCE_ATTRIBUTES: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
