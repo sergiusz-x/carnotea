@@ -39,13 +39,14 @@ live in the linked documents.
 | ------------------------------ | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | NestJS                         | HTTP framework, DI, module structure  | `apps/api`; T-004                                                                                                                  |
 | Fastify adapter                | Faster HTTP layer under NestJS        | adopted in T-004                                                                                                                   |
-| SWC                            | Compiler for `apps/api` (dev/build)   | [ADR-0010](./adr/0010-api-compiler-swc.md); tests transform via native Oxc, [ADR-0011](./adr/0011-vite8-oxc-api-test-transform.md) |
-| @nestjs/config                 | Env loading, validated by Zod         | `src/config/env.ts`                                                                                                                |
-| Zod                            | Validation, schema source             | [ADR-0003](./adr/0003-rest-openapi-zod.md)                                                                                         |
-| @asteasolutions/zod-to-openapi | Generate OpenAPI 3.1 from Zod schemas | T-005; ADR-0003                                                                                                                    |
-| better-auth                    | Authentication                        | [ADR-0004](./adr/0004-better-auth.md)                                                                                              |
-| nestjs-pino / pino             | Structured logging                    | `pino-pretty` in non-prod                                                                                                          |
-| @carnotea/db                   | Drizzle client + schema               | workspace package                                                                                                                  |
+|| SWC                            | Compiler for `apps/api` (dev/build)   | [ADR-0010](./adr/0010-api-compiler-swc.md); tests transform via native Oxc, [ADR-0011](./adr/0011-vite8-oxc-api-test-transform.md) |
+|| @nestjs/config                 | Env loading, validated by Zod         | `src/config/env.ts`                                                                                                                |
+|| Zod                            | Validation, schema source             | [ADR-0003](./adr/0003-rest-openapi-zod.md)                                                                                         |
+|| @asteasolutions/zod-to-openapi | Generate OpenAPI 3.1 from Zod schemas | T-005; ADR-0003                                                                                                                    |
+|| better-auth                    | Authentication                        | [ADR-0004](./adr/0004-better-auth.md)                                                                                              |
+|| nestjs-pino / pino             | Structured logging                    | `pino-pretty` in non-prod                                                                                                          |
+|| OpenTelemetry (Node SDK)       | Distributed tracing                   | [ADR-0013](./adr/0013-opentelemetry-observability.md); preloaded via `--import`                                                    |
+|| @carnotea/db                   | Drizzle client + schema               | workspace package                                                                                                                  |
 | @carnotea/shared               | Zod schemas, shared types             | workspace package                                                                                                                  |
 
 ## Frontend (apps/web)
