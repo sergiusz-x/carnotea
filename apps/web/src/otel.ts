@@ -24,8 +24,7 @@ import {
 
 const otelExporterEndpoint =
   typeof import.meta.env !== 'undefined'
-    ? (import.meta.env as Record<string, string | undefined>)
-        .VITE_OTEL_EXPORTER_OTLP_ENDPOINT
+    ? (import.meta.env as Record<string, string | undefined>).VITE_OTEL_EXPORTER_OTLP_ENDPOINT
     : undefined;
 
 if (otelExporterEndpoint) {

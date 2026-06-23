@@ -114,6 +114,7 @@ can be added per-feature as-needed later.
 
 Datadog APM is a commercial product with excellent Node.js support. It is
 rejected because:
+
 - It ties us to Datadog's agent and format.
 - The team has not decided on an observability backend yet.
 - OTel can be sent to Datadog via the OTLP endpoint anyway (vendor-neutral).

@@ -102,7 +102,7 @@ this:
 - **Identity = ownership id.** `vehicle_diary.users.id` IS the better-auth user id
   (same UUID — see `packages/db/AGENTS.md`), so `request.user.id` is the value to
   scope queries by; no profile lookup is needed to get the owner id.
-better-auth's `databaseHooks.user.create.after` hook
+  better-auth's `databaseHooks.user.create.after` hook
   mirrors each new auth user into the domain `users` row (idempotent). `GET /api/me`
   returns that profile.
 - **Env:** `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` are required (see
@@ -115,15 +115,15 @@ via `--import ./dist/instrumentation.js` **before** NestJS boot. This ensures
 auto-instrumentation wraps HTTP, Fastify, and pg modules before any import.
 
 - **SDK:** `@opentelemetry/sdk-node` with `getNodeAutoInstrumentations` (HTTP,
- pg) plus separate `FastifyInstrumentation` and `PinoInstrumentation` for
- Fastify-specific spans and log↔trace correlation.
+  pg) plus separate `FastifyInstrumentation` and `PinoInstrumentation` for
+  Fastify-specific spans and log↔trace correlation.
 - **Log correlation:** every pino log line includes `trace_id` and `span_id`
- automatically via `PinoInstrumentation`.
+  automatically via `PinoInstrumentation`.
 - **Default-off:** all `OTEL_*` env vars are optional in the Zod schema
- (`src/config/env.ts`). When `OTEL_EXPORTER_OTLP_ENDPOINT` is absent the SDK
- is never initialised — zero boot cost.
+  (`src/config/env.ts`). When `OTEL_EXPORTER_OTLP_ENDPOINT` is absent the SDK
+  is never initialised — zero boot cost.
 - **Exporter:** standard OTLP HTTP exporter. Set `OTEL_EXPORTER_OTLP_ENDPOINT`
- to your OTel collector or vendor endpoint.
+  to your OTel collector or vendor endpoint.
 - **Resource:** `service.name=carnotea-api` (overridable via `OTEL_SERVICE_NAME`).
 - **Graceful shutdown:** SDK shutdown on SIGTERM / SIGINT.
 

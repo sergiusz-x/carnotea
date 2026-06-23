@@ -38,15 +38,12 @@ if (!otelExporterEndpoint) {
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
   }
 } else {
-  const serviceName =
-    process.env.OTEL_SERVICE_NAME || 'carnotea-api';
+  const serviceName = process.env.OTEL_SERVICE_NAME || 'carnotea-api';
 
   const attrs: Record<string, string> = {
     [SEMRESATTRS_SERVICE_NAME]: serviceName,
-    [SEMRESATTRS_SERVICE_VERSION]:
-      process.env.npm_package_version || '0.0.0',
-    [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]:
-      process.env.NODE_ENV || 'development',
+    [SEMRESATTRS_SERVICE_VERSION]: process.env.npm_package_version || '0.0.0',
+    [SEMRESATTRS_DEPLOYMENT_ENVIRONMENT]: process.env.NODE_ENV || 'development',
   };
 
   // Parse OTEL_RESOURCE_ATTRIBUTES (comma-separated key=value pairs).
