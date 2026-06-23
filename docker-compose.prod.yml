@@ -1,0 +1,104 @@
+# =============================================================================
+# CarNotea — Production docker compose stack
+#
+# Bring up on a fresh VPS:
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Requires a .env file (or env vars) with at minimum:
+#   DOMAIN, DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL
+#
+# See docs/deployment.md for the full walk-through.
+# =============================================================================
+
+name: carnotea-prod
+
+services:
+  # ---- PostgreSQL 16 --------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: carnotea-prod-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-carnotea}
+      POSTGRES_USER: ${POSTGRES_USER:-carnotea}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?error}
+      POSTGRES_PORT: 5432
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - carnotea-prod
+    expose:
+      - 5432
+
+  # ---- API (NestJS / Fastify) -----------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: carnotea-prod-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      API_HOST: 0.0.0.0
+      DATABASE_URL: ${DATABASE_URL:?error}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?error}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?error}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - carnotea-prod
+    expose:
+      - 3001
+
+  # ---- Web (Nginx static server) --------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: carnotea-prod-web
+    restart: unless-stopped
+    networks:
+      - carnotea-prod
+    expose:
+      - 80
+
+  # ---- Reverse proxy (Caddy + automatic TLS) --------------------------------
+  caddy:
+    image: caddy:2-alpine
+    container_name: carnotea-prod-caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      DOMAIN: ${DOMAIN:?error}
+    depends_on:
+      - api
+      - web
+    networks:
+      - carnotea-prod
+
+networks:
+  carnotea-prod:
+    name: carnotea-prod
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+    name: carnotea-prod-postgres-data
+  caddy_data:
+    name: carnotea-prod-caddy-data
+  caddy_config:
+    name: carnotea-prod-caddy-config
