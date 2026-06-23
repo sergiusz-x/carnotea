@@ -1,14 +1,14 @@
 ---
 id: T-045
 title: Production container images + docker compose with TLS reverse proxy
-status: ready
+status: done
 priority: high
-owner: ~
+owner: codex
 dependencies: [T-004, T-007]
 labels: [ops, infra]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-23
+closed_at: 2026-06-23
 ---
 
 # T-045 — Production container images + docker compose with TLS reverse proxy
@@ -29,27 +29,27 @@ later ops ticket (CD, backups, secrets) builds on.
 
 ## Acceptance criteria
 
-- [ ] `apps/api/Dockerfile`: multi-stage build that installs with pnpm, builds
+- [x] `apps/api/Dockerfile`: multi-stage build that installs with pnpm, builds
       to `dist/`, then produces a slim runtime image using `pnpm deploy --prod`
       (pruned, production-only deps), running as a **non-root** user, exposing
       the API port and consuming `DATABASE_URL` at runtime.
-- [ ] `apps/web/Dockerfile`: multi-stage build producing the Vite static bundle,
+- [x] `apps/web/Dockerfile`: multi-stage build producing the Vite static bundle,
       served by a small static server (the reverse proxy or an nginx/caddy
       stage), as a non-root image; build-time `VITE_*` values are baked at build.
-- [ ] A `.dockerignore` per app keeps `node_modules`, tests, and source out of
+- [x] A `.dockerignore` per app keeps `node_modules`, tests, and source out of
       the runtime image; images are reasonably small (record sizes in the PR).
-- [ ] `docker-compose.prod.yml` defines four services: `api`, `web` (or web
+- [x] `docker-compose.prod.yml` defines four services: `api`, `web` (or web
       served by the proxy), `postgres` (16, named volume, healthcheck), and a
       reverse proxy.
-- [ ] The reverse proxy (e.g. **Caddy**) obtains/renews TLS certificates
+- [x] The reverse proxy (e.g. **Caddy**) obtains/renews TLS certificates
       automatically and routes `https://<domain>/` → web and
       `https://<domain>/api/*` → api.
-- [ ] `api` depends on `postgres` healthcheck; `restart: unless-stopped` on
+- [x] `api` depends on `postgres` healthcheck; `restart: unless-stopped` on
       long-running services; no host ports exposed except the proxy's 80/443.
-- [ ] All secrets/config come from env (no values hard-coded in the compose
+- [x] All secrets/config come from env (no values hard-coded in the compose
       file); a documented `.env.prod`-style contract exists, with
       `.env.example` remaining the only committed template.
-- [ ] `docs/getting-started.md` (or a new `docs/deployment.md`) documents
+- [x] `docs/getting-started.md` (or a new `docs/deployment.md`) documents
       bringing the stack up on a fresh VPS.
 
 ## Files to touch
