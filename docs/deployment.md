@@ -2,12 +2,12 @@
 
 ## Wymagania
 
-| Komponent | Wersja          | Uwagi                                 |
-| --------- | --------------- | ------------------------------------- |
-| Docker    | 24+             | `docker --version`                    |
-| Docker Compose | v2+         | `docker compose version`              |
-| Git       | dowolna         | `git --version`                       |
-| Domain    | —               | Skonfiguruj rekord A → IP serwera     |
+| Komponent      | Wersja  | Uwagi                             |
+| -------------- | ------- | --------------------------------- |
+| Docker         | 24+     | `docker --version`                |
+| Docker Compose | v2+     | `docker compose version`          |
+| Git            | dowolna | `git --version`                   |
+| Domain         | —       | Skonfiguruj rekord A → IP serwera |
 
 ## Krok po kroku
 
@@ -42,15 +42,15 @@ nano .env
 
 **Wymagane zmienne w `.env`:**
 
-| Zmienna               | Przykład wartości                                       | Opis                                    |
-| --------------------- | ------------------------------------------------------- | --------------------------------------- |
-| `POSTGRES_DB`         | `carnotea`                                              | Nazwa bazy danych                       |
-| `POSTGRES_USER`       | `carnotea`                                              | Użytkownik bazy danych                  |
-| `POSTGRES_PASSWORD`   | `<wygenerowane silne hasło>`                            | Hasło do bazy danych                    |
-| `DATABASE_URL`        | `postgresql://carnotea:<haslo>@postgres:5432/carnotea`  | Connection string (użyj `postgres` jako hosta, port 5432) |
-| `BETTER_AUTH_SECRET`  | `openssl rand -base64 32`                               | Sekret dla better-auth                  |
-| `BETTER_AUTH_URL`     | `https://twoj-serwer.example.com/api/auth`              | Publiczny URL auth                      |
-| `DOMAIN`              | `twoj-serwer.example.com`                               | Domena dla certyfikatów TLS             |
+| Zmienna              | Przykład wartości                                      | Opis                                                      |
+| -------------------- | ------------------------------------------------------ | --------------------------------------------------------- |
+| `POSTGRES_DB`        | `carnotea`                                             | Nazwa bazy danych                                         |
+| `POSTGRES_USER`      | `carnotea`                                             | Użytkownik bazy danych                                    |
+| `POSTGRES_PASSWORD`  | `<wygenerowane silne hasło>`                           | Hasło do bazy danych                                      |
+| `DATABASE_URL`       | `postgresql://carnotea:<haslo>@postgres:5432/carnotea` | Connection string (użyj `postgres` jako hosta, port 5432) |
+| `BETTER_AUTH_SECRET` | `openssl rand -base64 32`                              | Sekret dla better-auth                                    |
+| `BETTER_AUTH_URL`    | `https://twoj-serwer.example.com/api/auth`             | Publiczny URL auth                                        |
+| `DOMAIN`             | `twoj-serwer.example.com`                              | Domena dla certyfikatów TLS                               |
 
 > **Uwaga:** W `DATABASE_URL` jako hosta używamy `postgres` (nazwa serwisu w Docker Compose), a port to `5432` (wewnętrzny port PostgreSQL w kontenerze).
 
@@ -132,12 +132,12 @@ docker compose -f docker-compose.prod.yml up -d
 
 ## Rozwiązywanie problemów
 
-| Problem                          | Przyczyna                              | Rozwiązanie                                                          |
-| -------------------------------- | -------------------------------------- | -------------------------------------------------------------------- |
-| Certyfikat TLS nie został wydany | Domena nie wskazuje na IP serwera      | Sprawdź rekord A w DNS, odczekaj na propagację, sprawdź `docker compose logs caddy` |
-| API nie odpowiada (503)          | Baza danych niegotowa                  | Sprawdź `docker compose logs postgres`, odczekaj na healthcheck      |
-| `readyz` zwraca 503              | Brak połączenia z bazą                 | Sprawdź `DATABASE_URL` w `.env`, czy host to `postgres`              |
-| Błąd `ECONNREFUSED` przy buildzie | Brak pliku `.env` z wymaganymi zmiennymi | Skopiuj `.env.example` → `.env` i wypełnij wartości                  |
+| Problem                           | Przyczyna                                | Rozwiązanie                                                                         |
+| --------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------- |
+| Certyfikat TLS nie został wydany  | Domena nie wskazuje na IP serwera        | Sprawdź rekord A w DNS, odczekaj na propagację, sprawdź `docker compose logs caddy` |
+| API nie odpowiada (503)           | Baza danych niegotowa                    | Sprawdź `docker compose logs postgres`, odczekaj na healthcheck                     |
+| `readyz` zwraca 503               | Brak połączenia z bazą                   | Sprawdź `DATABASE_URL` w `.env`, czy host to `postgres`                             |
+| Błąd `ECONNREFUSED` przy buildzie | Brak pliku `.env` z wymaganymi zmiennymi | Skopiuj `.env.example` → `.env` i wypełnij wartości                                 |
 
 ## Zmienne środowiskowe (podsumowanie)
 
