@@ -1,0 +1,63 @@
+# =============================================================================
+# CarNotea API — production container image
+# Multi-stage build: builder (full workspace) → runner (pruned prod tree)
+# =============================================================================
+
+# ---- Stage 1: Build the monorepo -------------------------------------------
+FROM node:22-slim AS builder
+
+# Corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+
+WORKDIR /app
+
+# Copy workspace manifest files first (layer caching)
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
+COPY apps/api/package.json apps/api/package.json
+COPY packages/db/package.json packages/db/package.json
+COPY packages/shared/package.json packages/shared/package.json
+COPY tooling/eslint-config/package.json  tooling/eslint-config/package.json
+COPY tooling/prettier-config/package.json tooling/prettier-config/package.json
+COPY tooling/tsconfig/package.json        tooling/tsconfig/package.json
+COPY tooling/vitest-config/package.json   tooling/vitest-config/package.json
+
+# Install ALL dependencies (including devDependencies needed for build)
+RUN pnpm install --frozen-lockfile
+
+# Copy the rest of the source tree
+COPY . .
+
+# Build the API and its workspace dependencies
+RUN pnpm --filter @carnotea/api build
+
+# Deploy a pruned production tree into /app/out
+RUN pnpm deploy --filter @carnotea/api --prod /app/out
+
+
+# ---- Stage 2: Slim runtime image -------------------------------------------
+FROM node:22-slim AS runner
+
+# Corepack still needed if the runtime script references workspace links;
+# the deploy output includes a minimal lockfile and pnpm is req'd to resolve it.
+RUN corepack enable && corepack prepare pnpm@9.12.0 --activate && \
+    groupadd --system --gid 1001 carnotea && \
+    useradd --system --uid 1001 -g carnotea --home-dir /app --shell /sbin/nologin carnotea
+
+WORKDIR /app
+
+# Copy the pruned production tree
+COPY --from=builder /app/out /app
+
+# Overlay the compiled dist/ output on top of the deployed tree
+COPY --from=builder /app/apps/api/dist /app/apps/api/dist
+
+# Set runtime ownership
+RUN chown -R carnotea:carnotea /app
+
+USER carnotea
+
+EXPOSE 3001
+
+ENV NODE_ENV=production
+
+CMD ["node", "apps/api/dist/main.js"]

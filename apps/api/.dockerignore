@@ -1,0 +1,34 @@
+# Never ship the local dev environment
+node_modules
+.cache
+.turbo
+.turbo/**
+.git
+.gitignore
+.env
+.env.*
+
+# Source that is compiled away (no reason to copy into the runtime)
+src/
+test/
+tests/
+*.spec.ts
+*.test.ts
+__tests__/
+__snapshots__/
+
+# Editor / OS cruft
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode
+.idea
+
+# Generated / report files
+coverage/
+dist/       # rebuilt in the builder stage
+
+# ESLint / Prettier caches
+.eslintcache
+.prettiercache
