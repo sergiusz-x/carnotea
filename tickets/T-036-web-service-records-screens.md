@@ -1,7 +1,7 @@
 ---
 id: T-036
 title: Web service-record screens with linked parts
-status: ready
+status: done
 priority: medium
 size: L
 spec_version: 1
@@ -9,7 +9,7 @@ owner: ~
 dependencies: [T-033, T-024]
 labels: [web, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 

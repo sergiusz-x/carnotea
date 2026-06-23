@@ -1,7 +1,7 @@
 ---
 id: T-028
 title: Dashboard and analytics read endpoints
-status: ready
+status: done
 priority: medium
 size: L
 spec_version: 1
@@ -9,7 +9,7 @@ owner: ~
 dependencies: [T-022, T-023, T-024, T-026, T-027]
 labels: [api, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 
