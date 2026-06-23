@@ -1,7 +1,7 @@
 ---
 id: T-023
 title: API — Charging sessions CRUD
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
@@ -9,7 +9,7 @@ owner: ~
 dependencies: [T-020, T-021]
 labels: [api, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 

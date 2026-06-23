@@ -1,7 +1,7 @@
 ---
 id: T-039
 title: Web reminder screens with due/mileage triggers and status
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
@@ -9,7 +9,7 @@ owner: ~
 dependencies: [T-033, T-027]
 labels: [web, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 

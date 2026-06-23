@@ -1,7 +1,7 @@
 ---
 id: T-032
 title: Web app shell — auth guard, login/logout, nav, layout
-status: in_progress
+status: done
 priority: high
 size: L
 spec_version: 1
@@ -9,7 +9,7 @@ owner: claude-code
 dependencies: [T-006, T-009, T-010, T-031]
 labels: [web, foundation]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 

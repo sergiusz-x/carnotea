@@ -1,7 +1,7 @@
 ---
 id: T-041
 title: Web profile and settings screen (locale, units, currency, account)
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
@@ -9,7 +9,7 @@ owner: ~
 dependencies: [T-032, T-029]
 labels: [web, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 

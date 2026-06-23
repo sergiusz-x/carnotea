@@ -1,7 +1,7 @@
 ---
 id: T-040
 title: Web home dashboard with cost, consumption, reminders, activity
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
@@ -9,7 +9,7 @@ owner: ~
 dependencies: [T-033, T-028]
 labels: [web, feature]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-06-23
 closed_at: ~
 ---
 
