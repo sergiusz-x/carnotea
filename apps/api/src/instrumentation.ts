@@ -34,7 +34,6 @@ if (!otelExporterEndpoint) {
   // Tracing is disabled. In non-prod environments we still enable the
   // diagnostic logger at WARN level so developer mistakes are visible.
   if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.WARN);
   }
 } else {
