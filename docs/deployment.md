@@ -47,6 +47,13 @@ DATABASE_URL=postgresql://carnotea:<password>@postgres:5432/carnotea
 # ── Auth (better-auth) ────────────────────────────────────────────────────
 BETTER_AUTH_SECRET=<generate-with-openssl-rand-base64-32>
 BETTER_AUTH_URL=https://carnotea.example.com
+
+# ── Security hardening ────────────────────────────────────────────────────
+CORS_ORIGINS=https://carnotea.example.com
+RATE_LIMIT_MAX=100
+RATE_LIMIT_AUTH_MAX=10
+RATE_LIMIT_WINDOW_MS=60000
+BODY_LIMIT=1048576
 ```
 
 > **Important:** Never commit `.env` — it is in `.gitignore`. The committed

@@ -5,7 +5,7 @@
 #   docker compose -f docker-compose.prod.yml up -d
 #
 # Requires a .env file (or env vars) with at minimum:
-#   DOMAIN, DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL
+#   DOMAIN, DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, CORS_ORIGINS
 #
 # See docs/deployment.md for the full walk-through.
 # =============================================================================
@@ -50,6 +50,11 @@ services:
       DATABASE_URL: ${DATABASE_URL:?error}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?error}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:?error}
+      CORS_ORIGINS: ${CORS_ORIGINS:?error}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      RATE_LIMIT_AUTH_MAX: ${RATE_LIMIT_AUTH_MAX:-10}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      BODY_LIMIT: ${BODY_LIMIT:-1048576}
     depends_on:
       postgres:
         condition: service_healthy

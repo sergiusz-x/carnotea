@@ -23,6 +23,7 @@ function splitName(name: string): { firstName: string; lastName: string } {
 }
 
 export function createAuth(db: Db, options: AuthOptions) {
+  const isProduction = options.baseURL.startsWith('https://');
   return betterAuth({
     secret: options.secret,
     baseURL: options.baseURL,
@@ -37,9 +38,16 @@ export function createAuth(db: Db, options: AuthOptions) {
       },
     }),
     emailAndPassword: { enabled: true },
-    // better-auth generates ids in app code; emit UUIDs so the domain `users.id`
-    // can reuse the same value (linkage strategy (a) — see packages/db/AGENTS.md).
+    // Hardened session cookies in production (T-049)
     advanced: {
+      useSecureCookies: isProduction,
+      defaultCookieAttributes: {
+        httpOnly: true,
+        sameSite: 'Lax',
+        path: '/',
+      },
+      // better-auth generates ids in app code; emit UUIDs so the domain `users.id`
+      // can reuse the same value (linkage strategy (a) — see packages/db/AGENTS.md).
       database: { generateId: 'uuid' },
     },
     databaseHooks: {

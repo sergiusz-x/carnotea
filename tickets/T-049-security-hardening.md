@@ -1,14 +1,14 @@
 ---
 id: T-049
 title: API + web security hardening for production
-status: ready
+status: done
 priority: high
-owner: ~
+owner: codex
 dependencies: [T-004]
 labels: [security]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-23
+closed_at: 2026-06-23
 ---
 
 # T-049 — API + web security hardening for production
@@ -30,24 +30,24 @@ breaks tracing.
 
 ## Acceptance criteria
 
-- [ ] Security response headers are applied (Fastify `@fastify/helmet` or
+- [x] Security response headers are applied (Fastify `@fastify/helmet` or
       equivalent): HSTS, `X-Content-Type-Options`, frame options, a sensible
       referrer policy, and a Content-Security-Policy appropriate for the app.
-- [ ] Rate limiting is enabled on the API (e.g. `@fastify/rate-limit`) with
+- [x] Rate limiting is enabled on the API (e.g. `@fastify/rate-limit`) with
       sane global limits and tighter limits on auth endpoints; limits are
       configurable via env.
-- [ ] Production CORS is a **strict allow-list** of known origins (the web app
+- [x] Production CORS is a **strict allow-list** of known origins (the web app
       origin), with credentials handling correct, and it **explicitly allows the
       `traceparent` (and `tracestate`) request headers** so T-018 propagation
       keeps working cross-origin.
-- [ ] A request **body-size limit** is enforced so oversized payloads are
+- [x] A request **body-size limit** is enforced so oversized payloads are
       rejected rather than buffered.
-- [ ] better-auth session cookies are hardened in production: `Secure`,
+- [x] better-auth session cookies are hardened in production: `Secure`,
       `HttpOnly`, an appropriate `SameSite`, and correct domain/path scoping.
-- [ ] `pnpm audit` (production deps, suitable severity threshold) runs in CI and
+- [x] `pnpm audit` (production deps, suitable severity threshold) runs in CI and
       fails the job on findings above the threshold, with a documented way to
       waive an accepted advisory.
-- [ ] Hardening is environment-aware: strict in production, relaxed enough for
+- [x] Hardening is environment-aware: strict in production, relaxed enough for
       local dev (e.g. localhost CORS) without code edits — driven by env.
 
 ## Files to touch
