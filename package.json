@@ -32,6 +32,7 @@
     "lint:ws": "sherif -r non-existant-packages",
     "lint:tickets": "node scripts/lint-tickets.mjs",
     "tickets:index": "node scripts/gen-tickets-index.mjs",
+    "local:ci": "bash scripts/local-ci.sh",
     "db:up": "docker compose up -d",
     "db:down": "docker compose down",
     "db:reset": "docker compose down -v && docker compose up -d",
@@ -39,12 +40,14 @@
     "db:migrate": "turbo run db:migrate",
     "db:introspect": "turbo run db:introspect",
     "clean": "turbo run clean && rm -rf node_modules",
-    "postinstall": "corepack pnpm lint:ws"
+    "postinstall": "corepack pnpm lint:ws",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@carnotea/eslint-config": "workspace:*",
     "@carnotea/prettier-config": "workspace:*",
     "eslint": "catalog:",
+    "husky": "^9.1.7",
     "prettier": "catalog:",
     "sherif": "^1.12.0",
     "turbo": "^2.3.0"
