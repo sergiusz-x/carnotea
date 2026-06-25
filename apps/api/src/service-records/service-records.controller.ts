@@ -24,20 +24,20 @@ import { AuthGuard } from '../auth/auth.guard.js';
 import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
+import {
+  idPipe,
+  nestDetailPath,
+  nestListPath,
+  resourceWithVehicleParam,
+  vehicleIdParam,
+  vehicleIdPipe,
+} from '../lib/route-params.js';
 
 import { ServiceRecordsService, type ServiceRecordResponse } from './service-records.service.js';
 
-const vehicleIdParam = z.object({ vehicleId: z.uuid() });
-const serviceRecordIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
-const vehicleIdPipe = new ZodValidationPipe(z.uuid());
-const idPipe = new ZodValidationPipe(z.uuid());
-const serviceRecordsByVehicleNestPath = ROUTES.serviceRecordsByVehicle
-  .replace('{vehicleId}', ':vehicleId')
-  .slice(1);
-const serviceRecordByIdNestPath = ROUTES.serviceRecordById
-  .replace('{vehicleId}', ':vehicleId')
-  .replace('{id}', ':id')
-  .slice(1);
+const serviceRecordIdParam = resourceWithVehicleParam;
+const serviceRecordsByVehicleNestPath = nestListPath(ROUTES.serviceRecordsByVehicle);
+const serviceRecordByIdNestPath = nestDetailPath(ROUTES.serviceRecordById);
 
 const ServiceRecordResponseSchema = z.object({
   id: z.uuid(),

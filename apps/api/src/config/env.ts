@@ -10,8 +10,8 @@ export const envSchema = z.object({
   // CORS — comma-separated list of allowed origins; defaults to localhost for dev
   CORS_ORIGINS: z.string().default('http://localhost:5173,http://localhost:3001'),
   // Rate limiting — global and auth-tight limits
-  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(100),
-  RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(10),
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(300),
+  RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(30),
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   // Body-size limit in bytes (1 MB default)
   BODY_LIMIT: z.coerce.number().int().positive().default(1_048_576),

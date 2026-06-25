@@ -70,12 +70,16 @@
     "confirmTitle": "Delete vehicle",
     "confirmMessage": "Are you sure you want to delete {{brand}} {{model}}? All linked logs (fuel, service, expenses, etc.) will also be permanently deleted.",
     "confirm": "Yes, delete",
+    "deleting": "Deleting…",
     "cancel": "Cancel"
   },
   "mileageForm": {
     "readingDate": "Reading date",
     "mileage": "Mileage (km)",
     "note": "Note",
-    "submit": "Add reading"
+    "submit": "Add reading",
+    "adding": "Adding…",
+    "delete": "Delete",
+    "deleting": "Deleting…"
   }
 }

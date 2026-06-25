@@ -25,21 +25,20 @@ import { AuthGuard } from '../auth/auth.guard.js';
 import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
+import {
+  idPipe,
+  nestDetailPath,
+  nestListPath,
+  resourceWithVehicleParam,
+  vehicleIdParam,
+  vehicleIdPipe,
+} from '../lib/route-params.js';
 
 import { RemindersService, type ReminderResponse } from './reminders.service.js';
 
-const vehicleIdParam = z.object({ vehicleId: z.uuid() });
-const reminderIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
-const vehicleIdPipe = new ZodValidationPipe(z.uuid());
-const idPipe = new ZodValidationPipe(z.uuid());
-
-const remindersByVehicleNestPath = ROUTES.remindersByVehicle
-  .replace('{vehicleId}', ':vehicleId')
-  .slice(1);
-const reminderByIdNestPath = ROUTES.reminderById
-  .replace('{vehicleId}', ':vehicleId')
-  .replace('{id}', ':id')
-  .slice(1);
+const reminderIdParam = resourceWithVehicleParam;
+const remindersByVehicleNestPath = nestListPath(ROUTES.remindersByVehicle);
+const reminderByIdNestPath = nestDetailPath(ROUTES.reminderById);
 
 /** List query: optional `?status=` (comma-separated) and `?dueState=` filters. */
 const ReminderQuerySchema = z.object({

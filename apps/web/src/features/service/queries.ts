@@ -3,6 +3,7 @@ import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query
 import { useNavigate } from '@tanstack/react-router';
 
 import { apiClient } from '@/lib/api/client';
+import { invalidateMileageAndExpenses } from '@/lib/query/invalidate';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -51,19 +52,9 @@ export function useCreateServiceRecord(vehicleId: string) {
     mutationFn: (body: ServiceRecordCreate) =>
       apiClient.POST('/api/vehicles/{vehicleId}/service-records', body, { vehicleId }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: serviceKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
-      await navigate({
-        to: '/vehicles/$vehicleId/service',
-        params: { vehicleId },
-      });
+      await queryClient.invalidateQueries({ queryKey: serviceKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
+      await navigate({ to: '/vehicles/$vehicleId/service', params: { vehicleId } });
     },
   });
 }
@@ -79,22 +70,10 @@ export function useUpdateServiceRecord(vehicleId: string, recordId: string) {
         id: recordId,
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: serviceKeys.detail(vehicleId, recordId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: serviceKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
-      await navigate({
-        to: '/vehicles/$vehicleId/service',
-        params: { vehicleId },
-      });
+      await queryClient.invalidateQueries({ queryKey: serviceKeys.detail(vehicleId, recordId) });
+      await queryClient.invalidateQueries({ queryKey: serviceKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
+      await navigate({ to: '/vehicles/$vehicleId/service', params: { vehicleId } });
     },
   });
 }
@@ -106,15 +85,8 @@ export function useDeleteServiceRecord(vehicleId: string) {
     mutationFn: (id: string) =>
       apiClient.DELETE('/api/vehicles/{vehicleId}/service-records/{id}', { vehicleId, id }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: serviceKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
+      await queryClient.invalidateQueries({ queryKey: serviceKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
     },
   });
 }

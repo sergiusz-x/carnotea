@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <style>
+    .mark {
+      stroke: #18181b;
+    }
+
+    .dot {
+      fill: #18181b;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .mark {
+        stroke: #fafafa;
+      }
+
+      .dot {
+        fill: #fafafa;
+      }
+    }
+  </style>
+  <path
+    class="mark"
+    d="M20.8 11.4C19.6 10.2 18 9.5 16.1 9.5C12.8 9.5 10.1 12.2 10.1 15.5C10.1 18.8 12.8 21.5 16.1 21.5C18 21.5 19.6 20.8 20.8 19.6"
+    stroke-width="2.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path class="mark" d="M22.6 13.2L25 13.2" stroke-width="2.8" stroke-linecap="round" />
+  <circle class="dot" cx="22.6" cy="18.8" r="1.1" />
+</svg>

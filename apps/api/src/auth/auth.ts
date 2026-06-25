@@ -5,6 +5,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 export interface AuthOptions {
   secret: string;
   baseURL: string;
+  trustedOrigins: string[];
 }
 
 // The domain profile requires first/last name, while better-auth signup carries a
@@ -28,6 +29,7 @@ export function createAuth(db: Db, options: AuthOptions) {
     secret: options.secret,
     baseURL: options.baseURL,
     basePath: '/api/auth',
+    trustedOrigins: options.trustedOrigins,
     database: drizzleAdapter(db, {
       provider: 'pg',
       schema: {

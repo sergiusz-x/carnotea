@@ -3,6 +3,7 @@ import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query
 import { useNavigate } from '@tanstack/react-router';
 
 import { apiClient } from '@/lib/api/client';
+import { invalidateMileageAndExpenses } from '@/lib/query/invalidate';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -52,19 +53,9 @@ export function useCreateChargingSession(vehicleId: string) {
     mutationFn: (body: ChargingSessionCreate) =>
       apiClient.POST('/api/vehicles/{vehicleId}/charging-sessions', body, { vehicleId }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: chargingKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
-      await navigate({
-        to: '/vehicles/$vehicleId/charging',
-        params: { vehicleId },
-      });
+      await queryClient.invalidateQueries({ queryKey: chargingKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
+      await navigate({ to: '/vehicles/$vehicleId/charging', params: { vehicleId } });
     },
   });
 }
@@ -80,22 +71,10 @@ export function useUpdateChargingSession(vehicleId: string, sessionId: string) {
         id: sessionId,
       }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: chargingKeys.detail(vehicleId, sessionId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: chargingKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
-      await navigate({
-        to: '/vehicles/$vehicleId/charging',
-        params: { vehicleId },
-      });
+      await queryClient.invalidateQueries({ queryKey: chargingKeys.detail(vehicleId, sessionId) });
+      await queryClient.invalidateQueries({ queryKey: chargingKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
+      await navigate({ to: '/vehicles/$vehicleId/charging', params: { vehicleId } });
     },
   });
 }
@@ -107,15 +86,8 @@ export function useDeleteChargingSession(vehicleId: string) {
     mutationFn: (id: string) =>
       apiClient.DELETE('/api/vehicles/{vehicleId}/charging-sessions/{id}', { vehicleId, id }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: chargingKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
+      await queryClient.invalidateQueries({ queryKey: chargingKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
     },
   });
 }

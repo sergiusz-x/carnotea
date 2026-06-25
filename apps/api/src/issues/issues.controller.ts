@@ -24,25 +24,25 @@ import { AuthGuard } from '../auth/auth.guard.js';
 import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
+import {
+  idPipe,
+  nestDetailPath,
+  nestListPath,
+  resourceWithVehicleParam,
+  vehicleIdParam,
+  vehicleIdPipe,
+} from '../lib/route-params.js';
 
 import { IssuesService, type IssueResponse } from './issues.service.js';
 
-const vehicleIdParam = z.object({ vehicleId: z.uuid() });
-const issueIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
+const issueIdParam = resourceWithVehicleParam;
 const issuesQuerySchema = z.object({
   status: z.enum(['open', 'in_progress', 'resolved', 'cancelled']).optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).optional(),
 });
 
-const vehicleIdPipe = new ZodValidationPipe(z.uuid());
-const idPipe = new ZodValidationPipe(z.uuid());
-const issuesByVehicleNestPath = ROUTES.issuesByVehicle
-  .replace('{vehicleId}', ':vehicleId')
-  .slice(1);
-const issueByIdNestPath = ROUTES.issueById
-  .replace('{vehicleId}', ':vehicleId')
-  .replace('{id}', ':id')
-  .slice(1);
+const issuesByVehicleNestPath = nestListPath(ROUTES.issuesByVehicle);
+const issueByIdNestPath = nestDetailPath(ROUTES.issueById);
 
 const IssueResponseSchema = z.object({
   id: z.uuid(),

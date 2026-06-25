@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { ErrorState } from '@/components/ErrorState';
+import { PageContainer } from '@/components/PageContainer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -57,37 +59,27 @@ export function ReminderDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
+      <PageContainer>
         <p>{t('loading')}</p>
-      </div>
+      </PageContainer>
     );
   }
 
   if (isError || !reminder) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="space-y-4">
-          <p>{t('error.load')}</p>
-          <p className="text-sm text-muted-foreground">
-            {error instanceof Error ? error.message : String(error)}
-          </p>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              void refetch();
-            }}
-          >
-            {t('error.retry')}
-          </button>
-        </div>
-      </div>
+      <PageContainer>
+        <ErrorState
+          message={t('error.load')}
+          detail={error instanceof Error ? error.message : String(error)}
+          onRetry={() => void refetch()}
+          retryLabel={t('error.retry')}
+        />
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl px-4 py-8">
-      {/* Header */}
+    <PageContainer>
       <div className="mb-6 flex items-start justify-between">
         <div>
           <Link
@@ -123,7 +115,6 @@ export function ReminderDetailPage() {
         </div>
       </div>
 
-      {/* Badges */}
       <div className="mb-4 flex flex-wrap gap-2">
         <Badge variant={statusBadgeVariant[reminder.status] ?? 'default'}>
           {t(`status.${reminder.status as ReminderStatusCode}`)}
@@ -133,7 +124,6 @@ export function ReminderDetailPage() {
         </Badge>
       </div>
 
-      {/* Detail card */}
       <Card>
         <CardHeader>
           <CardTitle>{reminder.title}</CardTitle>
@@ -172,6 +162,6 @@ export function ReminderDetailPage() {
           </dl>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

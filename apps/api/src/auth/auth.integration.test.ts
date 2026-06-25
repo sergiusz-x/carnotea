@@ -20,6 +20,7 @@ describe.skipIf(!databaseUrl)('better-auth signup creates a linked domain profil
     auth = createAuth(db, {
       secret: 'test-secret-at-least-16-chars',
       baseURL: 'http://localhost:3001',
+      trustedOrigins: ['http://localhost:5173'],
     });
   });
 

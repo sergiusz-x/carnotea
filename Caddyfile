@@ -14,7 +14,7 @@
 
 {$DOMAIN:localhost} {
     # ---- API routes ---------------------------------------------------------
-    handle_path /api/* {
+    handle /api/* {
         reverse_proxy api:3001
     }
 
@@ -23,6 +23,14 @@
     }
 
     handle /readyz {
+        reverse_proxy api:3001
+    }
+
+    handle /openapi.json {
+        reverse_proxy api:3001
+    }
+
+    handle /docs {
         reverse_proxy api:3001
     }
 

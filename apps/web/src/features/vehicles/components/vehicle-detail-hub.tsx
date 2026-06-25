@@ -3,21 +3,33 @@ import { Link, useParams } from '@tanstack/react-router';
 import { type SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ErrorState } from '@/components/ErrorState';
+import { PageContainer } from '@/components/PageContainer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   useDeleteVehicle,
   useAddMileageReading,
+  useDeleteMileageReading,
   vehicleQueryOptions,
   mileageReadingsQueryOptions,
 } from '@/features/vehicles/queries';
 
-// ─── Mileage sub-section ───────────────────────────────────────────────────────
+interface MileageReadingRow {
+  id: string;
+  readingDate: string;
+  mileage: number;
+  sourceType: string;
+  note: string | null;
+}
 
 function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
   const { t } = useTranslation('vehicles');
   const { data: mileageReadings } = useQuery(mileageReadingsQueryOptions(vehicleId));
   const addReading = useAddMileageReading(vehicleId);
+  const deleteReading = useDeleteMileageReading(vehicleId);
   const [readingDate, setReadingDate] = useState(new Date().toISOString().slice(0, 10));
   const [mileage, setMileage] = useState('');
   const [note, setNote] = useState('');
@@ -35,7 +47,7 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
         setNote('');
       })
       .catch(() => {
-        // Error handled by mutation
+        // Error is surfaced by mutation state in future UI work.
       });
   }
 
@@ -47,89 +59,87 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
         <CardTitle>{t('detail.mileageSection')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Add reading form */}
         <form onSubmit={handleAddReading} className="flex flex-wrap items-end gap-2">
           <div className="flex flex-col gap-1">
-            <label htmlFor="mileage-reading-date" className="text-xs text-muted-foreground">
+            <Label htmlFor="mileage-reading-date" className="text-xs text-muted-foreground">
               {t('mileageForm.readingDate')}
-            </label>
-            <input
+            </Label>
+            <Input
               id="mileage-reading-date"
               type="date"
               value={readingDate}
-              onChange={(e) => {
-                setReadingDate(e.target.value);
-              }}
-              className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors"
+              onChange={(e) => { setReadingDate(e.target.value); }}
+              className="h-9 py-1"
               required
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="mileage-reading-value" className="text-xs text-muted-foreground">
+            <Label htmlFor="mileage-reading-value" className="text-xs text-muted-foreground">
               {t('mileageForm.mileage')}
-            </label>
-            <input
+            </Label>
+            <Input
               id="mileage-reading-value"
               type="number"
               value={mileage}
-              onChange={(e) => {
-                setMileage(e.target.value);
-              }}
-              className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors"
+              onChange={(e) => { setMileage(e.target.value); }}
               placeholder={t('mileageForm.mileage')}
+              className="h-9 py-1"
               min={0}
               required
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="mileage-reading-note" className="text-xs text-muted-foreground">
+            <Label htmlFor="mileage-reading-note" className="text-xs text-muted-foreground">
               {t('mileageForm.note')}
-            </label>
-            <input
+            </Label>
+            <Input
               id="mileage-reading-note"
               type="text"
               value={note}
-              onChange={(e) => {
-                setNote(e.target.value);
-              }}
-              className="flex h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors"
+              onChange={(e) => { setNote(e.target.value); }}
               placeholder={t('mileageForm.note')}
+              className="h-9 py-1"
             />
           </div>
           <Button type="submit" disabled={addReading.isPending}>
-            {addReading.isPending ? '…' : t('mileageForm.submit')}
+            {addReading.isPending ? t('mileageForm.adding') : t('mileageForm.submit')}
           </Button>
         </form>
 
-        {/* Reading history */}
         <div>
           <h3 className="mb-2 text-sm font-medium">{t('detail.mileage.history')}</h3>
           {readings.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t('detail.mileage.noReadings')}</p>
           ) : (
             <div className="max-h-64 space-y-1 overflow-y-auto">
-              {readings.map(
-                (reading: {
-                  id: string;
-                  readingDate: string;
-                  mileage: number;
-                  sourceType: string;
-                  note: string | null;
-                }) => (
-                  <div
-                    key={reading.id}
-                    className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
-                  >
-                    <span>{reading.readingDate}</span>
-                    <span className="font-medium">
-                      {t('list.mileage', { mileage: reading.mileage })}
-                    </span>
-                    {reading.note && (
-                      <span className="text-xs text-muted-foreground">{reading.note}</span>
-                    )}
+              {readings.map((reading: MileageReadingRow) => (
+                <div
+                  key={reading.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm"
+                >
+                  <div className="min-w-0 space-y-1">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span>{reading.readingDate}</span>
+                      <span className="font-medium">
+                        {t('list.mileage', { mileage: reading.mileage })}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      <span>{t('detail.mileage.source', { source: reading.sourceType })}</span>
+                      {reading.note && <span>{reading.note}</span>}
+                    </div>
                   </div>
-                ),
-              )}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={deleteReading.isPending}
+                    onClick={() => void deleteReading.mutateAsync(reading.id)}
+                  >
+                    {deleteReading.isPending ? t('mileageForm.deleting') : t('mileageForm.delete')}
+                  </Button>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -137,8 +147,6 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
     </Card>
   );
 }
-
-// ─── Main detail page ──────────────────────────────────────────────────────────
 
 export function VehicleDetailPage() {
   const { vehicleId } = useParams({ from: '/_authenticated/vehicles/$vehicleId' });
@@ -161,38 +169,28 @@ export function VehicleDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
+      <PageContainer>
         <p>{t('loading')}</p>
-      </div>
+      </PageContainer>
     );
   }
 
   if (isError || !vehicle) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="space-y-4">
-          <p>{t('error.load')}</p>
-          <p className="text-sm text-muted-foreground">
-            {error instanceof Error ? error.message : String(error)}
-          </p>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              void refetch();
-            }}
-          >
-            {t('error.retry')}
-          </button>
-        </div>
-      </div>
+      <PageContainer>
+        <ErrorState
+          message={t('error.load')}
+          detail={error instanceof Error ? error.message : String(error)}
+          onRetry={() => void refetch()}
+          retryLabel={t('error.retry')}
+        />
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl px-4 py-8">
-      {/* Header */}
-      <div className="mb-6 flex items-start justify-between">
+    <PageContainer>
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">
             {vehicle.brand} {vehicle.model}
@@ -219,28 +217,20 @@ export function VehicleDetailPage() {
         </div>
       </div>
 
-      {/* Delete confirmation */}
       {showDeleteConfirm && (
         <Card className="mb-6 border-destructive">
           <CardHeader>
             <CardTitle>{t('delete.confirmTitle')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p>
-              {t('delete.confirmMessage', {
-                brand: vehicle.brand,
-                model: vehicle.model,
-              })}
-            </p>
+            <p>{t('delete.confirmMessage', { brand: vehicle.brand, model: vehicle.model })}</p>
             <div className="flex gap-2">
               <Button
                 variant="destructive"
-                onClick={() => {
-                  handleDelete();
-                }}
+                onClick={handleDelete}
                 disabled={deleteMutation.isPending}
               >
-                {t('delete.confirm')}
+                {deleteMutation.isPending ? t('delete.deleting') : t('delete.confirm')}
               </Button>
               <Button
                 variant="outline"
@@ -255,7 +245,6 @@ export function VehicleDetailPage() {
         </Card>
       )}
 
-      {/* Vehicle details card */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>{t('detail.title', { brand: vehicle.brand, model: vehicle.model })}</CardTitle>
@@ -302,10 +291,8 @@ export function VehicleDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Mileage section */}
       <MileageSectionContent vehicleId={vehicleId} />
 
-      {/* Navigation links to child areas (stubs for T-034+) */}
       <Card>
         <CardHeader>
           <CardTitle>{t('detail.logsSection')}</CardTitle>
@@ -315,45 +302,51 @@ export function VehicleDetailPage() {
             className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
             aria-label={t('detail.logsSection')}
           >
-            <a
-              href={`/vehicles/${vehicleId}/fuel`}
+            <Link
+              to="/vehicles/$vehicleId/fuel"
+              params={{ vehicleId }}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.fuel')}
-            </a>
-            <a
-              href={`/vehicles/${vehicleId}/charging`}
+            </Link>
+            <Link
+              to="/vehicles/$vehicleId/charging"
+              params={{ vehicleId }}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.charging')}
-            </a>
-            <a
-              href={`/vehicles/${vehicleId}/service`}
+            </Link>
+            <Link
+              to="/vehicles/$vehicleId/service"
+              params={{ vehicleId }}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.service')}
-            </a>
-            <a
-              href={`/vehicles/${vehicleId}/issues`}
+            </Link>
+            <Link
+              to="/vehicles/$vehicleId/issues"
+              params={{ vehicleId }}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.issues')}
-            </a>
-            <a
-              href={`/vehicles/${vehicleId}/expenses`}
+            </Link>
+            <Link
+              to="/vehicles/$vehicleId/expenses"
+              params={{ vehicleId }}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.expenses')}
-            </a>
-            <a
-              href={`/vehicles/${vehicleId}/reminders`}
+            </Link>
+            <Link
+              to="/vehicles/$vehicleId/reminders"
+              params={{ vehicleId }}
               className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
             >
               {t('detail.nav.reminders')}
-            </a>
+            </Link>
           </nav>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

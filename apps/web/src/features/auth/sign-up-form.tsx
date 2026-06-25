@@ -4,7 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { AppForm, FormSubmit, TextField, useZodForm } from '@/components/form';
+import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
+
+import { sessionQueryOptions } from './use-session';
 
 const signUpSchema = z.object({
   name: z.string().min(1),
@@ -38,8 +41,9 @@ export function SignUpForm({ redirectTo, onSwitchToSignIn }: SignUpFormProps) {
       return;
     }
 
-    await queryClient.invalidateQueries({ queryKey: ['session'] });
-    await navigate({ to: redirectTo ?? '/' });
+    queryClient.removeQueries({ queryKey: ['session'] });
+    await queryClient.ensureQueryData(sessionQueryOptions);
+    await navigate({ to: redirectTo ?? '/', replace: true });
   }
 
   return (
@@ -70,13 +74,14 @@ export function SignUpForm({ redirectTo, onSwitchToSignIn }: SignUpFormProps) {
         <FormSubmit>{t('signUp.submit')}</FormSubmit>
       </AppForm>
 
-      <button
+      <Button
         type="button"
-        onClick={onSwitchToSignIn}
+        variant="ghost"
         className="w-full text-sm text-muted-foreground hover:text-foreground"
+        onClick={onSwitchToSignIn}
       >
         {t('signUp.switchToSignIn')}
-      </button>
+      </Button>
     </div>
   );
 }

@@ -1,7 +1,6 @@
 import { FuelLogCreateSchema, FuelLogUpdateSchema } from '@carnotea/shared';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import { useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -11,31 +10,19 @@ import {
   FormSubmit,
   NumberField,
   TextField,
-  setServerErrors,
+  handleApiError,
   useZodForm,
 } from '@/components/form';
+import { FormContainer } from '@/components/FormContainer';
 import { fuelLogQueryOptions, useCreateFuelLog, useUpdateFuelLog } from '@/features/fuel/queries';
-import type { ApiError } from '@/lib/api/client';
+import { useTotalCost } from '@/lib/useTotalCost';
 
 // ─── Preview of computed totalCost ────────────────────────────────────────────
 
 function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
   const { t } = useTranslation('fuel-logs');
-  const liters = useWatch({ control: form.control, name: 'liters' }) as number | undefined;
-  const pricePerLiter = useWatch({
-    control: form.control,
-    name: 'pricePerLiter',
-  }) as number | undefined;
-
-  const parsedLiters = Number(liters);
-  const parsedPrice = Number(pricePerLiter);
-  const totalCost =
-    !Number.isNaN(parsedLiters) && !Number.isNaN(parsedPrice) && parsedLiters > 0 && parsedPrice > 0
-      ? (parsedLiters * parsedPrice).toFixed(2)
-      : null;
-
+  const totalCost = useTotalCost(form, 'liters', 'pricePerLiter');
   if (totalCost === null) return null;
-
   return (
     <p className="text-sm text-muted-foreground">{t('totalCostPreview', { cost: totalCost })}</p>
   );
@@ -62,16 +49,7 @@ export function FuelLogCreatePage() {
     try {
       await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -113,16 +91,7 @@ export function FuelLogEditPage() {
     try {
       await updateMutation.mutateAsync(values);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -155,7 +124,7 @@ function FormShell({
   const { t } = useTranslation('fuel-logs');
 
   return (
-    <div className="container mx-auto max-w-screen-md px-4 py-8">
+    <FormContainer>
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
@@ -189,6 +158,6 @@ function FormShell({
         <CheckboxField name="isFullTank" label={t('fields.isFullTank')} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
-    </div>
+    </FormContainer>
   );
 }

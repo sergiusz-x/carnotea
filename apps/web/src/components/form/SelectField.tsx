@@ -9,7 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { cn } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export interface SelectOption {
   value: string;
@@ -44,28 +50,22 @@ export function SelectField({
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <select
-              name={field.name}
-              ref={field.ref}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              value={field.value ?? ''}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
+            <Select
+              value={(field.value as string) || undefined}
+              onValueChange={(val) => { field.onChange(val); }}
               disabled={disabled}
-              className={cn(
-                'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2',
-                'text-sm ring-offset-background',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                'disabled:cursor-not-allowed disabled:opacity-50',
-              )}
             >
-              <option value="">{placeholder ?? t('select.placeholder')}</option>
-              {options.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+              <SelectTrigger ref={field.ref} onBlur={field.onBlur}>
+                <SelectValue placeholder={placeholder ?? t('select.placeholder')} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

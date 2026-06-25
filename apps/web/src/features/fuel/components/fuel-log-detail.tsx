@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { ErrorState } from '@/components/ErrorState';
+import { PageContainer } from '@/components/PageContainer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { fuelLogQueryOptions, useDeleteFuelLog } from '@/features/fuel/queries';
@@ -31,37 +33,27 @@ export function FuelLogDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
+      <PageContainer>
         <p>{t('loading')}</p>
-      </div>
+      </PageContainer>
     );
   }
 
   if (isError || !log) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="space-y-4">
-          <p>{t('error.load')}</p>
-          <p className="text-sm text-muted-foreground">
-            {error instanceof Error ? error.message : String(error)}
-          </p>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              void refetch();
-            }}
-          >
-            {t('error.retry')}
-          </button>
-        </div>
-      </div>
+      <PageContainer>
+        <ErrorState
+          message={t('error.load')}
+          detail={error instanceof Error ? error.message : String(error)}
+          onRetry={() => void refetch()}
+          retryLabel={t('error.retry')}
+        />
+      </PageContainer>
     );
   }
 
   return (
-    <div className="container mx-auto max-w-screen-xl px-4 py-8">
-      {/* Header */}
+    <PageContainer>
       <div className="mb-6 flex items-start justify-between">
         <div>
           <Link
@@ -83,7 +75,6 @@ export function FuelLogDetailPage() {
         </div>
       </div>
 
-      {/* Detail card */}
       <Card>
         <CardHeader>
           <CardTitle>{t('detail.title', { date: log.fuelDate })}</CardTitle>
@@ -128,6 +119,6 @@ export function FuelLogDetailPage() {
           </dl>
         </CardContent>
       </Card>
-    </div>
+    </PageContainer>
   );
 }

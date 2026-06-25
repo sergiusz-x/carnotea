@@ -17,12 +17,12 @@ import {
   FormSubmit,
   SelectField,
   TextField,
-  setServerErrors,
+  handleApiError,
   useZodForm,
 } from '@/components/form';
 import type { SelectOption } from '@/components/form';
+import { FormContainer } from '@/components/FormContainer';
 import { issueQueryOptions, useCreateIssue, useUpdateIssue } from '@/features/issues/queries';
-import type { ApiError } from '@/lib/api/client';
 
 // ─── Shared priority/status select options ────────────────────────────────────
 
@@ -90,16 +90,7 @@ export function IssueCreatePage() {
     try {
       await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -146,16 +137,7 @@ export function IssueEditPage() {
     try {
       await updateMutation.mutateAsync(values);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -194,7 +176,7 @@ function FormShell({
   const { t } = useTranslation('issues');
 
   return (
-    <div className="container mx-auto max-w-screen-md px-4 py-8">
+    <FormContainer>
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
@@ -210,6 +192,6 @@ function FormShell({
         <SelectField name="priority" label={t('fields.priority')} options={priorityOptions} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
-    </div>
+    </FormContainer>
   );
 }

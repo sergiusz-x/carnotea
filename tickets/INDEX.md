@@ -34,7 +34,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## Backlog
 
-_None._
+- 🟡 [T-066 — Vehicle form VIN lookup autofill](./T-066-vehicle-vin-lookup-autofill.md)
 
 ## In progress
 
@@ -87,8 +87,8 @@ _None._
 - 🟡 [T-039 — Web reminder screens with due/mileage triggers and status](./T-039-web-reminders-screens.md)
 - 🟡 [T-040 — Web home dashboard with cost, consumption, reminders, activity](./T-040-web-dashboard-screen.md)
 - 🟡 [T-041 — Web profile and settings screen (locale, units, currency, account)](./T-041-web-profile-settings-screen.md)
-- 🔴 [T-049 — API + web security hardening for production](./T-049-security-hardening.md)
 - 🔴 [T-045 — Production container images + docker compose with TLS reverse proxy](./T-045-prod-docker-compose-proxy.md)
+- 🔴 [T-049 — API + web security hardening for production](./T-049-security-hardening.md)
 - 🔴 [T-056 — Spec-driven ticket template + Definition of Ready](./T-056-spec-driven-template-dor.md)
 - 🔴 [T-057 — Resource-CRUD API pattern + rewrite API tickets to delta specs](./T-057-resource-crud-pattern-api-tickets.md)
 - 🔴 [T-058 — Web-screens pattern + rewrite web tickets to delta specs](./T-058-web-screens-pattern-web-tickets.md)
