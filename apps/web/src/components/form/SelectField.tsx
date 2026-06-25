@@ -52,7 +52,9 @@ export function SelectField({
           <FormControl>
             <Select
               value={(field.value as string) || undefined}
-              onValueChange={(val) => { field.onChange(val); }}
+              onValueChange={(val) => {
+                field.onChange(val);
+              }}
               disabled={disabled}
             >
               <SelectTrigger ref={field.ref} onBlur={field.onBlur}>

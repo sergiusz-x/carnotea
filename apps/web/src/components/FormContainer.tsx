@@ -9,8 +9,6 @@ interface FormContainerProps {
 
 export function FormContainer({ children, className }: FormContainerProps) {
   return (
-    <div className={cn('container mx-auto max-w-screen-md px-4 py-8', className)}>
-      {children}
-    </div>
+    <div className={cn('container mx-auto max-w-screen-md px-4 py-8', className)}>{children}</div>
   );
 }

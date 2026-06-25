@@ -87,7 +87,9 @@ export function ReminderCard({
           {status === 'pending' && (
             <Button
               type="button"
-              onClick={() => { onMarkDone(id); }}
+              onClick={() => {
+                onMarkDone(id);
+              }}
               disabled={isMarking}
             >
               {isMarking ? t('list.marking') : t('list.markDone')}
@@ -103,7 +105,9 @@ export function ReminderCard({
           <Button
             type="button"
             variant="destructive"
-            onClick={() => { onDelete(id, title); }}
+            onClick={() => {
+              onDelete(id, title);
+            }}
             disabled={isDeleting}
           >
             {t('delete.confirm')}

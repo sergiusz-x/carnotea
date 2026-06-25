@@ -65,7 +65,9 @@ export function AppShell() {
               variant="ghost"
               size="icon"
               className="md:hidden"
-              onClick={() => { setMobileOpen((prev) => !prev); }}
+              onClick={() => {
+                setMobileOpen((prev) => !prev);
+              }}
               aria-label={mobileOpen ? t('nav.close') : t('nav.open')}
               aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
@@ -83,7 +85,12 @@ export function AppShell() {
         {mobileOpen && (
           <div id="mobile-menu" className="border-t bg-background md:hidden">
             <div className="container mx-auto max-w-screen-xl px-4 py-3">
-              <Nav mobile onNavigate={() => { setMobileOpen(false); }} />
+              <Nav
+                mobile
+                onNavigate={() => {
+                  setMobileOpen(false);
+                }}
+              />
               <div className="mt-3 flex items-center gap-3 border-t pt-3">
                 <div className="sm:hidden">
                   <LanguageSwitcher />

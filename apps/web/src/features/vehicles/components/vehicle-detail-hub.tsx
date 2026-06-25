@@ -68,7 +68,9 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               id="mileage-reading-date"
               type="date"
               value={readingDate}
-              onChange={(e) => { setReadingDate(e.target.value); }}
+              onChange={(e) => {
+                setReadingDate(e.target.value);
+              }}
               className="h-9 py-1"
               required
             />
@@ -81,7 +83,9 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               id="mileage-reading-value"
               type="number"
               value={mileage}
-              onChange={(e) => { setMileage(e.target.value); }}
+              onChange={(e) => {
+                setMileage(e.target.value);
+              }}
               placeholder={t('mileageForm.mileage')}
               className="h-9 py-1"
               min={0}
@@ -96,7 +100,9 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               id="mileage-reading-note"
               type="text"
               value={note}
-              onChange={(e) => { setNote(e.target.value); }}
+              onChange={(e) => {
+                setNote(e.target.value);
+              }}
               placeholder={t('mileageForm.note')}
               className="h-9 py-1"
             />
