@@ -89,7 +89,7 @@ describe('forms foundation', () => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const submitted = onSubmit.mock.calls[0]![0] as TestValues;
     expect(submitted.name).toBe('Alice');
-    // NumberField coerces the string "42" input to a JS number
+    // NumberField coerces the string \"42\" input to a JS number
     expect(typeof submitted.count).toBe('number');
     expect(submitted.count).toBe(42);
     expect(submitted.category).toBe('a');
