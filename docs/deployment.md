@@ -42,7 +42,7 @@ POSTGRES_USER=carnotea
 POSTGRES_PASSWORD=<generate-with-openssl-rand-base64-24>
 
 # ── API database connection ───────────────────────────────────────────────
-DATABASE_URL=postgresql://carnotea:<password>@postgres:5432/carnotea
+DATABASE_URL=postgresql://carnotea:***@postgres:5432/carnotea
 
 # ── Auth (better-auth) ────────────────────────────────────────────────────
 BETTER_AUTH_SECRET=<generate-with-openssl-rand-base64-32>
@@ -66,7 +66,8 @@ docker compose -f docker-compose.prod.yml up -d
 ```
 
 This builds the API and web images (first run takes a few minutes), pulls
-Postgres and Caddy images, creates volumes, and starts everything.
+Postgres and Caddy images, creates volumes, and starts all services, including
+the migration service that automatically applies database migrations.
 
 Check status:
 
@@ -74,23 +75,7 @@ Check status:
 docker compose -f docker-compose.prod.yml ps
 ```
 
-## 4. Apply database migrations
-
-Migrations must run before the API can serve requests. Run them once:
-
-```bash
-docker compose -f docker-compose.prod.yml exec api \
-    pnpm --filter @carnotea/db db:migrate
-```
-
-After this, the API health checks will pass:
-
-```bash
-curl https://carnotea.example.com/healthz
-curl https://carnotea.example.com/readyz
-```
-
-## 5. Verify the deployment
+## 4. Verify the deployment
 
 | Check                   | Command / URL                                    |
 | ----------------------- | ------------------------------------------------ |
@@ -99,7 +84,7 @@ curl https://carnotea.example.com/readyz
 | API readiness (with DB) | `curl https://<DOMAIN>/readyz`                   |
 | Docker logs             | `docker compose -f docker-compose.prod.yml logs` |
 
-## 6. Day-to-day operations
+## 5. Day-to-day operations
 
 ### View logs
 
@@ -148,12 +133,12 @@ docker compose -f docker-compose.prod.yml down -v
                      │  web   │ │  api   │
                      │(nginx) │ │(NestJS)│
                      └────────┘ └───┬────┘
-                                     │
-                                     ▼
-                               ┌──────────┐
-                               │ postgres │
-                               │   :5432  │
-                               └──────────┘
+                                   │
+                                   ▼
+                           ┌──────────┐
+                           │ postgres │
+                           │   :5432  │
+                           └──────────┘
 ```
 
 Only Caddy exposes host ports (80/443). All other services are on an internal
@@ -165,15 +150,14 @@ Docker network and communicate by service name.
   the `DOMAIN` env var. API paths (`/api/*`, `/healthz`, `/readyz`) are proxied
   to the API container; everything else goes to the web static server.
 - **Postgres** volume is persistent: `postgres_prod_data`.
-- **API** depends on a healthy Postgres before starting.
+- **API** depends on a healthy Postgres and the migrate service (which runs
+  database migrations) before starting.
 - **All long-running services** use `restart: unless-stopped`.
 
 ## Out of scope (covered by future tickets)
 
-| Feature              | Ticket |
-| -------------------- | ------ |
-| CI/CD image publish  | T-046  |
-| Automated migrations | T-046  |
-| Backup / restore     | T-047  |
-| Secrets store        | T-048  |
-| Security hardening   | T-049  |
+| Feature            | Ticket |
+| ------------------ | ------ |
+| Backup / restore   | T-047  |
+| Secrets store      | T-048  |
+| Security hardening | T-049  |
