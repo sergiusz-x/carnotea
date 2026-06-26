@@ -108,6 +108,37 @@ this:
 - **Env:** `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` are required (see
   `src/config/env.ts` and root `.env.example`).
 
+## Email (T-051)
+
+Transactional emails (email verification, password reset) are sent via a thin
+nodemailer transport with bilingual templates.
+
+Architecture — three layers in `src/emails/`:
+
+| File | Role |
+| ---- | ---- |
+| `email.transport.ts` | Creates a nodemailer `Transporter` from env. SMTP if `SMTP_HOST` is set; Mailpit fallback in dev (`localhost:1025`); boot error in prod with no host. |
+| `email.templates.ts` | Renders `{ subject, text, html }` from inline i18next resources (`locales/en.json`, `locales/pl.json`). `SupportedLocale = 'pl' \| 'en'`. |
+| `email.service.ts` | Combines transport + templates. Exported as a factory `createEmailService(deps)`. **Errors are swallowed** — send failures must not propagate to auth callbacks (enumeration-safety). |
+
+**Wiring:** `AuthModule.useFactory` creates the transport and service, passes
+`emailService` into `createAuth(...)`. The auth callbacks look up the user's
+`localePref` from `vehicle_diary.users` and pass the locale to the service.
+
+**Env vars** (all in `src/config/env.ts`):
+
+| Var | Default | Notes |
+| --- | ------- | ----- |
+| `SMTP_HOST` | *(absent)* | Absent in dev → Mailpit; required in prod |
+| `SMTP_PORT` | `587` | Use `465` for implicit TLS |
+| `SMTP_USER` | *(absent)* | Optional (Mailpit needs none) |
+| `SMTP_PASS` | *(absent)* | Optional |
+| `EMAIL_FROM` | `CarNotea <noreply@localhost>` | Sender shown to recipients |
+| `EMAIL_REPLY_TO` | `noreply@localhost` | Reply-to header |
+
+**Mailpit** is included in `docker-compose.yml`. SMTP on port `1025`, web inbox
+at **http://localhost:8025**. No credentials needed.
+
 ## Observability (T-018)
 
 OpenTelemetry tracing is initialised in `src/instrumentation.ts` and preloaded

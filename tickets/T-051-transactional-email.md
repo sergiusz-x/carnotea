@@ -1,14 +1,14 @@
 ---
 id: T-051
 title: Transactional email for better-auth flows (verification + password reset)
-status: ready
+status: done
 priority: high
-owner: ~
+owner: antigravity
 dependencies: [T-006]
 labels: [account, email]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-26
+closed_at: 2026-06-26
 ---
 
 # T-051 — Transactional email for better-auth flows (verification + password reset)
@@ -31,22 +31,22 @@ and reply-to must be configurable rather than hard-coded.
 
 ## Acceptance criteria
 
-- [ ] An email transport is configured from env (SMTP host/port/user/pass plus
+- [x] An email transport is configured from env (SMTP host/port/user/pass plus
       `EMAIL_FROM` / `EMAIL_REPLY_TO`); selecting/credentialing the provider is
       env-only, no secrets committed.
-- [ ] The env vars are validated with **Zod** in the API env schema; in
+- [x] The env vars are validated with **Zod** in the API env schema; in
       development a missing provider falls back to the local preview transport,
       not a boot error.
-- [ ] better-auth's `sendVerificationEmail` and `sendResetPassword` (plus
+- [x] better-auth's `sendVerificationEmail` and `sendResetPassword` (plus
       re-send) callbacks are implemented and actually deliver via the transport.
-- [ ] Verification and password-reset emails have **both** `pl` and `en`
+- [x] Verification and password-reset emails have **both** `pl` and `en`
       templates (subject + body), chosen from the user's persisted locale with
       `en` as fallback, per ADR-0007.
-- [ ] Templates render the correct action URL from the canonical auth/web base
+- [x] Templates render the correct action URL from the canonical auth/web base
       URL; links resolve to the right web routes.
-- [ ] Local dev uses **Mailpit** (added to `docker-compose.yml`) so emails are
+- [x] Dev setup uses **Mailpit** (added to `docker-compose.yml`) so emails are
       captured and previewable at its web UI without sending real mail.
-- [ ] `.env.example` documents the new `EMAIL_*` / SMTP vars with safe,
+- [x] `.env.example` documents the new `EMAIL_*` / SMTP vars with safe,
       commented defaults pointing at the local Mailpit instance.
 
 ## Files to touch
@@ -77,6 +77,12 @@ and reply-to must be configurable rather than hard-coded.
   no real credentials ever touch the repo.
 - Do not throw on send failure inside the auth callback in a way that leaks
   whether an account exists (reset flow must stay enumeration-safe).
+
+## Notes
+
+- In local development, the transport falls back to localhost:1025 (Mailpit) if SMTP_HOST is not set or set to `localhost`.
+- Errors on email delivery inside auth hooks are caught and logged as warnings instead of failing the auth request. This preserves account enumeration safety and ensures a transient network error does not completely halt client-side flow.
+- A user's locale is fetched from the database before generating subjects and templates; fallback is English.
 
 ## References
 
