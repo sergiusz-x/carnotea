@@ -2,7 +2,7 @@ import { authAccount, authSession, authUser, authVerification, users, type Db } 
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
-import { emailService } from '../emails/email.service.ts';
+import { emailService } from '../emails/email.service.js';
 
 export interface AuthOptions {
   secret: string;
