@@ -3,9 +3,9 @@ import { createRequire } from 'node:module';
 import i18next from 'i18next';
 
 const _require = createRequire(import.meta.url);
- 
+
 const enLocale = _require('./locales/en.json') as Record<string, unknown>;
- 
+
 const plLocale = _require('./locales/pl.json') as Record<string, unknown>;
 
 // i18next.init is async but the library also exposes a synchronous path when

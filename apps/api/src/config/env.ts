@@ -22,9 +22,9 @@ export const envSchema = z.object({
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   // Branded sender address shown to recipients.
-  EMAIL_FROM: z.email().default('CarNotea <noreply@localhost>'),
+  EMAIL_FROM: z.string().default('CarNotea <noreply@localhost>'),
   // Reply-to address (may differ from sender).
-  EMAIL_REPLY_TO: z.email().default('noreply@localhost'),
+  EMAIL_REPLY_TO: z.string().default('noreply@localhost'),
 
   // ── Observability: OpenTelemetry (all optional — absent → tracing disabled) ──
   /** OTLP endpoint for exporting traces. When unset → tracing is a no-op. */
