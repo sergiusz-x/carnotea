@@ -1,6 +1,10 @@
 import { Logger } from '@nestjs/common';
 
-import { type SupportedLocale, renderPasswordResetEmail, renderVerificationEmail } from './email.templates.js';
+import {
+  type SupportedLocale,
+  renderPasswordResetEmail,
+  renderVerificationEmail,
+} from './email.templates.js';
 import { type EmailTransport } from './email.transport.js';
 
 const logger = new Logger('EmailService');

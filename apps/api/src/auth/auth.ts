@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm';
 import { authAccount, authSession, authUser, authVerification, users, type Db } from '@carnotea/db';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { eq } from 'drizzle-orm';
 
 import { type EmailService } from '../emails/email.service.js';
 import { type SupportedLocale } from '../emails/email.templates.js';

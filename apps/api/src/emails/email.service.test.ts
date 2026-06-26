@@ -11,8 +11,9 @@ function makeMockTransport(): MockTransport {
   const calls: EmailMessage[] = [];
   return {
     calls,
-    async send(msg: EmailMessage) {
+    send(msg: EmailMessage) {
       calls.push(msg);
+      return Promise.resolve();
     },
   };
 }
@@ -36,18 +37,33 @@ describe('EmailService', () => {
 
   describe('sendVerificationEmail', () => {
     it('sends via transport with correct recipient', async () => {
-      await service.sendVerificationEmail('user@example.com', 'Anna', 'https://example.com/verify', 'en');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'Anna',
+        'https://example.com/verify',
+        'en',
+      );
       expect(transport.calls).toHaveLength(1);
       expect(firstCall(transport.calls).to).toBe('user@example.com');
     });
 
     it('includes EN subject for en locale', async () => {
-      await service.sendVerificationEmail('user@example.com', 'Anna', 'https://example.com/verify', 'en');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'Anna',
+        'https://example.com/verify',
+        'en',
+      );
       expect(firstCall(transport.calls).subject).toBe('Verify your CarNotea email address');
     });
 
     it('includes PL subject for pl locale', async () => {
-      await service.sendVerificationEmail('user@example.com', 'Anna', 'https://example.com/verify', 'pl');
+      await service.sendVerificationEmail(
+        'user@example.com',
+        'Anna',
+        'https://example.com/verify',
+        'pl',
+      );
       expect(firstCall(transport.calls).subject).toBe('Potwierdź adres e-mail w CarNotea');
     });
 
@@ -75,18 +91,33 @@ describe('EmailService', () => {
 
   describe('sendPasswordResetEmail', () => {
     it('sends via transport with correct recipient', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'Jan', 'https://example.com/reset', 'pl');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'Jan',
+        'https://example.com/reset',
+        'pl',
+      );
       expect(transport.calls).toHaveLength(1);
       expect(firstCall(transport.calls).to).toBe('user@example.com');
     });
 
     it('includes PL subject for pl locale', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'Jan', 'https://example.com/reset', 'pl');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'Jan',
+        'https://example.com/reset',
+        'pl',
+      );
       expect(firstCall(transport.calls).subject).toBe('Zresetuj hasło w CarNotea');
     });
 
     it('includes EN subject for en locale', async () => {
-      await service.sendPasswordResetEmail('user@example.com', 'Jan', 'https://example.com/reset', 'en');
+      await service.sendPasswordResetEmail(
+        'user@example.com',
+        'Jan',
+        'https://example.com/reset',
+        'en',
+      );
       expect(firstCall(transport.calls).subject).toBe('Reset your CarNotea password');
     });
 

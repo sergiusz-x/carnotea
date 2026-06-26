@@ -3,9 +3,9 @@ import { createRequire } from 'node:module';
 import i18next from 'i18next';
 
 const _require = createRequire(import.meta.url);
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- JSON locale files loaded at module init; import-with-type is not supported in NodeNext TS
+ 
 const enLocale = _require('./locales/en.json') as Record<string, unknown>;
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- same rationale
+ 
 const plLocale = _require('./locales/pl.json') as Record<string, unknown>;
 
 // i18next.init is async but the library also exposes a synchronous path when
@@ -28,7 +28,7 @@ export const initPromise: Promise<unknown> = _initPromise;
 export type SupportedLocale = 'pl' | 'en';
 
 function t(key: string, locale: SupportedLocale, vars?: Record<string, string>): string {
-  return i18next.t(key, { lng: locale, ...vars }) as string;
+  return i18next.t(key, { lng: locale, ...vars });
 }
 
 export interface VerificationEmailContent {

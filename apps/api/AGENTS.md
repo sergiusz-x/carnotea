@@ -115,11 +115,11 @@ nodemailer transport with bilingual templates.
 
 Architecture — three layers in `src/emails/`:
 
-| File | Role |
-| ---- | ---- |
-| `email.transport.ts` | Creates a nodemailer `Transporter` from env. SMTP if `SMTP_HOST` is set; Mailpit fallback in dev (`localhost:1025`); boot error in prod with no host. |
-| `email.templates.ts` | Renders `{ subject, text, html }` from inline i18next resources (`locales/en.json`, `locales/pl.json`). `SupportedLocale = 'pl' \| 'en'`. |
-| `email.service.ts` | Combines transport + templates. Exported as a factory `createEmailService(deps)`. **Errors are swallowed** — send failures must not propagate to auth callbacks (enumeration-safety). |
+| File                 | Role                                                                                                                                                                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `email.transport.ts` | Creates a nodemailer `Transporter` from env. SMTP if `SMTP_HOST` is set; Mailpit fallback in dev (`localhost:1025`); boot error in prod with no host.                                 |
+| `email.templates.ts` | Renders `{ subject, text, html }` from inline i18next resources (`locales/en.json`, `locales/pl.json`). `SupportedLocale = 'pl' \| 'en'`.                                             |
+| `email.service.ts`   | Combines transport + templates. Exported as a factory `createEmailService(deps)`. **Errors are swallowed** — send failures must not propagate to auth callbacks (enumeration-safety). |
 
 **Wiring:** `AuthModule.useFactory` creates the transport and service, passes
 `emailService` into `createAuth(...)`. The auth callbacks look up the user's
@@ -127,14 +127,14 @@ Architecture — three layers in `src/emails/`:
 
 **Env vars** (all in `src/config/env.ts`):
 
-| Var | Default | Notes |
-| --- | ------- | ----- |
-| `SMTP_HOST` | *(absent)* | Absent in dev → Mailpit; required in prod |
-| `SMTP_PORT` | `587` | Use `465` for implicit TLS |
-| `SMTP_USER` | *(absent)* | Optional (Mailpit needs none) |
-| `SMTP_PASS` | *(absent)* | Optional |
-| `EMAIL_FROM` | `CarNotea <noreply@localhost>` | Sender shown to recipients |
-| `EMAIL_REPLY_TO` | `noreply@localhost` | Reply-to header |
+| Var              | Default                        | Notes                                     |
+| ---------------- | ------------------------------ | ----------------------------------------- |
+| `SMTP_HOST`      | _(absent)_                     | Absent in dev → Mailpit; required in prod |
+| `SMTP_PORT`      | `587`                          | Use `465` for implicit TLS                |
+| `SMTP_USER`      | _(absent)_                     | Optional (Mailpit needs none)             |
+| `SMTP_PASS`      | _(absent)_                     | Optional                                  |
+| `EMAIL_FROM`     | `CarNotea <noreply@localhost>` | Sender shown to recipients                |
+| `EMAIL_REPLY_TO` | `noreply@localhost`            | Reply-to header                           |
 
 **Mailpit** is included in `docker-compose.yml`. SMTP on port `1025`, web inbox
 at **http://localhost:8025**. No credentials needed.
