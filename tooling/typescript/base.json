@@ -20,7 +20,8 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "incremental": true
+    "incremental": true,
+    "types": ["node", "nodemailer"]
   },
   "exclude": ["node_modules", "dist", "build", ".turbo", "coverage"]
 }

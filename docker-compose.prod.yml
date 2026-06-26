@@ -36,6 +36,33 @@ services:
     expose:
       - 5432
 
+  # ---- Migration (run once to apply DB migrations) ----------------------------
+  migrate:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: builder # use the builder stage to have all dependencies and source
+    container_name: carnotea-prod-migrate
+    restart: 'no'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      API_PORT: 3001
+      API_HOST: 0.0.0.0
+      DATABASE_URL: ${DATABASE_URL:?error}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?error}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?error}
+      CORS_ORIGINS: ${CORS_ORIGINS:?error}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      RATE_LIMIT_AUTH_MAX: ${RATE_LIMIT_AUTH_MAX:-10}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      BODY_LIMIT: ${BODY_LIMIT:-1048576}
+    networks:
+      - carnotea-prod
+    command: ['sh', '-c', 'pnpm --filter @carnotea/db dlx drizzle-kit migrate']
+
   # ---- API (NestJS / Fastify) -----------------------------------------------
   api:
     build:
@@ -58,6 +85,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     networks:
       - carnotea-prod
     expose:
