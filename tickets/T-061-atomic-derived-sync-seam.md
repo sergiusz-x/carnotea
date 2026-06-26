@@ -1,7 +1,7 @@
 ---
 id: T-061
 title: Make derived-sync seams transaction-composable and source writes atomic
-status: in_progress
+status: done
 priority: high
 size: M
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-022]
 labels: [api, refactor, data-integrity]
 created_at: 2026-06-21
 updated_at: 2026-06-26
-closed_at: ~
+closed_at: 2026-06-26
 ---
 
 # T-061 — Atomic, transaction-composable derived-sync seams

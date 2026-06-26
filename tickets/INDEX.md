@@ -37,7 +37,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## In progress
 
-- 🔴 [T-061 — Make derived-sync seams transaction-composable and source writes atomic](./T-061-atomic-derived-sync-seam.md)
+_None._
 
 ## Blocked
 
@@ -93,6 +93,7 @@ _None._
 - 🔴 [T-058 — Web-screens pattern + rewrite web tickets to delta specs](./T-058-web-screens-pattern-web-tickets.md)
 - 🟡 [T-059 — Ticket-spec linter + CI gate](./T-059-ticket-linter-ci.md)
 - 🟡 [T-060 — Generate INDEX.md from frontmatter to end status-move merge conflicts](./T-060-tickets-index-generated.md)
+- 🔴 [T-061 — Make derived-sync seams transaction-composable and source writes atomic](./T-061-atomic-derived-sync-seam.md)
 - 🟡 [T-062 — Remove legacy sql/ + tests/ and fix the stale architecture data-flow](./T-062-remove-legacy-sql-fix-architecture-doc.md)
 - 🔴 [T-063 — Align API paths, vehicle energy invariant, and README](./T-063-api-prefix-energy-invariant-readme-cleanup.md)
 - 🔴 [T-065 — Pre-push CI validation](./T-065-pre-push-ci-validation.md)
