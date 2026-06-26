@@ -6,6 +6,8 @@ import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fa
 
 import { type Env } from '../config/env.js';
 import { DB } from '../db/db.constants.js';
+import { createEmailService } from '../emails/email.service.js';
+import { createEmailTransport } from '../emails/email.transport.js';
 
 import { AUTH } from './auth.constants.js';
 import { AuthGuard } from './auth.guard.js';
@@ -24,12 +26,26 @@ function parseOrigins(value: string): string[] {
     {
       provide: AUTH,
       inject: [DB, ConfigService],
-      useFactory: (db: Db, config: ConfigService<Env, true>): Auth =>
-        createAuth(db, {
+      useFactory: (db: Db, config: ConfigService<Env, true>): Auth => {
+        const isDev = config.get('NODE_ENV', { infer: true }) !== 'production';
+        const transport = createEmailTransport({
+          smtpHost: config.get('SMTP_HOST', { infer: true }),
+          smtpPort: config.get('SMTP_PORT', { infer: true }),
+          smtpUser: config.get('SMTP_USER', { infer: true }),
+          smtpPass: config.get('SMTP_PASS', { infer: true }),
+          emailFrom: config.get('EMAIL_FROM', { infer: true }),
+          emailReplyTo: config.get('EMAIL_REPLY_TO', { infer: true }),
+          isDev,
+        });
+        const emailService = createEmailService({ transport });
+
+        return createAuth(db, {
           secret: config.get('BETTER_AUTH_SECRET', { infer: true }),
           baseURL: config.get('BETTER_AUTH_URL', { infer: true }),
           trustedOrigins: parseOrigins(config.get('CORS_ORIGINS', { infer: true })),
-        }),
+          emailService,
+        });
+      },
     },
     AuthGuard,
   ],

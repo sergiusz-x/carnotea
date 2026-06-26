@@ -1,13 +1,16 @@
+import { eq } from 'drizzle-orm';
 import { authAccount, authSession, authUser, authVerification, users, type Db } from '@carnotea/db';
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
-import { emailService } from '../emails/email.service.js';
+import { type EmailService } from '../emails/email.service.js';
+import { type SupportedLocale } from '../emails/email.templates.js';
 
 export interface AuthOptions {
   secret: string;
   baseURL: string;
   trustedOrigins: string[];
+  emailService: EmailService;
 }
 
 // The domain profile requires first/last name, while better-auth signup carries a
@@ -25,8 +28,20 @@ function splitName(name: string): { firstName: string; lastName: string } {
   };
 }
 
+/** Look up the user's persisted locale from the domain users table; fall back to 'en'. */
+async function getUserLocale(db: Db, email: string): Promise<SupportedLocale> {
+  const row = await db.query.users.findFirst({
+    where: eq(users.email, email.toLowerCase()),
+    columns: { localePref: true },
+  });
+  const pref = row?.localePref;
+  return pref === 'pl' || pref === 'en' ? pref : 'en';
+}
+
 export function createAuth(db: Db, options: AuthOptions) {
   const isProduction = options.baseURL.startsWith('https://');
+  const emailSvc = options.emailService;
+
   return betterAuth({
     secret: options.secret,
     baseURL: options.baseURL,
@@ -51,7 +66,8 @@ export function createAuth(db: Db, options: AuthOptions) {
         url: string;
       }) => {
         const { firstName } = splitName(user.name);
-        await emailService.sendPasswordResetEmail(user.email, firstName, url);
+        const locale = await getUserLocale(db, user.email);
+        await emailSvc.sendPasswordResetEmail(user.email, firstName, url, locale);
       },
       sendEmailVerification: async ({
         user,
@@ -61,7 +77,8 @@ export function createAuth(db: Db, options: AuthOptions) {
         url: string;
       }) => {
         const { firstName } = splitName(user.name);
-        await emailService.sendVerificationEmail(user.email, firstName, url);
+        const locale = await getUserLocale(db, user.email);
+        await emailSvc.sendVerificationEmail(user.email, firstName, url, locale);
       },
     },
     // Hardened session cookies in production (T-049)

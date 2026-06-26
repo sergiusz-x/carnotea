@@ -21,6 +21,11 @@ describe.skipIf(!databaseUrl)('better-auth signup creates a linked domain profil
       secret: 'test-secret-at-least-16-chars',
       baseURL: 'http://localhost:3001',
       trustedOrigins: ['http://localhost:5173'],
+      // No-op stub: this test exercises the databaseHooks path, not email delivery.
+      emailService: {
+        sendVerificationEmail: () => Promise.resolve(),
+        sendPasswordResetEmail: () => Promise.resolve(),
+      },
     });
   });
 
