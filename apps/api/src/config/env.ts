@@ -15,6 +15,12 @@ export const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().int().positive().default(60_000),
   // Body-size limit in bytes (1 MB default)
   BODY_LIMIT: z.coerce.number().int().positive().default(1_048_576),
+  // --- Mail SMTP (T-051) ---
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.coerce.number().int().positive().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  SMTP_FROM: z.email().optional(),
 
   // ── Observability: OpenTelemetry (all optional — absent → tracing disabled) ──
   /** OTLP endpoint for exporting traces. When unset → tracing is a no-op. */
@@ -32,7 +38,7 @@ export function validateEnv(config: Record<string, string | undefined>): Env {
   const result = envSchema.safeParse(config);
   if (!result.success) {
     const issues = result.error.issues
-      .map((issue) => `  - ${issue.path.join('.') || '(root)'}: ${issue.message}`)
+      .map((issue) => '  - ' + (issue.path.join('.') || '(root)') + ': ' + issue.message)
       .join('\n');
     throw new Error(`Invalid environment variables:\n${issues}`);
   }

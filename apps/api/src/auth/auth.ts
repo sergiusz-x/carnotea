@@ -2,6 +2,8 @@ import { authAccount, authSession, authUser, authVerification, users, type Db } 
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 
+import { emailService } from '../emails/email.service.ts';
+
 export interface AuthOptions {
   secret: string;
   baseURL: string;
@@ -39,7 +41,29 @@ export function createAuth(db: Db, options: AuthOptions) {
         verification: authVerification,
       },
     }),
-    emailAndPassword: { enabled: true },
+    emailAndPassword: {
+      enabled: true,
+      sendResetPassword: async ({
+        user,
+        url,
+      }: {
+        user: { email: string; name: string };
+        url: string;
+      }) => {
+        const { firstName } = splitName(user.name);
+        await emailService.sendPasswordResetEmail(user.email, firstName, url);
+      },
+      sendEmailVerification: async ({
+        user,
+        url,
+      }: {
+        user: { email: string; name: string };
+        url: string;
+      }) => {
+        const { firstName } = splitName(user.name);
+        await emailService.sendVerificationEmail(user.email, firstName, url);
+      },
+    },
     // Hardened session cookies in production (T-049)
     advanced: {
       useSecureCookies: isProduction,

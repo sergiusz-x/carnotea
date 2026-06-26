@@ -46,6 +46,8 @@
   "devDependencies": {
     "@carnotea/eslint-config": "workspace:*",
     "@carnotea/prettier-config": "workspace:*",
+    "@types/node": "^26.0.1",
+    "@types/nodemailer": "^8.0.1",
     "eslint": "catalog:",
     "husky": "^9.1.7",
     "prettier": "catalog:",

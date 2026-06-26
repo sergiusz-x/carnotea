@@ -13,17 +13,19 @@ describe('LanguageSwitcher', () => {
 
   it('renders an option for each supported language', () => {
     render(<LanguageSwitcher />);
-
-    expect(screen.getByRole('combobox', { name: /language/i })).toBeInTheDocument();
+    // open the combobox to reveal options
+    const trigger = screen.getByRole('combobox', { name: /language/i });
+    fireEvent.click(trigger);
     expect(screen.getByRole('option', { name: 'English' })).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'Polski' })).toBeInTheDocument();
   });
 
   it('changes the active language and persists the choice to localStorage', async () => {
     render(<LanguageSwitcher />);
-    const select = screen.getByRole('combobox', { name: /language/i });
-
-    fireEvent.change(select, { target: { value: 'pl' } });
+    const trigger = screen.getByRole('combobox', { name: /language/i });
+    fireEvent.click(trigger);
+    const option = screen.getByRole('option', { name: 'Polski' });
+    fireEvent.click(option);
 
     await waitFor(() => {
       expect(i18n.resolvedLanguage).toBe('pl');

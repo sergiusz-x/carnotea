@@ -69,9 +69,17 @@ describe('forms foundation', () => {
 
     fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Alice' } });
     fireEvent.change(screen.getByLabelText('Count'), { target: { value: '42' } });
-    fireEvent.change(screen.getByLabelText('Category'), { target: { value: 'a' } });
+
+    // interact with SelectField
+    const trigger = screen.getByRole('combobox', { name: /category/i });
+    fireEvent.click(trigger);
+    const optionA = screen.getByRole('option', { name: 'Option A' });
+    fireEvent.click(optionA);
+
     const form = screen.getByLabelText('Name').closest('form');
-    if (!form) throw new Error('form element not found');
+    if (!form) {
+      throw new Error('form element not found');
+    }
     fireEvent.submit(form);
 
     await waitFor(() => {
@@ -109,12 +117,12 @@ describe('forms foundation', () => {
 
   it('SelectField renders all provided options', () => {
     render(<TestFormComponent />);
-
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    const select = screen.getByLabelText('Category') as HTMLSelectElement;
-    const optionValues = Array.from(select.options).map((o) => o.value);
-
-    expect(optionValues).toContain('a');
-    expect(optionValues).toContain('b');
+    // open the combobox to see options
+    const trigger = screen.getByRole('combobox', { name: /category/i });
+    fireEvent.click(trigger);
+    const optionA = screen.getByRole('option', { name: 'Option A' });
+    const optionB = screen.getByRole('option', { name: 'Option B' });
+    expect(optionA).toBeInTheDocument();
+    expect(optionB).toBeInTheDocument();
   });
 });
