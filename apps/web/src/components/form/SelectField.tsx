@@ -57,7 +57,7 @@ export function SelectField({
               }}
               disabled={disabled}
             >
-              <SelectTrigger ref={field.ref} onBlur={field.onBlur}>
+              <SelectTrigger ref={field.ref} onBlur={field.onBlur} aria-label={label}>
                 <SelectValue placeholder={placeholder ?? t('select.placeholder')} />
               </SelectTrigger>
               <SelectContent>
