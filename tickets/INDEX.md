@@ -30,7 +30,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
 - 🟡 [T-055 — Web Push notifications for due reminders](./T-055-pwa-push-notifications.md)
-- 🔴 [T-061 — Make derived-sync seams transaction-composable and source writes atomic](./T-061-atomic-derived-sync-seam.md)
 
 ## Backlog
 
@@ -38,7 +37,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## In progress
 
-_None._
+- 🔴 [T-061 — Make derived-sync seams transaction-composable and source writes atomic](./T-061-atomic-derived-sync-seam.md)
 
 ## Blocked
 
