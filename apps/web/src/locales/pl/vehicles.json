@@ -70,12 +70,16 @@
     "confirmTitle": "Usuń pojazd",
     "confirmMessage": "Czy na pewno chcesz usunąć {{brand}} {{model}}? Wszystkie powiązane logi (paliwo, serwis, wydatki itp.) zostaną trwale usunięte.",
     "confirm": "Tak, usuń",
+    "deleting": "Usuwanie…",
     "cancel": "Anuluj"
   },
   "mileageForm": {
     "readingDate": "Data odczytu",
     "mileage": "Przebieg (km)",
     "note": "Notatka",
-    "submit": "Dodaj odczyt"
+    "submit": "Dodaj odczyt",
+    "adding": "Dodawanie…",
+    "delete": "Usuń",
+    "deleting": "Usuwanie…"
   }
 }

@@ -15,16 +15,16 @@ import {
   FormSubmit,
   NumberField,
   TextField,
-  setServerErrors,
+  handleApiError,
   useZodForm,
 } from '@/components/form';
+import { FormContainer } from '@/components/FormContainer';
 import { Button } from '@/components/ui/button';
 import {
   serviceRecordQueryOptions,
   useCreateServiceRecord,
   useUpdateServiceRecord,
 } from '@/features/service/queries';
-import type { ApiError } from '@/lib/api/client';
 
 // ─── Total cost preview ───────────────────────────────────────────────────────
 
@@ -164,7 +164,7 @@ function FormShell({
   isEditing: boolean;
 }) {
   return (
-    <div className="container mx-auto max-w-screen-md px-4 py-8">
+    <FormContainer>
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
@@ -178,7 +178,7 @@ function FormShell({
         <PartsEditor form={form} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
-    </div>
+    </FormContainer>
   );
 }
 
@@ -209,16 +209,7 @@ export function ServiceCreatePage() {
     try {
       await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -260,16 +251,7 @@ export function ServiceEditPage() {
     try {
       await updateMutation.mutateAsync(values);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 

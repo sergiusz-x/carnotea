@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { ErrorState } from '@/components/ErrorState';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -33,18 +34,11 @@ export function UpcomingReminders() {
 
   if (isError) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center gap-2 py-8">
-          <p className="text-sm text-muted-foreground">{t('error.load')}</p>
-          <button
-            type="button"
-            onClick={() => void refetch()}
-            className="text-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80"
-          >
-            {t('error.retry')}
-          </button>
-        </CardContent>
-      </Card>
+      <ErrorState
+        message={t('error.load')}
+        onRetry={() => void refetch()}
+        retryLabel={t('error.retry')}
+      />
     );
   }
 

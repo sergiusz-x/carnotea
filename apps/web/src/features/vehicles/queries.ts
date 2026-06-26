@@ -1,18 +1,14 @@
-import { type VehicleCreate, type VehicleUpdate } from '@carnotea/shared';
+import { type Vehicle, type VehicleCreate, type VehicleUpdate } from '@carnotea/shared';
 import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 
 import { apiClient } from '@/lib/api/client';
-
-// ─── Query keys ───────────────────────────────────────────────────────────────
 
 export const vehicleKeys = {
   all: () => ['vehicles'] as const,
   detail: (id: string) => ['vehicles', id] as const,
   mileage: (id: string) => ['vehicles', id, 'mileage'] as const,
 };
-
-// ─── Fetch functions ───────────────────────────────────────────────────────────
 
 async function fetchVehicles() {
   const { data } = await apiClient.GET('/api/vehicles');
@@ -28,8 +24,6 @@ async function fetchMileageReadings(vehicleId: string) {
   const { data } = await apiClient.GET('/api/vehicles/{vehicleId}/mileage-readings', { vehicleId });
   return data;
 }
-
-// ─── Query options ─────────────────────────────────────────────────────────────
 
 export const vehiclesQueryOptions = queryOptions({
   queryKey: vehicleKeys.all(),
@@ -48,8 +42,6 @@ export const mileageReadingsQueryOptions = (vehicleId: string) =>
     queryFn: () => fetchMileageReadings(vehicleId),
   });
 
-// ─── Mutations ─────────────────────────────────────────────────────────────────
-
 export function useCreateVehicle() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -57,6 +49,10 @@ export function useCreateVehicle() {
   return useMutation({
     mutationFn: (body: VehicleCreate) => apiClient.POST('/api/vehicles', body),
     onSuccess: async ({ data }) => {
+      queryClient.setQueryData<Vehicle[]>(vehicleKeys.all(), (current) =>
+        current ? [data, ...current.filter((vehicle) => vehicle.id !== data.id)] : [data],
+      );
+      queryClient.setQueryData(vehicleKeys.detail(data.id), data);
       await queryClient.invalidateQueries({ queryKey: vehicleKeys.all() });
       await navigate({ to: '/vehicles/$vehicleId', params: { vehicleId: data.id } });
     },
@@ -69,8 +65,12 @@ export function useUpdateVehicle(id: string) {
 
   return useMutation({
     mutationFn: (body: VehicleUpdate) => apiClient.PATCH('/api/vehicles/{id}', body, { id }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: vehicleKeys.detail(id) });
+    onSuccess: async ({ data }) => {
+      queryClient.setQueryData(vehicleKeys.detail(id), data);
+      queryClient.setQueryData<Vehicle[]>(vehicleKeys.all(), (current) =>
+        current?.map((vehicle) => (vehicle.id === id ? data : vehicle)),
+      );
+      await queryClient.invalidateQueries({ queryKey: vehicleKeys.all() });
       await navigate({ to: '/vehicles/$vehicleId', params: { vehicleId: id } });
     },
   });
@@ -82,9 +82,13 @@ export function useDeleteVehicle() {
 
   return useMutation({
     mutationFn: (id: string) => apiClient.DELETE('/api/vehicles/{id}', { id }),
-    onSuccess: async () => {
+    onSuccess: async (_result, id) => {
+      queryClient.removeQueries({ queryKey: vehicleKeys.detail(id) });
+      queryClient.setQueryData<Vehicle[]>(vehicleKeys.all(), (current) =>
+        current?.filter((vehicle) => vehicle.id !== id),
+      );
       await queryClient.invalidateQueries({ queryKey: vehicleKeys.all() });
-      await navigate({ to: '/vehicles' });
+      await navigate({ to: '/vehicles', replace: true });
     },
   });
 }
@@ -95,6 +99,19 @@ export function useAddMileageReading(vehicleId: string) {
   return useMutation({
     mutationFn: (body: { readingDate: string; mileage: number; note?: string | null }) =>
       apiClient.POST('/api/vehicles/{vehicleId}/mileage-readings', body, { vehicleId }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: vehicleKeys.mileage(vehicleId) });
+      await queryClient.invalidateQueries({ queryKey: vehicleKeys.detail(vehicleId) });
+    },
+  });
+}
+
+export function useDeleteMileageReading(vehicleId: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) =>
+      apiClient.DELETE('/api/vehicles/{vehicleId}/mileage-readings/{id}', { vehicleId, id }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: vehicleKeys.mileage(vehicleId) });
       await queryClient.invalidateQueries({ queryKey: vehicleKeys.detail(vehicleId) });

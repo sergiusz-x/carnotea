@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import './load-env.js';
 
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
@@ -11,7 +12,16 @@ import { Logger } from 'nestjs-pino';
 import { AppModule } from './app.module.js';
 import { type Env, validateEnv } from './config/env.js';
 
-const AUTH_ROUTE_PREFIX = '/api/auth/';
+const RATE_LIMITED_AUTH_PREFIXES = [
+  '/api/auth/sign-in',
+  '/api/auth/sign-up',
+  '/api/auth/forget-password',
+  '/api/auth/reset-password',
+] as const;
+
+function isStrictAuthRateLimitRoute(url: string): boolean {
+  return RATE_LIMITED_AUTH_PREFIXES.some((prefix) => url.startsWith(prefix));
+}
 
 // Validate before NestJS initialises — throws with a clear message on bad env.
 validateEnv(process.env);
@@ -62,7 +72,7 @@ async function bootstrap(): Promise<void> {
   // 3. Rate limiting
   await fastifyInstance.register(rateLimit, {
     max: (request) =>
-      request.url.startsWith(AUTH_ROUTE_PREFIX) ? env.RATE_LIMIT_AUTH_MAX : env.RATE_LIMIT_MAX,
+      isStrictAuthRateLimitRoute(request.url) ? env.RATE_LIMIT_AUTH_MAX : env.RATE_LIMIT_MAX,
     timeWindow: env.RATE_LIMIT_WINDOW_MS,
     keyGenerator: (request) => request.ip,
   });

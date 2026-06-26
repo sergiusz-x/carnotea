@@ -19,6 +19,24 @@ import {
 } from '@/features/vehicles/queries';
 import type { ApiError } from '@/lib/api/client';
 
+const CURRENCY_OPTIONS = [
+  { value: 'PLN', label: 'PLN' },
+  { value: 'EUR', label: 'EUR' },
+  { value: 'USD', label: 'USD' },
+  { value: 'GBP', label: 'GBP' },
+  { value: 'CHF', label: 'CHF' },
+];
+
+function normalizeVehicleValues(values: Record<string, unknown>) {
+  const normalized = { ...values };
+  for (const key of ['generation', 'engine', 'vin', 'registrationNumber'] as const) {
+    if (normalized[key] === '') {
+      normalized[key] = undefined;
+    }
+  }
+  return normalized;
+}
+
 function useFuelTypeOptions() {
   const { t } = useTranslation('vehicles');
   return FUEL_TYPE_CODES.map((code) => ({
@@ -27,12 +45,9 @@ function useFuelTypeOptions() {
   }));
 }
 
-// ─── Create page ───────────────────────────────────────────────────────────────
-
 export function VehicleCreatePage() {
   const { t } = useTranslation('vehicles');
   const fuelTypeOptions = useFuelTypeOptions();
-
   const createMutation = useCreateVehicle();
 
   const form = useZodForm(VehicleCreateSchema, {
@@ -43,7 +58,9 @@ export function VehicleCreatePage() {
 
   async function onSubmit(values: Record<string, unknown>) {
     try {
-      await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
+      await createMutation.mutateAsync(
+        normalizeVehicleValues(values) as Parameters<typeof createMutation.mutateAsync>[0],
+      );
     } catch (error: unknown) {
       const apiError = error as ApiError;
       if (apiError.issues?.length) {
@@ -69,15 +86,11 @@ export function VehicleCreatePage() {
   );
 }
 
-// ─── Edit page ─────────────────────────────────────────────────────────────────
-
 export function VehicleEditPage() {
   const { vehicleId } = useParams({ from: '/_authenticated/vehicles/$vehicleId/edit' });
   const { t } = useTranslation('vehicles');
   const fuelTypeOptions = useFuelTypeOptions();
-
   const { data: existingVehicle } = useSuspenseQuery(vehicleQueryOptions(vehicleId));
-
   const updateMutation = useUpdateVehicle(vehicleId);
 
   const form = useZodForm(VehicleUpdateSchema, {
@@ -96,7 +109,7 @@ export function VehicleEditPage() {
 
   async function onSubmit(values: Record<string, unknown>) {
     try {
-      await updateMutation.mutateAsync(values);
+      await updateMutation.mutateAsync(normalizeVehicleValues(values));
     } catch (error: unknown) {
       const apiError = error as ApiError;
       if (apiError.issues?.length) {
@@ -121,8 +134,6 @@ export function VehicleEditPage() {
     />
   );
 }
-
-// ─── Shared form shell ─────────────────────────────────────────────────────────
 
 function FormShell({
   title,
@@ -171,9 +182,10 @@ function FormShell({
           label={t('fields.registrationNumber')}
           placeholder={t('fields.registrationNumber')}
         />
-        <TextField
+        <SelectField
           name="currencyCode"
           label={t('fields.currencyCode')}
+          options={CURRENCY_OPTIONS}
           placeholder={t('fields.currencyCode')}
         />
         <FormSubmit>{submitLabel}</FormSubmit>

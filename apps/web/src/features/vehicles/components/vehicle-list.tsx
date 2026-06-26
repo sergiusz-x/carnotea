@@ -2,6 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { EmptyState } from '@/components/EmptyState';
+import { ErrorState } from '@/components/ErrorState';
+import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
 
@@ -13,56 +17,59 @@ export function VehicleListPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
+      <PageContainer>
         <p>{t('loading')}</p>
-      </div>
+      </PageContainer>
     );
   }
 
   if (isError) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="space-y-4">
-          <p>{t('error.load')}</p>
-          <p className="text-sm text-muted-foreground">
-            {error instanceof Error ? error.message : String(error)}
-          </p>
-          <Button onClick={() => void refetch()}>{t('error.retry')}</Button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!data || (Array.isArray(data) && data.length === 0)) {
-    return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="flex flex-col items-center justify-center gap-4 py-16">
-          <h2 className="text-xl font-semibold">{t('empty.title')}</h2>
-          <p className="text-muted-foreground">{t('empty.description')}</p>
-          <Link to="/vehicles/new">
-            <Button>{t('empty.cta')}</Button>
-          </Link>
-        </div>
-      </div>
+      <PageContainer>
+        <ErrorState
+          message={t('error.load')}
+          detail={error instanceof Error ? error.message : String(error)}
+          onRetry={() => void refetch()}
+          retryLabel={t('error.retry')}
+        />
+      </PageContainer>
     );
   }
 
   const vehicles = Array.isArray(data) ? data : [];
 
+  if (vehicles.length === 0) {
+    return (
+      <PageContainer>
+        <EmptyState
+          title={t('empty.title')}
+          description={t('empty.description')}
+          action={
+            <Link to="/vehicles/new">
+              <Button>{t('empty.cta')}</Button>
+            </Link>
+          }
+        />
+      </PageContainer>
+    );
+  }
+
   return (
-    <div className="container mx-auto max-w-screen-xl px-4 py-8">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t('pageTitle')}</h1>
-        <Link to="/vehicles/new">
-          <Button>{t('addVehicle')}</Button>
-        </Link>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title={t('pageTitle')}
+        action={
+          <Link to="/vehicles/new">
+            <Button>{t('addVehicle')}</Button>
+          </Link>
+        }
+      />
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {vehicles.map((vehicle) => (
           <VehicleCard key={vehicle.id} vehicle={vehicle} />
         ))}
       </div>
-    </div>
+    </PageContainer>
   );
 }

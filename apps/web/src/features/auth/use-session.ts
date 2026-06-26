@@ -6,6 +6,9 @@ export const sessionQueryOptions = queryOptions({
   queryKey: ['session'],
   queryFn: async () => {
     const result = await authClient.getSession();
+    if (result.error) {
+      throw new Error(result.error.message ?? 'Session request failed');
+    }
     return result.data ?? null;
   },
   // Session is long-lived; invalidate explicitly on sign-in/out rather than

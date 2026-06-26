@@ -6,7 +6,6 @@ import {
 } from '@carnotea/shared';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
-import { useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -17,16 +16,17 @@ import {
   NumberField,
   SelectField,
   TextField,
-  setServerErrors,
+  handleApiError,
   useZodForm,
 } from '@/components/form';
 import type { SelectOption } from '@/components/form';
+import { FormContainer } from '@/components/FormContainer';
 import {
   chargingSessionQueryOptions,
   useCreateChargingSession,
   useUpdateChargingSession,
 } from '@/features/charging/queries';
-import type { ApiError } from '@/lib/api/client';
+import { useTotalCost } from '@/lib/useTotalCost';
 
 // ─── Charger type select options ──────────────────────────────────────────────
 
@@ -42,21 +42,8 @@ function useChargerTypeOptions(): SelectOption[] {
 
 function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
   const { t } = useTranslation('charging');
-  const energyKwh = useWatch({ control: form.control, name: 'energyKwh' }) as number | undefined;
-  const pricePerKwh = useWatch({
-    control: form.control,
-    name: 'pricePerKwh',
-  }) as number | undefined;
-
-  const parsedEnergy = Number(energyKwh);
-  const parsedPrice = Number(pricePerKwh);
-  const totalCost =
-    !Number.isNaN(parsedEnergy) && !Number.isNaN(parsedPrice) && parsedEnergy > 0 && parsedPrice > 0
-      ? (parsedEnergy * parsedPrice).toFixed(2)
-      : null;
-
+  const totalCost = useTotalCost(form, 'energyKwh', 'pricePerKwh');
   if (totalCost === null) return null;
-
   return (
     <p className="text-sm text-muted-foreground">{t('totalCostPreview', { cost: totalCost })}</p>
   );
@@ -84,16 +71,7 @@ export function ChargingCreatePage() {
     try {
       await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -142,16 +120,7 @@ export function ChargingEditPage() {
     try {
       await updateMutation.mutateAsync(values);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -187,7 +156,7 @@ function FormShell({
   const { t } = useTranslation('charging');
 
   return (
-    <div className="container mx-auto max-w-screen-md px-4 py-8">
+    <FormContainer>
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
@@ -241,6 +210,6 @@ function FormShell({
         <CheckboxField name="isFullCharge" label={t('fields.isFullCharge')} />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
-    </div>
+    </FormContainer>
   );
 }

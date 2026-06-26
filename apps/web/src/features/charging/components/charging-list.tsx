@@ -2,8 +2,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { EmptyState } from '@/components/EmptyState';
+import { ErrorState } from '@/components/ErrorState';
+import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChargingCard } from '@/features/charging/components/charging-card';
 import {
   chargingSessionsQueryOptions,
@@ -35,59 +38,48 @@ export function ChargingListPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
+      <PageContainer>
         <p>{t('loading')}</p>
-      </div>
+      </PageContainer>
     );
   }
 
   if (isError || !sessions) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="space-y-4">
-          <p>{t('error.load')}</p>
-          <p className="text-sm text-muted-foreground">
-            {error instanceof Error ? error.message : String(error)}
-          </p>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              void refetch();
-            }}
-          >
-            {t('error.retry')}
-          </button>
-        </div>
-      </div>
+      <PageContainer>
+        <ErrorState
+          message={t('error.load')}
+          detail={error instanceof Error ? error.message : String(error)}
+          onRetry={() => void refetch()}
+          retryLabel={t('error.retry')}
+        />
+      </PageContainer>
     );
   }
 
   const list = Array.isArray(sessions) ? sessions : [];
 
   return (
-    <div className="container mx-auto max-w-screen-xl px-4 py-8">
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t('pageTitle')}</h1>
-        <Link to="/vehicles/$vehicleId/charging/new" params={{ vehicleId }}>
-          <Button>{t('addChargingSession')}</Button>
-        </Link>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title={t('pageTitle')}
+        action={
+          <Link to="/vehicles/$vehicleId/charging/new" params={{ vehicleId }}>
+            <Button>{t('addChargingSession')}</Button>
+          </Link>
+        }
+      />
 
-      {/* Empty state */}
       {list.length === 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('empty.title')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">{t('empty.description')}</p>
+        <EmptyState
+          title={t('empty.title')}
+          description={t('empty.description')}
+          action={
             <Link to="/vehicles/$vehicleId/charging/new" params={{ vehicleId }}>
               <Button>{t('empty.cta')}</Button>
             </Link>
-          </CardContent>
-        </Card>
+          }
+        />
       )}
 
       {/* Charging cards */}
@@ -127,6 +119,6 @@ export function ChargingListPage() {
           )}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

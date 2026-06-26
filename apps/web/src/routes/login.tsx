@@ -1,6 +1,6 @@
-import { createRoute, redirect, useSearch } from '@tanstack/react-router';
+import { createRoute, redirect, useNavigate, useSearch } from '@tanstack/react-router';
 import { Moon, Sun } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { SignInForm } from '@/features/auth/sign-in-form';
 import { SignUpForm } from '@/features/auth/sign-up-form';
-import { sessionQueryOptions } from '@/features/auth/use-session';
+import { sessionQueryOptions, useSession } from '@/features/auth/use-session';
 
 import { rootRoute } from './root';
 
@@ -36,7 +36,15 @@ function LoginPage() {
   const { t } = useTranslation('common');
   const { theme, toggleTheme } = useTheme();
   const search = useSearch({ from: '/login' });
+  const navigate = useNavigate();
   const redirectTo = search.redirect;
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user) {
+      void navigate({ to: redirectTo ?? '/', replace: true });
+    }
+  }, [navigate, redirectTo, session]);
   const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
 
   return (

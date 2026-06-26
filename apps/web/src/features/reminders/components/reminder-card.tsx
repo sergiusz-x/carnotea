@@ -3,6 +3,8 @@ import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 // Due-state badge key lookup — avoids template-literal type-widening issues with i18next.
 const dueStateKey = (ds: string): `dueState.${DueState}` => `dueState.${ds as DueState}`;
@@ -83,38 +85,33 @@ export function ReminderCard({
         </div>
         <div className="flex gap-2">
           {status === 'pending' && (
-            <button
+            <Button
               type="button"
-              className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground shadow hover:bg-primary/90 disabled:opacity-50"
               onClick={() => {
                 onMarkDone(id);
               }}
               disabled={isMarking}
             >
               {isMarking ? t('list.marking') : t('list.markDone')}
-            </button>
+            </Button>
           )}
           <Link
             to="/vehicles/$vehicleId/reminders/$reminderId/edit"
             params={{ vehicleId, reminderId: id }}
+            className={cn(buttonVariants({ variant: 'outline' }))}
           >
-            <button
-              type="button"
-              className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium shadow-sm hover:bg-accent hover:text-accent-foreground disabled:opacity-50"
-            >
-              {t('edit.submit')}
-            </button>
+            {t('edit.submit')}
           </Link>
-          <button
+          <Button
             type="button"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-destructive px-4 text-sm font-medium text-destructive-foreground shadow hover:bg-destructive/90 disabled:opacity-50"
+            variant="destructive"
             onClick={() => {
               onDelete(id, title);
             }}
             disabled={isDeleting}
           >
             {t('delete.confirm')}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

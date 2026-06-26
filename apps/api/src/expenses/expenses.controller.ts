@@ -26,21 +26,20 @@ import { AuthGuard } from '../auth/auth.guard.js';
 import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
+import {
+  idPipe,
+  nestDetailPath,
+  nestListPath,
+  resourceWithVehicleParam,
+  vehicleIdParam,
+  vehicleIdPipe,
+} from '../lib/route-params.js';
 
 import { ExpensesService, type ExpenseResponse } from './expenses.service.js';
 
-const vehicleIdParam = z.object({ vehicleId: z.uuid() });
-const expenseIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
-const vehicleIdPipe = new ZodValidationPipe(z.uuid());
-const idPipe = new ZodValidationPipe(z.uuid());
-
-const expensesByVehicleNestPath = ROUTES.expensesByVehicle
-  .replace('{vehicleId}', ':vehicleId')
-  .slice(1);
-const expenseByIdNestPath = ROUTES.expenseById
-  .replace('{vehicleId}', ':vehicleId')
-  .replace('{id}', ':id')
-  .slice(1);
+const expensesByVehicleNestPath = nestListPath(ROUTES.expensesByVehicle);
+const expenseByIdNestPath = nestDetailPath(ROUTES.expenseById);
+const expenseIdParam = resourceWithVehicleParam;
 
 const ExpenseResponseSchema = z.object({
   id: z.uuid(),

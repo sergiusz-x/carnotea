@@ -1,4 +1,16 @@
-import { chargingSessions, fuelLogs, fuelTypes, vehicles, type Db } from '@carnotea/db';
+import {
+  chargingSessions,
+  expenses,
+  fuelLogs,
+  fuelTypes,
+  issues,
+  mileageReadings,
+  reminders,
+  serviceParts,
+  serviceRecords,
+  vehicles,
+  type Db,
+} from '@carnotea/db';
 import {
   type ApiIssue,
   type Vehicle,
@@ -15,7 +27,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
 
@@ -199,13 +211,38 @@ export class VehiclesService {
   }
 
   async remove(userId: string, id: string): Promise<void> {
-    const deleted = await this.db
-      .delete(vehicles)
-      .where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)))
-      .returning({ id: vehicles.id });
-    if (deleted.length === 0) {
-      throw this.notFound();
-    }
+    await this.db.transaction(async (tx) => {
+      const owned = await tx
+        .select({ id: vehicles.id })
+        .from(vehicles)
+        .where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)))
+        .limit(1);
+
+      if (owned.length === 0) {
+        throw this.notFound();
+      }
+
+      const serviceRecordRows = await tx
+        .select({ id: serviceRecords.id })
+        .from(serviceRecords)
+        .where(eq(serviceRecords.vehicleId, id));
+      const serviceRecordIds = serviceRecordRows.map((record) => record.id);
+
+      if (serviceRecordIds.length > 0) {
+        await tx
+          .delete(serviceParts)
+          .where(inArray(serviceParts.serviceRecordId, serviceRecordIds));
+      }
+
+      await tx.delete(expenses).where(eq(expenses.vehicleId, id));
+      await tx.delete(fuelLogs).where(eq(fuelLogs.vehicleId, id));
+      await tx.delete(chargingSessions).where(eq(chargingSessions.vehicleId, id));
+      await tx.delete(mileageReadings).where(eq(mileageReadings.vehicleId, id));
+      await tx.delete(reminders).where(eq(reminders.vehicleId, id));
+      await tx.delete(issues).where(eq(issues.vehicleId, id));
+      await tx.delete(serviceRecords).where(eq(serviceRecords.vehicleId, id));
+      await tx.delete(vehicles).where(and(eq(vehicles.id, id), eq(vehicles.userId, userId)));
+    });
   }
 
   private async assertFuelTypeChangeAllowed(

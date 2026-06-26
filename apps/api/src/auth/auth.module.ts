@@ -12,6 +12,13 @@ import { AuthGuard } from './auth.guard.js';
 import { createAuth, type Auth } from './auth.js';
 import { toWebHeaders } from './fastify-bridge.js';
 
+function parseOrigins(value: string): string[] {
+  return value
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+}
+
 @Module({
   providers: [
     {
@@ -21,6 +28,7 @@ import { toWebHeaders } from './fastify-bridge.js';
         createAuth(db, {
           secret: config.get('BETTER_AUTH_SECRET', { infer: true }),
           baseURL: config.get('BETTER_AUTH_URL', { infer: true }),
+          trustedOrigins: parseOrigins(config.get('CORS_ORIGINS', { infer: true })),
         }),
     },
     AuthGuard,

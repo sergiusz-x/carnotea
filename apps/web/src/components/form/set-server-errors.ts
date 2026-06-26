@@ -1,5 +1,5 @@
 import { type ErrorResponse } from '@carnotea/shared';
-import { type FieldValues, type Path, type UseFormSetError } from 'react-hook-form'; // Path used for issue paths below
+import { type FieldValues, type Path, type UseFormSetError } from 'react-hook-form';
 
 export function setServerErrors<TValues extends FieldValues>(
   setError: UseFormSetError<TValues>,
@@ -13,4 +13,11 @@ export function setServerErrors<TValues extends FieldValues>(
   } else {
     setError('root', { message: error.message });
   }
+}
+
+export function handleApiError<TValues extends FieldValues>(
+  error: unknown,
+  setError: UseFormSetError<TValues>,
+): void {
+  setServerErrors(setError, error as ErrorResponse);
 }

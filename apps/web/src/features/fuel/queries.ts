@@ -3,6 +3,7 @@ import { useMutation, useQueryClient, queryOptions } from '@tanstack/react-query
 import { useNavigate } from '@tanstack/react-router';
 
 import { apiClient } from '@/lib/api/client';
+import { invalidateMileageAndExpenses } from '@/lib/query/invalidate';
 
 // ─── Query keys ───────────────────────────────────────────────────────────────
 
@@ -50,19 +51,9 @@ export function useCreateFuelLog(vehicleId: string) {
     mutationFn: (body: FuelLogCreate) =>
       apiClient.POST('/api/vehicles/{vehicleId}/fuel-logs', body, { vehicleId }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: fuelLogKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
-      await navigate({
-        to: '/vehicles/$vehicleId/fuel',
-        params: { vehicleId },
-      });
+      await queryClient.invalidateQueries({ queryKey: fuelLogKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
+      await navigate({ to: '/vehicles/$vehicleId/fuel', params: { vehicleId } });
     },
   });
 }
@@ -75,22 +66,10 @@ export function useUpdateFuelLog(vehicleId: string, fuelId: string) {
     mutationFn: (body: FuelLogUpdate) =>
       apiClient.PATCH('/api/vehicles/{vehicleId}/fuel-logs/{id}', body, { vehicleId, id: fuelId }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: fuelLogKeys.detail(vehicleId, fuelId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: fuelLogKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
-      await navigate({
-        to: '/vehicles/$vehicleId/fuel',
-        params: { vehicleId },
-      });
+      await queryClient.invalidateQueries({ queryKey: fuelLogKeys.detail(vehicleId, fuelId) });
+      await queryClient.invalidateQueries({ queryKey: fuelLogKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
+      await navigate({ to: '/vehicles/$vehicleId/fuel', params: { vehicleId } });
     },
   });
 }
@@ -102,15 +81,8 @@ export function useDeleteFuelLog(vehicleId: string) {
     mutationFn: (id: string) =>
       apiClient.DELETE('/api/vehicles/{vehicleId}/fuel-logs/{id}', { vehicleId, id }),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: fuelLogKeys.all(vehicleId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'mileage'],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ['vehicles', vehicleId, 'expenses'],
-      });
+      await queryClient.invalidateQueries({ queryKey: fuelLogKeys.all(vehicleId) });
+      await invalidateMileageAndExpenses(queryClient, vehicleId);
     },
   });
 }

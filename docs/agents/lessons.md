@@ -109,3 +109,12 @@ atomic — a crash between them leaves a fuel log with no reading and a stale
 derived sync in **one** `db.transaction(async (tx) => …)` and pass `tx` to the sync
 seams; the seams take `tx` as their first argument and never open their own
 transaction. See `docs/agents/patterns/resource-crud-api.md` § Derived-data hooks.
+
+### 2026-06-25 — Respect explicit no-ticket debugging sessions
+
+**Context:** Fixing bugs reported during a live local-app test session.
+**Mistake:** Treating every non-trivial bug report as a ticket workflow even after
+the human explicitly asked for immediate in-session fixes.
+**Rule:** When the human explicitly overrides the ticket workflow for a live
+debugging session, fix the reported bugs directly in the current checkout and
+create tickets only for follow-up work the human explicitly asks to track.

@@ -23,20 +23,20 @@ import { AuthGuard } from '../auth/auth.guard.js';
 import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
+import {
+  idPipe,
+  nestDetailPath,
+  nestListPath,
+  resourceWithVehicleParam,
+  vehicleIdParam,
+  vehicleIdPipe,
+} from '../lib/route-params.js';
 
 import { FuelLogsService, type FuelLogResponse } from './fuel-logs.service.js';
 
-const vehicleIdParam = z.object({ vehicleId: z.uuid() });
-const fuelLogIdParam = z.object({ vehicleId: z.uuid(), id: z.uuid() });
-const vehicleIdPipe = new ZodValidationPipe(z.uuid());
-const idPipe = new ZodValidationPipe(z.uuid());
-const fuelLogsByVehicleNestPath = ROUTES.fuelLogsByVehicle
-  .replace('{vehicleId}', ':vehicleId')
-  .slice(1);
-const fuelLogByIdNestPath = ROUTES.fuelLogById
-  .replace('{vehicleId}', ':vehicleId')
-  .replace('{id}', ':id')
-  .slice(1);
+const fuelLogsByVehicleNestPath = nestListPath(ROUTES.fuelLogsByVehicle);
+const fuelLogByIdNestPath = nestDetailPath(ROUTES.fuelLogById);
+const fuelLogIdParam = resourceWithVehicleParam;
 
 const FuelLogResponseSchema = z.object({
   id: z.uuid(),

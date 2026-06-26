@@ -3,8 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Link, useParams, useSearch } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { EmptyState } from '@/components/EmptyState';
+import { ErrorState } from '@/components/ErrorState';
+import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -59,49 +63,41 @@ export function ReminderListPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
+      <PageContainer>
         <p>{t('loading')}</p>
-      </div>
+      </PageContainer>
     );
   }
 
   if (isError || !reminders) {
     return (
-      <div className="container mx-auto max-w-screen-xl px-4 py-8">
-        <div className="space-y-4">
-          <p>{t('error.load')}</p>
-          <p className="text-sm text-muted-foreground">
-            {error instanceof Error ? error.message : String(error)}
-          </p>
-          <button
-            type="button"
-            className="btn"
-            onClick={() => {
-              void refetch();
-            }}
-          >
-            {t('error.retry')}
-          </button>
-        </div>
-      </div>
+      <PageContainer>
+        <ErrorState
+          message={t('error.load')}
+          detail={error instanceof Error ? error.message : String(error)}
+          onRetry={() => void refetch()}
+          retryLabel={t('error.retry')}
+        />
+      </PageContainer>
     );
   }
 
   const reminderList = Array.isArray(reminders) ? reminders : [];
 
   return (
-    <div className="container mx-auto max-w-screen-xl px-4 py-8">
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t('pageTitle')}</h1>
-        <Link to="/vehicles/$vehicleId/reminders/new" params={{ vehicleId }}>
-          <Button>{t('addReminder')}</Button>
-        </Link>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title={t('pageTitle')}
+        action={
+          <Link to="/vehicles/$vehicleId/reminders/new" params={{ vehicleId }}>
+            <Button>{t('addReminder')}</Button>
+          </Link>
+        }
+      />
 
       {/* Status filter */}
       <div className="mb-6 flex items-center gap-2">
-        <label className="text-sm font-medium">{t('fields.status')}</label>
+        <Label>{t('fields.status')}</Label>
         <Select
           value={statusFilter}
           onValueChange={(value) => {
@@ -130,19 +126,16 @@ export function ReminderListPage() {
         </Select>
       </div>
 
-      {/* Empty state */}
       {reminderList.length === 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{t('empty.title')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">{t('empty.description')}</p>
+        <EmptyState
+          title={t('empty.title')}
+          description={t('empty.description')}
+          action={
             <Link to="/vehicles/$vehicleId/reminders/new" params={{ vehicleId }}>
               <Button>{t('empty.cta')}</Button>
             </Link>
-          </CardContent>
-        </Card>
+          }
+        />
       )}
 
       {/* Reminder cards */}
@@ -174,6 +167,6 @@ export function ReminderListPage() {
           )}
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

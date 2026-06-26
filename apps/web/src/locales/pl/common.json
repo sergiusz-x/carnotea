@@ -8,5 +8,9 @@
   "theme": {
     "toLight": "Przełącz na tryb jasny",
     "toDark": "Przełącz na tryb ciemny"
+  },
+  "nav": {
+    "open": "Otwórz menu",
+    "close": "Zamknij menu"
   }
 }

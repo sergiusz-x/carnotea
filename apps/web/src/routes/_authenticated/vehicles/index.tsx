@@ -1,4 +1,4 @@
-import { createRoute } from '@tanstack/react-router';
+import { createRoute, Outlet } from '@tanstack/react-router';
 
 import { VehicleDetailPage } from '@/features/vehicles/components/vehicle-detail-hub';
 import { VehicleCreatePage, VehicleEditPage } from '@/features/vehicles/components/vehicle-form';
@@ -27,14 +27,14 @@ import { createServiceEditRoute } from './$vehicleId/service/$recordId/edit';
 import { createServiceListRoute } from './$vehicleId/service/index';
 import { createServiceNewRoute } from './$vehicleId/service/new';
 
-// ─── Parent route: /vehicles ──────────────────────────────────────────────────
+function VehicleDetailOutlet() {
+  return <Outlet />;
+}
 
 const vehicleParentRoute = createRoute({
   getParentRoute: () => authenticatedLayoutRoute,
   path: '/vehicles',
 });
-
-// ─── Child routes ──────────────────────────────────────────────────────────────
 
 const vehicleListRoute = createRoute({
   getParentRoute: () => vehicleParentRoute,
@@ -51,6 +51,12 @@ const vehicleCreateRoute = createRoute({
 export const vehicleDetailRoute = createRoute({
   getParentRoute: () => vehicleParentRoute,
   path: '/$vehicleId',
+  component: VehicleDetailOutlet,
+});
+
+const vehicleDetailIndexRoute = createRoute({
+  getParentRoute: () => vehicleDetailRoute,
+  path: '/',
   component: VehicleDetailPage,
 });
 
@@ -60,50 +66,37 @@ const vehicleEditRoute = createRoute({
   component: VehicleEditPage,
 });
 
-// ─── Fuel routes (factories, no circular import) ───────────────────────────────
-
 const fuelListRoute = createFuelListRoute(vehicleDetailRoute);
 const fuelNewRoute = createFuelNewRoute(vehicleDetailRoute);
 const { fuelDetailParentRouteNode } = createFuelLogRoutes(vehicleDetailRoute);
-
-// ─── Issue routes (factories, no circular import) ──────────────────────────────
 
 const issueListRoute = createIssueListRoute(vehicleDetailRoute);
 const issueNewRoute = createIssueNewRoute(vehicleDetailRoute);
 const issueDetailRoute = createIssueDetailRoute(vehicleDetailRoute);
 const issueEditRoute = createIssueEditRoute(vehicleDetailRoute);
 
-// ─── Reminder routes (factories, no circular import) ───────────────────────────
-
 const reminderListRoute = createReminderListRoute(vehicleDetailRoute);
 const reminderNewRoute = createReminderNewRoute(vehicleDetailRoute);
 const reminderDetailRoute = createReminderDetailRoute(vehicleDetailRoute);
 const reminderEditRoute = createReminderEditRoute(vehicleDetailRoute);
 
-// ─── Charging routes (factories, no circular import) ──────────────────────────
-
 const chargingListRoute = createChargingListRoute(vehicleDetailRoute);
 const chargingNewRoute = createChargingNewRoute(vehicleDetailRoute);
 const chargingEditRoute = createChargingEditRoute(vehicleDetailRoute);
-
-// ─── Expense routes (factories, no circular import) ──────────────────────────
 
 const expenseListRoute = createExpenseListRoute(vehicleDetailRoute);
 const expenseNewRoute = createExpenseNewRoute(vehicleDetailRoute);
 const expenseEditRoute = createExpenseEditRoute(vehicleDetailRoute);
 
-// ─── Service routes (factories, no circular import) ──────────────────────────
-
 const serviceListRoute = createServiceListRoute(vehicleDetailRoute);
 const serviceNewRoute = createServiceNewRoute(vehicleDetailRoute);
 const serviceEditRoute = createServiceEditRoute(vehicleDetailRoute);
-
-// ─── Assembled tree ────────────────────────────────────────────────────────────
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
   vehicleListRoute,
   vehicleCreateRoute,
   vehicleDetailRoute.addChildren([
+    vehicleDetailIndexRoute,
     vehicleEditRoute,
     fuelListRoute,
     fuelNewRoute,

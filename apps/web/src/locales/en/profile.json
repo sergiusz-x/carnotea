@@ -7,7 +7,8 @@
     "firstName": "First name",
     "lastName": "Last name",
     "email": "Email",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "save": "Save account"
   },
   "preferences": {
     "title": "Preferences",
@@ -19,6 +20,7 @@
     "unitsMetric": "Metric",
     "unitsImperial": "Imperial",
     "currency": "Default currency",
+    "save": "Save preferences",
     "saving": "Saving…",
     "saved": "Preferences saved"
   },

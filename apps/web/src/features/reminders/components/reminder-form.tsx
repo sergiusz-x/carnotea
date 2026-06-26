@@ -1,9 +1,9 @@
 import {
   ReminderCreateSchema,
   ReminderUpdateSchema,
+  REMINDER_STATUS_CODES,
   type ReminderStatusCode,
 } from '@carnotea/shared';
-import { REMINDER_STATUS_CODES } from '@carnotea/shared';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
@@ -15,16 +15,16 @@ import {
   NumberField,
   SelectField,
   TextField,
-  setServerErrors,
+  handleApiError,
   useZodForm,
 } from '@/components/form';
 import type { SelectOption } from '@/components/form';
+import { FormContainer } from '@/components/FormContainer';
 import {
   reminderQueryOptions,
   useCreateReminder,
   useUpdateReminder,
 } from '@/features/reminders/queries';
-import type { ApiError } from '@/lib/api/client';
 
 // ─── Shared status select options ────────────────────────────────────────────
 
@@ -61,16 +61,7 @@ export function ReminderCreatePage() {
     try {
       await createMutation.mutateAsync(values as Parameters<typeof createMutation.mutateAsync>[0]);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -113,16 +104,7 @@ export function ReminderEditPage() {
     try {
       await updateMutation.mutateAsync(values);
     } catch (error: unknown) {
-      const apiError = error as ApiError;
-      if (apiError.issues?.length) {
-        setServerErrors(form.setError, {
-          code: apiError.code,
-          message: apiError.message,
-          issues: apiError.issues,
-        });
-      } else {
-        form.setError('root', { message: apiError.message });
-      }
+      handleApiError(error, form.setError);
     }
   }
 
@@ -158,7 +140,7 @@ function FormShell({
   const { t } = useTranslation('reminders');
 
   return (
-    <div className="container mx-auto max-w-screen-md px-4 py-8">
+    <FormContainer>
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
@@ -178,6 +160,6 @@ function FormShell({
         />
         <FormSubmit>{submitLabel}</FormSubmit>
       </AppForm>
-    </div>
+    </FormContainer>
   );
 }

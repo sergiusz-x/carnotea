@@ -1,8 +1,8 @@
-import { type UserProfileUpdate } from '@carnotea/shared';
 import { UserProfileUpdateSchema } from '@carnotea/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { type z } from 'zod';
 
 import {
   AppForm,
@@ -14,77 +14,113 @@ import {
 } from '@/components/form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 import { profileQueryOptions, useUpdateProfile } from '../queries';
 
+const accountSchema = UserProfileUpdateSchema.pick({
+  firstName: true,
+  lastName: true,
+});
+
+const preferencesSchema = UserProfileUpdateSchema.pick({
+  localePref: true,
+  unitsPref: true,
+  currencyPref: true,
+});
+
+type AccountValues = z.infer<typeof accountSchema>;
+type PreferencesValues = z.infer<typeof preferencesSchema>;
+
 /** ISO-4217 currency codes relevant for the app context. */
 const CURRENCY_OPTIONS = [
-  { value: 'PLN', label: 'PLN (zł)' },
-  { value: 'EUR', label: 'EUR (€)' },
+  { value: 'PLN', label: 'PLN (zl)' },
+  { value: 'EUR', label: 'EUR (EUR)' },
   { value: 'USD', label: 'USD ($)' },
-  { value: 'GBP', label: 'GBP (£)' },
-  { value: 'CHF', label: 'CHF (Fr)' },
+  { value: 'GBP', label: 'GBP (GBP)' },
+  { value: 'CHF', label: 'CHF (CHF)' },
 ];
+
+function isApiError(err: unknown): err is {
+  code: string;
+  message: string;
+  issues?: Array<{ code: string; path: (string | number)[]; message: string }>;
+} {
+  return Boolean(err && typeof err === 'object' && 'code' in err && 'message' in err);
+}
 
 export function ProfileScreen() {
   const { t, i18n } = useTranslation('profile');
 
   const { data: profile, isLoading, isError, error, refetch } = useQuery(profileQueryOptions);
-  const updateProfile = useUpdateProfile();
+  const updateAccount = useUpdateProfile();
+  const updatePreferences = useUpdateProfile();
 
-  const form = useZodForm(UserProfileUpdateSchema, {
+  const accountForm = useZodForm(accountSchema, {
     defaultValues: {
       firstName: '',
       lastName: '',
+    },
+  });
+
+  const preferencesForm = useZodForm(preferencesSchema, {
+    defaultValues: {
       localePref: 'en',
       unitsPref: 'metric',
       currencyPref: 'PLN',
     },
   });
 
-  // Sync form values when profile data loads
+  // Sync form values when profile data loads.
   useEffect(() => {
     if (profile) {
-      form.reset({
+      accountForm.reset({
         firstName: profile.firstName,
         lastName: profile.lastName,
+      });
+      preferencesForm.reset({
         localePref: profile.localePref,
         unitsPref: profile.unitsPref,
         currencyPref: profile.currencyPref,
       });
     }
-  }, [profile, form]);
+  }, [profile, accountForm, preferencesForm]);
 
-  // Watch locale changes and switch i18next language live
-  const watchedLocale = form.watch('localePref');
+  // Watch locale changes and switch i18next language live.
+  const watchedLocale = preferencesForm.watch('localePref');
   useEffect(() => {
     if (watchedLocale && watchedLocale !== i18n.resolvedLanguage) {
       void i18n.changeLanguage(watchedLocale);
     }
   }, [watchedLocale, i18n]);
 
-  async function handleSubmit(values: UserProfileUpdate) {
+  async function handleAccountSubmit(values: AccountValues) {
     try {
-      await updateProfile.mutateAsync(values);
+      await updateAccount.mutateAsync(values);
     } catch (err: unknown) {
-      if (err && typeof err === 'object' && 'code' in err && 'message' in err) {
-        setServerErrors(
-          form.setError,
-          err as {
-            code: string;
-            message: string;
-            issues?: Array<{ code: string; path: (string | number)[]; message: string }>;
-          },
-        );
+      if (isApiError(err)) {
+        setServerErrors(accountForm.setError, err);
       } else {
-        form.setError('root', { message: t('error.saveFailed') });
+        accountForm.setError('root', { message: t('error.saveFailed') });
+      }
+    }
+  }
+
+  async function handlePreferencesSubmit(values: PreferencesValues) {
+    try {
+      await updatePreferences.mutateAsync(values);
+    } catch (err: unknown) {
+      if (isApiError(err)) {
+        setServerErrors(preferencesForm.setError, err);
+      } else {
+        preferencesForm.setError('root', { message: t('error.saveFailed') });
       }
     }
   }
 
   if (isLoading) {
     return (
-      <div className="container mx-auto max-w-2xl py-8">
+      <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
         <p className="text-muted-foreground">{t('loading')}</p>
       </div>
     );
@@ -92,7 +128,7 @@ export function ProfileScreen() {
 
   if (isError) {
     return (
-      <div className="container mx-auto max-w-2xl py-8">
+      <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
         <Card>
           <CardContent className="pt-6">
             <p className="text-destructive">
@@ -108,33 +144,31 @@ export function ProfileScreen() {
   }
 
   return (
-    <div className="container mx-auto max-w-2xl py-8 space-y-8">
+    <div className="mx-auto w-full max-w-2xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-        <p className="text-muted-foreground mt-1">{t('description')}</p>
+        <p className="mt-1 text-muted-foreground">{t('description')}</p>
       </div>
 
-      {/* ── Account section ── */}
       <Card>
         <CardHeader>
           <CardTitle>{t('account.title')}</CardTitle>
           <CardDescription>{t('account.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <AppForm form={form} onSubmit={handleSubmit}>
+          <AppForm form={accountForm} onSubmit={handleAccountSubmit}>
             <TextField name="firstName" label={t('account.firstName')} />
             <TextField name="lastName" label={t('account.lastName')} />
 
-            {/* Email — read-only display */}
             <div className="space-y-1">
-              <label className="text-sm font-medium leading-none">{t('account.email')}</label>
-              <p className="text-sm text-muted-foreground border rounded-md px-3 py-2 bg-muted/50">
+              <Label>{t('account.email')}</Label>
+              <p className="rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
                 {profile?.email ?? ''}
               </p>
             </div>
 
             {profile?.createdAt && (
-              <p className="text-sm text-muted-foreground pt-2">
+              <p className="pt-2 text-sm text-muted-foreground">
                 {t('account.memberSince')}
                 {':'}{' '}
                 {new Date(profile.createdAt).toLocaleDateString(i18n.resolvedLanguage ?? 'en', {
@@ -144,19 +178,18 @@ export function ProfileScreen() {
               </p>
             )}
 
-            <FormSubmit>{t('preferences.saving')}</FormSubmit>
+            <FormSubmit>{t('account.save')}</FormSubmit>
           </AppForm>
         </CardContent>
       </Card>
 
-      {/* ── Preferences section ── */}
       <Card>
         <CardHeader>
           <CardTitle>{t('preferences.title')}</CardTitle>
           <CardDescription>{t('preferences.description')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <AppForm form={form} onSubmit={handleSubmit}>
+          <AppForm form={preferencesForm} onSubmit={handlePreferencesSubmit}>
             <SelectField
               name="localePref"
               label={t('preferences.locale')}
@@ -178,26 +211,25 @@ export function ProfileScreen() {
               label={t('preferences.currency')}
               options={CURRENCY_OPTIONS}
             />
-            <FormSubmit>{t('preferences.saving')}</FormSubmit>
+            <FormSubmit>{t('preferences.save')}</FormSubmit>
           </AppForm>
         </CardContent>
       </Card>
 
-      {/* ── Data section — GDPR links (placeholders for T-052) ── */}
       <Card>
         <CardHeader>
           <CardTitle>{t('data.title')}</CardTitle>
           <CardDescription>{t('data.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="flex items-center justify-between gap-4 rounded-lg border p-4">
             <div>
               <p className="font-medium">{t('data.export')}</p>
               <p className="text-sm text-muted-foreground">{t('data.exportDescription')}</p>
             </div>
             <span className="text-xs text-muted-foreground">{t('data.comingSoon')}</span>
           </div>
-          <div className="flex items-center justify-between rounded-lg border p-4">
+          <div className="flex items-center justify-between gap-4 rounded-lg border p-4">
             <div>
               <p className="font-medium">{t('data.delete')}</p>
               <p className="text-sm text-muted-foreground">{t('data.deleteDescription')}</p>

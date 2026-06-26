@@ -16,7 +16,7 @@ import {
   type UpcomingReminder,
 } from '@carnotea/shared';
 import { Inject, Injectable } from '@nestjs/common';
-import { and, desc, eq, gte, sql } from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, sql } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
 
@@ -88,7 +88,7 @@ export class DashboardService {
       .innerJoin(expenseCategories, eq(expenses.categoryId, expenseCategories.id))
       .where(
         and(
-          sql`${expenses.vehicleId} = ANY(${vehicleIds}::uuid[])`,
+          inArray(expenses.vehicleId, vehicleIds),
           gte(expenses.expenseDate, TWELVE_MONTHS_AGO_STR),
         ),
       );
@@ -119,7 +119,7 @@ export class DashboardService {
               ORDER BY ${fuelLogs.fuelDate}, ${fuelLogs.id}
             ) AS prev_full
           FROM ${fuelLogs}
-          WHERE ${fuelLogs.vehicleId} = ANY(${vehicleIds}::uuid[])
+          WHERE ${inArray(fuelLogs.vehicleId, vehicleIds)}
             AND ${fuelLogs.isFullTank} = TRUE
         )
         SELECT
@@ -175,7 +175,7 @@ export class DashboardService {
       .innerJoin(expenseCategories, eq(expenses.categoryId, expenseCategories.id))
       .where(
         and(
-          sql`${expenses.vehicleId} = ANY(${vehicleIds}::uuid[])`,
+          inArray(expenses.vehicleId, vehicleIds),
           gte(expenses.expenseDate, TWELVE_MONTHS_AGO_STR),
         ),
       )
@@ -217,7 +217,7 @@ export class DashboardService {
       .from(expenses)
       .where(
         and(
-          sql`${expenses.vehicleId} = ANY(${vehicleIds}::uuid[])`,
+          inArray(expenses.vehicleId, vehicleIds),
           gte(expenses.expenseDate, TWELVE_MONTHS_AGO_STR),
         ),
       )
@@ -265,7 +265,7 @@ export class DashboardService {
       .innerJoin(vehicles, eq(reminders.vehicleId, vehicles.id))
       .where(
         and(
-          sql`${reminders.vehicleId} = ANY(${vehicleIds}::uuid[])`,
+          inArray(reminders.vehicleId, vehicleIds),
           sql`${reminders.dueDate} IS NOT NULL`,
           sql`${reminders.dueDate} <= ${THIRTY_DAYS_FROM_NOW_STR}`,
           eq(reminderStatuses.code, 'pending'),

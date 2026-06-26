@@ -15,6 +15,21 @@
  * at zero.
  */
 
+import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+// Load .env before reading OTEL_* vars — this file is preloaded via --import
+// before main.ts, so load-env.js hasn't run yet.
+let dir = import.meta.dirname;
+for (let i = 0; i < 5; i++) {
+  const p = resolve(dir, '.env');
+  if (existsSync(p)) {
+    process.loadEnvFile(p);
+    break;
+  }
+  dir = resolve(dir, '..');
+}
+
 import { diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
