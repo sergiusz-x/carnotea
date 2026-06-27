@@ -22,6 +22,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-043 — Accessibility pass across the web app](./T-043-accessibility-audit.md)
 - 🟢 [T-044 — Performance budget + Lighthouse and bundle-size CI check](./T-044-performance-budget-lighthouse.md)
 - 🟡 [T-047 — Automated Postgres backups + tested restore runbook](./T-047-postgres-backup-restore.md)
+- 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
 - 🟡 [T-048 — Production secrets handling for the deployed stack](./T-048-secrets-management.md)
 - 🟡 [T-050 — OpenTelemetry metrics + basic alerting (follow-up to T-018)](./T-050-metrics-alerting.md)
 - 🔴 [T-052 — GDPR data export and account deletion](./T-052-gdpr-export-delete.md)
@@ -36,6 +37,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 ## In progress
 
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
+- 🟡 [T-047 — Automated Postgres backups + tested restore runbook](./T-047-postgres-backup-restore.md)
 
 ## Blocked
 

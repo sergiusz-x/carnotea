@@ -54,6 +54,46 @@ services:
       - carnotea-prod
     command: ['pnpm', '--filter', '@carnotea/db', 'db:deploy']
 
+  # ---- Backups (run on demand; schedule via host cron) -----------------------
+  backup:
+    image: postgres:16-alpine
+    container_name: carnotea-prod-backup
+    restart: 'no'
+    profiles:
+      - ops
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-carnotea}
+      POSTGRES_USER: ${POSTGRES_USER:-carnotea}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?error}
+      BACKUP_DB_HOST: ${BACKUP_DB_HOST:-postgres}
+      BACKUP_DB_PORT: ${BACKUP_DB_PORT:-5432}
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:?error}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:?error}
+      BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-carnotea/postgres}
+      BACKUP_S3_ENDPOINT_URL: ${BACKUP_S3_ENDPOINT_URL:?error}
+      BACKUP_S3_SSE: ${BACKUP_S3_SSE:-AES256}
+      BACKUP_S3_SSE_KMS_KEY_ID: ${BACKUP_S3_SSE_KMS_KEY_ID:-}
+      BACKUP_KEEP_DAILY: ${BACKUP_KEEP_DAILY:-7}
+      BACKUP_KEEP_WEEKLY: ${BACKUP_KEEP_WEEKLY:-8}
+      BACKUP_WEEKLY_DAY: ${BACKUP_WEEKLY_DAY:-7}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?error}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?error}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+      AWS_REGION: ${BACKUP_S3_REGION:?error}
+    volumes:
+      - ./scripts:/scripts:ro
+    networks:
+      - carnotea-prod
+    command:
+      - sh
+      - -ceu
+      - |
+        apk add --no-cache aws-cli >/dev/null
+        /scripts/backup.sh
+
   # ---- API (NestJS / Fastify) -----------------------------------------------
   api:
     image: ${IMAGE_REGISTRY:?error}/carnotea-api:${IMAGE_TAG:-latest}
