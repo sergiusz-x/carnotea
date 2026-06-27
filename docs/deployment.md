@@ -159,6 +159,12 @@ docker compose -f docker-compose.prod.yml logs -f migrate
 docker compose -f docker-compose.prod.yml restart api
 ```
 
+### Run an ad-hoc backup
+
+```bash
+docker compose -f docker-compose.prod.yml --profile ops run --rm backup
+```
+
 ### Stop everything
 
 ```bash
@@ -171,7 +177,136 @@ docker compose -f docker-compose.prod.yml down
 docker compose -f docker-compose.prod.yml down -v
 ```
 
-## 7. Rollback
+## 7. Automated backups
+
+Backups are driven from the production compose stack through the one-shot
+`backup` service. The service uses `pg_dump -Fc` against the `postgres` service,
+uploads the dump to S3-compatible object storage, and prunes old objects by
+retention count.
+
+### Required backup environment
+
+Add these production-only values to `.env` (or inject them from your secrets
+store):
+
+```env
+BACKUP_S3_BUCKET=car-notea-prod-backups
+BACKUP_S3_REGION=eu-central-1
+BACKUP_S3_PREFIX=carnotea/postgres
+BACKUP_S3_ENDPOINT_URL=https://s3.eu-central-1.amazonaws.com
+BACKUP_S3_SSE=AES256
+BACKUP_S3_SSE_KMS_KEY_ID=
+BACKUP_KEEP_DAILY=7
+BACKUP_KEEP_WEEKLY=8
+BACKUP_WEEKLY_DAY=7
+AWS_ACCESS_KEY_ID=<backup-user-access-key>
+AWS_SECRET_ACCESS_KEY=<backup-user-secret-key>
+AWS_SESSION_TOKEN=
+```
+
+Security notes:
+
+- Keep the bucket private; do not set any public ACLs or public bucket policy.
+- `BACKUP_S3_ENDPOINT_URL` must use `https://`; the backup script rejects plain
+  `http://`.
+- `BACKUP_S3_SSE=AES256` enables server-side encryption by default. If your
+  storage uses KMS, set `BACKUP_S3_SSE=aws:kms` and optionally provide
+  `BACKUP_S3_SSE_KMS_KEY_ID`.
+- Backup credentials should be scoped to the target bucket/prefix only.
+
+### Schedule with host cron
+
+Install a root or deploy-user cron entry on the VPS:
+
+```cron
+15 2 * * * cd /opt/carnotea && docker compose -f docker-compose.prod.yml --profile ops run --rm backup >> /var/log/carnotea-backup.log 2>&1
+```
+
+This runs every day at 02:15 UTC. Adjust the schedule to your maintenance
+window.
+
+### Retention policy
+
+- Daily backups: keep the newest `BACKUP_KEEP_DAILY` objects in
+  `s3://<bucket>/<prefix>/daily/`
+- Weekly backups: on `BACKUP_WEEKLY_DAY`, also upload to
+  `s3://<bucket>/<prefix>/weekly/` and keep the newest
+  `BACKUP_KEEP_WEEKLY` objects there
+
+Objects are named with an ISO-like UTC timestamp, so lexicographic order matches
+backup age. Older objects beyond the keep-count are pruned automatically during
+each successful run.
+
+### Failure visibility
+
+- `pg_dump` failure, upload failure, or prune failure returns a non-zero exit
+  code from the `backup` service.
+- Cron captures stdout/stderr in `/var/log/carnotea-backup.log`.
+- A successful run ends with `Backup completed successfully`.
+
+## 8. Restore runbook
+
+The restore flow below assumes you are restoring into a throwaway database on
+the VPS first, verifying it, and only then planning a cutover.
+
+### 1. Stop app traffic
+
+```bash
+docker compose -f docker-compose.prod.yml stop api web
+```
+
+### 2. Pick a backup object
+
+List the most recent backup objects:
+
+```bash
+aws --endpoint-url "$BACKUP_S3_ENDPOINT_URL" s3 ls "s3://$BACKUP_S3_BUCKET/$BACKUP_S3_PREFIX/daily/" --recursive
+```
+
+Pick one `s3://...dump` URI from that list.
+
+### 3. Restore into a throwaway database
+
+```bash
+docker compose -f docker-compose.prod.yml --profile ops run --rm \
+  -e RESTORE_TARGET_DB=carnotea_restore \
+  -e RESTORE_SOURCE="s3://$BACKUP_S3_BUCKET/$BACKUP_S3_PREFIX/daily/<backup-file>.dump" \
+  backup \
+  sh -ceu 'apk add --no-cache aws-cli >/dev/null && /scripts/restore.sh'
+```
+
+If you prefer to restore from a local file instead of S3, pass the local dump
+path to `/scripts/restore.sh` inside the container.
+
+### 4. Verify the restored data
+
+Check a couple of high-signal invariants:
+
+```bash
+docker compose -f docker-compose.prod.yml exec postgres \
+  psql -U "$POSTGRES_USER" -d carnotea_restore -c 'select count(*) from users;'
+
+docker compose -f docker-compose.prod.yml exec postgres \
+  psql -U "$POSTGRES_USER" -d carnotea_restore -c 'select count(*) from vehicles;'
+```
+
+Also inspect one known user/vehicle row if you have a safe fixture to compare
+against.
+
+### 5. Cut over or discard
+
+If the restore is only a drill, drop the throwaway database:
+
+```bash
+docker compose -f docker-compose.prod.yml exec postgres \
+  dropdb -U "$POSTGRES_USER" carnotea_restore
+```
+
+If you are performing a real disaster recovery, repeat the same restore flow
+into the production database only after you are satisfied with the throwaway
+verification.
+
+## 9. Rollback
 
 Rollback is an **application-image rollback**, not a database rollback. The
 schema changes must therefore follow the expand-then-contract pattern:
@@ -193,10 +328,9 @@ Do **not** run a down-migration as part of routine rollback. If the previous app
 cannot run against the migrated schema, the migration was not release-safe and
 must be fixed in a forward patch.
 
-## 8. Out of scope
+## 10. Out of scope
 
-| Feature                     | Ticket |
-| --------------------------- | ------ |
-| Automated backups / restore | T-047  |
-| Production secret storage   | T-048  |
-| Security hardening          | T-049  |
+| Feature                   | Ticket |
+| ------------------------- | ------ |
+| Production secret storage | T-048  |
+| Security hardening        | T-049  |

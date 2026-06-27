@@ -1,14 +1,14 @@
 ---
 id: T-047
 title: Automated Postgres backups + tested restore runbook
-status: ready
+status: done
 priority: medium
-owner: ~
+owner: codex
 dependencies: [T-045]
 labels: [ops, data]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-27
+closed_at: 2026-06-27
 ---
 
 # T-047 — Automated Postgres backups + tested restore runbook
@@ -28,19 +28,19 @@ backup). This rides on the prod stack but stays independent of CD (T-046).
 
 ## Acceptance criteria
 
-- [ ] A scheduled job runs `pg_dump` (custom/`-Fc` format) of the production
+- [x] A scheduled job runs `pg_dump` (custom/`-Fc` format) of the production
       database on a defined cadence (e.g. daily), driven from the prod compose
       stack (a sidecar service or host cron invoking the postgres container).
-- [ ] Backups are copied **off the box** to remote storage (e.g. S3-compatible
+- [x] Backups are copied **off the box** to remote storage (e.g. S3-compatible
       bucket / object store) — a local-only copy does not satisfy the criterion.
-- [ ] A retention policy prunes old backups (e.g. N daily + M weekly) so storage
+- [x] A retention policy prunes old backups (e.g. N daily + M weekly) so storage
       doesn't grow unbounded; the policy is documented.
-- [ ] Backups are restorable: a documented `pg_restore` runbook exists in
+- [x] Backups are restorable: a documented `pg_restore` runbook exists in
       `docs/deployment.md` (or `docs/runbooks/`) and has been **executed against
       a throwaway database**, with the verification noted in the PR.
-- [ ] Backup credentials and the remote-storage endpoint come from env/secrets,
+- [x] Backup credentials and the remote-storage endpoint come from env/secrets,
       never committed; `.env.example` documents the variable names only.
-- [ ] A backup failure is observable (non-zero exit / log line) rather than
+- [x] A backup failure is observable (non-zero exit / log line) rather than
       silently skipped.
 
 ## Files to touch
@@ -78,3 +78,17 @@ backup). This rides on the prod stack but stays independent of CD (T-046).
   migrate), T-048 (secrets for storage credentials)
 - External: pg_dump / pg_restore —
   <https://www.postgresql.org/docs/16/app-pgdump.html>
+
+## Notes
+
+- 2026-06-27: The production backup path uses a one-shot `backup` service in
+  `docker-compose.prod.yml`, scheduled by host cron with
+  `docker compose --profile ops run --rm backup`. This keeps the cadence outside
+  the app containers while still driving the work from the prod compose stack.
+- 2026-06-27: Off-box storage targets an S3-compatible bucket via AWS CLI env
+  credentials. The script rejects non-HTTPS endpoints and defaults object
+  encryption to `BACKUP_S3_SSE=AES256`; KMS is supported through
+  `BACKUP_S3_SSE=aws:kms`.
+- 2026-06-27: Restore drill executed locally against throwaway databases
+  `t047_source` and `t047_restore`. A custom-format dump restored successfully,
+  and `select note from restore_probe where id = 1;` returned `backup-works`.
