@@ -31,11 +31,7 @@ import { useCurrencyPref } from '@/lib/useCurrencyPref';
 
 // ─── Step field groups ────────────────────────────────────────────────────────
 
-const STEP_FIELDS = [
-  ['expenseDate', 'category', 'description'],
-  ['amount'],
-  [],
-];
+const STEP_FIELDS = [['expenseDate', 'category', 'description'], ['amount'], []];
 
 // ─── Category options ─────────────────────────────────────────────────────────
 

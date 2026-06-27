@@ -61,7 +61,10 @@ function FuelLogCard({
       ]}
       footer={
         <>
-          <span>{log.mileage.toLocaleString(locale)}{' km'}</span>
+          <span>
+            {log.mileage.toLocaleString(locale)}
+            {' km'}
+          </span>
           {log.stationName && (
             <>
               <span aria-hidden>{'·'}</span>

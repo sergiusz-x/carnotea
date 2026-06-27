@@ -82,7 +82,10 @@ function ChargingSummaryCard({ form }: { form: ReturnType<typeof useZodForm> }) 
         {values.mileage != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryMileage')}</dt>
-            <dd className="font-medium">{values.mileage}{' km'}</dd>
+            <dd className="font-medium">
+              {values.mileage}
+              {' km'}
+            </dd>
           </>
         )}
         {values.stationName && (
@@ -94,7 +97,10 @@ function ChargingSummaryCard({ form }: { form: ReturnType<typeof useZodForm> }) 
         {values.energyKwh != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryEnergy')}</dt>
-            <dd className="font-medium">{values.energyKwh}{' kWh'}</dd>
+            <dd className="font-medium">
+              {values.energyKwh}
+              {' kWh'}
+            </dd>
           </>
         )}
         {values.chargerType && (
@@ -141,7 +147,10 @@ function FormShell({
   const totalCost = useTotalCost(form, 'energyKwh', 'pricePerKwh');
 
   useEffect(() => {
-    if (defaultMileage !== undefined && !(form.formState.dirtyFields as Record<string, boolean>)['mileage']) {
+    if (
+      defaultMileage !== undefined &&
+      !(form.formState.dirtyFields as Record<string, boolean>)['mileage']
+    ) {
       form.setValue('mileage', defaultMileage, { shouldDirty: false });
     }
   }, [defaultMileage, form]);

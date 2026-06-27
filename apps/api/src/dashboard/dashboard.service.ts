@@ -97,10 +97,7 @@ export class DashboardService {
       .select({ total: sql<string>`coalesce(sum(${fuelLogs.totalCost}), '0')` })
       .from(fuelLogs)
       .where(
-        and(
-          inArray(fuelLogs.vehicleId, vehicleIds),
-          gte(fuelLogs.fuelDate, TWELVE_MONTHS_AGO_STR),
-        ),
+        and(inArray(fuelLogs.vehicleId, vehicleIds), gte(fuelLogs.fuelDate, TWELVE_MONTHS_AGO_STR)),
       );
 
     const totalFuelCost = Number(fuelCostRows.at(0)?.total ?? 0);

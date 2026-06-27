@@ -21,9 +21,13 @@ export function FuelLogDetailPage() {
   const currency = useCurrencyPref();
   const locale = i18n.resolvedLanguage ?? 'en';
 
-  const { data: log, isLoading, isError, error, refetch } = useQuery(
-    fuelLogQueryOptions(vehicleId, fuelId),
-  );
+  const {
+    data: log,
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery(fuelLogQueryOptions(vehicleId, fuelId));
   const deleteMutation = useDeleteFuelLog(vehicleId);
 
   function handleDelete() {
@@ -101,15 +105,22 @@ export function FuelLogDetailPage() {
           <div className="grid grid-cols-3 gap-px bg-border">
             <div className="bg-background px-4 py-4 text-center">
               <p className="text-xs text-muted-foreground">{t('fields.liters')}</p>
-              <p className="text-xl font-bold">{log.liters}{' L'}</p>
+              <p className="text-xl font-bold">
+                {log.liters}
+                {' L'}
+              </p>
             </div>
             <div className="bg-background px-4 py-4 text-center">
               <p className="text-xs text-muted-foreground">{t('fields.pricePerLiter')}</p>
-              <p className="text-xl font-bold">{formatMoney(log.pricePerLiter, currency, locale)}</p>
+              <p className="text-xl font-bold">
+                {formatMoney(log.pricePerLiter, currency, locale)}
+              </p>
             </div>
             <div className="bg-background px-4 py-4 text-center">
               <p className="text-xs text-muted-foreground">{t('fields.totalCost')}</p>
-              <p className="text-xl font-bold text-primary">{formatMoney(log.totalCost, currency, locale)}</p>
+              <p className="text-xl font-bold text-primary">
+                {formatMoney(log.totalCost, currency, locale)}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -121,7 +132,10 @@ export function FuelLogDetailPage() {
           <dl className="divide-y">
             <div className="flex justify-between py-2.5 text-sm">
               <dt className="text-muted-foreground">{t('fields.mileage')}</dt>
-              <dd className="font-medium">{log.mileage.toLocaleString(locale)}{' km'}</dd>
+              <dd className="font-medium">
+                {log.mileage.toLocaleString(locale)}
+                {' km'}
+              </dd>
             </div>
             {log.stationName && (
               <div className="flex justify-between py-2.5 text-sm">

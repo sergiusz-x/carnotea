@@ -313,11 +313,7 @@ export function VehicleDetailPage() {
             aria-label={t('detail.logsSection')}
           >
             {showFuel && (
-              <Link
-                to="/vehicles/$vehicleId/fuel"
-                params={{ vehicleId }}
-                className={navLinkClass}
-              >
+              <Link to="/vehicles/$vehicleId/fuel" params={{ vehicleId }} className={navLinkClass}>
                 {t('detail.nav.fuel')}
               </Link>
             )}
@@ -330,18 +326,10 @@ export function VehicleDetailPage() {
                 {t('detail.nav.charging')}
               </Link>
             )}
-            <Link
-              to="/vehicles/$vehicleId/service"
-              params={{ vehicleId }}
-              className={navLinkClass}
-            >
+            <Link to="/vehicles/$vehicleId/service" params={{ vehicleId }} className={navLinkClass}>
               {t('detail.nav.service')}
             </Link>
-            <Link
-              to="/vehicles/$vehicleId/issues"
-              params={{ vehicleId }}
-              className={navLinkClass}
-            >
+            <Link to="/vehicles/$vehicleId/issues" params={{ vehicleId }} className={navLinkClass}>
               {t('detail.nav.issues')}
             </Link>
             <Link

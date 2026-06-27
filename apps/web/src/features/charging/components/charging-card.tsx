@@ -72,7 +72,11 @@ export function ChargingCard({
       stats={[
         { label: t('fields.energyKwh'), value: t('list.energy', { energy: energyKwh }) },
         { label: t('fields.pricePerKwh'), value: t('list.price', { price: pricePerKwh }) },
-        { label: t('fields.totalCost'), value: t('list.cost', { cost: totalCost }), highlight: true },
+        {
+          label: t('fields.totalCost'),
+          value: t('list.cost', { cost: totalCost }),
+          highlight: true,
+        },
       ]}
       footer={
         <>

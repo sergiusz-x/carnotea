@@ -94,7 +94,10 @@ function ServiceSummaryCard({
         {values.mileage != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryMileage')}</dt>
-            <dd className="font-medium">{values.mileage}{' km'}</dd>
+            <dd className="font-medium">
+              {values.mileage}
+              {' km'}
+            </dd>
           </>
         )}
         {values.workshopName && (
@@ -112,9 +115,7 @@ function ServiceSummaryCard({
         {values.laborCost != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryLabor')}</dt>
-            <dd className="font-medium">
-              {formatMoney(values.laborCost, currency, 'en')}
-            </dd>
+            <dd className="font-medium">{formatMoney(values.laborCost, currency, 'en')}</dd>
           </>
         )}
         {total !== null && (
@@ -168,9 +169,7 @@ function PartsEditor({
         </Button>
       </div>
 
-      {fields.length === 0 && (
-        <p className="text-sm text-muted-foreground">{t('form.noParts')}</p>
-      )}
+      {fields.length === 0 && <p className="text-sm text-muted-foreground">{t('form.noParts')}</p>}
 
       {fields.map((field, index) => (
         <div key={field.id} className="space-y-2 rounded-xl border p-3">
@@ -251,7 +250,10 @@ function FormShell({
   const total = useTotalServiceCost(form);
 
   useEffect(() => {
-    if (defaultMileage !== undefined && !(form.formState.dirtyFields as Record<string, boolean>)['mileage']) {
+    if (
+      defaultMileage !== undefined &&
+      !(form.formState.dirtyFields as Record<string, boolean>)['mileage']
+    ) {
       form.setValue('mileage', defaultMileage, { shouldDirty: false });
     }
   }, [defaultMileage, form]);
@@ -291,11 +293,7 @@ function FormShell({
 
           {currentStep === 1 && (
             <>
-              <TextField
-                name="title"
-                label={t('fields.title')}
-                placeholder={t('fields.title')}
-              />
+              <TextField name="title" label={t('fields.title')} placeholder={t('fields.title')} />
               <TextareaField
                 name="description"
                 label={t('fields.description')}

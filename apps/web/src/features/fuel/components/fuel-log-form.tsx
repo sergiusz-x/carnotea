@@ -60,7 +60,10 @@ function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
         {values.mileage != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryMileage')}</dt>
-            <dd className="font-medium">{values.mileage}{' km'}</dd>
+            <dd className="font-medium">
+              {values.mileage}
+              {' km'}
+            </dd>
           </>
         )}
         {values.stationName && (
@@ -72,13 +75,19 @@ function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
         {values.liters != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryLiters')}</dt>
-            <dd className="font-medium">{values.liters}{' L'}</dd>
+            <dd className="font-medium">
+              {values.liters}
+              {' L'}
+            </dd>
           </>
         )}
         {values.pricePerLiter != null && (
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryPrice')}</dt>
-            <dd className="font-medium">{values.pricePerLiter}{' '}{currency}{'/L'}</dd>
+            <dd className="font-medium">
+              {values.pricePerLiter} {currency}
+              {'/L'}
+            </dd>
           </>
         )}
         {totalCost !== null && (
@@ -123,7 +132,10 @@ function FormShell({
   const totalCost = useTotalCost(form, 'liters', 'pricePerLiter');
 
   useEffect(() => {
-    if (defaultMileage !== undefined && !(form.formState.dirtyFields as Record<string, boolean>)['mileage']) {
+    if (
+      defaultMileage !== undefined &&
+      !(form.formState.dirtyFields as Record<string, boolean>)['mileage']
+    ) {
       form.setValue('mileage', defaultMileage, { shouldDirty: false });
     }
   }, [defaultMileage, form]);
