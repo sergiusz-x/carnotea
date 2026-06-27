@@ -43,12 +43,24 @@ async function main() {
       db.select().from(schema.reminderStatuses),
     ]);
 
-  const fuelTypeId = (code: string) => fuelTypesRows.find((r) => r.code === code)!.id;
-  const chargerTypeId = (code: string) => chargerTypesRows.find((r) => r.code === code)!.id;
-  const expCatId = (code: string) => expCatRows.find((r) => r.code === code)!.id;
-  const issStatId = (code: string) => issStatRows.find((r) => r.code === code)!.id;
-  const issPriId = (code: string) => issPriRows.find((r) => r.code === code)!.id;
-  const remStatId = (code: string) => remStatRows.find((r) => r.code === code)!.id;
+  function requireSmallintId(rows: { id: number; code: string }[], code: string): number {
+    const row = rows.find((r) => r.code === code);
+    if (!row) throw new Error(`Seed lookup not found: ${code}`);
+    return row.id;
+  }
+
+  function requireUuidId(rows: { id: string; code: string | null }[], code: string): string {
+    const row = rows.find((r) => r.code === code);
+    if (!row) throw new Error(`Seed lookup not found: ${code}`);
+    return row.id;
+  }
+
+  const fuelTypeId = (code: string) => requireSmallintId(fuelTypesRows, code);
+  const chargerTypeId = (code: string) => requireSmallintId(chargerTypesRows, code);
+  const expCatId = (code: string) => requireUuidId(expCatRows, code);
+  const issStatId = (code: string) => requireSmallintId(issStatRows, code);
+  const issPriId = (code: string) => requireSmallintId(issPriRows, code);
+  const remStatId = (code: string) => requireSmallintId(remStatRows, code);
 
   // ── Idempotency guard ──────────────────────────────────────────────────────
   const existing = await db
@@ -223,7 +235,7 @@ async function main() {
     });
   }
 
-  console.log(`✓ Fuel logs: ${fuelEntries.length} entries`);
+  console.log(`✓ Fuel logs: ${String(fuelEntries.length)} entries`);
 
   // ── Charging sessions (Tesla, Jan–Jun 2026) ─────────────────────────────────
   const chargingEntries: Array<{
@@ -354,7 +366,7 @@ async function main() {
     });
   }
 
-  console.log(`✓ Charging sessions: ${chargingEntries.length} entries`);
+  console.log(`✓ Charging sessions: ${String(chargingEntries.length)} entries`);
 
   // ── Service records ─────────────────────────────────────────────────────────
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
