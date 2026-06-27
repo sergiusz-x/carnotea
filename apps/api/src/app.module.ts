@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 
+import { AccountModule } from './account/account.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { ChargingSessionsModule } from './charging-sessions/charging-sessions.module.js';
 import { validateEnv } from './config/env.js';
@@ -32,6 +33,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     }),
     DbModule,
     OpenApiModule,
+    AccountModule,
     AuthModule,
     VehiclesModule,
     FuelLogsModule,
