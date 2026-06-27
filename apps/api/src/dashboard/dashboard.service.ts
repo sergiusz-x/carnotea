@@ -80,10 +80,7 @@ export class DashboardService {
 
     // Total expenses (last 12 months) — from expense table
     const expenseRows = await this.db
-      .select({
-        total: sql<string>`coalesce(sum(${expenses.amount}), '0')`,
-        fuelTotal: sql<string>`coalesce(sum(case when ${expenseCategories.code} = 'fuel' then ${expenses.amount} else 0 end), '0')`,
-      })
+      .select({ total: sql<string>`coalesce(sum(${expenses.amount}), '0')` })
       .from(expenses)
       .innerJoin(expenseCategories, eq(expenses.categoryId, expenseCategories.id))
       .where(
@@ -94,12 +91,24 @@ export class DashboardService {
       );
 
     const totalExpenses = Number(expenseRows.at(0)?.total ?? 0);
-    const totalFuelCost = Number(expenseRows.at(0)?.fuelTotal ?? 0);
+
+    // Total fuel cost from fuel_logs (not expenses, which may be incomplete)
+    const fuelCostRows = await this.db
+      .select({ total: sql<string>`coalesce(sum(${fuelLogs.totalCost}), '0')` })
+      .from(fuelLogs)
+      .where(
+        and(
+          inArray(fuelLogs.vehicleId, vehicleIds),
+          gte(fuelLogs.fuelDate, TWELVE_MONTHS_AGO_STR),
+        ),
+      );
+
+    const totalFuelCost = Number(fuelCostRows.at(0)?.total ?? 0);
 
     // Average fuel consumption from full-tank fuel logs — uses CTE + lateral join
     const consumptionRows = await this.db.execute<{
-      avgLiters: string;
-      avgMileageDelta: string;
+      avg_liters: string;
+      avg_mileage_delta: string;
     }>(
       sql`
         WITH ranked_fuel AS (
@@ -133,8 +142,8 @@ export class DashboardService {
     );
 
     // Compute avg L/100km = (avg liters / avg mileage_delta) * 100
-    const avgLiters = Number(consumptionRows.at(0)?.avgLiters ?? 0);
-    const avgMileageDelta = Number(consumptionRows.at(0)?.avgMileageDelta ?? 0);
+    const avgLiters = Number(consumptionRows.at(0)?.avg_liters ?? 0);
+    const avgMileageDelta = Number(consumptionRows.at(0)?.avg_mileage_delta ?? 0);
     const avgFuelConsumption = avgMileageDelta > 0 ? (avgLiters / avgMileageDelta) * 100 : null;
 
     return {

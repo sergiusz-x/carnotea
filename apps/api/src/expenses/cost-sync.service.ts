@@ -1,6 +1,6 @@
 import { expenseCategories, expenses } from '@carnotea/db';
 import { Injectable } from '@nestjs/common';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 
 import { type DbTx } from '../mileage/mileage-sync.service.js';
 
@@ -48,6 +48,9 @@ export class CostSyncService {
       })
       .onConflictDoUpdate({
         target: [expenses.vehicleId, expenses.sourceType, expenses.sourceId],
+        // idx_expenses_source_unique is a partial index (WHERE source_type <> 'manual'),
+        // so PostgreSQL requires the same predicate here to match the conflict target.
+        targetWhere: sql`${expenses.sourceType} <> 'manual'`,
         set: {
           amount: String(params.amount),
           expenseDate: params.date,
