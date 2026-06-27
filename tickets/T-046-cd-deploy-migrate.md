@@ -1,13 +1,13 @@
 ---
 id: T-046
 title: Continuous deployment with safe release-step migrations
-status: ready
+status: in_progress
 priority: high
-owner: ~
+owner: codex
 dependencies: [T-045, T-015]
 labels: [ops, ci]
 created_at: 2026-06-15
-updated_at: 2026-06-15
+updated_at: 2026-06-26
 closed_at: ~
 ---
 
@@ -29,23 +29,23 @@ process must be safe to re-run.
 
 ## Acceptance criteria
 
-- [ ] A CD workflow builds the `api` and `web` images on the chosen trigger
+- [x] A CD workflow builds the `api` and `web` images on the chosen trigger
       (tag push and/or `main`) and publishes them to a registry (e.g. GHCR) with
       immutable tags (git sha) plus a moving tag (`latest`/release).
-- [ ] Deploy to the VPS is automated (SSH/`docker compose pull` + `up -d`, or an
+- [x] Deploy to the VPS is automated (SSH/`docker compose pull` + `up -d`, or an
       equivalent) using credentials from CI secrets, never committed.
-- [ ] `drizzle-kit migrate` runs as a **release step ordered before** the api
+- [x] `drizzle-kit migrate` runs as a **release step ordered before** the api
       rollout — a dedicated one-shot container/job that applies migrations from
       `packages/db/migrations`, exits non-zero on failure, and **blocks** the app
       update when it fails.
-- [ ] Migrations are idempotent / safe to re-run: re-running the deploy with no
+- [x] Migrations are idempotent / safe to re-run: re-running the deploy with no
       new migrations is a no-op and never re-applies applied migrations.
-- [ ] Rollback notes are documented: how to roll the app image back, and the
+- [x] Rollback notes are documented: how to roll the app image back, and the
       expansion/contraction pattern for schema changes so an app rollback does
       not require a DB rollback.
-- [ ] The deploy is observable: failure is visible in the workflow and does not
+- [x] The deploy is observable: failure is visible in the workflow and does not
       leave the stack half-updated (migrate fails → app not rolled).
-- [ ] `docs/deployment.md` documents the pipeline, triggers, required secrets,
+- [x] `docs/deployment.md` documents the pipeline, triggers, required secrets,
       and the rollback procedure.
 
 ## Files to touch
@@ -83,3 +83,12 @@ process must be safe to re-run.
   T-047 (backups before migrate), T-048 (secrets)
 - ADR: [ADR-0002](../docs/adr/0002-drizzle-schema-as-code.md)
 - External: drizzle-kit migrate — <https://orm.drizzle.team/docs/migrations>
+
+## Notes
+
+- 2026-06-26: Production compose now consumes prebuilt GHCR images via
+  `IMAGE_REGISTRY` / `IMAGE_TAG`; the VPS no longer builds `api` or `web`
+  locally during deploy.
+- 2026-06-26: The release-step migration container reuses the published API
+  image and runs `pnpm --filter @carnotea/db db:deploy`, which delegates to
+  `drizzle-kit migrate` against `packages/db/migrations`.

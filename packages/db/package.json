@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "db:deploy": "drizzle-kit migrate",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "lint": "eslint . --cache --cache-location .cache/.eslintcache",
@@ -19,6 +20,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "drizzle-kit": "catalog:",
     "drizzle-orm": "catalog:",
     "postgres": "catalog:"
   },
@@ -27,7 +29,6 @@
     "@carnotea/prettier-config": "workspace:*",
     "@carnotea/tsconfig": "workspace:*",
     "@types/node": "catalog:",
-    "drizzle-kit": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "typescript": "catalog:"
