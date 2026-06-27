@@ -1,14 +1,14 @@
 ---
 id: T-047
 title: Automated Postgres backups + tested restore runbook
-status: in_progress
+status: done
 priority: medium
 owner: codex
 dependencies: [T-045]
 labels: [ops, data]
 created_at: 2026-06-15
 updated_at: 2026-06-27
-closed_at: ~
+closed_at: 2026-06-27
 ---
 
 # T-047 — Automated Postgres backups + tested restore runbook
