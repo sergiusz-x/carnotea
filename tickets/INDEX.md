@@ -96,6 +96,7 @@ _None._
 - 🟡 [T-062 — Remove legacy sql/ + tests/ and fix the stale architecture data-flow](./T-062-remove-legacy-sql-fix-architecture-doc.md)
 - 🔴 [T-063 — Align API paths, vehicle energy invariant, and README](./T-063-api-prefix-energy-invariant-readme-cleanup.md)
 - 🔴 [T-065 — Pre-push CI validation](./T-065-pre-push-ci-validation.md)
+- 🔴 [T-067 — Active-vehicle UX refactor — global picker, functional nav, mobile bottom bar, FAB](./T-067-active-vehicle-ux-refactor.md)
 
 <!-- END GENERATED:tickets -->
 
