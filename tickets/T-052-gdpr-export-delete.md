@@ -1,14 +1,14 @@
 ---
 id: T-052
 title: GDPR data export and account deletion
-status: ready
+status: done
 priority: high
-owner: ~
+owner: antigravity
 dependencies: [T-029, T-020, T-026]
 labels: [compliance, account]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-27
+closed_at: 2026-06-27
 ---
 
 # T-052 — GDPR data export and account deletion
