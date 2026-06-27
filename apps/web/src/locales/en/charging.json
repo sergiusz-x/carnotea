@@ -59,5 +59,18 @@
     "confirm": "Yes, delete",
     "cancel": "Cancel"
   },
-  "totalCostPreview": "Total cost (computed): {{cost}}"
+  "totalCostPreview": "Total cost (computed): {{cost}}",
+  "wizard": {
+    "step1": "When & where?",
+    "step2": "Charging details",
+    "step3": "Battery state",
+    "summaryDate": "Date",
+    "summaryMileage": "Mileage",
+    "summaryStation": "Station",
+    "summaryEnergy": "Energy",
+    "summaryPrice": "Price/kWh",
+    "summaryCost": "Total cost",
+    "summaryChargerType": "Charger",
+    "summaryFullCharge": "Full charge"
+  }
 }

@@ -16,6 +16,7 @@ export function ExpenseListPage() {
     from: '/_authenticated/vehicles/$vehicleId/expenses',
   });
   const { t } = useTranslation('expenses');
+  const { t: tc } = useTranslation('common');
 
   const {
     data: expenses,
@@ -109,7 +110,7 @@ export function ExpenseListPage() {
                     params={{ vehicleId, expenseId: expense.id }}
                   >
                     <Button variant="outline" size="sm">
-                      {t('edit.submit')}
+                      {tc('actions.edit')}
                     </Button>
                   </Link>
                 }
@@ -122,7 +123,7 @@ export function ExpenseListPage() {
                     }}
                     disabled={deleteMutation.isPending}
                   >
-                    {t('delete.confirm')}
+                    {tc('actions.delete')}
                   </Button>
                 }
               />

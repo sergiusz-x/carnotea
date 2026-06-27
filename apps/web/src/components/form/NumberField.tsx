@@ -19,6 +19,7 @@ interface NumberFieldProps {
   min?: number;
   max?: number;
   step?: number;
+  suffix?: string;
 }
 
 export function NumberField({
@@ -30,6 +31,7 @@ export function NumberField({
   min,
   max,
   step,
+  suffix,
 }: NumberFieldProps) {
   const { control } = useFormContext();
 
@@ -40,24 +42,29 @@ export function NumberField({
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <FormControl>
-            <Input
-              type="number"
-              placeholder={placeholder}
-              disabled={disabled}
-              min={min}
-              max={max}
-              step={step}
-              name={field.name}
-              ref={field.ref}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              value={field.value ?? ''}
-              onChange={(e) => {
-                field.onChange(e.target.value === '' ? undefined : Number(e.target.value));
-              }}
-              onBlur={field.onBlur}
-            />
-          </FormControl>
+          <div className="flex items-center gap-2">
+            <FormControl>
+              <Input
+                type="number"
+                placeholder={placeholder}
+                disabled={disabled}
+                min={min}
+                max={max}
+                step={step}
+                name={field.name}
+                ref={field.ref}
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                value={field.value ?? ''}
+                onChange={(e) => {
+                  field.onChange(e.target.value === '' ? undefined : Number(e.target.value));
+                }}
+                onBlur={field.onBlur}
+              />
+            </FormControl>
+            {suffix && (
+              <span className="shrink-0 text-sm font-medium text-muted-foreground">{suffix}</span>
+            )}
+          </div>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>

@@ -6,16 +6,20 @@ import {
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { Trash2 } from 'lucide-react';
+import { useEffect } from 'react';
 import { useFieldArray, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
   AppForm,
+  BigNumberField,
   DateField,
-  FormSubmit,
   NumberField,
+  StepWizard,
+  TextareaField,
   TextField,
   handleApiError,
+  useStepForm,
   useZodForm,
 } from '@/components/form';
 import { FormContainer } from '@/components/FormContainer';
@@ -25,11 +29,21 @@ import {
   useCreateServiceRecord,
   useUpdateServiceRecord,
 } from '@/features/service/queries';
+import { formatMoney } from '@/lib/format';
+import { useCurrencyPref } from '@/lib/useCurrencyPref';
+import { useLastMileage } from '@/lib/useLastMileage';
 
-// ─── Total cost preview ───────────────────────────────────────────────────────
+// ─── Step field groups ────────────────────────────────────────────────────────
 
-function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
-  const { t } = useTranslation('service');
+const STEP_FIELDS = [
+  ['serviceDate', 'mileage', 'workshopName'],
+  ['title', 'description', 'laborCost'],
+  [],
+];
+
+// ─── Total cost ───────────────────────────────────────────────────────────────
+
+function useTotalServiceCost(form: ReturnType<typeof useZodForm>): number | null {
   const laborCost = useWatch({ control: form.control, name: 'laborCost' }) as number | undefined;
   const parts = useWatch({ control: form.control, name: 'parts' }) as
     | ServicePartLineRequest[]
@@ -38,30 +52,94 @@ function TotalCostPreview({ form }: { form: ReturnType<typeof useZodForm> }) {
   const parsedLabor = Number(laborCost);
   const partsTotal =
     parts?.reduce((sum, part) => {
-      const qty = part.quantity || 0;
-      const price = part.unitPrice || 0;
-      return sum + qty * price;
+      return sum + (part.quantity || 0) * (part.unitPrice || 0);
     }, 0) ?? 0;
 
-  const totalCost =
-    !Number.isNaN(parsedLabor) && parsedLabor >= 0
-      ? (parsedLabor + partsTotal).toFixed(2)
-      : partsTotal > 0
-        ? partsTotal.toFixed(2)
-        : null;
+  if (!Number.isNaN(parsedLabor) && parsedLabor >= 0) return parsedLabor + partsTotal;
+  if (partsTotal > 0) return partsTotal;
+  return null;
+}
 
-  if (totalCost === null) return null;
+// ─── Mini summary shown at top of step 3 ─────────────────────────────────────
+
+function ServiceSummaryCard({
+  form,
+  currency,
+}: {
+  form: ReturnType<typeof useZodForm>;
+  currency: string;
+}) {
+  const { t, i18n } = useTranslation('service');
+  const total = useTotalServiceCost(form);
+  const values = form.getValues() as {
+    serviceDate?: string;
+    mileage?: number;
+    workshopName?: string;
+    title?: string;
+    laborCost?: number;
+  };
 
   return (
-    <p className="text-sm text-muted-foreground">
-      {t('form.totalCostPreview', { cost: totalCost })}
-    </p>
+    <div className="space-y-3 rounded-xl border bg-muted/30 p-4">
+      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+        {t('wizard.step2')}
+      </h3>
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+        {values.serviceDate && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryDate')}</dt>
+            <dd className="font-medium">{values.serviceDate}</dd>
+          </>
+        )}
+        {values.mileage != null && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryMileage')}</dt>
+            <dd className="font-medium">
+              {values.mileage}
+              {' km'}
+            </dd>
+          </>
+        )}
+        {values.workshopName && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryWorkshop')}</dt>
+            <dd className="font-medium">{values.workshopName}</dd>
+          </>
+        )}
+        {values.title && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryTitle')}</dt>
+            <dd className="font-medium">{values.title}</dd>
+          </>
+        )}
+        {values.laborCost != null && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryLabor')}</dt>
+            <dd className="font-medium">{formatMoney(values.laborCost, currency, 'en')}</dd>
+          </>
+        )}
+        {total !== null && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryCost')}</dt>
+            <dd className="text-base font-bold text-primary">
+              {formatMoney(total, currency, i18n.resolvedLanguage ?? 'en')}
+            </dd>
+          </>
+        )}
+      </dl>
+    </div>
   );
 }
 
 // ─── Inline parts editor ──────────────────────────────────────────────────────
 
-function PartsEditor({ form }: { form: ReturnType<typeof useZodForm> }) {
+function PartsEditor({
+  form,
+  currency,
+}: {
+  form: ReturnType<typeof useZodForm>;
+  currency: string;
+}) {
   const { t } = useTranslation('service');
 
   const { fields, append, remove } = useFieldArray({
@@ -91,10 +169,10 @@ function PartsEditor({ form }: { form: ReturnType<typeof useZodForm> }) {
         </Button>
       </div>
 
-      {fields.length === 0 && <p className="text-sm text-muted-foreground">{t('list.noParts')}</p>}
+      {fields.length === 0 && <p className="text-sm text-muted-foreground">{t('form.noParts')}</p>}
 
       {fields.map((field, index) => (
-        <div key={field.id} className="space-y-2 rounded-md border p-3">
+        <div key={field.id} className="space-y-2 rounded-xl border p-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">
               {t('form.partIndex', { index: index + 1 })}
@@ -140,6 +218,7 @@ function PartsEditor({ form }: { form: ReturnType<typeof useZodForm> }) {
               placeholder="0.00"
               min={0}
               step={0.01}
+              suffix={currency}
             />
           </div>
         </div>
@@ -156,36 +235,100 @@ function FormShell({
   form,
   onSubmit,
   isEditing,
+  defaultMileage,
 }: {
   title: string;
   submitLabel: string;
   form: ReturnType<typeof useZodForm>;
   onSubmit: (values: Record<string, unknown>) => Promise<void>;
   isEditing: boolean;
+  defaultMileage?: number;
 }) {
+  const { t, i18n } = useTranslation('service');
+  const currency = useCurrencyPref();
+  const { currentStep, goNext, goBack } = useStepForm(form, STEP_FIELDS);
+  const total = useTotalServiceCost(form);
+
+  useEffect(() => {
+    if (
+      defaultMileage !== undefined &&
+      !(form.formState.dirtyFields as Record<string, boolean>)['mileage']
+    ) {
+      form.setValue('mileage', defaultMileage, { shouldDirty: false });
+    }
+  }, [defaultMileage, form]);
+
+  const steps = [t('wizard.step1'), t('wizard.step2'), t('wizard.step3')];
+
   return (
     <FormContainer>
       <h1 className="mb-6 text-2xl font-bold">{title}</h1>
 
       <AppForm form={form} onSubmit={onSubmit}>
-        <DateField name="serviceDate" label="Service date" disabled={isEditing} />
-        <NumberField name="mileage" label="Mileage (km)" placeholder="Mileage (km)" min={0} />
-        <TextField name="title" label="Title" placeholder="Title" />
-        <TextField name="description" label="Description" placeholder="Description" />
-        <NumberField name="laborCost" label="Labor cost" placeholder="0.00" min={0} step={0.01} />
-        <TotalCostPreview form={form} />
-        <TextField name="workshopName" label="Workshop" placeholder="Workshop" />
-        <PartsEditor form={form} />
-        <FormSubmit>{submitLabel}</FormSubmit>
+        <StepWizard
+          steps={steps}
+          currentStep={currentStep}
+          onBack={goBack}
+          onNext={goNext}
+          isEditing={isEditing}
+          submitLabel={submitLabel}
+        >
+          {currentStep === 0 && (
+            <>
+              <DateField name="serviceDate" label={t('fields.serviceDate')} disabled={isEditing} />
+              <BigNumberField
+                name="mileage"
+                label={t('fields.mileage')}
+                placeholder="0"
+                min={0}
+                step={10}
+              />
+              <TextField
+                name="workshopName"
+                label={t('fields.workshopName')}
+                placeholder={t('fields.workshopName')}
+              />
+            </>
+          )}
+
+          {currentStep === 1 && (
+            <>
+              <TextField name="title" label={t('fields.title')} placeholder={t('fields.title')} />
+              <TextareaField
+                name="description"
+                label={t('fields.description')}
+                placeholder={t('fields.description')}
+                rows={4}
+              />
+              <BigNumberField
+                name="laborCost"
+                label={t('fields.laborCost')}
+                placeholder="0.00"
+                min={0}
+                step={10}
+                suffix={currency}
+              />
+              {total !== null && (
+                <div className="rounded-xl bg-primary/10 px-4 py-3 text-center">
+                  <p className="text-xs text-muted-foreground">{t('fields.totalCost')}</p>
+                  <p className="text-2xl font-bold text-primary">
+                    {formatMoney(total, currency, i18n.resolvedLanguage ?? 'en')}
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+
+          {currentStep === 2 && (
+            <>
+              <ServiceSummaryCard form={form} currency={currency} />
+              <PartsEditor form={form} currency={currency} />
+            </>
+          )}
+        </StepWizard>
       </AppForm>
     </FormContainer>
   );
-}
-
-// ─── i18n-aware wrapper ────────────────────────────────────────────────────────
-
-function useT() {
-  return useTranslation('service');
 }
 
 // ─── Create page ───────────────────────────────────────────────────────────────
@@ -194,7 +337,8 @@ export function ServiceCreatePage() {
   const { vehicleId }: { vehicleId: string } = useParams({
     from: '/_authenticated/vehicles/$vehicleId/service/new',
   });
-  const { t } = useT();
+  const { t } = useTranslation('service');
+  const lastMileage = useLastMileage(vehicleId);
 
   const createMutation = useCreateServiceRecord(vehicleId);
 
@@ -220,6 +364,7 @@ export function ServiceCreatePage() {
       form={form}
       onSubmit={onSubmit}
       isEditing={false}
+      defaultMileage={lastMileage}
     />
   );
 }
@@ -230,7 +375,7 @@ export function ServiceEditPage() {
   const { vehicleId, recordId }: { vehicleId: string; recordId: string } = useParams({
     from: '/_authenticated/vehicles/$vehicleId/service/$recordId/edit',
   });
-  const { t } = useT();
+  const { t } = useTranslation('service');
 
   const { data: existingRecord } = useSuspenseQuery(serviceRecordQueryOptions(vehicleId, recordId));
 

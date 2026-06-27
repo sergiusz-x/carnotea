@@ -50,6 +50,7 @@ export function ReminderCard({
     from: '/_authenticated/vehicles/$vehicleId/reminders',
   });
   const { t } = useTranslation('reminders');
+  const { t: tc } = useTranslation('common');
 
   return (
     <div className="rounded-lg border p-4 shadow-sm">
@@ -100,7 +101,7 @@ export function ReminderCard({
             params={{ vehicleId, reminderId: id }}
             className={cn(buttonVariants({ variant: 'outline' }))}
           >
-            {t('edit.submit')}
+            {tc('actions.edit')}
           </Link>
           <Button
             type="button"
@@ -110,7 +111,7 @@ export function ReminderCard({
             }}
             disabled={isDeleting}
           >
-            {t('delete.confirm')}
+            {tc('actions.delete')}
           </Button>
         </div>
       </div>

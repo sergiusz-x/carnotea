@@ -61,6 +61,18 @@
     "addPart": "Add part",
     "removePart": "Remove",
     "partIndex": "Part #{{index}}",
-    "totalCostPreview": "Total cost (labor + parts): {{cost}}"
+    "totalCostPreview": "Total cost (labor + parts): {{cost}}",
+    "noParts": "No parts added yet"
+  },
+  "wizard": {
+    "step1": "When & where?",
+    "step2": "What was done?",
+    "step3": "Parts",
+    "summaryDate": "Date",
+    "summaryMileage": "Mileage",
+    "summaryWorkshop": "Workshop",
+    "summaryTitle": "Title",
+    "summaryLabor": "Labor cost",
+    "summaryCost": "Total cost"
   }
 }

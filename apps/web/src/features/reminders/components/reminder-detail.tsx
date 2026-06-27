@@ -34,6 +34,7 @@ export function ReminderDetailPage() {
     from: '/_authenticated/vehicles/$vehicleId/reminders/$reminderId',
   });
   const { t } = useTranslation('reminders');
+  const { t: tc } = useTranslation('common');
 
   const {
     data: reminder,
@@ -107,10 +108,10 @@ export function ReminderDetailPage() {
             to="/vehicles/$vehicleId/reminders/$reminderId/edit"
             params={{ vehicleId, reminderId }}
           >
-            <Button variant="outline">{t('edit.submit')}</Button>
+            <Button variant="outline">{tc('actions.edit')}</Button>
           </Link>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {t('delete.confirm')}
+            {tc('actions.delete')}
           </Button>
         </div>
       </div>

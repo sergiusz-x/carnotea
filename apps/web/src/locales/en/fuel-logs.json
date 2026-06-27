@@ -52,5 +52,17 @@
     "confirm": "Yes, delete",
     "cancel": "Cancel"
   },
-  "totalCostPreview": "Total cost (computed): {{cost}}"
+  "totalCostPreview": "Total cost (computed): {{cost}}",
+  "wizard": {
+    "step1": "When & where?",
+    "step2": "How much?",
+    "step3": "Summary",
+    "summaryDate": "Date",
+    "summaryMileage": "Mileage",
+    "summaryStation": "Station",
+    "summaryLiters": "Liters",
+    "summaryPrice": "Price/L",
+    "summaryCost": "Total cost",
+    "summaryFullTank": "Full tank"
+  }
 }

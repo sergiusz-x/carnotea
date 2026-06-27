@@ -38,6 +38,7 @@ export function ServiceListPage() {
     from: '/_authenticated/vehicles/$vehicleId/service',
   });
   const { t } = useTranslation('service');
+  const { t: tc } = useTranslation('common');
 
   const {
     data: records,
@@ -121,7 +122,7 @@ export function ServiceListPage() {
                   handleDelete(record.id, record.title);
                 }}
                 disabled={deleteMutation.isPending}
-                title={t('delete.confirm')}
+                title={tc('actions.delete')}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

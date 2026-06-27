@@ -61,6 +61,18 @@
     "addPart": "Dodaj część",
     "removePart": "Usuń",
     "partIndex": "Część #{{index}}",
-    "totalCostPreview": "Całkowity koszt (robocizna + części): {{cost}}"
+    "totalCostPreview": "Całkowity koszt (robocizna + części): {{cost}}",
+    "noParts": "Nie dodano jeszcze żadnych części"
+  },
+  "wizard": {
+    "step1": "Kiedy i gdzie?",
+    "step2": "Co zrobiono?",
+    "step3": "Części",
+    "summaryDate": "Data",
+    "summaryMileage": "Przebieg",
+    "summaryWorkshop": "Warsztat",
+    "summaryTitle": "Tytuł",
+    "summaryLabor": "Robocizna",
+    "summaryCost": "Koszt całkowity"
   }
 }

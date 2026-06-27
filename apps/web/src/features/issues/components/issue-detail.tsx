@@ -29,6 +29,7 @@ export function IssueDetailPage() {
     from: '/_authenticated/vehicles/$vehicleId/issues/$issueId',
   });
   const { t } = useTranslation('issues');
+  const { t: tc } = useTranslation('common');
 
   const {
     data: issue,
@@ -83,10 +84,10 @@ export function IssueDetailPage() {
         </div>
         <div className="flex gap-2">
           <Link to="/vehicles/$vehicleId/issues/$issueId/edit" params={{ vehicleId, issueId }}>
-            <Button variant="outline">{t('edit.submit')}</Button>
+            <Button variant="outline">{tc('actions.edit')}</Button>
           </Link>
           <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {t('delete.confirm')}
+            {tc('actions.delete')}
           </Button>
         </div>
       </div>

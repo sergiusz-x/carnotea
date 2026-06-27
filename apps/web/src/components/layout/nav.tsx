@@ -1,40 +1,142 @@
+import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation } from '@tanstack/react-router';
-import { Car, LayoutDashboard, User } from 'lucide-react';
+import {
+  Bell,
+  Car,
+  CreditCard,
+  Fuel,
+  LayoutDashboard,
+  TriangleAlert,
+  User,
+  Wrench,
+  Zap,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
+import { vehiclesQueryOptions } from '@/features/vehicles/queries';
 import { cn } from '@/lib/utils';
 
-const navItems = [
-  {
-    labelKey: 'dashboard',
-    to: '/dashboard',
-    activePaths: ['/', '/dashboard'],
-    Icon: LayoutDashboard,
-  },
-  { labelKey: 'vehicles', to: '/vehicles', activePaths: ['/vehicles'], Icon: Car },
-  { labelKey: 'profile', to: '/profile', activePaths: ['/profile'], Icon: User },
-] as const;
+type NavKey =
+  | 'dashboard'
+  | 'vehicles'
+  | 'fuel'
+  | 'charging'
+  | 'service'
+  | 'issues'
+  | 'expenses'
+  | 'reminders'
+  | 'profile';
+
+interface NavItem {
+  labelKey: NavKey;
+  to: string;
+  activePaths: string[];
+  Icon: React.ElementType;
+  exact?: boolean;
+}
+
+function useNavItems(): NavItem[] {
+  const { activeVehicleId } = useActiveVehicle();
+  const { data: vehicles } = useQuery(vehiclesQueryOptions);
+
+  const activeVehicle = vehicles?.find((v) => v.id === activeVehicleId);
+  const isChargingVehicle =
+    activeVehicle?.fuelType === 'electric' || activeVehicle?.fuelType === 'hybrid';
+
+  const base: NavItem[] = [
+    {
+      labelKey: 'dashboard',
+      to: '/dashboard',
+      activePaths: ['/', '/dashboard'],
+      Icon: LayoutDashboard,
+    },
+    {
+      labelKey: 'vehicles',
+      to: '/vehicles',
+      activePaths: ['/vehicles'],
+      Icon: Car,
+      exact: true,
+    },
+  ];
+
+  const vehicleItems: NavItem[] = activeVehicleId
+    ? [
+        {
+          labelKey: 'fuel',
+          to: `/vehicles/${activeVehicleId}/fuel`,
+          activePaths: [`/vehicles/${activeVehicleId}/fuel`],
+          Icon: Fuel,
+        },
+        ...(isChargingVehicle
+          ? [
+              {
+                labelKey: 'charging' as NavKey,
+                to: `/vehicles/${activeVehicleId}/charging`,
+                activePaths: [`/vehicles/${activeVehicleId}/charging`],
+                Icon: Zap,
+              },
+            ]
+          : []),
+        {
+          labelKey: 'service',
+          to: `/vehicles/${activeVehicleId}/service`,
+          activePaths: [`/vehicles/${activeVehicleId}/service`],
+          Icon: Wrench,
+        },
+        {
+          labelKey: 'issues',
+          to: `/vehicles/${activeVehicleId}/issues`,
+          activePaths: [`/vehicles/${activeVehicleId}/issues`],
+          Icon: TriangleAlert,
+        },
+        {
+          labelKey: 'expenses',
+          to: `/vehicles/${activeVehicleId}/expenses`,
+          activePaths: [`/vehicles/${activeVehicleId}/expenses`],
+          Icon: CreditCard,
+        },
+        {
+          labelKey: 'reminders',
+          to: `/vehicles/${activeVehicleId}/reminders`,
+          activePaths: [`/vehicles/${activeVehicleId}/reminders`],
+          Icon: Bell,
+        },
+      ]
+    : [];
+
+  const profileItem: NavItem = {
+    labelKey: 'profile',
+    to: '/profile',
+    activePaths: ['/profile'],
+    Icon: User,
+  };
+
+  return [...base, ...vehicleItems, profileItem];
+}
+
+function isActivePath(pathname: string, activePaths: readonly string[], exact = false): boolean {
+  return activePaths.some((path) => {
+    if (exact) return pathname === path;
+    return pathname === path || (path !== '/' && pathname.startsWith(`${path}/`));
+  });
+}
 
 interface NavProps {
   mobile?: boolean;
   onNavigate?: () => void;
 }
 
-function isActivePath(pathname: string, activePaths: readonly string[]): boolean {
-  return activePaths.some(
-    (path) => pathname === path || (path !== '/' && pathname.startsWith(`${path}/`)),
-  );
-}
-
 export function Nav({ mobile = false, onNavigate }: NavProps) {
   const { t } = useTranslation('nav');
   const { pathname } = useLocation();
+  const items = useNavItems();
 
   return (
     <nav aria-label={t('primary')}>
       <ul className={cn('flex', mobile ? 'flex-col gap-1' : 'items-center gap-1')}>
-        {navItems.map(({ labelKey, to, activePaths, Icon }) => {
-          const isActive = isActivePath(pathname, activePaths);
+        {items.map(({ labelKey, to, activePaths, Icon, exact }) => {
+          const isActive = isActivePath(pathname, activePaths, exact);
 
           return (
             <li key={to}>

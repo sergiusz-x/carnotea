@@ -59,5 +59,15 @@
     "fuel_log": "Log paliwa",
     "service_record": "Serwis",
     "charging_session": "Ładowanie"
+  },
+  "wizard": {
+    "step1": "Szczegóły",
+    "step2": "Kwota",
+    "step3": "Podsumowanie",
+    "summaryDate": "Data",
+    "summaryCategory": "Kategoria",
+    "summaryDescription": "Opis",
+    "summaryAmount": "Kwota",
+    "noDescription": "—"
   }
 }

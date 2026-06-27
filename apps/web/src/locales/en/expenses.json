@@ -59,5 +59,15 @@
     "fuel_log": "Fuel log",
     "service_record": "Service record",
     "charging_session": "Charging session"
+  },
+  "wizard": {
+    "step1": "Details",
+    "step2": "Amount",
+    "step3": "Summary",
+    "summaryDate": "Date",
+    "summaryCategory": "Category",
+    "summaryDescription": "Description",
+    "summaryAmount": "Amount",
+    "noDescription": "—"
   }
 }
