@@ -8,6 +8,7 @@ export const ROUTES = {
   vehicles: '/api/vehicles',
   vehicleById: '/api/vehicles/{id}',
   me: '/api/me',
+  meExport: '/api/me/export',
   fuelLogsByVehicle: '/api/vehicles/{vehicleId}/fuel-logs',
   fuelLogById: '/api/vehicles/{vehicleId}/fuel-logs/{id}',
   remindersByVehicle: '/api/vehicles/{vehicleId}/reminders',
