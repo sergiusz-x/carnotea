@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { MileageSyncService } from '../mileage/mileage-sync.service.js';
+import { MileageSyncService, type DbTx } from '../mileage/mileage-sync.service.js';
 
 import { MileageReadingsService } from './mileage-readings.service.js';
 
@@ -12,6 +12,42 @@ describe('MileageSyncService interface', () => {
     expect(typeof svc.syncDerivedReading).toBe('function');
     expect(typeof svc.removeDerivedReading).toBe('function');
     expect(typeof svc.recomputeCurrentMileage).toBe('function');
+  });
+
+  it('uses the caller transaction without opening a nested transaction', async () => {
+    const onConflictDoUpdate = vi.fn().mockResolvedValue(undefined);
+    const insertValues = vi.fn().mockReturnValue({ onConflictDoUpdate });
+    const insert = vi.fn().mockReturnValue({ values: insertValues });
+    const select = vi.fn().mockReturnValue({
+      from: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([{ maxMileage: 1234 }]),
+      }),
+    });
+    const update = vi.fn().mockReturnValue({
+      set: vi.fn().mockReturnValue({
+        where: vi.fn().mockResolvedValue([]),
+      }),
+    });
+    const nestedTransaction = vi.fn();
+    const tx = {
+      insert,
+      select,
+      update,
+      transaction: nestedTransaction,
+    };
+    const svc = new MileageSyncService();
+
+    await svc.syncDerivedReading(tx as unknown as DbTx, {
+      vehicleId: 'vehicle-id',
+      sourceType: 'fuel_log',
+      sourceId: 'fuel-log-id',
+      mileage: 1234,
+      date: '2026-01-15',
+    });
+
+    expect(insert).toHaveBeenCalledOnce();
+    expect(update).toHaveBeenCalledOnce();
+    expect(nestedTransaction).not.toHaveBeenCalled();
   });
 });
 

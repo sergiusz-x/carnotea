@@ -1,16 +1,16 @@
 ---
 id: T-061
 title: Make derived-sync seams transaction-composable and source writes atomic
-status: ready
+status: done
 priority: high
 size: M
 spec_version: 1
-owner: ~
+owner: codex
 dependencies: [T-022]
 labels: [api, refactor, data-integrity]
 created_at: 2026-06-21
-updated_at: 2026-06-21
-closed_at: ~
+updated_at: 2026-06-26
+closed_at: 2026-06-26
 ---
 
 # T-061 — Atomic, transaction-composable derived-sync seams
@@ -51,16 +51,16 @@ Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-
 
 ## Acceptance criteria
 
-- [ ] `MileageSyncService` methods take a `tx` (Drizzle transaction/db handle) as
+- [x] `MileageSyncService` methods take a `tx` (Drizzle transaction/db handle) as
       the first argument and perform no internal `transaction(...)`.
-- [ ] `FuelLogsService` create/update/delete wrap the source write **and** the
+- [x] `FuelLogsService` create/update/delete wrap the source write **and** the
       mileage-sync call in a single `db.transaction`, so they commit or roll back
       together.
-- [ ] `recomputeCurrentMileage` runs inside the same transaction as the change that
+- [x] `recomputeCurrentMileage` runs inside the same transaction as the change that
       triggered it.
-- [ ] Behaviour is otherwise unchanged: existing fuel-log and mileage tests still
+- [x] Behaviour is otherwise unchanged: existing fuel-log and mileage tests still
       pass; `currentMileage` still equals the max reading after each operation.
-- [ ] The pattern doc and T-021 already describe this `tx`-first contract; no new
+- [x] The pattern doc and T-021 already describe this `tx`-first contract; no new
       drift is introduced.
 
 ## Test matrix
@@ -98,6 +98,13 @@ Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-
 - `pnpm --filter @carnotea/api test fuel-logs mileage` → all pass (incl. the new
   rollback test)
 - `pnpm --filter @carnotea/api typecheck` → 0 errors
+
+## Notes
+
+- 2026-06-26: Production `MileageSyncService` and `FuelLogsService` already matched
+  the `tx`-first transaction shape; this work locks the contract with regression
+  tests for shared transaction handles, sync-failure propagation, and no nested
+  mileage-sync transaction.
 
 ## References
 
