@@ -5,6 +5,7 @@ import type charging from '../locales/en/charging.json';
 import type common from '../locales/en/common.json';
 import type dashboard from '../locales/en/dashboard.json';
 import type expenses from '../locales/en/expenses.json';
+import type gdpr from '../locales/en/gdpr.json';
 import type forms from '../locales/en/forms.json';
 import type fuelLogs from '../locales/en/fuel-logs.json';
 import type health from '../locales/en/health.json';
@@ -37,6 +38,7 @@ declare module 'i18next' {
       charging: typeof charging;
       service: typeof service;
       expenses: typeof expenses;
+      gdpr: typeof gdpr;
     };
   }
 }

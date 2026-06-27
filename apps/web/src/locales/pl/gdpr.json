@@ -1,0 +1,26 @@
+{
+  "section": {
+    "title": "Twoje dane",
+    "description": "Wyeksportuj swoje dane osobowe lub trwale usuń konto."
+  },
+  "export": {
+    "title": "Eksport danych",
+    "description": "Pobierz wszystkie swoje dane osobowe jako plik JSON do odczytu maszynowego (RODO art. 20).",
+    "button": "Eksportuj moje dane",
+    "downloading": "Pobieranie…"
+  },
+  "delete": {
+    "title": "Usuń konto",
+    "description": "Trwale usuń swoje konto wraz ze wszystkimi powiązanymi danymi. Tej operacji nie można cofnąć.",
+    "button": "Usuń konto",
+    "dialog": {
+      "title": "Trwale usunąć konto?",
+      "description": "Spowoduje to natychmiastowe i trwałe usunięcie Twojego konta, wszystkich pojazdów, dzienników, wydatków, przypomnień i profilu. Nie ma okresu ochronnego ani możliwości cofnięcia.",
+      "irreversible": "Ta operacja jest nieodwracalna.",
+      "confirmLabel": "Wpisz swój adres e-mail, aby potwierdzić",
+      "confirmPlaceholder": "twoj@email.com",
+      "cancel": "Anuluj",
+      "confirm": "Usuń trwale"
+    }
+  }
+}

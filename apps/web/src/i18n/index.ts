@@ -10,6 +10,7 @@ import enDashboard from '../locales/en/dashboard.json';
 import enExpenses from '../locales/en/expenses.json';
 import enForms from '../locales/en/forms.json';
 import enFuelLogs from '../locales/en/fuel-logs.json';
+import enGdpr from '../locales/en/gdpr.json';
 import enHealth from '../locales/en/health.json';
 import enIssues from '../locales/en/issues.json';
 import enLanding from '../locales/en/landing.json';
@@ -25,6 +26,7 @@ import plDashboard from '../locales/pl/dashboard.json';
 import plExpenses from '../locales/pl/expenses.json';
 import plForms from '../locales/pl/forms.json';
 import plFuelLogs from '../locales/pl/fuel-logs.json';
+import plGdpr from '../locales/pl/gdpr.json';
 import plHealth from '../locales/pl/health.json';
 import plIssues from '../locales/pl/issues.json';
 import plLanding from '../locales/pl/landing.json';
@@ -56,6 +58,7 @@ export const resources = {
     charging: enCharging,
     service: enService,
     expenses: enExpenses,
+    gdpr: enGdpr,
   },
   pl: {
     common: plCommon,
@@ -73,6 +76,7 @@ export const resources = {
     charging: plCharging,
     service: plService,
     expenses: plExpenses,
+    gdpr: plGdpr,
   },
 } as const;
 
@@ -102,6 +106,7 @@ void i18n
       'charging',
       'service',
       'expenses',
+      'gdpr',
     ],
     interpolation: { escapeValue: false },
     // Resources are bundled, so init resolves synchronously; no Suspense

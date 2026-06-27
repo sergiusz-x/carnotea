@@ -1,0 +1,26 @@
+{
+  "section": {
+    "title": "Your data",
+    "description": "Export your personal data or permanently delete your account."
+  },
+  "export": {
+    "title": "Export data",
+    "description": "Download all your personal data as a machine-readable JSON file (GDPR Art. 20).",
+    "button": "Export my data",
+    "downloading": "Downloading…"
+  },
+  "delete": {
+    "title": "Delete account",
+    "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+    "button": "Delete account",
+    "dialog": {
+      "title": "Delete account permanently?",
+      "description": "This will immediately and permanently delete your account, all vehicles, logs, expenses, reminders, and your profile. There is no grace period and no undo.",
+      "irreversible": "This action is irreversible.",
+      "confirmLabel": "Type your email address to confirm",
+      "confirmPlaceholder": "your@email.com",
+      "cancel": "Cancel",
+      "confirm": "Permanently delete"
+    }
+  }
+}
