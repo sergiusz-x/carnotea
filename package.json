@@ -38,6 +38,7 @@
     "db:reset": "docker compose down -v && docker compose up -d",
     "db:generate": "turbo run db:generate",
     "db:migrate": "turbo run db:migrate",
+    "db:seed": "pnpm --filter @carnotea/db db:seed",
     "db:introspect": "turbo run db:introspect",
     "clean": "turbo run clean && rm -rf node_modules",
     "postinstall": "corepack pnpm lint:ws",

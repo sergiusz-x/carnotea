@@ -22,5 +22,11 @@
   },
   "select": {
     "placeholder": "Select an option"
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "stepOf": "Step {{current}} of {{total}}",
+    "summary": "Summary"
   }
 }

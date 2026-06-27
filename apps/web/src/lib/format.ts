@@ -15,3 +15,12 @@ export function formatDistanceKm(value: number, locale: string): string {
     maximumFractionDigits: 1,
   }).format(value);
 }
+
+export function formatMoney(amount: number, currency: string, locale: string): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}

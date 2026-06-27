@@ -1,9 +1,20 @@
 {
   "primary": "Nawigacja główna",
-  "vehicles": "Pojazdy",
   "dashboard": "Panel",
+  "vehicles": "Pojazdy",
   "profile": "Profil",
+  "fuel": "Tankowanie",
+  "charging": "Ładowanie",
+  "service": "Serwis",
+  "issues": "Usterki",
+  "expenses": "Wydatki",
+  "reminders": "Przypomnienia",
+  "more": "Więcej",
+  "selectVehicle": "Wybierz pojazd",
+  "manageVehicles": "Zarządzaj pojazdami",
+  "addVehicle": "Dodaj pojazd",
   "user": {
+    "profile": "Przejdź do profilu",
     "signOut": "Wyloguj się"
   }
 }

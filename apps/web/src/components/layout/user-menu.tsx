@@ -36,17 +36,19 @@ export function UserMenu() {
   return (
     <div className="flex items-center gap-2">
       {user && (
-        <div className="flex items-center gap-2">
-          <div
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
-            aria-hidden="true"
-          >
+        <button
+          type="button"
+          onClick={() => void navigate({ to: '/profile' })}
+          className="flex items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-accent"
+          aria-label={t('user.profile')}
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
             {initials}
           </div>
           <span className="hidden max-w-[140px] truncate text-sm font-medium lg:inline-block">
             {displayName}
           </span>
-        </div>
+        </button>
       )}
       <Button
         variant="ghost"

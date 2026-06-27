@@ -12,5 +12,10 @@
   "nav": {
     "open": "Otwórz menu",
     "close": "Zamknij menu"
+  },
+  "actions": {
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "cancel": "Anuluj"
   }
 }

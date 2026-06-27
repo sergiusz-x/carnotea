@@ -1,9 +1,20 @@
 {
   "primary": "Primary navigation",
-  "vehicles": "Vehicles",
   "dashboard": "Dashboard",
+  "vehicles": "Vehicles",
   "profile": "Profile",
+  "fuel": "Fuel",
+  "charging": "Charging",
+  "service": "Service",
+  "issues": "Issues",
+  "expenses": "Expenses",
+  "reminders": "Reminders",
+  "more": "More",
+  "selectVehicle": "Select vehicle",
+  "manageVehicles": "Manage vehicles",
+  "addVehicle": "Add vehicle",
   "user": {
+    "profile": "Go to profile",
     "signOut": "Sign out"
   }
 }

@@ -86,14 +86,6 @@ export function ProfileScreen() {
     }
   }, [profile, accountForm, preferencesForm]);
 
-  // Watch locale changes and switch i18next language live.
-  const watchedLocale = preferencesForm.watch('localePref');
-  useEffect(() => {
-    if (watchedLocale && watchedLocale !== i18n.resolvedLanguage) {
-      void i18n.changeLanguage(watchedLocale);
-    }
-  }, [watchedLocale, i18n]);
-
   async function handleAccountSubmit(values: AccountValues) {
     try {
       await updateAccount.mutateAsync(values);
@@ -109,6 +101,7 @@ export function ProfileScreen() {
   async function handlePreferencesSubmit(values: PreferencesValues) {
     try {
       await updatePreferences.mutateAsync(values);
+      void i18n.changeLanguage(values.localePref);
     } catch (err: unknown) {
       if (isApiError(err)) {
         setServerErrors(preferencesForm.setError, err);

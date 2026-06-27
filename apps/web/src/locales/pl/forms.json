@@ -22,5 +22,11 @@
   },
   "select": {
     "placeholder": "Wybierz opcję"
+  },
+  "wizard": {
+    "next": "Dalej",
+    "back": "Wstecz",
+    "stepOf": "Krok {{current}} z {{total}}",
+    "summary": "Podsumowanie"
   }
 }

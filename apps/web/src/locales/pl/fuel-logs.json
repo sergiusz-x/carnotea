@@ -52,5 +52,17 @@
     "confirm": "Tak, usuń",
     "cancel": "Anuluj"
   },
-  "totalCostPreview": "Całkowity koszt (obliczony): {{cost}}"
+  "totalCostPreview": "Całkowity koszt (obliczony): {{cost}}",
+  "wizard": {
+    "step1": "Kiedy i gdzie?",
+    "step2": "Ile i za ile?",
+    "step3": "Podsumowanie",
+    "summaryDate": "Data",
+    "summaryMileage": "Przebieg",
+    "summaryStation": "Stacja",
+    "summaryLiters": "Litry",
+    "summaryPrice": "Cena/L",
+    "summaryCost": "Koszt całkowity",
+    "summaryFullTank": "Pełny zbiornik"
+  }
 }

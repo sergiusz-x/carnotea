@@ -4,6 +4,7 @@ import { DashboardOverview } from '@/features/dashboard/components/dashboard-ove
 import { ExpenseByCategoryChart } from '@/features/dashboard/components/expense-by-category-chart';
 import { MonthlySpend } from '@/features/dashboard/components/monthly-spend';
 import { UpcomingReminders } from '@/features/dashboard/components/upcoming-reminders';
+import { VehicleBanner } from '@/features/dashboard/components/vehicle-banner';
 
 export function DashboardPage() {
   const { t } = useTranslation('dashboard');
@@ -11,6 +12,7 @@ export function DashboardPage() {
   return (
     <div className="mx-auto w-full max-w-screen-xl space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
       <h1 className="text-3xl font-bold tracking-tight">{t('pageTitle')}</h1>
+      <VehicleBanner />
       <DashboardOverview />
       <div className="grid gap-6 md:grid-cols-2">
         <ExpenseByCategoryChart />

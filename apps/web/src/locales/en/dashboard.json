@@ -24,6 +24,10 @@
     "month": "{{year}}-{{month}}",
     "total": "{{currency}} {{total}}"
   },
+  "banner": {
+    "active": "Active",
+    "mileage": "{{value}} km"
+  },
   "upcomingReminders": {
     "title": "Upcoming reminders",
     "empty": "No upcoming reminders",

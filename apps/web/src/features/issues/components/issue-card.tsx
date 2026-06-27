@@ -45,6 +45,7 @@ export function IssueCard({
     from: '/_authenticated/vehicles/$vehicleId/issues',
   });
   const { t } = useTranslation('issues');
+  const { t: tc } = useTranslation('common');
 
   return (
     <Card>
@@ -81,7 +82,7 @@ export function IssueCard({
               params={{ vehicleId, issueId: id }}
             >
               <Button variant="outline" size="sm">
-                {t('edit.submit')}
+                {tc('actions.edit')}
               </Button>
             </Link>
             <Button
@@ -92,7 +93,7 @@ export function IssueCard({
               }}
               disabled={isDeleting}
             >
-              {t('delete.confirm')}
+              {tc('actions.delete')}
             </Button>
           </div>
         </div>

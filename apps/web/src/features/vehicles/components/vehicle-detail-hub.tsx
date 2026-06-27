@@ -194,6 +194,10 @@ export function VehicleDetailPage() {
     );
   }
 
+  const showFuel = vehicle.fuelType !== 'electric';
+  const showCharging = vehicle.fuelType === 'electric' || vehicle.fuelType === 'hybrid';
+  const navLinkClass = 'rounded-md border p-3 text-sm transition-colors hover:bg-accent';
+
   return (
     <PageContainer>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
@@ -308,45 +312,49 @@ export function VehicleDetailPage() {
             className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3"
             aria-label={t('detail.logsSection')}
           >
-            <Link
-              to="/vehicles/$vehicleId/fuel"
-              params={{ vehicleId }}
-              className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
-            >
-              {t('detail.nav.fuel')}
-            </Link>
-            <Link
-              to="/vehicles/$vehicleId/charging"
-              params={{ vehicleId }}
-              className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
-            >
-              {t('detail.nav.charging')}
-            </Link>
+            {showFuel && (
+              <Link
+                to="/vehicles/$vehicleId/fuel"
+                params={{ vehicleId }}
+                className={navLinkClass}
+              >
+                {t('detail.nav.fuel')}
+              </Link>
+            )}
+            {showCharging && (
+              <Link
+                to="/vehicles/$vehicleId/charging"
+                params={{ vehicleId }}
+                className={navLinkClass}
+              >
+                {t('detail.nav.charging')}
+              </Link>
+            )}
             <Link
               to="/vehicles/$vehicleId/service"
               params={{ vehicleId }}
-              className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
+              className={navLinkClass}
             >
               {t('detail.nav.service')}
             </Link>
             <Link
               to="/vehicles/$vehicleId/issues"
               params={{ vehicleId }}
-              className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
+              className={navLinkClass}
             >
               {t('detail.nav.issues')}
             </Link>
             <Link
               to="/vehicles/$vehicleId/expenses"
               params={{ vehicleId }}
-              className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
+              className={navLinkClass}
             >
               {t('detail.nav.expenses')}
             </Link>
             <Link
               to="/vehicles/$vehicleId/reminders"
               params={{ vehicleId }}
-              className="rounded-md border p-3 text-sm transition-colors hover:bg-accent"
+              className={navLinkClass}
             >
               {t('detail.nav.reminders')}
             </Link>

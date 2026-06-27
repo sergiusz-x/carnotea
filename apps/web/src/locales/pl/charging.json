@@ -59,5 +59,18 @@
     "confirm": "Tak, usuń",
     "cancel": "Anuluj"
   },
-  "totalCostPreview": "Koszt całkowity (obliczony): {{cost}}"
+  "totalCostPreview": "Koszt całkowity (obliczony): {{cost}}",
+  "wizard": {
+    "step1": "Kiedy i gdzie?",
+    "step2": "Szczegóły ładowania",
+    "step3": "Stan baterii",
+    "summaryDate": "Data",
+    "summaryMileage": "Przebieg",
+    "summaryStation": "Stacja",
+    "summaryEnergy": "Energia",
+    "summaryPrice": "Cena/kWh",
+    "summaryCost": "Koszt całkowity",
+    "summaryChargerType": "Ładowarka",
+    "summaryFullCharge": "Pełne ładowanie"
+  }
 }
