@@ -1,10 +1,11 @@
 import type { ChargerTypeCode } from '@carnotea/shared';
 import { Link, useParams } from '@tanstack/react-router';
+import { Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { LogCard } from '@/components/LogCard';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Button, buttonVariants } from '@/components/ui/button';
 
 interface ChargingCardProps {
   id: string;
@@ -51,70 +52,73 @@ export function ChargingCard({
     from: '/_authenticated/vehicles/$vehicleId/charging',
   });
   const { t } = useTranslation('charging');
+  const { t: tc } = useTranslation('common');
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">{chargeDate}</span>
-              <Badge variant={chargerTypeBadgeVariant[chargerType] ?? 'default'}>
-                {t(`chargerType.${chargerType as ChargerTypeCode}`)}
-              </Badge>
-              {isFullCharge && (
-                <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                  {t('list.fullCharge')}
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <span className="text-muted-foreground">{t('fields.mileage')}</span>
-              <span>{t('list.mileage', { mileage })}</span>
-              <span className="text-muted-foreground">{t('fields.energyKwh')}</span>
-              <span>{t('list.energy', { energy: energyKwh })}</span>
-              <span className="text-muted-foreground">{t('fields.pricePerKwh')}</span>
-              <span>{t('list.price', { price: pricePerKwh })}</span>
-              <span className="text-muted-foreground">{t('fields.totalCost')}</span>
-              <span className="font-medium">{t('list.cost', { cost: totalCost })}</span>
-              <span className="text-muted-foreground">{t('fields.stationName')}</span>
+    <LogCard
+      date={chargeDate}
+      badges={
+        <>
+          <Badge variant={chargerTypeBadgeVariant[chargerType] ?? 'default'}>
+            {t(`chargerType.${chargerType as ChargerTypeCode}`)}
+          </Badge>
+          {isFullCharge && (
+            <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+              {t('list.fullCharge')}
+            </span>
+          )}
+        </>
+      }
+      stats={[
+        { label: t('fields.energyKwh'), value: t('list.energy', { energy: energyKwh }) },
+        { label: t('fields.pricePerKwh'), value: t('list.price', { price: pricePerKwh }) },
+        { label: t('fields.totalCost'), value: t('list.cost', { cost: totalCost }), highlight: true },
+      ]}
+      footer={
+        <>
+          <span>{t('list.mileage', { mileage })}</span>
+          {stationName && (
+            <>
+              <span aria-hidden>{'·'}</span>
+              <span className="truncate">{stationName}</span>
+            </>
+          )}
+          {(socStartPercent != null || socEndPercent != null) && (
+            <>
+              <span aria-hidden>{'·'}</span>
               <span>
-                {stationName ? t('list.station', { station: stationName }) : t('list.noStation')}
+                {socStartPercent != null ? `${String(socStartPercent)}%` : '?'}
+                {' → '}
+                {socEndPercent != null ? `${String(socEndPercent)}%` : '?'}
               </span>
-              {(socStartPercent != null || socEndPercent != null) && (
-                <>
-                  <span className="text-muted-foreground">{t('fields.soc')}</span>
-                  <span>
-                    {socStartPercent != null ? `${String(socStartPercent)}%` : '?'}
-                    {' → '}
-                    {socEndPercent != null ? `${String(socEndPercent)}%` : '?'}
-                  </span>
-                </>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              to="/vehicles/$vehicleId/charging/$sessionId/edit"
-              params={{ vehicleId, sessionId: id }}
-            >
-              <Button variant="outline" size="sm">
-                {t('edit.submit')}
-              </Button>
-            </Link>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                onDelete(id, chargeDate);
-              }}
-              disabled={isDeleting}
-            >
-              {t('delete.confirm')}
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+            </>
+          )}
+        </>
+      }
+      actions={
+        <>
+          <Link
+            to="/vehicles/$vehicleId/charging/$sessionId/edit"
+            params={{ vehicleId, sessionId: id }}
+            aria-label={tc('actions.edit')}
+            className={buttonVariants({ variant: 'ghost', size: 'icon', className: 'h-8 w-8' })}
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-destructive hover:text-destructive"
+            aria-label={tc('actions.delete')}
+            onClick={() => {
+              onDelete(id, chargeDate);
+            }}
+            disabled={isDeleting}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </>
+      }
+    />
   );
 }
