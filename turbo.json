@@ -37,7 +37,7 @@
       "outputs": [".cache/.eslintcache"]
     },
     "//#lint:root": {
-      "dependsOn": ["^topo", "^build"],
+      "dependsOn": ["^topo", "@carnotea/db#build", "@carnotea/shared#build"],
       "outputs": [".cache/.eslintcache"]
     },
     "typecheck": {

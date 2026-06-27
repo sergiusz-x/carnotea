@@ -1,14 +1,14 @@
 ---
 id: T-052
 title: GDPR data export and account deletion
-status: ready
+status: done
 priority: high
-owner: ~
+owner: antigravity
 dependencies: [T-029, T-020, T-026]
 labels: [compliance, account]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-06-27
+closed_at: 2026-06-27
 ---
 
 # T-052 — GDPR data export and account deletion
@@ -32,23 +32,23 @@ domain schema and the better-auth tables, or stale auth rows remain.
 
 ## Acceptance criteria
 
-- [ ] `GET /api/me/export` (authenticated) returns a single file containing the
+- [x] `GET /api/me/export` (authenticated) returns a single file containing the
       caller's **vehicles, logs, services, issues, expenses, reminders, and
       profile** — everything they own, nothing belonging to another user.
-- [ ] The export is machine-readable (JSON, `Content-Disposition: attachment`)
+- [x] The export is machine-readable (JSON, `Content-Disposition: attachment`)
       with a stable, documented top-level shape validated by a **Zod** schema.
-- [ ] The export excludes secrets (password hashes, session tokens) but includes
+- [x] The export excludes secrets (password hashes, session tokens) but includes
       the user's own profile fields and account email.
-- [ ] `DELETE /api/me` (authenticated, with an explicit confirmation step)
+- [x] `DELETE /api/me` (authenticated, with an explicit confirmation step)
       permanently deletes the account and **all** owned domain data via cascades.
-- [ ] Deletion also removes the linked **better-auth** rows (user, accounts,
+- [x] Deletion also removes the linked **better-auth** rows (user, accounts,
       sessions, verifications) so no orphaned auth identity survives.
-- [ ] After deletion the session is invalidated and the credentials no longer
+- [x] After deletion the session is invalidated and the credentials no longer
       authenticate; a re-check confirms zero rows remain for that user id.
-- [ ] FK `ON DELETE CASCADE` (or an equivalent transactional delete) is verified
+- [x] FK `ON DELETE CASCADE` (or an equivalent transactional delete) is verified
       across vehicles → logs/services/issues/expenses/reminders so deletion is
       atomic and leaves no orphans.
-- [ ] User-facing copy for the export/delete UI and the confirmation dialog
+- [x] User-facing copy for the export/delete UI and the confirmation dialog
       exists in **both** `pl` and `en`.
 
 ## Files to touch

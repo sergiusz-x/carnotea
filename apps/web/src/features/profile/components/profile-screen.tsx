@@ -15,6 +15,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
+import { GdprSection } from '@/features/gdpr/components/gdpr-section';
 
 import { profileQueryOptions, useUpdateProfile } from '../queries';
 
@@ -209,28 +210,7 @@ export function ProfileScreen() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('data.title')}</CardTitle>
-          <CardDescription>{t('data.description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between gap-4 rounded-lg border p-4">
-            <div>
-              <p className="font-medium">{t('data.export')}</p>
-              <p className="text-sm text-muted-foreground">{t('data.exportDescription')}</p>
-            </div>
-            <span className="text-xs text-muted-foreground">{t('data.comingSoon')}</span>
-          </div>
-          <div className="flex items-center justify-between gap-4 rounded-lg border p-4">
-            <div>
-              <p className="font-medium">{t('data.delete')}</p>
-              <p className="text-sm text-muted-foreground">{t('data.deleteDescription')}</p>
-            </div>
-            <span className="text-xs text-muted-foreground">{t('data.comingSoon')}</span>
-          </div>
-        </CardContent>
-      </Card>
+      <GdprSection userEmail={profile?.email ?? ''} />
     </div>
   );
 }

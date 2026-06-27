@@ -4,6 +4,268 @@
  */
 
 export interface paths {
+  "/api/me/export": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            exportedAt: string;
+            version: 1;
+            profile: {
+              id: string;
+              firstName: string;
+              lastName: string;
+              email: string;
+              localePref: "pl" | "en";
+              unitsPref: "metric" | "imperial";
+              currencyPref: string;
+              createdAt: string;
+              updatedAt: string;
+            };
+            vehicles: ({
+              id: string;
+              brand: string;
+              model: string;
+              generation?: string | null;
+              productionYear: number;
+              engine?: string | null;
+              fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
+              vin?: string | null;
+              registrationNumber?: string | null;
+              currentMileage: number;
+              currencyCode: string;
+              createdAt: string;
+              updatedAt: string;
+            })[];
+            fuelLogs: ({
+              id: string;
+              vehicleId: string;
+              fuelDate: string;
+              mileage: number;
+              liters: number;
+              pricePerLiter: number;
+              totalCost: number | null;
+              stationName?: string | null;
+              isFullTank: boolean;
+              createdAt: string;
+            })[];
+            chargingSessions: ({
+              id: string;
+              vehicleId: string;
+              chargeDate: string;
+              mileage: number;
+              energyKwh: number;
+              pricePerKwh: number;
+              totalCost: number | null;
+              chargerType: "home_socket" | "ac_type2" | "dc_ccs" | "dc_chademo" | "tesla_sc" | "other";
+              socStartPercent?: number | null;
+              socEndPercent?: number | null;
+              stationName?: string | null;
+              isFullCharge: boolean;
+              createdAt: string;
+            })[];
+            mileageReadings: ({
+              id: string;
+              vehicleId: string;
+              readingDate: string;
+              mileage: number;
+              sourceType: "manual" | "fuel_log" | "service_record" | "charging_session";
+              sourceId?: string | null;
+              note?: string | null;
+              createdAt: string;
+              updatedAt: string;
+            })[];
+            serviceRecords: ({
+              id: string;
+              vehicleId: string;
+              serviceDate: string;
+              mileage: number;
+              title: string;
+              description?: string | null;
+              laborCost: number | null;
+              totalCost: number | null;
+              workshopName?: string | null;
+              createdAt: string;
+              updatedAt: string;
+              parts?: ({
+                id: string;
+                serviceRecordId: string;
+                partId: string;
+                name: string;
+                manufacturer: string | null;
+                partNumber: string | null;
+                quantity: number;
+                unitPrice: number;
+                totalPrice: number | null;
+              })[];
+            })[];
+            issues: ({
+              id: string;
+              vehicleId: string;
+              reportedDate: string;
+              resolvedDate?: string | null;
+              title: string;
+              description?: string | null;
+              status: "open" | "in_progress" | "resolved" | "cancelled";
+              priority: "low" | "medium" | "high" | "critical";
+              relatedServiceRecordId?: string | null;
+              createdAt: string;
+              updatedAt: string;
+            })[];
+            expenses: ({
+              id: string;
+              vehicleId: string;
+              category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+              expenseDate: string;
+              amount: number | null;
+              description?: string | null;
+              sourceType: "manual" | "fuel_log" | "service_record" | "charging_session";
+              sourceId?: string | null;
+              isAutoSynced: boolean;
+              createdAt: string;
+              updatedAt: string;
+            })[];
+            reminders: ({
+              id: string;
+              vehicleId: string;
+              title: string;
+              description?: string | null;
+              dueDate?: string | null;
+              dueMileage?: number | null;
+              status: "pending" | "done" | "cancelled";
+              dueState: string;
+              notifiedAt?: string | null;
+              createdAt: string;
+              updatedAt: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/me": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            localePref: "pl" | "en";
+            unitsPref: "metric" | "imperial";
+            currencyPref: string;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      requestBody: { content: {
+        "application/json": {
+          confirmation: string;
+        };
+      } };
+      responses: {
+        204: { content: {
+
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          firstName?: string;
+          lastName?: string;
+          localePref?: "pl" | "en";
+          unitsPref?: "metric" | "imperial";
+          currencyPref?: string;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            firstName: string;
+            lastName: string;
+            email: string;
+            localePref: "pl" | "en";
+            unitsPref: "metric" | "imperial";
+            currencyPref: string;
+            createdAt: string;
+            updatedAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/charging-sessions": {
     get: {
       responses: {
@@ -1822,84 +2084,6 @@ export interface paths {
           };
         } };
         404: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-      };
-    };
-  };
-  "/api/me": {
-    get: {
-      responses: {
-        200: { content: {
-          "application/json": {
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-            localePref: "pl" | "en";
-            unitsPref: "metric" | "imperial";
-            currencyPref: string;
-            createdAt: string;
-            updatedAt: string;
-          };
-        } };
-        401: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-      };
-    };
-    patch: {
-      requestBody: { content: {
-        "application/json": {
-          firstName?: string;
-          lastName?: string;
-          localePref?: "pl" | "en";
-          unitsPref?: "metric" | "imperial";
-          currencyPref?: string;
-        };
-      } };
-      responses: {
-        200: { content: {
-          "application/json": {
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-            localePref: "pl" | "en";
-            unitsPref: "metric" | "imperial";
-            currencyPref: string;
-            createdAt: string;
-            updatedAt: string;
-          };
-        } };
-        400: { content: {
-          "application/json": {
-            code: string;
-            message: string;
-            issues?: ({
-              code: string;
-              path: (string | number)[];
-              message: string;
-            })[];
-          };
-        } };
-        401: { content: {
           "application/json": {
             code: string;
             message: string;
