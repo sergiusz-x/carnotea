@@ -36,11 +36,16 @@ This runs `docker compose up -d` and starts a PostgreSQL 16 container on port
 **5433** (so it doesn't conflict with a system-wide Postgres on 5432). The data
 lives in a Docker volume named `carnotea_postgres_data`.
 
+It also starts **Mailpit** — a local email inbox that captures all outgoing
+transactional emails (verification, password reset) without sending real mail.
+View captured emails in your browser at **http://localhost:8025**.
+
 Useful follow-ups:
 
 ```bash
 docker compose ps               # check status
 docker compose logs -f postgres # tail logs
+docker compose logs -f mailpit  # tail Mailpit logs
 pnpm db:down                    # stop, keep data
 pnpm db:reset                   # nuke the volume and start fresh
 ```

@@ -1,0 +1,20 @@
+{
+  "verification": {
+    "subject": "Verify your CarNotea email address",
+    "greeting": "Hi {{name}},",
+    "body": "Thank you for signing up for CarNotea. Please click the link below to verify your email address.",
+    "cta": "Verify email address",
+    "fallback": "If the button doesn't work, copy and paste this link into your browser:",
+    "ignore": "If you didn't create a CarNotea account, you can safely ignore this email.",
+    "footer": "CarNotea — your vehicle diary"
+  },
+  "passwordReset": {
+    "subject": "Reset your CarNotea password",
+    "greeting": "Hi {{name}},",
+    "body": "We received a request to reset the password for your CarNotea account. Click the link below to choose a new password.",
+    "cta": "Reset password",
+    "fallback": "If the button doesn't work, copy and paste this link into your browser:",
+    "ignore": "If you didn't request a password reset, you can safely ignore this email. Your password won't change.",
+    "footer": "CarNotea — your vehicle diary"
+  }
+}

@@ -23,8 +23,18 @@ const authStub = {
 };
 
 const configStub = {
-  get: (key: string): string =>
-    key === 'BETTER_AUTH_URL' ? 'http://localhost:3001' : 'test-secret-at-least-16-chars',
+  get: (key: string): string | number => {
+    const values: Record<string, string | number> = {
+      BETTER_AUTH_URL: 'http://localhost:3001',
+      BETTER_AUTH_SECRET: 'test-secret-at-least-16-chars',
+      CORS_ORIGINS: 'http://localhost:5173',
+      NODE_ENV: 'test',
+      SMTP_PORT: 587,
+      EMAIL_FROM: 'CarNotea <noreply@localhost>',
+      EMAIL_REPLY_TO: 'noreply@localhost',
+    };
+    return values[key] ?? 'stub-value';
+  },
 };
 
 @Global()
@@ -45,6 +55,10 @@ describe('AuthModule mounts better-auth at /api/auth/*', () => {
     const moduleRef = await Test.createTestingModule({ imports: [FakeDepsModule, AuthModule] })
       .overrideProvider(AUTH)
       .useValue(authStub)
+      // Cast via unknown: the factory is overridden above, so configStub.get is
+      // never called in this test. The cast satisfies TS without altering runtime.
+      .overrideProvider(ConfigService)
+      .useValue(configStub)
       .compile();
 
     app = moduleRef.createNestApplication<NestFastifyApplication>(new FastifyAdapter());

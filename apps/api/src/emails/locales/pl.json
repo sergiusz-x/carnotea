@@ -1,0 +1,20 @@
+{
+  "verification": {
+    "subject": "Potwierdź adres e-mail w CarNotea",
+    "greeting": "Cześć {{name}},",
+    "body": "Dziękujemy za rejestrację w CarNotea. Kliknij poniższy link, aby potwierdzić swój adres e-mail.",
+    "cta": "Potwierdź adres e-mail",
+    "fallback": "Jeśli przycisk nie działa, skopiuj i wklej ten link w przeglądarce:",
+    "ignore": "Jeśli nie zakładałeś konta w CarNotea, możesz zignorować tę wiadomość.",
+    "footer": "CarNotea — Twój dziennik pojazdu"
+  },
+  "passwordReset": {
+    "subject": "Zresetuj hasło w CarNotea",
+    "greeting": "Cześć {{name}},",
+    "body": "Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta CarNotea. Kliknij poniższy link, aby ustawić nowe hasło.",
+    "cta": "Zresetuj hasło",
+    "fallback": "Jeśli przycisk nie działa, skopiuj i wklej ten link w przeglądarce:",
+    "ignore": "Jeśli nie prosiłeś o zresetowanie hasła, możesz zignorować tę wiadomość. Twoje hasło pozostanie bez zmian.",
+    "footer": "CarNotea — Twój dziennik pojazdu"
+  }
+}

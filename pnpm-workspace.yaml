@@ -82,6 +82,9 @@ catalog:
   '@swc/core': ^1.15.41
   # Auth (apps/api) — better-auth, ADR-0004
   better-auth: ^1.6.20
+  # Email transport (apps/api) — T-051
+  nodemailer: ^9.0.1
+  '@types/nodemailer': ^8.0.1
   # Security — T-049
   '@fastify/helmet': ^13.0.2
   '@fastify/rate-limit': ^11.0.0

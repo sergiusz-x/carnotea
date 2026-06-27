@@ -16,11 +16,15 @@ export const envSchema = z.object({
   // Body-size limit in bytes (1 MB default)
   BODY_LIMIT: z.coerce.number().int().positive().default(1_048_576),
   // --- Mail SMTP (T-051) ---
+  // Host is optional: absent → fall back to Mailpit on localhost:1025 (dev only).
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.coerce.number().int().positive().default(587),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
-  SMTP_FROM: z.email().optional(),
+  // Branded sender address shown to recipients.
+  EMAIL_FROM: z.string().default('CarNotea <noreply@localhost>'),
+  // Reply-to address (may differ from sender).
+  EMAIL_REPLY_TO: z.string().default('noreply@localhost'),
 
   // ── Observability: OpenTelemetry (all optional — absent → tracing disabled) ──
   /** OTLP endpoint for exporting traces. When unset → tracing is a no-op. */
