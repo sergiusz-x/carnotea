@@ -12,6 +12,7 @@ import {
   setServerErrors,
   useZodForm,
 } from '@/components/form';
+import { PageHeader } from '@/components/PageHeader';
 import {
   useCreateVehicle,
   useUpdateVehicle,
@@ -152,7 +153,7 @@ function FormShell({
 
   return (
     <div className="container mx-auto max-w-screen-md px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold">{title}</h1>
+      <PageHeader title={title} />
 
       <AppForm form={form} onSubmit={onSubmit}>
         <TextField name="brand" label={t('fields.brand')} placeholder={t('fields.brand')} />
