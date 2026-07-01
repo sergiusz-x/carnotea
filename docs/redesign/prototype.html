@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CarNotea — redesign (minimal)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #fbfbfa;
+        --ink: #14140f;
+        --muted: #71716b;
+        --faint: #9a9a93;
+        --line: #e9e9e4;
+        --line-strong: #dededa;
+        --green: #1f5c3d;
+        --green-soft: #eef3f0;
+        --amber: #9a6b08;
+        --red: #b23b2e;
+        --blue: #2a6f97;
+        --violet: #6c4bb6;
+        --card: #ffffff;
+        --rail: 72px;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+      body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--paper); color: var(--ink); line-height: 1.5;
+      }
+      .tnum { font-variant-numeric: tabular-nums; }
+      .micro {
+        font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em;
+        text-transform: uppercase; color: var(--faint);
+      }
+
+      .app { display: flex; min-height: 100vh; }
+
+      /* Left rail — flat, no gradient */
+      .rail {
+        width: var(--rail); flex-shrink: 0; background: var(--card);
+        border-right: 1px solid var(--line);
+        display: flex; flex-direction: column; align-items: center;
+        padding: 16px 0; gap: 4px; position: sticky; top: 0; height: 100vh;
+      }
+      .logo {
+        width: 38px; height: 38px; border-radius: 10px; background: var(--green);
+        display: grid; place-items: center; font-family: 'Space Grotesk'; font-weight: 700;
+        font-size: 19px; color: #fff; margin-bottom: 12px;
+      }
+      .rail a {
+        width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center;
+        color: var(--faint); text-decoration: none; transition: 0.12s; position: relative;
+      }
+      .rail a:hover { background: #f3f3ef; color: var(--ink); }
+      .rail a.active { color: var(--green); background: var(--green-soft); }
+      .rail a.active::before {
+        content: ''; position: absolute; left: -16px; top: 11px; bottom: 11px; width: 3px;
+        background: var(--green); border-radius: 0 3px 3px 0;
+      }
+      .rail svg { width: 21px; height: 21px; }
+      .rail .spacer { flex: 1; }
+      .rail .avatar {
+        width: 36px; height: 36px; border-radius: 50%; background: #efefe9;
+        display: grid; place-items: center; font-weight: 600; font-size: 12.5px; color: var(--muted);
+      }
+
+      .main { flex: 1; min-width: 0; }
+      .wrap { max-width: 880px; margin: 0 auto; padding: 30px 34px 90px; }
+
+      /* Top bar */
+      .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+      .greet .micro { margin-bottom: 3px; }
+      .greet h1 { font-family: 'Space Grotesk'; font-size: 23px; font-weight: 700; letter-spacing: -0.02em; }
+      .switcher {
+        display: flex; align-items: center; gap: 9px; padding: 8px 12px; cursor: pointer;
+        border: 1px solid var(--line-strong); border-radius: 10px; background: #fff;
+        font-size: 13px; font-weight: 600; color: var(--ink);
+      }
+      .switcher:hover { background: #fafaf7; }
+      .switcher svg { width: 16px; height: 16px; color: var(--muted); }
+      .switcher .chev { color: var(--faint); font-size: 11px; }
+
+      /* ── Panel (minimal) ─────────────────────────────────────── */
+      .panel {
+        background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+        padding: 22px 24px 4px;
+      }
+      .panel-id { display: flex; align-items: flex-start; justify-content: space-between; }
+      .panel-id h2 {
+        font-family: 'Space Grotesk'; font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
+      }
+      .panel-id .sub {
+        font-size: 13px; color: var(--muted); margin-top: 3px;
+        display: flex; align-items: center; gap: 8px;
+      }
+      .panel-id .active {
+        display: inline-flex; align-items: center; gap: 5px; color: var(--green); font-weight: 600;
+      }
+      .panel-id .active::before { content:''; width:6px; height:6px; border-radius:50%; background: var(--green); }
+
+      .readout { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 20px; }
+      .cell { padding: 4px 18px 18px; border-left: 1px solid var(--line); }
+      .cell:first-child { border-left: none; padding-left: 2px; }
+      .cell .micro { margin-bottom: 7px; }
+      .cell .v {
+        font-family: 'Space Grotesk'; font-weight: 600; font-size: 23px; letter-spacing: -0.01em;
+        line-height: 1;
+      }
+      .cell.primary .v { font-size: 29px; }
+      .cell .v small { font-size: 13px; color: var(--faint); font-weight: 500; margin-left: 2px; }
+      .cell .note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+      .cell .note.amber { color: var(--amber); }
+      .cell .note.down { color: var(--green); }
+
+      /* ── Logbook ─────────────────────────────────────────────── */
+      .logbook { margin-top: 32px; }
+      .logbook-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+      .logbook-head h3 { font-family: 'Space Grotesk'; font-size: 17px; font-weight: 600; }
+      .add-btn {
+        display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600;
+        background: var(--green); color: #fff; border: none; border-radius: 9px;
+        padding: 9px 14px; cursor: pointer;
+      }
+      .add-btn svg { width: 15px; height: 15px; }
+      .filters { display: flex; gap: 7px; margin-bottom: 14px; }
+      .chip {
+        font-size: 12.5px; font-weight: 600; padding: 6px 13px; border-radius: 8px;
+        border: 1px solid var(--line-strong); background: #fff; color: var(--muted); cursor: pointer;
+      }
+      .chip:hover { background: #fafaf7; }
+      .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+      .day {
+        font-family: 'Space Grotesk'; font-weight: 600; font-size: 12px; color: var(--faint);
+        text-transform: uppercase; letter-spacing: 0.06em; margin: 22px 2px 9px;
+      }
+      .day:first-child { margin-top: 4px; }
+      .entry {
+        display: grid; grid-template-columns: 38px 1fr auto; gap: 14px; align-items: center;
+        background: var(--card); border: 1px solid var(--line); border-radius: 13px;
+        padding: 13px 16px; margin-bottom: 8px; transition: 0.12s; cursor: pointer;
+      }
+      .entry:hover { border-color: var(--line-strong); background: #fffefb; }
+      .icon { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; }
+      .icon svg { width: 19px; height: 19px; }
+      .i-fuel { background: var(--green-soft); color: var(--green); }
+      .i-charge { background: #e9f1f6; color: var(--blue); }
+      .i-service { background: #f6f1e8; color: var(--amber); }
+      .i-issue { background: #f8ece9; color: var(--red); }
+      .i-expense { background: #f1eef7; color: var(--violet); }
+      .entry .title { font-weight: 600; font-size: 14px; }
+      .entry .meta { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+      .entry .meta .tag { color: var(--ink); font-weight: 600; }
+      .entry .amount { text-align: right; }
+      .entry .amount .num { font-family: 'Space Grotesk'; font-weight: 600; font-size: 15.5px; }
+      .entry .amount .num.cost { color: var(--green); }
+      .entry .amount .unit { font-size: 11.5px; color: var(--faint); margin-top: 1px; }
+      .status { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 6px; }
+      .st-open { background: #f8ece9; color: var(--red); }
+      .st-done { background: var(--green-soft); color: var(--green); }
+
+      @media (max-width: 720px) {
+        .readout { grid-template-columns: repeat(2, 1fr); row-gap: 6px; }
+        .cell:nth-child(3) { border-left: none; padding-left: 2px; }
+        .wrap { padding: 22px 16px 90px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <nav class="rail">
+        <div class="logo">C</div>
+        <a class="active" title="Pulpit" href="#"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2 7-7 7 7 2 2M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10M9 21v-6h6v6"/></svg></a>
+        <a title="Paliwo" href="#"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 22V4a2 2 0 012-2h6a2 2 0 012 2v18M3 22h12M3 10h10m4-3l3 3v8a2 2 0 11-4 0v-3h-1"/></svg></a>
+        <a title="Ładowanie" href="#"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg></a>
+        <a title="Serwis" href="#"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.8-.7-.7-2.8 2.7-2z"/></svg></a>
+        <a title="Zgłoszenia" href="#"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4m0 4h.01"/></svg></a>
+        <a title="Koszty" href="#"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 7h20v12a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm0 0l2-3h16l2 3M2 11h20"/></svg></a>
+        <div class="spacer"></div>
+        <div class="avatar">SS</div>
+      </nav>
+
+      <div class="main">
+        <div class="wrap">
+          <div class="topbar">
+            <div class="greet">
+              <div class="micro">Poniedziałek · 30 czerwca</div>
+              <h1>Cześć, Sergiusz</h1>
+            </div>
+            <div class="switcher">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 018.4 5h7.2a2 2 0 011.9 1.5L19 11m-14 0h14m-14 0v6m14-6v6M7 17h2m6 0h2"/></svg>
+              BMW i4 <span class="chev">▾</span>
+            </div>
+          </div>
+
+          <!-- Minimal panel -->
+          <section class="panel">
+            <div class="panel-id">
+              <div>
+                <h2>BMW i4 eDrive40</h2>
+                <div class="sub">2023 · elektryczny · 250 kW <span>·</span> <span class="active">Aktywny</span></div>
+              </div>
+            </div>
+
+            <div class="readout">
+              <div class="cell primary">
+                <div class="micro">Przebieg</div>
+                <div class="v tnum">84&nbsp;217<small>km</small></div>
+              </div>
+              <div class="cell">
+                <div class="micro">Naładowanie</div>
+                <div class="v tnum">72<small>%</small></div>
+                <div class="note">≈ 295 km</div>
+              </div>
+              <div class="cell">
+                <div class="micro">Następny serwis</div>
+                <div class="v tnum">1&nbsp;240<small>km</small></div>
+                <div class="note amber">za ~2 miesiące</div>
+              </div>
+              <div class="cell">
+                <div class="micro">Koszty / czerwiec</div>
+                <div class="v tnum">612<small>zł</small></div>
+                <div class="note down">↓ 18% vs maj</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Logbook -->
+          <section class="logbook">
+            <div class="logbook-head">
+              <h3>Dziennik</h3>
+              <button class="add-btn"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Dodaj wpis</button>
+            </div>
+            <div class="filters">
+              <span class="chip active">Wszystko</span>
+              <span class="chip">Ładowanie</span>
+              <span class="chip">Serwis</span>
+              <span class="chip">Koszty</span>
+              <span class="chip">Zgłoszenia</span>
+            </div>
+
+            <div class="day">Dziś</div>
+
+            <div class="entry">
+              <div class="icon i-charge"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg></div>
+              <div><div class="title">Ładowanie — Ionity Kraków</div><div class="meta"><span class="tag">38.2 kWh</span> · DC 150 kW · 22% → 80% · 84 217 km</div></div>
+              <div class="amount"><div class="num cost tnum">61,40 zł</div><div class="unit">1,61 zł/kWh</div></div>
+            </div>
+
+            <div class="entry">
+              <div class="icon i-issue"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4m0 4h.01"/></svg></div>
+              <div><div class="title">Stukot w przednim zawieszeniu</div><div class="meta">Priorytet wysoki · zgłoszono dziś</div></div>
+              <div class="amount"><span class="status st-open">Otwarte</span></div>
+            </div>
+
+            <div class="day">28 czerwca</div>
+
+            <div class="entry">
+              <div class="icon i-service"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.8-.7-.7-2.8 2.7-2z"/></svg></div>
+              <div><div class="title">Wymiana płynu hamulcowego</div><div class="meta"><span class="tag">ASO Bawaria</span> · 3 części · 82 990 km</div></div>
+              <div class="amount"><div class="num cost tnum">540,00 zł</div><div class="unit">robocizna 180 zł</div></div>
+            </div>
+
+            <div class="entry">
+              <div class="icon i-expense"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 7h20v12a1 1 0 01-1 1H3a1 1 0 01-1-1V7zm0 0l2-3h16l2 3M2 11h20"/></svg></div>
+              <div><div class="title">Ubezpieczenie OC/AC</div><div class="meta">Składka roczna · Link4</div></div>
+              <div class="amount"><div class="num cost tnum">2 340,00 zł</div><div class="unit">raz w roku</div></div>
+            </div>
+
+            <div class="day">24 czerwca</div>
+
+            <div class="entry">
+              <div class="icon i-charge"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-2 8 9-12h-7l2-8z"/></svg></div>
+              <div><div class="title">Ładowanie — dom</div><div class="meta"><span class="tag">52.0 kWh</span> · AC 11 kW · 10% → 100% · 82 410 km</div></div>
+              <div class="amount"><div class="num cost tnum">41,60 zł</div><div class="unit">0,80 zł/kWh</div></div>
+            </div>
+
+            <div class="entry">
+              <div class="icon i-service"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.8-.7-.7-2.8 2.7-2z"/></svg></div>
+              <div><div class="title">Rotacja opon · sezon letni</div><div class="meta"><span class="tag">Wulkanizacja Nowak</span> · 81 050 km</div></div>
+              <div class="amount"><span class="status st-done">Zrobione</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
