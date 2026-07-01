@@ -24,6 +24,10 @@ export const ROUTES = {
   expensesByVehicle: '/api/vehicles/{vehicleId}/expenses',
   expenseById: '/api/vehicles/{vehicleId}/expenses/{id}',
 
+  // Redesign — per-vehicle aggregated read views (T-069)
+  vehicleActivity: '/api/vehicles/{vehicleId}/activity',
+  vehiclePanel: '/api/vehicles/{vehicleId}/panel',
+
   // Dashboard (read-only, user-scoped, no vehicleId prefix)
   dashboardOverview: '/api/dashboard/overview',
   dashboardExpensesByCategory: '/api/dashboard/expenses-by-category',
