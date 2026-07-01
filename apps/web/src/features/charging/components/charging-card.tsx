@@ -1,11 +1,12 @@
 import type { ChargerTypeCode } from '@carnotea/shared';
 import { Link, useParams } from '@tanstack/react-router';
-import { Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
 import { LogCard } from '@/components/LogCard';
 import { Badge } from '@/components/ui/badge';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { formatMoney } from '@/lib/format';
+import { useCurrencyPref } from '@/lib/useCurrencyPref';
 
 interface ChargingCardProps {
   id: string;
@@ -51,8 +52,10 @@ export function ChargingCard({
   const { vehicleId }: { vehicleId: string } = useParams({
     from: '/_authenticated/vehicles/$vehicleId/charging',
   });
-  const { t } = useTranslation('charging');
+  const { t, i18n } = useTranslation('charging');
   const { t: tc } = useTranslation('common');
+  const currency = useCurrencyPref();
+  const locale = i18n.resolvedLanguage ?? 'en';
 
   return (
     <LogCard
@@ -62,19 +65,18 @@ export function ChargingCard({
           <Badge variant={chargerTypeBadgeVariant[chargerType] ?? 'default'}>
             {t(`chargerType.${chargerType as ChargerTypeCode}`)}
           </Badge>
-          {isFullCharge && (
-            <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-              {t('list.fullCharge')}
-            </span>
-          )}
+          {isFullCharge && <Badge variant="secondary">{t('list.fullCharge')}</Badge>}
         </>
       }
       stats={[
         { label: t('fields.energyKwh'), value: t('list.energy', { energy: energyKwh }) },
-        { label: t('fields.pricePerKwh'), value: t('list.price', { price: pricePerKwh }) },
+        {
+          label: t('fields.pricePerKwh'),
+          value: formatMoney(pricePerKwh, currency, locale),
+        },
         {
           label: t('fields.totalCost'),
-          value: t('list.cost', { cost: totalCost }),
+          value: formatMoney(totalCost, currency, locale),
           highlight: true,
         },
       ]}
@@ -105,22 +107,17 @@ export function ChargingCard({
             to="/vehicles/$vehicleId/charging/$sessionId/edit"
             params={{ vehicleId, sessionId: id }}
             aria-label={tc('actions.edit')}
-            className={buttonVariants({ variant: 'ghost', size: 'icon', className: 'h-8 w-8' })}
+            title={tc('actions.edit')}
+            className={editActionClassName}
           >
-            <Pencil className="h-3.5 w-3.5" />
+            <EditActionIcon />
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive"
-            aria-label={tc('actions.delete')}
+          <DeleteAction
             onClick={() => {
               onDelete(id, chargeDate);
             }}
             disabled={isDeleting}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          />
         </>
       }
     />
