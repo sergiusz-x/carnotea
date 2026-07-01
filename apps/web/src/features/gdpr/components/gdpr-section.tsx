@@ -59,7 +59,7 @@ function DeleteDialog({ userEmail, onClose }: DeleteDialogProps) {
       aria-labelledby="delete-dialog-title"
     >
       <div className="mx-4 w-full max-w-md rounded-xl border bg-background p-6 shadow-2xl">
-        <h2 id="delete-dialog-title" className="text-lg font-semibold">
+        <h2 id="delete-dialog-title" className="font-display text-lg font-semibold">
           {t('delete.dialog.title')}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">{t('delete.dialog.description')}</p>
