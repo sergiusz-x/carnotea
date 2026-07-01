@@ -1,0 +1,91 @@
+{
+  "panel": {
+    "active": "Aktywny",
+    "mileage": "Przebieg",
+    "charge": "Naładowanie",
+    "nextService": "Następny serwis",
+    "monthCost": "Koszty (ten miesiąc)",
+    "avgConsumption": "Śr. zużycie",
+    "chargePercent": "{{value}}%",
+    "fuelConsumption": "{{value}} l/100 km",
+    "energyConsumption": "{{value}} kWh/100 km",
+    "range": "≈ {{km}}",
+    "dueKm": "za {{km}} km",
+    "dueDate": "do {{date}}",
+    "overdueKm": "{{km}} km po terminie",
+    "none": "—",
+    "trendDown": "↓ {{pct}}% vs poprzedni miesiąc",
+    "trendUp": "↑ {{pct}}% vs poprzedni miesiąc",
+    "trendFlat": "tyle co poprzednio"
+  },
+  "feed": {
+    "title": "Dziennik",
+    "add": "Dodaj wpis",
+    "filters": "Filtry dziennika",
+    "loadMore": "Pokaż więcej",
+    "loading": "Ładowanie…",
+    "emptyTitle": "Tu jeszcze nic nie ma",
+    "emptyDescription": "Dodaj pierwszy wpis, aby rozpocząć dziennik pojazdu.",
+    "error": "Nie udało się załadować dziennika.",
+    "retry": "Spróbuj ponownie"
+  },
+  "filter": {
+    "all": "Wszystko",
+    "charge": "Ładowanie",
+    "fuel": "Paliwo",
+    "service": "Serwis",
+    "expense": "Koszty",
+    "issue": "Zgłoszenia",
+    "reminder": "Przypomnienia"
+  },
+  "entry": {
+    "fuel": "Tankowanie",
+    "charge": "Ładowanie",
+    "expense": "Wydatek",
+    "mileage": "{{mileage}} km",
+    "liters": "{{value}} l",
+    "energy": "{{value}} kWh",
+    "parts_one": "{{count}} część",
+    "parts_few": "{{count}} części",
+    "parts_many": "{{count}} części",
+    "parts_other": "{{count}} części",
+    "fullTank": "Pełny bak",
+    "partialTank": "Dolewka",
+    "fullCharge": "Pełne",
+    "auto": "Auto"
+  },
+  "category": {
+    "fuel": "Paliwo",
+    "electricity": "Prąd",
+    "service": "Serwis",
+    "parts": "Części",
+    "insurance": "Ubezpieczenie",
+    "inspection": "Przegląd",
+    "other": "Inne"
+  },
+  "chargerType": {
+    "home_socket": "Gniazdko domowe",
+    "ac_type2": "AC Type 2",
+    "dc_ccs": "DC CCS",
+    "dc_chademo": "DC CHAdeMO",
+    "tesla_sc": "Tesla Supercharger",
+    "other": "Inna ładowarka"
+  },
+  "status": {
+    "open": "Otwarte",
+    "in_progress": "W toku",
+    "resolved": "Rozwiązane",
+    "cancelled": "Anulowane"
+  },
+  "priority": {
+    "low": "Niski",
+    "medium": "Średni",
+    "high": "Wysoki",
+    "critical": "Krytyczny"
+  },
+  "dueState": {
+    "overdue": "Po terminie",
+    "due_soon": "Wkrótce",
+    "ok": "Na czas"
+  }
+}

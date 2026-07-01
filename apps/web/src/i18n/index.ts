@@ -3,6 +3,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
 import { configureZodErrorMap } from '../lib/forms/zod-i18n';
+import enActivity from '../locales/en/activity.json';
 import enAuth from '../locales/en/auth.json';
 import enCharging from '../locales/en/charging.json';
 import enCommon from '../locales/en/common.json';
@@ -19,6 +20,7 @@ import enProfile from '../locales/en/profile.json';
 import enReminders from '../locales/en/reminders.json';
 import enService from '../locales/en/service.json';
 import enVehicles from '../locales/en/vehicles.json';
+import plActivity from '../locales/pl/activity.json';
 import plAuth from '../locales/pl/auth.json';
 import plCharging from '../locales/pl/charging.json';
 import plCommon from '../locales/pl/common.json';
@@ -44,6 +46,7 @@ export const DEFAULT_NS = 'common';
 export const resources = {
   en: {
     common: enCommon,
+    activity: enActivity,
     dashboard: enDashboard,
     forms: enForms,
     health: enHealth,
@@ -62,6 +65,7 @@ export const resources = {
   },
   pl: {
     common: plCommon,
+    activity: plActivity,
     dashboard: plDashboard,
     forms: plForms,
     health: plHealth,
@@ -87,11 +91,11 @@ void i18n
     resources,
     fallbackLng: 'en',
     supportedLngs: SUPPORTED_LANGUAGES,
-    // Map regional browser tags (e.g. 'en-US', 'pl-PL') to our base languages.
     load: 'languageOnly',
     defaultNS: DEFAULT_NS,
     ns: [
       'common',
+      'activity',
       'dashboard',
       'forms',
       'health',
@@ -109,8 +113,6 @@ void i18n
       'gdpr',
     ],
     interpolation: { escapeValue: false },
-    // Resources are bundled, so init resolves synchronously; no Suspense
-    // boundary is needed and tests render translated text immediately.
     react: { useSuspense: false },
     detection: {
       order: ['localStorage', 'navigator'],
@@ -119,8 +121,6 @@ void i18n
     },
   });
 
-// Wire the Zod error map after i18next is ready so validation errors render
-// in the active language rather than Zod's built-in English messages.
 configureZodErrorMap();
 
 export default i18n;
