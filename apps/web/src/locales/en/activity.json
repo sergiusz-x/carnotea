@@ -1,0 +1,89 @@
+{
+  "panel": {
+    "active": "Active",
+    "mileage": "Mileage",
+    "charge": "Charge",
+    "nextService": "Next service",
+    "monthCost": "Costs this month",
+    "avgConsumption": "Avg consumption",
+    "chargePercent": "{{value}}%",
+    "fuelConsumption": "{{value}} L/100 km",
+    "energyConsumption": "{{value}} kWh/100 km",
+    "range": "≈ {{km}}",
+    "dueKm": "in {{km}} km",
+    "dueDate": "by {{date}}",
+    "overdueKm": "{{km}} km overdue",
+    "none": "—",
+    "trendDown": "↓ {{pct}}% vs last month",
+    "trendUp": "↑ {{pct}}% vs last month",
+    "trendFlat": "same as last month"
+  },
+  "feed": {
+    "title": "Logbook",
+    "add": "Add entry",
+    "filters": "Logbook filters",
+    "loadMore": "Load more",
+    "loading": "Loading…",
+    "emptyTitle": "Nothing here yet",
+    "emptyDescription": "Add your first entry to start your vehicle's logbook.",
+    "error": "Couldn't load the logbook.",
+    "retry": "Try again"
+  },
+  "filter": {
+    "all": "All",
+    "charge": "Charging",
+    "fuel": "Fuel",
+    "service": "Service",
+    "expense": "Costs",
+    "issue": "Issues",
+    "reminder": "Reminders"
+  },
+  "entry": {
+    "fuel": "Refuel",
+    "charge": "Charging",
+    "expense": "Expense",
+    "mileage": "{{mileage}} km",
+    "liters": "{{value}} l",
+    "energy": "{{value}} kWh",
+    "parts_one": "{{count}} part",
+    "parts_other": "{{count}} parts",
+    "fullTank": "Full tank",
+    "partialTank": "Partial",
+    "fullCharge": "Full",
+    "auto": "Auto"
+  },
+  "category": {
+    "fuel": "Fuel",
+    "electricity": "Electricity",
+    "service": "Service",
+    "parts": "Parts",
+    "insurance": "Insurance",
+    "inspection": "Inspection",
+    "other": "Other"
+  },
+  "chargerType": {
+    "home_socket": "Home socket",
+    "ac_type2": "AC Type 2",
+    "dc_ccs": "DC CCS",
+    "dc_chademo": "DC CHAdeMO",
+    "tesla_sc": "Tesla Supercharger",
+    "other": "Other charger"
+  },
+  "status": {
+    "open": "Open",
+    "in_progress": "In progress",
+    "resolved": "Resolved",
+    "cancelled": "Cancelled"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "critical": "Critical"
+  },
+  "dueState": {
+    "overdue": "Overdue",
+    "due_soon": "Due soon",
+    "ok": "On track"
+  }
+}
