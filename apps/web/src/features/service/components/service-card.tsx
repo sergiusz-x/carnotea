@@ -1,7 +1,12 @@
+import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { ListCard } from '@/components/ListCard';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
+import { StatStrip } from '@/components/StatStrip';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { formatMoney } from '@/lib/format';
+import { useCurrencyPref } from '@/lib/useCurrencyPref';
 
 interface ServicePart {
   id: string;
@@ -25,60 +30,84 @@ interface ServiceRecord {
   parts: ServicePart[];
 }
 
-export function ServiceCard({ record }: { record: ServiceRecord }) {
-  const { t } = useTranslation('service');
+export function ServiceCard({
+  record,
+  onDelete,
+  isDeleting,
+}: {
+  record: ServiceRecord;
+  onDelete: (id: string, title: string) => void;
+  isDeleting: boolean;
+}) {
+  const { vehicleId }: { vehicleId: string } = useParams({
+    from: '/_authenticated/vehicles/$vehicleId/service',
+  });
+  const { t, i18n } = useTranslation('service');
+  const { t: tc } = useTranslation('common');
+  const currency = useCurrencyPref();
+  const locale = i18n.resolvedLanguage ?? 'en';
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="space-y-3">
-          {/* Header */}
-          <div className="flex items-start justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-medium">{record.serviceDate}</span>
-                <span className="text-sm text-muted-foreground">
-                  {t('list.mileage', { mileage: record.mileage })}
-                </span>
-              </div>
-              <h3 className="text-base font-semibold">{record.title}</h3>
-            </div>
-            <div className="text-right">
-              <p className="font-medium">{t('list.cost', { cost: record.totalCost })}</p>
-            </div>
-          </div>
+    <ListCard
+      primary={
+        <span className="font-display text-base font-semibold tnum">{record.serviceDate}</span>
+      }
+      actions={
+        <>
+          <Link
+            to="/vehicles/$vehicleId/service/$recordId/edit"
+            params={{ vehicleId, recordId: record.id }}
+            aria-label={tc('actions.edit')}
+            title={tc('actions.edit')}
+            className={editActionClassName}
+          >
+            <EditActionIcon />
+          </Link>
+          <DeleteAction
+            onClick={() => {
+              onDelete(record.id, record.title);
+            }}
+            disabled={isDeleting}
+          />
+        </>
+      }
+    >
+      <div className="px-4 pb-3 pt-0.5">
+        <h3 className="font-display text-base font-semibold">{record.title}</h3>
+        {record.workshopName && (
+          <p className="text-sm text-muted-foreground">{record.workshopName}</p>
+        )}
+      </div>
 
-          {/* Workshop */}
-          {record.workshopName && (
-            <p className="text-sm text-muted-foreground">
-              {t('list.workshop', { workshop: record.workshopName })}
-            </p>
-          )}
+      <StatStrip
+        stats={[
+          { label: t('fields.mileage'), value: t('list.mileage', { mileage: record.mileage }) },
+          { label: t('fields.laborCost'), value: formatMoney(record.laborCost, currency, locale) },
+          {
+            label: t('fields.totalCost'),
+            value: formatMoney(record.totalCost, currency, locale),
+            highlight: true,
+          },
+        ]}
+      />
 
-          {/* Parts summary */}
-          <div className="flex flex-wrap gap-1">
-            {record.parts.length > 0 ? (
-              <>
-                <Badge variant="secondary">
-                  {t('list.partCount', { count: record.parts.length })}
-                </Badge>
-                {record.parts.slice(0, 2).map((part) => (
-                  <Badge key={part.id} variant="outline" className="text-xs">
-                    {part.name}
-                  </Badge>
-                ))}
-                {record.parts.length > 2 && (
-                  <Badge variant="outline" className="text-xs">
-                    {`+${String(record.parts.length - 2)}`}
-                  </Badge>
-                )}
-              </>
-            ) : (
-              <span className="text-xs text-muted-foreground">{t('list.noParts')}</span>
+      <div className="flex flex-wrap gap-1 px-4 py-2.5">
+        {record.parts.length > 0 ? (
+          <>
+            <Badge variant="secondary">{t('list.partCount', { count: record.parts.length })}</Badge>
+            {record.parts.slice(0, 3).map((part) => (
+              <Badge key={part.id} variant="outline">
+                {part.name}
+              </Badge>
+            ))}
+            {record.parts.length > 3 && (
+              <Badge variant="outline">{`+${String(record.parts.length - 3)}`}</Badge>
             )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+          </>
+        ) : (
+          <span className="text-xs text-muted-foreground">{t('list.noParts')}</span>
+        )}
+      </div>
+    </ListCard>
   );
 }

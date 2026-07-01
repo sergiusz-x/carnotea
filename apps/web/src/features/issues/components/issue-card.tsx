@@ -2,9 +2,13 @@ import type { IssueStatusCode, IssuePriorityCode } from '@carnotea/shared';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { ListCard } from '@/components/ListCard';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import {
+  issuePriorityBadgeVariant,
+  issueStatusBadgeVariant,
+} from '@/features/issues/badge-variants';
 
 interface IssueCardProps {
   id: string;
@@ -16,20 +20,6 @@ interface IssueCardProps {
   onDelete: (id: string, title: string) => void;
   isDeleting: boolean;
 }
-
-const statusBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  open: 'default',
-  in_progress: 'secondary',
-  resolved: 'outline',
-  cancelled: 'destructive',
-};
-
-const priorityBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  low: 'secondary',
-  medium: 'default',
-  high: 'destructive',
-  critical: 'destructive',
-};
 
 export function IssueCard({
   id,
@@ -48,56 +38,52 @@ export function IssueCard({
   const { t: tc } = useTranslation('common');
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Link
-                to="/vehicles/$vehicleId/issues/$issueId"
-                params={{ vehicleId, issueId: id }}
-                className="font-medium hover:underline"
-              >
-                {title}
-              </Link>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant={statusBadgeVariant[status] ?? 'default'}>
-                {t(`status.${status as IssueStatusCode}`)}
-              </Badge>
-              <Badge variant={priorityBadgeVariant[priority] ?? 'default'}>
-                {t(`priority.${priority as IssuePriorityCode}`)}
-              </Badge>
-            </div>
-            <div className="text-sm text-muted-foreground">
-              <span>{t('list.reportedDate', { date: reportedDate })}</span>
-              {resolvedDate && (
-                <span className="ml-4">{t('list.resolvedDate', { date: resolvedDate })}</span>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              to="/vehicles/$vehicleId/issues/$issueId/edit"
-              params={{ vehicleId, issueId: id }}
-            >
-              <Button variant="outline" size="sm">
-                {tc('actions.edit')}
-              </Button>
-            </Link>
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => {
-                onDelete(id, title);
-              }}
-              disabled={isDeleting}
-            >
-              {tc('actions.delete')}
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <ListCard
+      primary={
+        <Link
+          to="/vehicles/$vehicleId/issues/$issueId"
+          params={{ vehicleId, issueId: id }}
+          className="font-display text-base font-semibold hover:underline"
+        >
+          {title}
+        </Link>
+      }
+      badges={
+        <>
+          <Badge variant={issueStatusBadgeVariant[status] ?? 'default'}>
+            {t(`status.${status as IssueStatusCode}`)}
+          </Badge>
+          <Badge variant={issuePriorityBadgeVariant[priority] ?? 'default'}>
+            {t(`priority.${priority as IssuePriorityCode}`)}
+          </Badge>
+        </>
+      }
+      actions={
+        <>
+          <Link
+            to="/vehicles/$vehicleId/issues/$issueId/edit"
+            params={{ vehicleId, issueId: id }}
+            aria-label={tc('actions.edit')}
+            title={tc('actions.edit')}
+            className={editActionClassName}
+          >
+            <EditActionIcon />
+          </Link>
+          <DeleteAction
+            onClick={() => {
+              onDelete(id, title);
+            }}
+            disabled={isDeleting}
+          />
+        </>
+      }
+    >
+      <div className="px-4 pb-4 text-sm text-muted-foreground tnum">
+        <span>{t('list.reportedDate', { date: reportedDate })}</span>
+        {resolvedDate && (
+          <span className="ml-4">{t('list.resolvedDate', { date: resolvedDate })}</span>
+        )}
+      </div>
+    </ListCard>
   );
 }

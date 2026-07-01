@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import { Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
 import { LogCard } from '@/components/LogCard';
 import { PageContainer } from '@/components/PageContainer';
 import { PageHeader } from '@/components/PageHeader';
 import { Badge } from '@/components/ui/badge';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { fuelLogsQueryOptions, useDeleteFuelLog } from '@/features/fuel/queries';
 import { formatMoney } from '@/lib/format';
 import { useCurrencyPref } from '@/lib/useCurrencyPref';
@@ -79,21 +79,16 @@ function FuelLogCard({
             to="/vehicles/$vehicleId/fuel/$fuelId/edit"
             params={{ vehicleId, fuelId: log.id }}
             aria-label={tc('actions.edit')}
-            className={buttonVariants({ variant: 'ghost', size: 'icon', className: 'h-8 w-8' })}
+            title={tc('actions.edit')}
+            className={editActionClassName}
           >
-            <Pencil className="h-3.5 w-3.5" />
+            <EditActionIcon />
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive"
-            aria-label={tc('actions.delete')}
+          <DeleteAction
             onClick={() => {
               onDelete(log.id, log.fuelDate);
             }}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          />
         </>
       }
     />

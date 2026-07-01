@@ -16,7 +16,6 @@ export function ExpenseListPage() {
     from: '/_authenticated/vehicles/$vehicleId/expenses',
   });
   const { t } = useTranslation('expenses');
-  const { t: tc } = useTranslation('common');
 
   const {
     data: expenses,
@@ -104,28 +103,8 @@ export function ExpenseListPage() {
                 description={expense.description}
                 sourceType={expense.sourceType}
                 isAutoSynced={expense.isAutoSynced}
-                editLink={
-                  <Link
-                    to="/vehicles/$vehicleId/expenses/$expenseId/edit"
-                    params={{ vehicleId, expenseId: expense.id }}
-                  >
-                    <Button variant="outline" size="sm">
-                      {tc('actions.edit')}
-                    </Button>
-                  </Link>
-                }
-                deleteButton={
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => {
-                      handleDelete(expense.id, expense.expenseDate);
-                    }}
-                    disabled={deleteMutation.isPending}
-                  >
-                    {tc('actions.delete')}
-                  </Button>
-                }
+                onDelete={handleDelete}
+                isDeleting={deleteMutation.isPending}
               />
             ),
           )}

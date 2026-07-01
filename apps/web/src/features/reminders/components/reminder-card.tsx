@@ -1,13 +1,20 @@
-import type { DueState, ReminderStatusCode } from '@carnotea/shared';
+import type { ReminderStatusCode } from '@carnotea/shared';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
+import { ListCard } from '@/components/ListCard';
+import {
+  DeleteAction,
+  EditActionIcon,
+  editActionClassName,
+  MarkDoneAction,
+} from '@/components/ListCardActions';
 import { Badge } from '@/components/ui/badge';
-import { Button, buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-
-// Due-state badge key lookup — avoids template-literal type-widening issues with i18next.
-const dueStateKey = (ds: string): `dueState.${DueState}` => `dueState.${ds as DueState}`;
+import {
+  dueStateKey,
+  reminderDueStateBadgeVariant,
+  reminderStatusBadgeVariant,
+} from '@/features/reminders/badge-variants';
 
 interface ReminderCardProps {
   id: string;
@@ -21,18 +28,6 @@ interface ReminderCardProps {
   isDeleting: boolean;
   isMarking: boolean;
 }
-
-const statusBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  pending: 'default',
-  done: 'outline',
-  cancelled: 'destructive',
-};
-
-const dueStateBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  overdue: 'destructive',
-  due_soon: 'secondary',
-  ok: 'outline',
-};
 
 export function ReminderCard({
   id,
@@ -53,68 +48,65 @@ export function ReminderCard({
   const { t: tc } = useTranslation('common');
 
   return (
-    <div className="rounded-lg border p-4 shadow-sm">
-      <div className="flex items-start justify-between">
-        <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <Link
-              to="/vehicles/$vehicleId/reminders/$reminderId"
-              params={{ vehicleId, reminderId: id }}
-              className="font-medium hover:underline"
-            >
-              {title}
-            </Link>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Badge variant={statusBadgeVariant[status] ?? 'default'}>
-              {t(`status.${status as ReminderStatusCode}`)}
-            </Badge>
-            <Badge variant={dueStateBadgeVariant[dueState] ?? 'outline'}>
-              {t(dueStateKey(dueState))}
-            </Badge>
-          </div>
-          <div className="text-sm text-muted-foreground">
-            {dueDate ? (
-              <span>{t('list.dueDate', { date: dueDate })}</span>
-            ) : (
-              <span>{t('list.noDueDate')}</span>
-            )}
-            {dueMileage != null && (
-              <span className="ml-4">{t('list.dueMileage', { value: dueMileage })}</span>
-            )}
-          </div>
-        </div>
-        <div className="flex gap-2">
+    <ListCard
+      primary={
+        <Link
+          to="/vehicles/$vehicleId/reminders/$reminderId"
+          params={{ vehicleId, reminderId: id }}
+          className="font-display text-base font-semibold hover:underline"
+        >
+          {title}
+        </Link>
+      }
+      badges={
+        <>
+          <Badge variant={reminderStatusBadgeVariant[status] ?? 'default'}>
+            {t(`status.${status as ReminderStatusCode}`)}
+          </Badge>
+          <Badge variant={reminderDueStateBadgeVariant[dueState] ?? 'outline'}>
+            {t(dueStateKey(dueState))}
+          </Badge>
+        </>
+      }
+      actions={
+        <>
           {status === 'pending' && (
-            <Button
-              type="button"
+            <MarkDoneAction
               onClick={() => {
                 onMarkDone(id);
               }}
               disabled={isMarking}
-            >
-              {isMarking ? t('list.marking') : t('list.markDone')}
-            </Button>
+              label={t('list.markDone')}
+            />
           )}
           <Link
             to="/vehicles/$vehicleId/reminders/$reminderId/edit"
             params={{ vehicleId, reminderId: id }}
-            className={cn(buttonVariants({ variant: 'outline' }))}
+            aria-label={tc('actions.edit')}
+            title={tc('actions.edit')}
+            className={editActionClassName}
           >
-            {tc('actions.edit')}
+            <EditActionIcon />
           </Link>
-          <Button
-            type="button"
-            variant="destructive"
+          <DeleteAction
             onClick={() => {
               onDelete(id, title);
             }}
             disabled={isDeleting}
-          >
-            {tc('actions.delete')}
-          </Button>
-        </div>
+          />
+        </>
+      }
+    >
+      <div className="px-4 pb-4 text-sm text-muted-foreground tnum">
+        {dueDate ? (
+          <span>{t('list.dueDate', { date: dueDate })}</span>
+        ) : (
+          <span>{t('list.noDueDate')}</span>
+        )}
+        {dueMileage != null && (
+          <span className="ml-4">{t('list.dueMileage', { value: dueMileage })}</span>
+        )}
       </div>
-    </div>
+    </ListCard>
   );
 }

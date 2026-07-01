@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/EmptyState';
@@ -38,7 +37,6 @@ export function ServiceListPage() {
     from: '/_authenticated/vehicles/$vehicleId/service',
   });
   const { t } = useTranslation('service');
-  const { t: tc } = useTranslation('common');
 
   const {
     data: records,
@@ -107,26 +105,12 @@ export function ServiceListPage() {
       {items.length > 0 && (
         <div className="space-y-4">
           {items.map((record: ServiceRecord) => (
-            <div key={record.id} className="group relative">
-              <Link
-                to="/vehicles/$vehicleId/service/$recordId/edit"
-                params={{ vehicleId, recordId: record.id }}
-              >
-                <ServiceCard record={record} />
-              </Link>
-              <Button
-                variant="destructive"
-                size="icon"
-                className="absolute right-2 top-2 z-10 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
-                onClick={() => {
-                  handleDelete(record.id, record.title);
-                }}
-                disabled={deleteMutation.isPending}
-                title={tc('actions.delete')}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
+            <ServiceCard
+              key={record.id}
+              record={record}
+              onDelete={handleDelete}
+              isDeleting={deleteMutation.isPending}
+            />
           ))}
         </div>
       )}
