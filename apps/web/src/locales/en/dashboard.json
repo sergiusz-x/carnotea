@@ -5,6 +5,13 @@
     "load": "Failed to load dashboard data. Please try again.",
     "retry": "Retry"
   },
+  "empty": {
+    "title": "Choose a vehicle",
+    "description": "Set an active vehicle to see its panel and logbook."
+  },
+  "sections": {
+    "analytics": "Analytics"
+  },
   "overview": {
     "totalVehicles": "Total vehicles",
     "totalExpenses": "Total expenses",
