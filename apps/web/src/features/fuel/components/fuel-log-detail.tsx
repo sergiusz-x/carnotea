@@ -1,12 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
-import { ChevronLeft, Pencil, Trash2 } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorState } from '@/components/ErrorState';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
 import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
+import { StatStrip } from '@/components/StatStrip';
 import { Badge } from '@/components/ui/badge';
-import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { fuelLogQueryOptions, useDeleteFuelLog } from '@/features/fuel/queries';
 import { formatMoney } from '@/lib/format';
@@ -60,69 +62,56 @@ export function FuelLogDetailPage() {
 
   return (
     <PageContainer>
-      {/* Back + actions */}
-      <div className="mb-6 flex items-center justify-between">
-        <Link
-          to="/vehicles/$vehicleId/fuel"
-          params={{ vehicleId }}
-          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          {t('detail.backToFuelLogs')}
-        </Link>
-        <div className="flex gap-2">
-          <Link
-            to="/vehicles/$vehicleId/fuel/$fuelId/edit"
-            params={{ vehicleId, fuelId }}
-            className={buttonVariants({ variant: 'outline', size: 'sm' })}
-          >
-            <Pencil className="mr-1.5 h-3.5 w-3.5" />
-            {tc('actions.edit')}
-          </Link>
-          <Button
-            variant="destructive"
-            size="sm"
-            onClick={handleDelete}
-            disabled={deleteMutation.isPending}
-          >
-            <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-            {tc('actions.delete')}
-          </Button>
-        </div>
-      </div>
+      <Link
+        to="/vehicles/$vehicleId/fuel"
+        params={{ vehicleId }}
+        className="mb-2 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        {t('detail.backToFuelLogs')}
+      </Link>
 
-      {/* Title + badge */}
-      <div className="mb-6 flex items-center gap-3">
-        <h1 className="text-2xl font-bold">{t('detail.title', { date: log.fuelDate })}</h1>
+      <PageHeader
+        title={t('detail.title', { date: log.fuelDate })}
+        action={
+          <div className="flex items-center gap-1">
+            <Link
+              to="/vehicles/$vehicleId/fuel/$fuelId/edit"
+              params={{ vehicleId, fuelId }}
+              aria-label={tc('actions.edit')}
+              title={tc('actions.edit')}
+              className={editActionClassName}
+            >
+              <EditActionIcon />
+            </Link>
+            <DeleteAction onClick={handleDelete} disabled={deleteMutation.isPending} />
+          </div>
+        }
+      />
+
+      <div className="mb-4">
         <Badge variant={log.isFullTank ? 'default' : 'secondary'}>
           {log.isFullTank ? t('list.fullTank') : t('list.partialFill')}
         </Badge>
       </div>
 
       {/* Cost highlight */}
-      <Card className="mb-4 overflow-hidden">
+      <Card className="mb-4">
         <CardContent className="p-0">
-          <div className="grid grid-cols-3 gap-px bg-border">
-            <div className="bg-background px-4 py-4 text-center">
-              <p className="text-xs text-muted-foreground">{t('fields.liters')}</p>
-              <p className="text-xl font-bold">
-                {log.liters}
-                {' L'}
-              </p>
-            </div>
-            <div className="bg-background px-4 py-4 text-center">
-              <p className="text-xs text-muted-foreground">{t('fields.pricePerLiter')}</p>
-              <p className="text-xl font-bold">
-                {formatMoney(log.pricePerLiter, currency, locale)}
-              </p>
-            </div>
-            <div className="bg-background px-4 py-4 text-center">
-              <p className="text-xs text-muted-foreground">{t('fields.totalCost')}</p>
-              <p className="text-xl font-bold text-primary">
-                {formatMoney(log.totalCost, currency, locale)}
-              </p>
-            </div>
-          </div>
+          <StatStrip
+            stats={[
+              { label: t('fields.liters'), value: `${log.liters.toString()} L` },
+              {
+                label: t('fields.pricePerLiter'),
+                value: formatMoney(log.pricePerLiter, currency, locale),
+              },
+              {
+                label: t('fields.totalCost'),
+                value: formatMoney(log.totalCost, currency, locale),
+                highlight: true,
+              },
+            ]}
+          />
         </CardContent>
       </Card>
 

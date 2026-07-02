@@ -27,7 +27,7 @@ export function AppShell() {
             className="flex shrink-0 items-center gap-2.5 transition-opacity hover:opacity-80"
           >
             <AppLogo />
-            <span className="hidden text-lg font-bold tracking-tight sm:inline">
+            <span className="hidden font-display text-lg font-bold tracking-tight sm:inline">
               {t('appName')}
             </span>
           </Link>
@@ -59,7 +59,7 @@ export function AppShell() {
         <aside className="hidden w-60 shrink-0 border-r md:flex md:flex-col">
           <div className="sticky top-16 flex h-[calc(100vh-4rem)] flex-col overflow-y-auto p-3">
             <VehiclePicker className="mb-1 h-9 w-full justify-start gap-2 px-3 text-sm" />
-            <hr className="my-2 border-border" />
+            <div className="my-2 border-t" />
             <Nav mobile />
           </div>
         </aside>

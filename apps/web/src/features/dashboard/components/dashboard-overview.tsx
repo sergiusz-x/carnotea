@@ -72,12 +72,10 @@ export function DashboardOverview() {
       {cards.map((card) => (
         <Card key={card.title}>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {card.title}
-            </CardTitle>
+            <CardTitle className="label-micro font-sans">{card.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold">{card.value}</p>
+            <p className="font-display tnum text-2xl font-semibold">{card.value}</p>
           </CardContent>
         </Card>
       ))}
