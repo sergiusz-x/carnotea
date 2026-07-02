@@ -28,10 +28,10 @@ export function VehicleBanner() {
           <Car className="h-4 w-4 text-primary" aria-hidden="true" />
         </div>
         <div className="min-w-0">
-          <p className="truncate font-semibold leading-tight">
+          <p className="truncate font-display font-semibold leading-tight">
             {vehicle.brand} {vehicle.model} {vehicle.productionYear}
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground tnum">
             {t('banner.mileage', { value: vehicle.currentMileage.toLocaleString() })}
           </p>
         </div>

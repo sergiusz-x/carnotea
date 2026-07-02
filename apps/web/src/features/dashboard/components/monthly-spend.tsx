@@ -63,7 +63,7 @@ export function MonthlySpend() {
                     month: String(item.month).padStart(2, '0'),
                   })}
                 </span>
-                <span className="font-medium">
+                <span className="font-display tnum font-semibold">
                   {item.total != null
                     ? t('monthlySpend.total', {
                         currency: item.currency,

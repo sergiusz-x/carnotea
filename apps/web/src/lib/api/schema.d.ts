@@ -266,6 +266,172 @@ export interface paths {
       };
     };
   };
+  "/api/vehicles/{vehicleId}/activity": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            items: ({
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
+              kind: "fuel";
+              liters: number;
+              totalCost: number | null;
+              isFullTank: boolean;
+              stationName: string | null;
+            } | {
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
+              kind: "charge";
+              energyKwh: number;
+              totalCost: number | null;
+              chargerType: "home_socket" | "ac_type2" | "dc_ccs" | "dc_chademo" | "tesla_sc" | "other";
+              isFullCharge: boolean;
+              stationName: string | null;
+              socStartPercent: number | null;
+              socEndPercent: number | null;
+            } | {
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
+              kind: "service";
+              title: string;
+              totalCost: number | null;
+              workshopName: string | null;
+              partCount: number;
+            } | {
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
+              kind: "expense";
+              category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+              amount: number | null;
+              description: string | null;
+              isAutoSynced: boolean;
+            } | {
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
+              kind: "issue";
+              title: string;
+              status: "open" | "in_progress" | "resolved" | "cancelled";
+              priority: "low" | "medium" | "high" | "critical";
+            } | {
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
+              kind: "reminder";
+              title: string;
+              status: "pending" | "done" | "cancelled";
+              dueState: "overdue" | "due_soon" | "ok";
+              dueDate: string | null;
+              dueMileage: number | null;
+            })[];
+            nextCursor: string | null;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/panel": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            vehicleId: string;
+            brand: string;
+            model: string;
+            productionYear: number;
+            fuelType: "petrol" | "diesel" | "hybrid" | "electric" | "lpg" | "other";
+            currentMileage: number;
+            currency: string;
+            energy: {
+              kind: "charge" | "fuel" | "none";
+              socPercent: number | null;
+              rangeKm: number | null;
+            } | {
+              kind: "charge" | "fuel" | "none";
+              socPercent: number | null;
+              rangeKm: number | null;
+            };
+            nextService: {
+              dueDate: string | null;
+              dueInKm: number | null;
+              dueState: "overdue" | "due_soon" | "ok";
+            } | {
+              dueDate: string | null;
+              dueInKm: number | null;
+              dueState: "overdue" | "due_soon" | "ok";
+            };
+            monthCost: {
+              total: number | null;
+              prevTotal: number | null;
+              currency: string;
+            };
+            avgConsumption: {
+              value: number;
+              unit: "l_per_100km" | "kwh_per_100km";
+            } | {
+              value: number;
+              unit: "l_per_100km" | "kwh_per_100km";
+            };
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
   "/api/vehicles/{vehicleId}/charging-sessions": {
     get: {
       responses: {

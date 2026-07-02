@@ -12,3 +12,5 @@ export * from './expense.js';
 export * from './reminder.js';
 export * from './dashboard.js';
 export * from './user-profile.js';
+export * from './activity.js';
+export * from './vehicle-panel.js';

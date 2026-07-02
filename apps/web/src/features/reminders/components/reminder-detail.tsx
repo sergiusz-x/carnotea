@@ -1,33 +1,29 @@
-import type { DueState, ReminderStatusCode } from '@carnotea/shared';
+import type { ReminderStatusCode } from '@carnotea/shared';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorState } from '@/components/ErrorState';
+import { ListCard } from '@/components/ListCard';
+import {
+  DeleteAction,
+  EditActionIcon,
+  editActionClassName,
+  MarkDoneAction,
+} from '@/components/ListCardActions';
 import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  dueStateKey,
+  reminderDueStateBadgeVariant,
+  reminderStatusBadgeVariant,
+} from '@/features/reminders/badge-variants';
 import {
   reminderQueryOptions,
   useDeleteReminder,
   useMarkReminderDone,
 } from '@/features/reminders/queries';
-
-// Due-state badge key lookup — avoids template-literal type-widening issues with i18next.
-const dueStateKey = (ds: string): `dueState.${DueState}` => `dueState.${ds as DueState}`;
-
-const statusBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  pending: 'default',
-  done: 'outline',
-  cancelled: 'destructive',
-};
-
-const dueStateBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  overdue: 'destructive',
-  due_soon: 'secondary',
-  ok: 'outline',
-};
 
 export function ReminderDetailPage() {
   const { vehicleId, reminderId }: { vehicleId: string; reminderId: string } = useParams({
@@ -81,88 +77,82 @@ export function ReminderDetailPage() {
 
   return (
     <PageContainer>
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <Link
-            to="/vehicles/$vehicleId/reminders"
-            params={{ vehicleId }}
-            className="text-sm text-muted-foreground hover:underline"
-          >
-            {t('detail.backToReminders')}
-          </Link>
-          <h1 className="mt-1 text-2xl font-bold">
-            {t('detail.title', { title: reminder.title })}
-          </h1>
-        </div>
-        <div className="flex gap-2">
-          {reminder.status === 'pending' && (
-            <Button
-              variant="default"
-              onClick={handleMarkDone}
-              disabled={markDoneMutation.isPending}
+      <Link
+        to="/vehicles/$vehicleId/reminders"
+        params={{ vehicleId }}
+        className="mb-2 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        {t('detail.backToReminders')}
+      </Link>
+
+      <PageHeader
+        title={t('detail.title', { title: reminder.title })}
+        action={
+          <div className="flex items-center gap-1">
+            {reminder.status === 'pending' && (
+              <MarkDoneAction
+                onClick={handleMarkDone}
+                disabled={markDoneMutation.isPending}
+                label={t('list.markDone')}
+              />
+            )}
+            <Link
+              to="/vehicles/$vehicleId/reminders/$reminderId/edit"
+              params={{ vehicleId, reminderId }}
+              aria-label={tc('actions.edit')}
+              title={tc('actions.edit')}
+              className={editActionClassName}
             >
-              {markDoneMutation.isPending ? t('list.marking') : t('list.markDone')}
-            </Button>
-          )}
-          <Link
-            to="/vehicles/$vehicleId/reminders/$reminderId/edit"
-            params={{ vehicleId, reminderId }}
-          >
-            <Button variant="outline">{tc('actions.edit')}</Button>
-          </Link>
-          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {tc('actions.delete')}
-          </Button>
-        </div>
-      </div>
+              <EditActionIcon />
+            </Link>
+            <DeleteAction onClick={handleDelete} disabled={deleteMutation.isPending} />
+          </div>
+        }
+      />
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Badge variant={statusBadgeVariant[reminder.status] ?? 'default'}>
-          {t(`status.${reminder.status as ReminderStatusCode}`)}
-        </Badge>
-        <Badge variant={dueStateBadgeVariant[reminder.dueState] ?? 'outline'}>
-          {t(dueStateKey(reminder.dueState))}
-        </Badge>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{reminder.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-2 gap-2 text-sm">
+      <ListCard
+        primary={<span className="font-display text-base font-semibold">{reminder.title}</span>}
+        badges={
+          <>
+            <Badge variant={reminderStatusBadgeVariant[reminder.status] ?? 'default'}>
+              {t(`status.${reminder.status as ReminderStatusCode}`)}
+            </Badge>
+            <Badge variant={reminderDueStateBadgeVariant[reminder.dueState] ?? 'outline'}>
+              {t(dueStateKey(reminder.dueState))}
+            </Badge>
+          </>
+        }
+      >
+        <dl className="divide-y border-t px-4 text-sm">
+          <div className="flex justify-between py-2.5">
             <dt className="text-muted-foreground">{t('fields.dueDate')}</dt>
-            <dd>{reminder.dueDate ?? t('list.noDueDate')}</dd>
+            <dd className="font-medium">{reminder.dueDate ?? t('list.noDueDate')}</dd>
+          </div>
 
+          <div className="flex justify-between py-2.5">
             <dt className="text-muted-foreground">{t('fields.dueMileage')}</dt>
-            <dd>
+            <dd className="font-medium">
               {reminder.dueMileage != null
                 ? t('list.dueMileage', { value: reminder.dueMileage })
                 : t('list.noDueMileage')}
             </dd>
+          </div>
 
-            <dt className="text-muted-foreground">{t('fields.status')}</dt>
-            <dd>{t(`status.${reminder.status as ReminderStatusCode}`)}</dd>
+          {reminder.notifiedAt && (
+            <div className="flex justify-between py-2.5">
+              <dt className="text-muted-foreground">{t('fields.notifiedAt')}</dt>
+              <dd className="font-medium">{reminder.notifiedAt}</dd>
+            </div>
+          )}
 
-            <dt className="text-muted-foreground">{t('fields.dueState')}</dt>
-            <dd>{t(dueStateKey(reminder.dueState))}</dd>
-
-            {reminder.notifiedAt && (
-              <>
-                <dt className="text-muted-foreground">{t('fields.notifiedAt')}</dt>
-                <dd>{reminder.notifiedAt}</dd>
-              </>
-            )}
-
-            {reminder.description && (
-              <>
-                <dt className="text-muted-foreground">{t('detail.description')}</dt>
-                <dd className="col-span-2 whitespace-pre-wrap">{reminder.description}</dd>
-              </>
-            )}
-          </dl>
-        </CardContent>
-      </Card>
+          {reminder.description && (
+            <div className="py-2.5">
+              <dt className="text-muted-foreground">{t('detail.description')}</dt>
+              <dd className="mt-1 whitespace-pre-wrap">{reminder.description}</dd>
+            </div>
+          )}
+        </dl>
+      </ListCard>
     </PageContainer>
   );
 }

@@ -16,6 +16,7 @@ import {
   useZodForm,
 } from '@/components/form';
 import { FormContainer } from '@/components/FormContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { fuelLogQueryOptions, useCreateFuelLog, useUpdateFuelLog } from '@/features/fuel/queries';
 import { formatMoney } from '@/lib/format';
 import { useCurrencyPref } from '@/lib/useCurrencyPref';
@@ -144,7 +145,7 @@ function FormShell({
 
   return (
     <FormContainer>
-      <h1 className="mb-6 text-2xl font-bold">{title}</h1>
+      <PageHeader title={title} />
 
       <AppForm form={form} onSubmit={onSubmit}>
         <StepWizard
