@@ -61,6 +61,7 @@ Blank line between groups. ESLint's `import/order` enforces this.
 ## Commits
 
 We follow **[Conventional Commits](https://www.conventionalcommits.org/)**.
+We use **[commitlint](https://github.com/conventional-changelog/commitlint)** with the [`@commitlint/config-conventional`](https://www.npmjs.com/package/@commitlint/config-conventional) shareable config to enforce the Conventional Commits format.
 
 ### Subject line (required)
 
@@ -73,7 +74,7 @@ Rules — all mandatory:
 - **type** — one of: `feat` `fix` `docs` `refactor` `test` `chore` `perf`
   `ci` `build` `revert`
 - **scope** — one of: `api` `web` `db` `shared` `repo` `docs` `tickets`
-  `adr` `tooling` `ci` (omit only for cross-cutting changes with no clear home)
+  `adr` `tooling` `ci` (omit only for cross-cutting changes with no clear home), or a lowercase word (feature name)
 - **subject** — imperative mood, lowercase start, no trailing period, ≤ 72 chars
   total line length
 
