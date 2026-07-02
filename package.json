@@ -25,6 +25,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
+    "gen": "turbo gen",
     "format": "turbo run //#format:root format --continue",
     "format:root": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yaml,yml}\"",
     "format:check": "turbo run //#format:check:root format:check --continue",
