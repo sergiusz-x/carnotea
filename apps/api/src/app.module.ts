@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 
 import { AccountModule } from './account/account.module.js';
+import { ActivityModule } from './activity/activity.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { ChargingSessionsModule } from './charging-sessions/charging-sessions.module.js';
 import { validateEnv } from './config/env.js';
@@ -44,6 +45,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     ServiceRecordsModule,
     ExpensesModule,
     DashboardModule,
+    ActivityModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
 })

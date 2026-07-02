@@ -4,18 +4,24 @@ import { type SyntheticEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorState } from '@/components/ErrorState';
+import { ListCard } from '@/components/ListCard';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
 import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  useDeleteVehicle,
   useAddMileageReading,
   useDeleteMileageReading,
-  vehicleQueryOptions,
+  useDeleteVehicle,
   mileageReadingsQueryOptions,
+  vehicleQueryOptions,
 } from '@/features/vehicles/queries';
+import { useLastMileage } from '@/lib/useLastMileage';
+
+import { supportsCharging, supportsFuelLogs } from '../vehicle-usage';
 
 interface MileageReadingRow {
   id: string;
@@ -28,18 +34,22 @@ interface MileageReadingRow {
 function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
   const { t } = useTranslation('vehicles');
   const { data: mileageReadings } = useQuery(mileageReadingsQueryOptions(vehicleId));
+  const defaultMileage = useLastMileage(vehicleId);
   const addReading = useAddMileageReading(vehicleId);
   const deleteReading = useDeleteMileageReading(vehicleId);
   const [readingDate, setReadingDate] = useState(new Date().toISOString().slice(0, 10));
   const [mileage, setMileage] = useState('');
   const [note, setNote] = useState('');
 
+  const resolvedMileage =
+    mileage === '' && defaultMileage !== undefined ? String(defaultMileage) : mileage;
+
   function handleAddReading(e: SyntheticEvent) {
     e.preventDefault();
     addReading
       .mutateAsync({
         readingDate,
-        mileage: Number(mileage),
+        mileage: Number(resolvedMileage),
         note: note || null,
       })
       .then(() => {
@@ -82,7 +92,7 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
             <Input
               id="mileage-reading-value"
               type="number"
-              value={mileage}
+              value={resolvedMileage}
               onChange={(e) => {
                 setMileage(e.target.value);
               }}
@@ -121,12 +131,12 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
               {readings.map((reading: MileageReadingRow) => (
                 <div
                   key={reading.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border px-3 py-2 text-sm"
                 >
                   <div className="min-w-0 space-y-1">
                     <div className="flex flex-wrap items-center gap-3">
                       <span>{reading.readingDate}</span>
-                      <span className="font-medium">
+                      <span className="font-medium tnum">
                         {t('list.mileage', { mileage: reading.mileage })}
                       </span>
                     </div>
@@ -135,15 +145,10 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
                       {reading.note && <span>{reading.note}</span>}
                     </div>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={deleteReading.isPending}
+                  <DeleteAction
                     onClick={() => void deleteReading.mutateAsync(reading.id)}
-                  >
-                    {deleteReading.isPending ? t('mileageForm.deleting') : t('mileageForm.delete')}
-                  </Button>
+                    disabled={deleteReading.isPending}
+                  />
                 </div>
               ))}
             </div>
@@ -157,7 +162,7 @@ function MileageSectionContent({ vehicleId }: { vehicleId: string }) {
 export function VehicleDetailPage() {
   const { vehicleId } = useParams({ from: '/_authenticated/vehicles/$vehicleId' });
   const { t } = useTranslation('vehicles');
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const { t: tc } = useTranslation('common');
 
   const {
     data: vehicle,
@@ -170,7 +175,12 @@ export function VehicleDetailPage() {
   const deleteMutation = useDeleteVehicle();
 
   function handleDelete() {
-    void deleteMutation.mutateAsync(vehicleId);
+    if (!vehicle) return;
+    if (
+      window.confirm(t('delete.confirmMessage', { brand: vehicle.brand, model: vehicle.model }))
+    ) {
+      void deleteMutation.mutateAsync(vehicleId);
+    }
   }
 
   if (isLoading) {
@@ -194,112 +204,79 @@ export function VehicleDetailPage() {
     );
   }
 
-  const showFuel = vehicle.fuelType !== 'electric';
-  const showCharging = vehicle.fuelType === 'electric' || vehicle.fuelType === 'hybrid';
-  const navLinkClass = 'rounded-md border p-3 text-sm transition-colors hover:bg-accent';
+  const showFuel = supportsFuelLogs(vehicle.fuelType);
+  const showCharging = supportsCharging(vehicle.fuelType);
+  const navLinkClass = 'rounded-xl border p-3 text-sm transition-colors hover:bg-accent';
 
   return (
     <PageContainer>
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold">
-            {vehicle.brand} {vehicle.model}
-          </h1>
-          <p className="text-muted-foreground">
-            {vehicle.productionYear}
-            {vehicle.engine && ` · ${vehicle.engine}`}
-            {' · '}
-            {t('list.mileage', { mileage: vehicle.currentMileage })}
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Link to="/vehicles/$vehicleId/edit" params={{ vehicleId }}>
-            <Button variant="outline">{t('detail.editButton')}</Button>
-          </Link>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              setShowDeleteConfirm(true);
-            }}
-          >
-            {t('detail.deleteButton')}
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title={`${vehicle.brand} ${vehicle.model}`}
+        action={
+          <div className="flex items-center gap-1">
+            <Link
+              to="/vehicles/$vehicleId/edit"
+              params={{ vehicleId }}
+              aria-label={tc('actions.edit')}
+              title={tc('actions.edit')}
+              className={editActionClassName}
+            >
+              <EditActionIcon />
+            </Link>
+            <DeleteAction onClick={handleDelete} disabled={deleteMutation.isPending} />
+          </div>
+        }
+      />
+      <p className="-mt-4 mb-6 text-sm text-muted-foreground tnum">
+        {vehicle.productionYear}
+        {vehicle.engine && ` · ${vehicle.engine}`}
+        {' · '}
+        {t('list.mileage', { mileage: vehicle.currentMileage })}
+      </p>
 
-      {showDeleteConfirm && (
-        <Card className="mb-6 border-destructive">
-          <CardHeader>
-            <CardTitle>{t('delete.confirmTitle')}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p>{t('delete.confirmMessage', { brand: vehicle.brand, model: vehicle.model })}</p>
-            <div className="flex gap-2">
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={deleteMutation.isPending}
-              >
-                {deleteMutation.isPending ? t('delete.deleting') : t('delete.confirm')}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowDeleteConfirm(false);
-                }}
-              >
-                {t('delete.cancel')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle>{t('detail.title', { brand: vehicle.brand, model: vehicle.model })}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-2 gap-2 text-sm">
-            <dt className="text-muted-foreground">{t('fields.brand')}</dt>
-            <dd>{vehicle.brand}</dd>
-            <dt className="text-muted-foreground">{t('fields.model')}</dt>
-            <dd>{vehicle.model}</dd>
-            {vehicle.generation && (
-              <>
-                <dt className="text-muted-foreground">{t('fields.generation')}</dt>
-                <dd>{vehicle.generation}</dd>
-              </>
-            )}
-            <dt className="text-muted-foreground">{t('fields.productionYear')}</dt>
-            <dd>{vehicle.productionYear}</dd>
-            {vehicle.engine && (
-              <>
-                <dt className="text-muted-foreground">{t('fields.engine')}</dt>
-                <dd>{vehicle.engine}</dd>
-              </>
-            )}
+      <ListCard
+        className="mb-6"
+        primary={
+          <span className="font-display text-base font-semibold">
+            {t('detail.title', { brand: vehicle.brand, model: vehicle.model })}
+          </span>
+        }
+      >
+        <dl className="divide-y border-t px-4 text-sm">
+          <div className="flex justify-between py-2.5">
             <dt className="text-muted-foreground">{t('fields.fuelType')}</dt>
-            <dd>{vehicle.fuelType}</dd>
-            {vehicle.vin && (
-              <>
-                <dt className="text-muted-foreground">{t('fields.vin')}</dt>
-                <dd>{vehicle.vin}</dd>
-              </>
-            )}
-            {vehicle.registrationNumber && (
-              <>
-                <dt className="text-muted-foreground">{t('fields.registrationNumber')}</dt>
-                <dd>{vehicle.registrationNumber}</dd>
-              </>
-            )}
+            <dd className="font-medium">{vehicle.fuelType}</dd>
+          </div>
+          {vehicle.generation && (
+            <div className="flex justify-between py-2.5">
+              <dt className="text-muted-foreground">{t('fields.generation')}</dt>
+              <dd className="font-medium">{vehicle.generation}</dd>
+            </div>
+          )}
+          {vehicle.vin && (
+            <div className="flex justify-between py-2.5">
+              <dt className="text-muted-foreground">{t('fields.vin')}</dt>
+              <dd className="font-medium">{vehicle.vin}</dd>
+            </div>
+          )}
+          {vehicle.registrationNumber && (
+            <div className="flex justify-between py-2.5">
+              <dt className="text-muted-foreground">{t('fields.registrationNumber')}</dt>
+              <dd className="font-medium">{vehicle.registrationNumber}</dd>
+            </div>
+          )}
+          <div className="flex justify-between py-2.5">
             <dt className="text-muted-foreground">{t('fields.currentMileage')}</dt>
-            <dd>{t('list.mileage', { mileage: vehicle.currentMileage })}</dd>
+            <dd className="font-medium tnum">
+              {t('list.mileage', { mileage: vehicle.currentMileage })}
+            </dd>
+          </div>
+          <div className="flex justify-between py-2.5">
             <dt className="text-muted-foreground">{t('fields.currencyCode')}</dt>
-            <dd>{vehicle.currencyCode}</dd>
-          </dl>
-        </CardContent>
-      </Card>
+            <dd className="font-medium">{vehicle.currencyCode}</dd>
+          </div>
+        </dl>
+      </ListCard>
 
       <MileageSectionContent vehicleId={vehicleId} />
 

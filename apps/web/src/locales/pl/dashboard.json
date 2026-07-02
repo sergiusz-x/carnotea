@@ -5,6 +5,13 @@
     "load": "Nie udało się załadować danych panelu. Spróbuj ponownie.",
     "retry": "Spróbuj ponownie"
   },
+  "empty": {
+    "title": "Wybierz pojazd",
+    "description": "Ustaw aktywny pojazd, aby zobaczyć jego panel i dziennik."
+  },
+  "sections": {
+    "analytics": "Analityka"
+  },
   "overview": {
     "totalVehicles": "Liczba pojazdów",
     "totalExpenses": "Łączne wydatki",

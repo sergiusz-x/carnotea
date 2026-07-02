@@ -101,7 +101,7 @@ export function BottomNav() {
                     aria-current={isActive ? 'page' : undefined}
                     className={cn(
                       'flex flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors',
-                      isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
+                      isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
                     )}
                   >
                     <Icon className="h-5 w-5" aria-hidden="true" />

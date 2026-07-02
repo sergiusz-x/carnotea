@@ -4,25 +4,16 @@ import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorState } from '@/components/ErrorState';
+import { ListCard } from '@/components/ListCard';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
 import { PageContainer } from '@/components/PageContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  issuePriorityBadgeVariant,
+  issueStatusBadgeVariant,
+} from '@/features/issues/badge-variants';
 import { issueQueryOptions, useDeleteIssue } from '@/features/issues/queries';
-
-const statusBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  open: 'default',
-  in_progress: 'secondary',
-  resolved: 'outline',
-  cancelled: 'destructive',
-};
-
-const priorityBadgeVariant: Record<string, 'default' | 'secondary' | 'outline' | 'destructive'> = {
-  low: 'secondary',
-  medium: 'default',
-  high: 'destructive',
-  critical: 'destructive',
-};
 
 export function IssueDetailPage() {
   const { vehicleId, issueId }: { vehicleId: string; issueId: string } = useParams({
@@ -71,72 +62,73 @@ export function IssueDetailPage() {
 
   return (
     <PageContainer>
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <Link
-            to="/vehicles/$vehicleId/issues"
-            params={{ vehicleId }}
-            className="text-sm text-muted-foreground hover:underline"
-          >
-            {t('detail.backToIssues')}
-          </Link>
-          <h1 className="mt-1 text-2xl font-bold">{t('detail.title', { title: issue.title })}</h1>
-        </div>
-        <div className="flex gap-2">
-          <Link to="/vehicles/$vehicleId/issues/$issueId/edit" params={{ vehicleId, issueId }}>
-            <Button variant="outline">{tc('actions.edit')}</Button>
-          </Link>
-          <Button variant="destructive" onClick={handleDelete} disabled={deleteMutation.isPending}>
-            {tc('actions.delete')}
-          </Button>
-        </div>
-      </div>
+      <Link
+        to="/vehicles/$vehicleId/issues"
+        params={{ vehicleId }}
+        className="mb-2 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
+        {t('detail.backToIssues')}
+      </Link>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Badge variant={statusBadgeVariant[issue.status] ?? 'default'}>
-          {t(`status.${issue.status as IssueStatusCode}`)}
-        </Badge>
-        <Badge variant={priorityBadgeVariant[issue.priority] ?? 'default'}>
-          {t(`priority.${issue.priority as IssuePriorityCode}`)}
-        </Badge>
-      </div>
+      <PageHeader
+        title={t('detail.title', { title: issue.title })}
+        action={
+          <div className="flex items-center gap-1">
+            <Link
+              to="/vehicles/$vehicleId/issues/$issueId/edit"
+              params={{ vehicleId, issueId }}
+              aria-label={tc('actions.edit')}
+              title={tc('actions.edit')}
+              className={editActionClassName}
+            >
+              <EditActionIcon />
+            </Link>
+            <DeleteAction onClick={handleDelete} disabled={deleteMutation.isPending} />
+          </div>
+        }
+      />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{issue.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-2 gap-2 text-sm">
+      <ListCard
+        primary={<span className="font-display text-base font-semibold">{issue.title}</span>}
+        badges={
+          <>
+            <Badge variant={issueStatusBadgeVariant[issue.status] ?? 'default'}>
+              {t(`status.${issue.status as IssueStatusCode}`)}
+            </Badge>
+            <Badge variant={issuePriorityBadgeVariant[issue.priority] ?? 'default'}>
+              {t(`priority.${issue.priority as IssuePriorityCode}`)}
+            </Badge>
+          </>
+        }
+      >
+        <dl className="divide-y border-t px-4 text-sm">
+          <div className="flex justify-between py-2.5">
             <dt className="text-muted-foreground">{t('fields.reportedDate')}</dt>
-            <dd>{issue.reportedDate}</dd>
+            <dd className="font-medium">{issue.reportedDate}</dd>
+          </div>
 
-            {issue.resolvedDate && (
-              <>
-                <dt className="text-muted-foreground">{t('fields.resolvedDate')}</dt>
-                <dd>{issue.resolvedDate}</dd>
-              </>
-            )}
+          {issue.resolvedDate && (
+            <div className="flex justify-between py-2.5">
+              <dt className="text-muted-foreground">{t('fields.resolvedDate')}</dt>
+              <dd className="font-medium">{issue.resolvedDate}</dd>
+            </div>
+          )}
 
-            <dt className="text-muted-foreground">{t('fields.priority')}</dt>
-            <dd>{t(`priority.${issue.priority as IssuePriorityCode}`)}</dd>
+          {issue.description && (
+            <div className="py-2.5">
+              <dt className="text-muted-foreground">{t('detail.description')}</dt>
+              <dd className="mt-1 whitespace-pre-wrap">{issue.description}</dd>
+            </div>
+          )}
 
-            <dt className="text-muted-foreground">{t('fields.status')}</dt>
-            <dd>{t(`status.${issue.status as IssueStatusCode}`)}</dd>
-
-            {issue.description && (
-              <>
-                <dt className="text-muted-foreground">{t('detail.description')}</dt>
-                <dd className="col-span-2 whitespace-pre-wrap">{issue.description}</dd>
-              </>
-            )}
-
+          <div className="flex items-center justify-between py-2.5">
             <dt className="text-muted-foreground">{t('detail.relatedRecord')}</dt>
             <dd>
               {issue.relatedServiceRecordId ? (
                 <Link
                   to="/vehicles/$vehicleId/service/$recordId/edit"
                   params={{ vehicleId, recordId: issue.relatedServiceRecordId }}
-                  className="text-primary hover:underline"
+                  className="font-medium text-primary hover:underline"
                 >
                   {issue.relatedServiceRecordId}
                 </Link>
@@ -144,9 +136,9 @@ export function IssueDetailPage() {
                 <span className="text-muted-foreground">{t('detail.noRelatedRecord')}</span>
               )}
             </dd>
-          </dl>
-        </CardContent>
-      </Card>
+          </div>
+        </dl>
+      </ListCard>
     </PageContainer>
   );
 }
