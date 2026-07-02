@@ -12,14 +12,16 @@ import { DbModule } from './db/db.module.js';
 import { ExpensesModule } from './expenses/expenses.module.js';
 import { FuelLogsModule } from './fuel-logs/fuel-logs.module.js';
 import { HealthController } from './health/health.controller.js';
-import { ReadinessController } from './health/readiness.controller.js';
 import { IssuesModule } from './issues/issues.module.js';
-import { OpenApiModule } from './lib/openapi/index.js';
 import { MileageReadingsModule } from './mileage-readings/mileage-readings.module.js';
+import { OpenApiModule } from './lib/openapi/index.js';
+import { ReadinessController } from './health/readiness.controller.js';
 import { RemindersModule } from './reminders/reminders.module.js';
 import { ServiceRecordsModule } from './service-records/service-records.module.js';
 import { MeController } from './users/me.controller.js';
 import { VehiclesModule } from './vehicles/vehicles.module.js';
+import { AuditLoggingInterceptor } from './audit-logging.interceptor.js';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -48,5 +50,11 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     ActivityModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AuditLoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}
