@@ -1,6 +1,11 @@
+import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { ListCard } from '@/components/ListCard';
+import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
+import { Badge } from '@/components/ui/badge';
+import { formatMoney } from '@/lib/format';
+import { useCurrencyPref } from '@/lib/useCurrencyPref';
 
 interface ExpenseCardProps {
   id: string;
@@ -10,56 +15,65 @@ interface ExpenseCardProps {
   description: string | null;
   sourceType: string;
   isAutoSynced: boolean;
-  editLink: React.ReactNode;
-  deleteButton: React.ReactNode;
+  onDelete: (id: string, expenseDate: string) => void;
+  isDeleting: boolean;
 }
 
 export function ExpenseCard({
+  id,
   category,
   expenseDate,
   amount,
   description,
   isAutoSynced,
-  editLink,
-  deleteButton,
+  onDelete,
+  isDeleting,
 }: ExpenseCardProps) {
-  const { t } = useTranslation('expenses');
+  const { vehicleId }: { vehicleId: string } = useParams({
+    from: '/_authenticated/vehicles/$vehicleId/expenses',
+  });
+  const { t, i18n } = useTranslation('expenses');
+  const { t: tc } = useTranslation('common');
+  const currency = useCurrencyPref();
+  const locale = i18n.resolvedLanguage ?? 'en';
 
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">{expenseDate}</span>
-              <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                {t(`categories.${category}` as const, {
-                  defaultValue: category,
-                })}
-              </span>
-              {isAutoSynced && (
-                <span className="rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900 dark:text-blue-300">
-                  {t('list.autoSynced')}
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
-              <span className="text-muted-foreground">{t('fields.amount')}</span>
-              <span className="font-medium">{t('list.amount', { amount })}</span>
-              {description && (
-                <>
-                  <span className="text-muted-foreground">{t('fields.description')}</span>
-                  <span>{description}</span>
-                </>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {editLink}
-            {deleteButton}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <ListCard
+      primary={<span className="font-display text-base font-semibold tnum">{expenseDate}</span>}
+      badges={
+        <>
+          <Badge variant="default">
+            {t(`categories.${category}` as const, { defaultValue: category })}
+          </Badge>
+          {isAutoSynced && <Badge variant="outline">{t('list.autoSynced')}</Badge>}
+        </>
+      }
+      actions={
+        <>
+          <Link
+            to="/vehicles/$vehicleId/expenses/$expenseId/edit"
+            params={{ vehicleId, expenseId: id }}
+            aria-label={tc('actions.edit')}
+            title={tc('actions.edit')}
+            className={editActionClassName}
+          >
+            <EditActionIcon />
+          </Link>
+          <DeleteAction
+            onClick={() => {
+              onDelete(id, expenseDate);
+            }}
+            disabled={isDeleting}
+          />
+        </>
+      }
+    >
+      <div className="space-y-0.5 px-4 pb-4 pt-0.5">
+        <p className="font-display tnum text-xl font-semibold text-primary">
+          {formatMoney(amount, currency, locale)}
+        </p>
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+      </div>
+    </ListCard>
   );
 }

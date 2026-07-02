@@ -30,10 +30,15 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 ## Backlog
 
 - 🟡 [T-066 — Vehicle form VIN lookup autofill](./T-066-vehicle-vin-lookup-autofill.md)
+- 🟡 [T-075 — Web — mobile polish, quick-add alignment, and accessibility pass](./T-075-web-mobile-polish-and-a11y.md)
 
 ## In progress
 
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
+- 🔴 [T-069 — 'Redesign epic — Cockpit panel + unified Dziennik feed'](./T-069-redesign-cockpit-logbook.md)
+- 🔴 [T-073 — Web — vehicle panel and activity feed](./T-073-web-panel-and-activity-feed.md)
+- 🔴 [T-074 — Web — shell rail and dashboard composition](./T-074-web-shell-and-dashboard-composition.md)
+- 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 
 ## Blocked
 
@@ -97,6 +102,10 @@ _None._
 - 🔴 [T-063 — Align API paths, vehicle energy invariant, and README](./T-063-api-prefix-energy-invariant-readme-cleanup.md)
 - 🔴 [T-065 — Pre-push CI validation](./T-065-pre-push-ci-validation.md)
 - 🔴 [T-067 — Active-vehicle UX refactor — global picker, functional nav, mobile bottom bar, FAB](./T-067-active-vehicle-ux-refactor.md)
+- 🔴 [T-070 — 'Shared schemas — ActivityEntry feed + VehiclePanel vitals'](./T-070-shared-activity-panel-schemas.md)
+- 🔴 [T-071 — API — vehicle activity feed endpoint](./T-071-api-vehicle-activity-feed.md)
+- 🔴 [T-072 — API — vehicle panel endpoint](./T-072-api-vehicle-panel.md)
+- 🔴 [T-079 — 'Web — shared ListCard/StatStrip primitives and instrument-cluster design tokens'](./T-079-web-shared-listcard-design-foundation.md)
 
 <!-- END GENERATED:tickets -->
 

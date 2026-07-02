@@ -61,11 +61,8 @@ export function UpcomingReminders() {
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{reminder.title}</span>
-                    <Badge
-                      variant={reminder.dueState === 'overdue' ? 'destructive' : 'secondary'}
-                      className="px-2 py-0 text-xs"
-                    >
+                    <span className="font-display font-semibold">{reminder.title}</span>
+                    <Badge variant={reminder.dueState === 'overdue' ? 'destructive' : 'warning'}>
                       {reminder.dueState === 'overdue'
                         ? t('upcomingReminders.overdue')
                         : t('upcomingReminders.dueSoon')}

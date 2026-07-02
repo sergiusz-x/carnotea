@@ -48,16 +48,28 @@ type RequestBody<Operation> = Operation extends {
   ? Body
   : undefined;
 
-/**
- * Interpolate a path template like `/api/vehicles/{id}` with actual params.
- * If no params are provided, the template string is returned as-is.
- */
 function resolvePath(template: string, params?: Record<string, string>): string {
   if (!params) return template;
   return Object.entries(params).reduce(
     (url, [key, value]) => url.replace(`{${key}}`, encodeURIComponent(value)),
     template,
   );
+}
+
+function withQueryString(
+  url: string,
+  query?: Record<string, string | number | boolean | undefined | null>,
+): string {
+  if (!query) return url;
+
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined || value === null) continue;
+    search.set(key, String(value));
+  }
+
+  const qs = search.toString();
+  return qs ? `${url}?${qs}` : url;
 }
 
 export class ApiError extends Error {
@@ -93,11 +105,12 @@ export const apiClient = {
   async GET<Path extends GetPath>(
     path: Path,
     params?: Record<string, string>,
+    query?: Record<string, string | number | boolean | undefined | null>,
   ): Promise<{
     data: SuccessResponse<paths[Path]['get']>;
     response: Response;
   }> {
-    const url = resolvePath(path, params);
+    const url = withQueryString(resolvePath(path, params), query);
     const response = await fetch(url);
 
     if (!response.ok) {
