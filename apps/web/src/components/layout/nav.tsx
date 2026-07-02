@@ -145,17 +145,16 @@ export function Nav({ mobile = false, onNavigate }: NavProps) {
                 onClick={onNavigate}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'flex items-center gap-2 rounded-md font-medium transition-colors',
-                  'text-muted-foreground hover:bg-accent hover:text-foreground',
-                  isActive && 'bg-accent text-foreground',
-                  mobile ? 'w-full px-3 py-3 text-base' : 'px-3 py-2 text-sm',
+                  'relative flex items-center gap-3 rounded-xl border border-transparent px-3 py-2.5 text-sm font-medium transition-colors',
+                  'text-muted-foreground hover:bg-accent/60 hover:text-foreground',
+                  isActive && 'bg-accent/70 text-primary',
+                  isActive &&
+                    'before:absolute before:bottom-2 before:left-0 before:top-2 before:w-[3px] before:rounded-full before:bg-primary',
+                  mobile && 'w-full',
                 )}
               >
-                <Icon
-                  className={cn('shrink-0', mobile ? 'h-5 w-5' : 'h-4 w-4')}
-                  aria-hidden="true"
-                />
-                {t(labelKey)}
+                <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{t(labelKey)}</span>
               </Link>
             </li>
           );

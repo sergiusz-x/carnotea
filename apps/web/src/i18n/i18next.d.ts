@@ -1,5 +1,6 @@
 import 'i18next';
 
+import type activity from '../locales/en/activity.json';
 import type auth from '../locales/en/auth.json';
 import type charging from '../locales/en/charging.json';
 import type common from '../locales/en/common.json';
@@ -24,6 +25,7 @@ declare module 'i18next' {
     defaultNS: 'common';
     resources: {
       common: typeof common;
+      activity: typeof activity;
       dashboard: typeof dashboard;
       forms: typeof forms;
       health: typeof health;

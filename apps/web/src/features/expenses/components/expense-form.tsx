@@ -21,6 +21,7 @@ import {
   type SelectOption,
 } from '@/components/form';
 import { FormContainer } from '@/components/FormContainer';
+import { PageHeader } from '@/components/PageHeader';
 import {
   expenseQueryOptions,
   useCreateExpense,
@@ -116,7 +117,7 @@ function FormShell({
 
   return (
     <FormContainer>
-      <h1 className="mb-6 text-2xl font-bold">{title}</h1>
+      <PageHeader title={title} />
 
       <AppForm form={form} onSubmit={onSubmit}>
         <StepWizard

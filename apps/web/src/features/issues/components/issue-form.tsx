@@ -22,6 +22,7 @@ import {
 } from '@/components/form';
 import type { SelectOption } from '@/components/form';
 import { FormContainer } from '@/components/FormContainer';
+import { PageHeader } from '@/components/PageHeader';
 import { issueQueryOptions, useCreateIssue, useUpdateIssue } from '@/features/issues/queries';
 
 // ─── Shared priority/status select options ────────────────────────────────────
@@ -177,7 +178,7 @@ function FormShell({
 
   return (
     <FormContainer>
-      <h1 className="mb-6 text-2xl font-bold">{title}</h1>
+      <PageHeader title={title} />
 
       <AppForm form={form} onSubmit={onSubmit}>
         <TextField name="title" label={t('fields.title')} placeholder={t('fields.title')} />
