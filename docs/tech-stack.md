@@ -20,7 +20,7 @@ live in the linked documents.
 | Playwright       | End-to-end tests                                      |                                                                                                       |
 | Changesets       | Versioning, changelogs                                | T-013                                                                                                 |
 | commitlint       | Conventional Commits enforcement                      | T-013                                                                                                 |
-| lefthook         | Git hooks                                             | T-013                                                                                                 |
+| husky            | Git hooks                                             | T-013                                                                                                 |
 | GitHub Actions   | CI: lint, typecheck, test, build                      | T-015                                                                                                 |
 
 ## Database

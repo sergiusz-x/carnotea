@@ -34,5 +34,31 @@ services:
       retries: 5
       start_period: 10s
 
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: carnotea-api
+    restart: unless-stopped
+    ports:
+      - '3001:3001'
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://carnotea:carnotea_dev_password@postgres:5432/carnotea
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: carnotea-web
+    restart: unless-stopped
+    ports:
+      - '8080:80'
+    depends_on:
+      - api
+
 volumes:
   postgres_data:

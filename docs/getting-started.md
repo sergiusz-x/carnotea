@@ -100,8 +100,39 @@ pnpm --filter @carnotea/web codegen:api
 pnpm --filter @carnotea/web codegen:api:check
 ```
 
-The check regenerates `apps/web/src/lib/api/schema.d.ts` and fails when the
-working tree differs, matching the CI freshness check.
+The check regenerates `apps/web/src/lib/api/schema.d.ts` and fails when the working tree differs, matching the CI freshness check.
+
+### Development flows
+
+You can develop Carnotea using either **pnpm dev** (local development) or **docker compose up** (full stack with Docker).
+
+#### pnpm dev (local development)
+
+This runs the API and web apps in development mode using Turbopack.
+
+```bash
+pnpm dev          # runs all dev tasks in parallel via Turborepo
+# or, focused:
+pnpm --filter @carnotea/api dev    # NestJS API on API_PORT (default 3001)
+pnpm --filter @carnotea/web dev    # Vite dev server on http://localhost:5173
+```
+
+#### docker compose up (full stack)
+
+This starts PostgreSQL, Mailpit, API, and Web (production build) via Docker Compose.
+
+```bash
+docker compose up -d   # starts postgres, mailpit, api, web
+# API will wait for postgres to be healthy before starting
+# Web serves the production-built static assets via nginx
+```
+
+You can still run migrations and other workspace commands while the containers are running:
+
+```bash
+pnpm db:migrate      # runs against the postgres container
+pnpm build           # builds all packages (if needed)
+```
 
 ## 6. Working day-to-day
 
