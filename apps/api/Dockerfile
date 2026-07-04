@@ -28,7 +28,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the API and its workspace dependencies
-RUN pnpm --filter @carnotea/api build
+RUN pnpm --filter @carnotea/api... build
 
 # Deploy a pruned production tree into /app/out
 RUN pnpm deploy --filter @carnotea/api --prod /app/out
