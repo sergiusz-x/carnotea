@@ -130,3 +130,9 @@ create tickets only for follow-up work the human explicitly asks to track.
 **Context:** Fixing a red `main` caused by the `Deploy` workflow.
 **Mistake:** Treating a green PR as sufficient proof even though the failing signal lived on the post-merge `main` run, and the first workflow-only fix still left `main` red.
 **Rule:** When fixing a red GitHub `main`, verify the exact workflow on the fresh `main` commit after merge; do not stop at a green PR or a locally validated workflow edit.
+
+### 2026-07-04 — Match deploy automation to the real hosting target
+
+**Context:** Cleaning up GitHub Actions after a temporary VPS-style deploy workflow was added.
+**Mistake:** Keeping SSH-and-Docker-Compose deployment automation even after the human clarified the hosting direction was moving toward a different self-hosted platform model.
+**Rule:** Before keeping or extending deployment automation, confirm it matches the intended hosting model; remove or disable platform-specific deploy workflows that no longer reflect the target architecture.
