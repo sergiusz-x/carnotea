@@ -118,3 +118,9 @@ the human explicitly asked for immediate in-session fixes.
 **Rule:** When the human explicitly overrides the ticket workflow for a live
 debugging session, fix the reported bugs directly in the current checkout and
 create tickets only for follow-up work the human explicitly asks to track.
+
+### 2026-07-04 — Ship GitHub-red fixes to a PR
+
+**Context:** Fixing a red `main` after a GitHub Actions failure.
+**Mistake:** Stopping after local diagnosis and validation made the local work correct, but GitHub stayed red because no branch/PR had been pushed.
+**Rule:** When the human asks to fix a red GitHub `main`, either push/open the repair PR in the same turn or explicitly say the fix is local-only and not yet visible on GitHub.

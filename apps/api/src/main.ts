@@ -7,6 +7,7 @@ import rateLimit from '@fastify/rate-limit';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
+import { type FastifyRequest } from 'fastify';
 import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module.js';
@@ -47,9 +48,13 @@ async function bootstrap(): Promise<void> {
   // Security hardening (T-049)
   // ------------------------------------------------------------------
   const fastifyInstance = app.getHttpAdapter().getInstance();
+  const register = fastifyInstance.register.bind(fastifyInstance) as unknown as (
+    plugin: unknown,
+    options: Record<string, unknown>,
+  ) => PromiseLike<unknown>;
 
   // 1. Helmet — security response headers
-  await fastifyInstance.register(helmet, {
+  await register(helmet, {
     contentSecurityPolicy: isProduction ? undefined : false,
     hsts: isProduction ? { maxAge: 31_536_000, includeSubDomains: true, preload: true } : false,
   });
@@ -58,7 +63,7 @@ async function bootstrap(): Promise<void> {
   const allowedOrigins = env.CORS_ORIGINS.split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
-  await fastifyInstance.register(cors, {
+  await register(cors, {
     origin: isProduction ? allowedOrigins : true,
     credentials: true,
     allowedHeaders: [
@@ -70,11 +75,11 @@ async function bootstrap(): Promise<void> {
   });
 
   // 3. Rate limiting
-  await fastifyInstance.register(rateLimit, {
-    max: (request) =>
+  await register(rateLimit, {
+    max: (request: FastifyRequest) =>
       isStrictAuthRateLimitRoute(request.url) ? env.RATE_LIMIT_AUTH_MAX : env.RATE_LIMIT_MAX,
     timeWindow: env.RATE_LIMIT_WINDOW_MS,
-    keyGenerator: (request) => request.ip,
+    keyGenerator: (request: FastifyRequest) => request.ip,
   });
 
   await app.listen({ port, host });

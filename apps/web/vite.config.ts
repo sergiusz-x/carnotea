@@ -14,7 +14,13 @@ export default defineConfig({
       registerType: 'autoUpdate',
       manifest: false,
       workbox: {
-        runtimeCaching: [],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkOnly',
+          },
+        ],
       },
     }),
   ],
