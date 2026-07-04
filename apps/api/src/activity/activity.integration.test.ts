@@ -28,27 +28,29 @@ import { ActivityController } from './activity.controller.js';
 import { ActivityService } from './activity.service.js';
 
 const databaseUrl = process.env.DATABASE_URL;
+const baseDate = new Date(Date.UTC(2026, 6, 20, 12, 0, 0, 0));
 
 function toYmd(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
 function daysAgo(days: number): string {
-  const date = new Date();
+  const date = new Date(baseDate);
   date.setUTCDate(date.getUTCDate() - days);
   return toYmd(date);
 }
 
 function isoDaysAgo(days: number): Date {
-  const date = new Date();
+  const date = new Date(baseDate);
   date.setUTCDate(date.getUTCDate() - days);
   date.setUTCHours(10, 0, 0, 0);
   return date;
 }
 
 function monthDate(offsetMonths: number, day: number): string {
-  const now = new Date();
-  return toYmd(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offsetMonths, day)));
+  return toYmd(
+    new Date(Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth() + offsetMonths, day)),
+  );
 }
 
 describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
@@ -216,7 +218,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       {
         vehicleId: evVehicleId,
         categoryId: serviceCategory.id,
-        expenseDate: monthDate(0, 12),
+        expenseDate: daysAgo(7),
         amount: '80.00',
         description: 'Cabin filter',
         sourceType: 'manual',
