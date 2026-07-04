@@ -110,6 +110,7 @@ _None._
 - 🔴 [T-081 — Fix API Docker workspace dependency build](./T-081-fix-api-docker-workspace-dependency-build.md)
 - 🔴 [T-082 — Fix Web Docker workspace manifest paths](./T-082-fix-web-docker-workspace-manifest-paths.md)
 - 🔴 [T-083 — Skip deploy job when production secrets are missing](./T-083-skip-deploy-job-when-production-secrets-are-missing.md)
+- 🔴 [T-084 — Route deploy secret check through job output](./T-084-route-deploy-secret-check-through-job-output.md)
 
 <!-- END GENERATED:tickets -->
 
