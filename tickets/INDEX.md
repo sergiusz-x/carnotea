@@ -26,6 +26,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
 - 🟡 [T-055 — Web Push notifications for due reminders](./T-055-pwa-push-notifications.md)
+- 🟡 [T-080 — Operational fluid tracking](./T-080-operational-fluid-tracking.md)
 
 ## Backlog
 
