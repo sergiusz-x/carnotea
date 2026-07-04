@@ -60,19 +60,46 @@ jobs:
             ${{ steps.meta.outputs.image_registry }}/carnotea-web:${{ steps.meta.outputs.image_tag }}
             ${{ steps.meta.outputs.image_registry }}/carnotea-web:latest
 
+  deploy-config:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check deploy configuration
+        id: check
+        shell: bash
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          required=(
+            "$DEPLOY_SSH_KEY"
+            "$DEPLOY_SSH_KNOWN_HOSTS"
+            "$DEPLOY_USER"
+            "$DEPLOY_HOST"
+            "$GHCR_USERNAME"
+            "$GHCR_TOKEN"
+            "$DEPLOY_PATH"
+          )
+
+          for value in "${required[@]}"; do
+            if [ -z "$value" ]; then
+              echo "configured=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-push
-    if: >-
-      ${{
-        secrets.DEPLOY_SSH_KEY != '' &&
-        secrets.DEPLOY_SSH_KNOWN_HOSTS != '' &&
-        secrets.DEPLOY_USER != '' &&
-        secrets.DEPLOY_HOST != '' &&
-        secrets.GHCR_USERNAME != '' &&
-        secrets.GHCR_TOKEN != '' &&
-        secrets.DEPLOY_PATH != ''
-      }}
+    needs: [build-and-push, deploy-config]
+    if: ${{ needs.deploy-config.outputs.configured == 'true' }}
     environment: production
     steps:
       - name: Install SSH key

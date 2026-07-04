@@ -124,3 +124,9 @@ create tickets only for follow-up work the human explicitly asks to track.
 **Context:** Fixing a red `main` after a GitHub Actions failure.
 **Mistake:** Stopping after local diagnosis and validation made the local work correct, but GitHub stayed red because no branch/PR had been pushed.
 **Rule:** When the human asks to fix a red GitHub `main`, either push/open the repair PR in the same turn or explicitly say the fix is local-only and not yet visible on GitHub.
+
+### 2026-07-04 — Verify the fresh main workflow, not only the PR
+
+**Context:** Fixing a red `main` caused by the `Deploy` workflow.
+**Mistake:** Treating a green PR as sufficient proof even though the failing signal lived on the post-merge `main` run, and the first workflow-only fix still left `main` red.
+**Rule:** When fixing a red GitHub `main`, verify the exact workflow on the fresh `main` commit after merge; do not stop at a green PR or a locally validated workflow edit.
