@@ -14,10 +14,10 @@ WORKDIR /app
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
-COPY tooling/eslint-config/package.json  tooling/eslint-config/package.json
-COPY tooling/prettier-config/package.json tooling/prettier-config/package.json
-COPY tooling/tsconfig/package.json        tooling/tsconfig/package.json
-COPY tooling/vitest-config/package.json   tooling/vitest-config/package.json
+COPY tooling/eslint/package.json     tooling/eslint/package.json
+COPY tooling/prettier/package.json   tooling/prettier/package.json
+COPY tooling/typescript/package.json tooling/typescript/package.json
+COPY tooling/vitest/package.json     tooling/vitest/package.json
 
 # Install ALL dependencies (including devDependencies needed for build)
 RUN pnpm install --frozen-lockfile
@@ -26,7 +26,7 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the web bundle (Vite outputs to apps/web/dist)
-RUN pnpm --filter @carnotea/web build
+RUN pnpm --filter @carnotea/web... build
 
 
 # ---- Stage 2: Serve with nginx ---------------------------------------------
