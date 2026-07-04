@@ -47,6 +47,12 @@ function isoDaysAgo(days: number): Date {
   return date;
 }
 
+function realDaysAgo(days: number): string {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() - days);
+  return toYmd(date);
+}
+
 function monthDate(offsetMonths: number, day: number): string {
   return toYmd(
     new Date(Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth() + offsetMonths, day)),
@@ -244,7 +250,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
     await db.insert(reminders).values({
       vehicleId: evVehicleId,
       title: 'Annual inspection',
-      dueDate: daysAgo(1),
+      dueDate: realDaysAgo(1),
       dueMileage: 12500,
       statusId: pendingStatus.id,
       createdAt: isoDaysAgo(9),
