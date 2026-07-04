@@ -51,8 +51,7 @@ function ResolvedDateField({ form }: { form: ReturnType<typeof useZodForm> }) {
   const showResolvedDate = selectedStatus === 'resolved';
 
   const reportedDate = useWatch({ control: form.control, name: 'reportedDate' }) as
-    | string
-    | undefined;
+    string | undefined;
 
   return (
     <>

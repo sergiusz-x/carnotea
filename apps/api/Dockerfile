@@ -16,10 +16,10 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json turbo.json ./
 COPY apps/api/package.json apps/api/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/shared/package.json packages/shared/package.json
-COPY tooling/eslint-config/package.json  tooling/eslint-config/package.json
-COPY tooling/prettier-config/package.json tooling/prettier-config/package.json
-COPY tooling/tsconfig/package.json        tooling/tsconfig/package.json
-COPY tooling/vitest-config/package.json   tooling/vitest-config/package.json
+COPY tooling/eslint/package.json     tooling/eslint/package.json
+COPY tooling/prettier/package.json   tooling/prettier/package.json
+COPY tooling/typescript/package.json tooling/typescript/package.json
+COPY tooling/vitest/package.json     tooling/vitest/package.json
 
 # Install ALL dependencies (including devDependencies needed for build)
 RUN pnpm install --frozen-lockfile

@@ -47,8 +47,7 @@ const STEP_FIELDS = [
 function useTotalServiceCost(form: ReturnType<typeof useZodForm>): number | null {
   const laborCost = useWatch({ control: form.control, name: 'laborCost' }) as number | undefined;
   const parts = useWatch({ control: form.control, name: 'parts' }) as
-    | ServicePartLineRequest[]
-    | undefined;
+    ServicePartLineRequest[] | undefined;
 
   const parsedLabor = Number(laborCost);
   const partsTotal =

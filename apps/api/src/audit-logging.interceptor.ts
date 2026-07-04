@@ -1,7 +1,17 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
-import { Observable, tap, finalize } from 'rxjs';
-import { isObject } from 'class-validator';
+import { Observable, finalize } from 'rxjs';
+
+interface AuditRequest {
+  method: string;
+  url: string;
+  body?: unknown;
+  user?: { id?: unknown };
+}
+
+interface AuditResponse {
+  statusCode?: number;
+}
 
 const SENSITIVE_KEYS = new Set([
   'password',
@@ -20,16 +30,16 @@ const SENSITIVE_KEYS = new Set([
   'pin',
 ]);
 
-function sanitize(data: any): any {
+function sanitize(data: unknown): unknown {
   if (!data || typeof data !== 'object') {
     return data;
   }
 
   if (Array.isArray(data)) {
-    return data.map(item => sanitize(item));
+    return data.map((item) => sanitize(item));
   }
 
-  const sanitized: Record<string, any> = {};
+  const sanitized: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(data)) {
     const lowerKey = key.toLowerCase();
     if (SENSITIVE_KEYS.has(lowerKey)) {
@@ -44,8 +54,8 @@ function sanitize(data: any): any {
 export class AuditLoggingInterceptor implements NestInterceptor {
   private readonly logger = new Logger(AuditLoggingInterceptor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const request = context.switchToHttp().getRequest();
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const request = context.switchToHttp().getRequest<AuditRequest>();
     const { method, url } = request;
 
     // Only log mutating requests
@@ -54,7 +64,7 @@ export class AuditLoggingInterceptor implements NestInterceptor {
     }
 
     const start = Date.now();
-    const userId = request.user?.id ?? request['user']?.id ?? null;
+    const userId = request.user?.id ?? null;
 
     // Sanitize request body (avoid logging sensitive data)
     const rawBody = request.body ?? {};
@@ -62,7 +72,7 @@ export class AuditLoggingInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       finalize(() => {
-        const response = context.switchToHttp().getResponse();
+        const response = context.switchToHttp().getResponse<AuditResponse>();
         const statusCode = response.statusCode ?? 200; // fallback
         const duration = Date.now() - start;
 
@@ -77,7 +87,7 @@ export class AuditLoggingInterceptor implements NestInterceptor {
         };
 
         this.logger.log(JSON.stringify(logEntry));
-      })
+      }),
     );
   }
 }
