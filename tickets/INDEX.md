@@ -107,6 +107,7 @@ _None._
 - 🔴 [T-072 — API — vehicle panel endpoint](./T-072-api-vehicle-panel.md)
 - 🔴 [T-079 — 'Web — shared ListCard/StatStrip primitives and instrument-cluster design tokens'](./T-079-web-shared-listcard-design-foundation.md)
 - 🔴 [T-080 — Fix main CI after docker-compose merge](./T-080-fix-main-ci-after-docker-compose-merge.md)
+- 🔴 [T-081 — Fix API Docker workspace dependency build](./T-081-fix-api-docker-workspace-dependency-build.md)
 
 <!-- END GENERATED:tickets -->
 
