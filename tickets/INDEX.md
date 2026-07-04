@@ -39,7 +39,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-073 — Web — vehicle panel and activity feed](./T-073-web-panel-and-activity-feed.md)
 - 🔴 [T-074 — Web — shell rail and dashboard composition](./T-074-web-shell-and-dashboard-composition.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
-- 🔴 [T-080 — Fix main CI after docker-compose merge](./T-080-fix-main-ci-after-docker-compose-merge.md)
 
 ## Blocked
 
@@ -107,6 +106,7 @@ _None._
 - 🔴 [T-071 — API — vehicle activity feed endpoint](./T-071-api-vehicle-activity-feed.md)
 - 🔴 [T-072 — API — vehicle panel endpoint](./T-072-api-vehicle-panel.md)
 - 🔴 [T-079 — 'Web — shared ListCard/StatStrip primitives and instrument-cluster design tokens'](./T-079-web-shared-listcard-design-foundation.md)
+- 🔴 [T-080 — Fix main CI after docker-compose merge](./T-080-fix-main-ci-after-docker-compose-merge.md)
 
 <!-- END GENERATED:tickets -->
 

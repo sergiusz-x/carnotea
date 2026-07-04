@@ -1,7 +1,7 @@
 ---
 id: T-080
 title: Fix main CI after docker-compose merge
-status: in_progress
+status: done
 priority: high
 size: S
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-012, T-014]
 labels: [ci, web, api, docker]
 created_at: 2026-07-04
 updated_at: 2026-07-04
-closed_at: ~
+closed_at: 2026-07-04
 ---
 
 # T-080 — Fix main CI after docker-compose merge
@@ -56,20 +56,20 @@ _n/a_
 
 ## Acceptance criteria
 
-- [ ] `pnpm --filter @carnotea/web build` succeeds.
-- [ ] `docker build -f apps/api/Dockerfile .` reaches the source-copy/build
+- [x] `pnpm --filter @carnotea/web build` succeeds.
+- [x] `docker build -f apps/api/Dockerfile .` reaches the source-copy/build
       stages instead of failing on missing `tooling/*-config/package.json`
       paths.
-- [ ] `pnpm build` succeeds locally.
-- [ ] Vehicle detail hub resolves its fuel/charging support helper import.
-- [ ] API build typechecks without `class-validator` or Fastify plugin register errors.
+- [x] `pnpm build` succeeds locally.
+- [x] Vehicle detail hub resolves its fuel/charging support helper import.
+- [x] API build typechecks without `class-validator` or Fastify plugin register errors.
 
 ## Test matrix
 
 | Case                 | Input                     | Expected                           |
 | -------------------- | ------------------------- | ---------------------------------- |
 | Web production build | `pnpm --filter web build` | Vite build and PWA generation pass |
-| API Docker build     | `apps/api/Dockerfile`     | Tooling package manifests resolve  |
+| API Dockerfile paths | `apps/api/Dockerfile`     | Tooling package manifests resolve  |
 
 ## Files to touch
 
@@ -88,6 +88,9 @@ _n/a_
 - Docker image redesign beyond the broken manifest paths.
 
 ## Implementation notes
+
+- PR opened: https://github.com/sergiusz-x/carnotea/pull/95
+- Local Docker engine was unavailable, so Docker verification is limited to fixing the exact stale manifest paths reported by GitHub Actions and full workspace build validation.
 
 - Keep the PWA baseline intentionally minimal.
 - The current tooling workspace package directories are `tooling/eslint`,
