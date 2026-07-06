@@ -1,21 +1,35 @@
+import { useQuery } from '@tanstack/react-query';
 import { Link, Outlet } from '@tanstack/react-router';
-import { Moon, Sun } from 'lucide-react';
+import { Car, ChevronDown, Moon, Sun } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AppLogo } from '@/components/AppLogo';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTheme } from '@/components/ThemeProvider';
 import { Button } from '@/components/ui/button';
+import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
+import { vehiclesQueryOptions } from '@/features/vehicles/queries';
 
 import { BottomNav } from './bottom-nav';
 import { Fab } from './fab';
 import { Nav } from './nav';
 import { UserMenu } from './user-menu';
 import { VehiclePicker } from './vehicle-picker';
+import { VehiclePickerSheet } from './vehicle-picker-sheet';
 
 export function AppShell() {
   const { t } = useTranslation('common');
+  const { t: tNav } = useTranslation('nav');
   const { theme, toggleTheme } = useTheme();
+  const { activeVehicleId } = useActiveVehicle();
+  const { data: vehicles } = useQuery(vehiclesQueryOptions);
+  const [vehicleSheetOpen, setVehicleSheetOpen] = useState(false);
+
+  const activeVehicle = vehicles?.find((v) => v.id === activeVehicleId);
+  const vehicleLabel = activeVehicle
+    ? `${activeVehicle.brand} ${activeVehicle.model}`
+    : tNav('selectVehicle');
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -31,6 +45,20 @@ export function AppShell() {
               {t('appName')}
             </span>
           </Link>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setVehicleSheetOpen(true);
+            }}
+            aria-label={vehicleLabel}
+            className="flex max-w-[160px] items-center gap-1.5 truncate md:hidden"
+          >
+            <Car className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate text-sm">{vehicleLabel}</span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden="true" />
+          </Button>
 
           <div className="ml-auto flex items-center gap-1">
             <div className="hidden sm:block">
@@ -73,6 +101,7 @@ export function AppShell() {
       {/* Mobile only */}
       <BottomNav />
       <Fab />
+      <VehiclePickerSheet open={vehicleSheetOpen} onOpenChange={setVehicleSheetOpen} />
     </div>
   );
 }
