@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
+import { supportsCharging, supportsFuelLogs } from '@/features/vehicles/vehicle-usage';
 import { cn } from '@/lib/utils';
 
 type NavKey =
@@ -41,8 +42,8 @@ function useNavItems(): NavItem[] {
   const { data: vehicles } = useQuery(vehiclesQueryOptions);
 
   const activeVehicle = vehicles?.find((v) => v.id === activeVehicleId);
-  const isChargingVehicle =
-    activeVehicle?.fuelType === 'electric' || activeVehicle?.fuelType === 'hybrid';
+  const showFuel = supportsFuelLogs(activeVehicle?.fuelType);
+  const showCharging = supportsCharging(activeVehicle?.fuelType);
 
   const base: NavItem[] = [
     {
@@ -62,13 +63,17 @@ function useNavItems(): NavItem[] {
 
   const vehicleItems: NavItem[] = activeVehicleId
     ? [
-        {
-          labelKey: 'fuel',
-          to: `/vehicles/${activeVehicleId}/fuel`,
-          activePaths: [`/vehicles/${activeVehicleId}/fuel`],
-          Icon: Fuel,
-        },
-        ...(isChargingVehicle
+        ...(showFuel
+          ? [
+              {
+                labelKey: 'fuel' as NavKey,
+                to: `/vehicles/${activeVehicleId}/fuel`,
+                activePaths: [`/vehicles/${activeVehicleId}/fuel`],
+                Icon: Fuel,
+              },
+            ]
+          : []),
+        ...(showCharging
           ? [
               {
                 labelKey: 'charging' as NavKey,
