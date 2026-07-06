@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import { AppLogo } from '@/components/AppLogo';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useTheme } from '@/components/ThemeProvider';
 import { Button } from '@/components/ui/button';
@@ -65,7 +66,8 @@ function LoginPage() {
         </Button>
       </div>
 
-      <div className="mb-6 text-center">
+      <div className="mb-6 flex flex-col items-center gap-3 text-center">
+        <AppLogo className="h-10 w-10" />
         <span className="text-3xl font-bold">{t('appName')}</span>
       </div>
 

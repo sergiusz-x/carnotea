@@ -1,4 +1,4 @@
-import { UserProfileUpdateSchema } from '@carnotea/shared';
+import { UserProfileUpdateSchema, type UserProfile } from '@carnotea/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,41 +51,73 @@ function isApiError(err: unknown): err is {
 }
 
 export function ProfileScreen() {
-  const { t, i18n } = useTranslation('profile');
-
+  const { t } = useTranslation('profile');
   const { data: profile, isLoading, isError, error, refetch } = useQuery(profileQueryOptions);
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+        <p className="text-muted-foreground">{t('loading')}</p>
+      </div>
+    );
+  }
+
+  if (isError || !profile) {
+    return (
+      <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-destructive">
+              {error instanceof Error ? error.message : t('error.loadFailed')}
+            </p>
+            <Button variant="outline" className="mt-4" onClick={() => void refetch()}>
+              {t('error.retry')}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return <ProfileContent key={profileKey(profile)} profile={profile} />;
+}
+
+function profileKey(profile: UserProfile) {
+  return [
+    profile.id,
+    profile.updatedAt,
+    profile.localePref,
+    profile.unitsPref,
+    profile.currencyPref,
+  ].join(':');
+}
+
+function ProfileContent({ profile }: { profile: UserProfile }) {
+  const { t, i18n } = useTranslation('profile');
   const updateAccount = useUpdateProfile();
   const updatePreferences = useUpdateProfile();
 
   const accountForm = useZodForm(accountSchema, {
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      firstName: profile.firstName,
+      lastName: profile.lastName,
     },
   });
 
   const preferencesForm = useZodForm(preferencesSchema, {
     defaultValues: {
-      localePref: 'en',
-      unitsPref: 'metric',
-      currencyPref: 'PLN',
+      localePref: profile.localePref,
+      unitsPref: profile.unitsPref,
+      currencyPref: profile.currencyPref,
     },
   });
 
-  // Sync form values when profile data loads.
   useEffect(() => {
-    if (profile) {
-      accountForm.reset({
-        firstName: profile.firstName,
-        lastName: profile.lastName,
-      });
-      preferencesForm.reset({
-        localePref: profile.localePref,
-        unitsPref: profile.unitsPref,
-        currencyPref: profile.currencyPref,
-      });
+    const activeLanguage = i18n.resolvedLanguage ?? i18n.language;
+    if (!activeLanguage.startsWith(profile.localePref)) {
+      void i18n.changeLanguage(profile.localePref);
     }
-  }, [profile, accountForm, preferencesForm]);
+  }, [i18n, profile.localePref]);
 
   async function handleAccountSubmit(values: AccountValues) {
     try {
@@ -112,35 +144,10 @@ export function ProfileScreen() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-        <p className="text-muted-foreground">{t('loading')}</p>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="mx-auto w-full max-w-2xl px-4 py-8 sm:px-6 lg:px-8">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-destructive">
-              {error instanceof Error ? error.message : t('error.loadFailed')}
-            </p>
-            <Button variant="outline" className="mt-4" onClick={() => void refetch()}>
-              {t('error.retry')}
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto w-full max-w-2xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
+        <h1 className="font-display text-3xl font-bold tracking-tight">{t('title')}</h1>
         <p className="mt-1 text-muted-foreground">{t('description')}</p>
       </div>
 
@@ -157,11 +164,11 @@ export function ProfileScreen() {
             <div className="space-y-1">
               <Label>{t('account.email')}</Label>
               <p className="rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
-                {profile?.email ?? ''}
+                {profile.email}
               </p>
             </div>
 
-            {profile?.createdAt && (
+            {profile.createdAt && (
               <p className="pt-2 text-sm text-muted-foreground">
                 {t('account.memberSince')}
                 {':'}{' '}
@@ -210,7 +217,7 @@ export function ProfileScreen() {
         </CardContent>
       </Card>
 
-      <GdprSection userEmail={profile?.email ?? ''} />
+      <GdprSection userEmail={profile.email} />
     </div>
   );
 }

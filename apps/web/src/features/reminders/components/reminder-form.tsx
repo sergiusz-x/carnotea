@@ -14,6 +14,7 @@ import {
   FormSubmit,
   NumberField,
   SelectField,
+  TextareaField,
   TextField,
   handleApiError,
   useZodForm,
@@ -146,10 +147,11 @@ function FormShell({
 
       <AppForm form={form} onSubmit={onSubmit}>
         <TextField name="title" label={t('fields.title')} placeholder={t('fields.title')} />
-        <TextField
+        <TextareaField
           name="description"
           label={t('fields.description')}
           placeholder={t('fields.description')}
+          rows={4}
         />
         <DateField name="dueDate" label={t('fields.dueDate')} />
         <NumberField name="dueMileage" label={t('fields.dueMileage')} />

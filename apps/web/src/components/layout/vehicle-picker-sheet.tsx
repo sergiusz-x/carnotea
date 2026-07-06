@@ -1,5 +1,6 @@
+import { type Vehicle } from '@carnotea/shared';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { Check, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
+import { resolveVehicleSwitchPath } from '@/features/vehicles/vehicle-usage';
 
 interface VehiclePickerSheetProps {
   open: boolean;
@@ -16,11 +18,15 @@ interface VehiclePickerSheetProps {
 export function VehiclePickerSheet({ open, onOpenChange }: VehiclePickerSheetProps) {
   const { t } = useTranslation('nav');
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { activeVehicleId, setActiveVehicleId } = useActiveVehicle();
   const { data: vehicles } = useQuery(vehiclesQueryOptions);
 
-  function handleSelect(id: string) {
-    setActiveVehicleId(id);
+  function handleSelect(vehicle: Vehicle) {
+    setActiveVehicleId(vehicle.id);
+    if (activeVehicleId && pathname.startsWith(`/vehicles/${activeVehicleId}`)) {
+      void navigate({ to: resolveVehicleSwitchPath(pathname, vehicle.id, vehicle.fuelType) });
+    }
     onOpenChange(false);
   }
 
@@ -37,7 +43,7 @@ export function VehiclePickerSheet({ open, onOpenChange }: VehiclePickerSheetPro
               variant={vehicle.id === activeVehicleId ? 'secondary' : 'outline'}
               className="w-full justify-between"
               onClick={() => {
-                handleSelect(vehicle.id);
+                handleSelect(vehicle);
               }}
             >
               <span>

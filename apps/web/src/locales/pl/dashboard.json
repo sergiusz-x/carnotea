@@ -16,9 +16,12 @@
     "totalVehicles": "Liczba pojazdów",
     "totalExpenses": "Łączne wydatki",
     "totalFuelCost": "Koszt paliwa",
+    "totalChargingCost": "Koszt ładowania",
     "avgFuelConsumption": "Śr. zużycie paliwa",
+    "avgEnergyConsumption": "Śr. zużycie energii",
     "unit": "{{currency}} {{value}}",
     "consumptionUnit": "{{value}} L/100km",
+    "energyConsumptionUnit": "{{value}} kWh/100km",
     "noData": "—"
   },
   "expensesByCategory": {

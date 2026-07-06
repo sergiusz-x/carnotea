@@ -1,5 +1,6 @@
+import { type Vehicle } from '@carnotea/shared';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { Car, Check, ChevronDown, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
+import { resolveVehicleSwitchPath } from '@/features/vehicles/vehicle-usage';
 
 interface VehiclePickerProps {
   className?: string;
@@ -21,6 +23,7 @@ interface VehiclePickerProps {
 export function VehiclePicker({ className }: VehiclePickerProps) {
   const { t } = useTranslation('nav');
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { activeVehicleId, setActiveVehicleId } = useActiveVehicle();
   const { data: vehicles } = useQuery(vehiclesQueryOptions);
 
@@ -28,6 +31,13 @@ export function VehiclePicker({ className }: VehiclePickerProps) {
   const label = activeVehicle
     ? `${activeVehicle.brand} ${activeVehicle.model}`
     : t('selectVehicle');
+
+  function handleSelect(vehicle: Vehicle) {
+    setActiveVehicleId(vehicle.id);
+    if (activeVehicleId && pathname.startsWith(`/vehicles/${activeVehicleId}`)) {
+      void navigate({ to: resolveVehicleSwitchPath(pathname, vehicle.id, vehicle.fuelType) });
+    }
+  }
 
   return (
     <DropdownMenu>
@@ -48,7 +58,7 @@ export function VehiclePicker({ className }: VehiclePickerProps) {
           <DropdownMenuItem
             key={vehicle.id}
             onClick={() => {
-              setActiveVehicleId(vehicle.id);
+              handleSelect(vehicle);
             }}
             className="flex items-center gap-2"
           >
