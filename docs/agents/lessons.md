@@ -29,6 +29,12 @@ mistakes.
 
 ## Lessons
 
+### 2026-06-30 — Match the selected logo direction literally before stylising
+
+**Context:** Implementing the chosen E2 logo direction for the web app.
+**Mistake:** The coded SVG drifted into a generic pill mark instead of staying visually close to the selected E2 concept.
+**Rule:** When implementing a user-selected logo direction, reproduce the chosen silhouette and proportions as literally as possible first; do not "interpret" the concept into a different mark without explicit approval.
+
 ### 2026-06-14 — Leave work-ticket diffs uncommitted
 
 **Context:** Running `work-ticket T-001`.
