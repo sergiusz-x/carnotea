@@ -76,19 +76,23 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?error}
       BACKUP_DB_HOST: ${BACKUP_DB_HOST:-postgres}
       BACKUP_DB_PORT: ${BACKUP_DB_PORT:-5432}
-      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:?error}
-      BACKUP_S3_REGION: ${BACKUP_S3_REGION:?error}
+      # Not required at compose-parse time (`:?error` would block deploying the
+      # rest of the stack before backups are configured) — this profile-gated
+      # service is never started by a normal `up`, and backup.sh itself
+      # validates these are set before it runs.
+      BACKUP_S3_BUCKET: ${BACKUP_S3_BUCKET:-}
+      BACKUP_S3_REGION: ${BACKUP_S3_REGION:-}
       BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-carnotea/postgres}
-      BACKUP_S3_ENDPOINT_URL: ${BACKUP_S3_ENDPOINT_URL:?error}
+      BACKUP_S3_ENDPOINT_URL: ${BACKUP_S3_ENDPOINT_URL:-}
       BACKUP_S3_SSE: ${BACKUP_S3_SSE:-AES256}
       BACKUP_S3_SSE_KMS_KEY_ID: ${BACKUP_S3_SSE_KMS_KEY_ID:-}
       BACKUP_KEEP_DAILY: ${BACKUP_KEEP_DAILY:-7}
       BACKUP_KEEP_WEEKLY: ${BACKUP_KEEP_WEEKLY:-8}
       BACKUP_WEEKLY_DAY: ${BACKUP_WEEKLY_DAY:-7}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:?error}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:?error}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
       AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
-      AWS_REGION: ${BACKUP_S3_REGION:?error}
+      AWS_REGION: ${BACKUP_S3_REGION:-}
     volumes:
       - ./scripts:/scripts:ro
     networks:
