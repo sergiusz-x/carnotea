@@ -106,12 +106,12 @@ n/a
 
 ## Test matrix
 
-| Case                                                          | Input                                     | Expected                                          |
-| -------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
-| Switch vehicle while on `/vehicles/A/charging`, B supports charging | select vehicle B from switcher            | navigates to `/vehicles/B/charging`               |
-| Switch vehicle while on `/vehicles/A/charging`, B is combustion-only | select vehicle B from switcher            | navigates to `/vehicles/B` (overview)             |
-| StatStrip with 5 stats at 360px viewport                       | render `vehicle-panel.tsx`                | stats wrap to multiple rows, no column overflow    |
-| Trend flat case                                                 | `prevTotal === total`                     | text includes a label plus "tyle co poprzednio" / "same as last month" |
+| Case                                                                 | Input                          | Expected                                                               |
+| -------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
+| Switch vehicle while on `/vehicles/A/charging`, B supports charging  | select vehicle B from switcher | navigates to `/vehicles/B/charging`                                    |
+| Switch vehicle while on `/vehicles/A/charging`, B is combustion-only | select vehicle B from switcher | navigates to `/vehicles/B` (overview)                                  |
+| StatStrip with 5 stats at 360px viewport                             | render `vehicle-panel.tsx`     | stats wrap to multiple rows, no column overflow                        |
+| Trend flat case                                                      | `prevTotal === total`          | text includes a label plus "tyle co poprzednio" / "same as last month" |
 
 ## Files to touch
 
