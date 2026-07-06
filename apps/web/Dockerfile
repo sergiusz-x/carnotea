@@ -62,13 +62,6 @@ RUN { \
       echo '}'; \
     } > /etc/nginx/conf.d/default.conf
 
-# Run as non-root
-RUN sed -i 's/^user  nginx;/user  nginx;/' /etc/nginx/nginx.conf && \
-    chown -R nginx:nginx /usr/share/nginx/html && \
-    chmod -R g+w /usr/share/nginx/html
-
-USER nginx
-
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
