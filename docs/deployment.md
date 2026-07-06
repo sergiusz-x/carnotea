@@ -1,149 +1,70 @@
 # Deployment
 
-This document describes the production deployment flow for CarNotea: GitHub
-Actions builds the `api` and `web` images, publishes them to GHCR, then deploys
-them to the VPS over SSH with a blocking migration step.
+CarNotea is deployed through a self-hosted [Dokploy](https://dokploy.com)
+instance running on a home server. Dokploy runs `docker-compose.prod.yml` as a
+"Docker Compose" application: it clones the repo itself via a connected
+GitHub App, **builds `api`/`web`/`migrate` directly from their Dockerfiles**
+(no image registry involved), and manages TLS/domain routing through its own
+built-in Traefik instance. There is no separate CI image-publish step and no
+SSH-based deploy workflow — see `docs/agents/lessons.md` (2026-07-04 entries)
+and T-085 for why the earlier GHCR + SSH model was dropped.
+
+The server itself sits on a private LAN and is reached from the internet only
+through a Cloudflare Tunnel (`cloudflared`), never via a directly exposed
+public IP or port-forwarding.
 
 ## Prerequisites
 
-| Requirement                | Notes                                               |
-| -------------------------- | --------------------------------------------------- |
-| **VPS**                    | Linux x86_64 host with Docker Engine + Compose v2   |
-| **Domain name**            | A/AAAA record pointed at the VPS IP                 |
-| **Ports 80 + 443**         | Open in the firewall; Caddy handles TLS             |
-| **Docker**                 | `docker --version` ≥ 24                             |
-| **Docker Compose**         | `docker compose version` ≥ 2.x                      |
-| **Git**                    | Required on the VPS so deploy can `git pull`        |
-| **GHCR access token**      | Read access for the VPS host to pull release images |
-| **GitHub Actions secrets** | SSH + registry credentials for the deploy workflow  |
+| Requirement          | Notes                                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| **Dokploy instance** | Self-hosted, Docker Swarm-based; see Dokploy's own install docs                                     |
+| **Domain name**      | Managed in Cloudflare; a subdomain is routed to the app via a Cloudflare Tunnel + Dokploy's Traefik |
+| **GitHub App**       | Connected in Dokploy (Settings → Git), scoped to only this repo                                     |
+| **Docker**           | Managed by Dokploy's own installer                                                                  |
 
 ## Release model
 
-- `push` to `main` triggers `.github/workflows/deploy.yml`.
-- CI builds and pushes:
-  - `ghcr.io/<owner>/carnotea-api:sha-<commit>`
-  - `ghcr.io/<owner>/carnotea-web:sha-<commit>`
-  - moving `:latest` tags for both images
-- The deploy job SSHes to the VPS, fast-forwards the checkout to `origin/main`,
-  pulls the just-built images, runs the migration container, then rolls the app
-  to the new image tag.
+- Push to `main` triggers a Dokploy deployment via the connected GitHub App
+  (webhook).
+- Dokploy builds `api`, `web`, and `migrate` from their Dockerfiles, runs the
+  `migrate` service (profile `release`) to apply pending DB migrations, then
+  rolls out `api`/`web` once migration succeeds.
+- The public domain (e.g. `carnotea.sergiusz.dev`) is assigned to the `web`
+  service through Dokploy's **Domains** tab, which configures Traefik routing
+  and TLS automatically — no `DOMAIN` env var or reverse-proxy service needed
+  in the compose file itself.
 
-The migration step is ordered before the app rollout. If it fails, the workflow
-fails and the currently running `api` / `web` containers stay in place.
+If `migrate` exits non-zero, Dokploy stops the deployment and the currently
+running `api`/`web` containers keep serving traffic.
 
-## 1. Bootstrap the VPS checkout
+## 1. Configure the production environment
 
-```bash
-git clone <repo-url> /opt/carnotea
-cd /opt/carnotea
-git switch main
-```
+Environment variables are **never** set via a committed or on-disk `.env`
+file in production. Set each variable listed (uncommented) in `.env.example`
+directly in Dokploy's per-application **Environment Variables** tab — see
+§ 8 Secrets management below for the full list and rotation procedure.
 
-The deploy workflow expects the repository checkout on the server because it
-updates the checked-out `docker-compose.prod.yml` and docs with `git pull`.
+## 2. First production start
 
-## 2. Configure the production environment
-
-Create the `.env` file in the deploy checkout:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env` with your production values:
-
-```env
-# ---- Release images ---------------------------------------------------------
-IMAGE_REGISTRY=ghcr.io/<github-owner>
-IMAGE_TAG=latest
-
-# ---- Domain (Caddy TLS) -----------------------------------------------------
-DOMAIN=carnotea.example.com
-
-# ---- PostgreSQL -------------------------------------------------------------
-POSTGRES_DB=carnotea
-POSTGRES_USER=carnotea
-POSTGRES_PASSWORD=<generate-with-openssl-rand-base64-24>
-DATABASE_URL=postgresql://carnotea:***@postgres:5432/carnotea
-
-# ---- Auth -------------------------------------------------------------------
-BETTER_AUTH_SECRET=<generate-with-openssl-rand-base64-32>
-BETTER_AUTH_URL=https://carnotea.example.com
-
-# ---- Security ----------------------------------------------------------------
-CORS_ORIGINS=https://carnotea.example.com
-RATE_LIMIT_MAX=100
-RATE_LIMIT_AUTH_MAX=10
-RATE_LIMIT_WINDOW_MS=60000
-BODY_LIMIT=1048576
-```
-
-`IMAGE_TAG=latest` is the normal steady-state setting. The automated deploy job
-overrides it for each release with the immutable `sha-<commit>` tag it just
-published.
-
-## 3. Configure GitHub Actions secrets
-
-Set these repository secrets before enabling the deploy workflow:
-
-| Secret name              | Purpose                                                    |
-| ------------------------ | ---------------------------------------------------------- |
-| `DEPLOY_HOST`            | VPS hostname or IP                                         |
-| `DEPLOY_USER`            | SSH user for deploy                                        |
-| `DEPLOY_PATH`            | Absolute path to the deploy checkout, e.g. `/opt/carnotea` |
-| `DEPLOY_SSH_KEY`         | Private key used by Actions to SSH into the VPS            |
-| `DEPLOY_SSH_KNOWN_HOSTS` | `known_hosts` entry for the VPS host key                   |
-| `GHCR_USERNAME`          | GHCR username used by the VPS host during `docker login`   |
-| `GHCR_TOKEN`             | GHCR token / PAT with package read access                  |
-
-The workflow uses GitHub's built-in `GITHUB_TOKEN` to push images to GHCR from
-CI, but the VPS still needs its own registry credentials to pull those images.
-
-## 4. First production start
-
-Run the same ordered release steps the workflow uses:
+In Dokploy, create the application (Docker Compose type) pointing at this
+repo's `docker-compose.prod.yml`, set the environment variables, then deploy.
+Equivalent manual steps, if ever needed outside Dokploy:
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d postgres
 docker compose -f docker-compose.prod.yml --profile release run --rm migrate
-docker compose -f docker-compose.prod.yml up -d --wait api web caddy
+docker compose -f docker-compose.prod.yml up -d --wait api web
 ```
 
 Verify the stack:
 
 ```bash
 docker compose -f docker-compose.prod.yml ps
-curl https://<DOMAIN>/healthz
-curl https://<DOMAIN>/readyz
+curl https://carnotea.sergiusz.dev/healthz
+curl https://carnotea.sergiusz.dev/readyz
 ```
 
-## 5. What the automated deploy does
-
-For every push to `main`, the deploy workflow runs these remote steps:
-
-```bash
-cd /opt/carnotea
-git fetch origin main
-git switch main
-git pull --ff-only origin main
-
-docker login ghcr.io
-docker compose -f docker-compose.prod.yml up -d postgres
-docker compose -f docker-compose.prod.yml pull api web
-docker compose -f docker-compose.prod.yml --profile release run --rm migrate
-docker compose -f docker-compose.prod.yml up -d --wait api web caddy
-```
-
-Why this ordering matters:
-
-- `pull` gets the exact immutable image tag built for the release.
-- `migrate` runs as a one-shot container before the app rollout.
-- `up -d --wait` replaces the running app only after the migration succeeds.
-
-If `migrate` exits non-zero, the workflow stops there and the currently running
-containers keep serving traffic.
-
-## 6. Day-to-day operations
+## 3. Day-to-day operations
 
 ### Logs
 
@@ -177,7 +98,7 @@ docker compose -f docker-compose.prod.yml down
 docker compose -f docker-compose.prod.yml down -v
 ```
 
-## 7. Automated backups
+## 4. Automated backups
 
 Backups are driven from the production compose stack through the one-shot
 `backup` service. The service uses `pg_dump -Fc` against the `postgres` service,
@@ -186,8 +107,8 @@ retention count.
 
 ### Required backup environment
 
-Add these production-only values to `.env` (or inject them from your secrets
-store):
+Set these production-only values in Dokploy's Environment Variables tab for
+the app (never in a committed or on-disk file):
 
 ```env
 BACKUP_S3_BUCKET=car-notea-prod-backups
@@ -216,10 +137,11 @@ Security notes:
 
 ### Schedule with host cron
 
-Install a root or deploy-user cron entry on the VPS:
+Install a root cron entry on the server, pointing at the directory where
+Dokploy checked out this app's compose stack:
 
 ```cron
-15 2 * * * cd /opt/carnotea && docker compose -f docker-compose.prod.yml --profile ops run --rm backup >> /var/log/carnotea-backup.log 2>&1
+15 2 * * * cd <dokploy-app-directory> && docker compose -f docker-compose.prod.yml --profile ops run --rm backup >> /var/log/carnotea-backup.log 2>&1
 ```
 
 This runs every day at 02:15 UTC. Adjust the schedule to your maintenance
@@ -244,7 +166,7 @@ each successful run.
 - Cron captures stdout/stderr in `/var/log/carnotea-backup.log`.
 - A successful run ends with `Backup completed successfully`.
 
-## 8. Restore runbook
+## 5. Restore runbook
 
 The restore flow below assumes you are restoring into a throwaway database on
 the VPS first, verifying it, and only then planning a cutover.
@@ -306,31 +228,86 @@ If you are performing a real disaster recovery, repeat the same restore flow
 into the production database only after you are satisfied with the throwaway
 verification.
 
-## 9. Rollback
+## 6. Rollback
 
-Rollback is an **application-image rollback**, not a database rollback. The
-schema changes must therefore follow the expand-then-contract pattern:
+Rollback is a **code rollback**, not a database rollback. The schema changes
+must therefore follow the expand-then-contract pattern:
 
 1. add backwards-compatible schema,
 2. deploy code that can work with both old and new schema,
 3. backfill / switch reads,
 4. only later remove the legacy shape.
 
-To roll back the app to a previously published image:
+Since Dokploy builds `api`/`web` from source rather than pulling tagged
+registry images, rolling back means redeploying a previous commit: in
+Dokploy's **Deployments** tab for the app, pick an earlier successful
+deployment and redeploy it. This rebuilds the images from that commit and
+rolls the stack back to it.
 
-```bash
-export IMAGE_TAG=sha-<older-commit>
-docker compose -f docker-compose.prod.yml pull api web
-docker compose -f docker-compose.prod.yml up -d --wait api web caddy
-```
+Do **not** run a down-migration as part of routine rollback. If the previous
+app cannot run against the migrated schema, the migration was not
+release-safe and must be fixed in a forward patch.
 
-Do **not** run a down-migration as part of routine rollback. If the previous app
-cannot run against the migrated schema, the migration was not release-safe and
-must be fixed in a forward patch.
+## 7. Out of scope
 
-## 10. Out of scope
+| Feature            | Ticket |
+| ------------------ | ------ |
+| Security hardening | T-049  |
 
-| Feature                   | Ticket |
-| ------------------------- | ------ |
-| Production secret storage | T-048  |
-| Security hardening        | T-049  |
+## 8. Secrets management
+
+Production secrets (`DATABASE_URL`, `BETTER_AUTH_SECRET`, SMTP credentials,
+backup storage keys, etc.) are **never** stored in a committed file or an
+on-disk `.env` on the host. The canonical mechanism is:
+
+- Each Dokploy application (the `docker-compose.prod.yml` stack) has its own
+  **Environment Variables** tab in the Dokploy dashboard. Values entered there
+  are stored in Dokploy's own database and injected at deploy time when
+  Dokploy runs `docker compose` for that application — the same
+  `${VAR:?error}` placeholders already in `docker-compose.prod.yml` pick them
+  up with no other wiring needed.
+- `.env.example` remains the single committed source of truth for **which**
+  variable names are required; it never holds a real secret value, only
+  placeholders.
+- `.gitignore` ignores every `.env*` file except `.env.example`, so a real
+  `.env` can never be committed by accident.
+
+### Required production variables
+
+See `.env.example` for the full, commented list (marked `[PROD]`). At minimum:
+`DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `CORS_ORIGINS`. The
+public domain itself is assigned to the `web` service through Dokploy's
+Domains tab, not an env var.
+
+### Fail-fast enforcement
+
+`apps/api/src/config/env.ts` validates `process.env` with Zod at boot:
+
+- Required variables (`DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`)
+  have no default — a missing value is a boot-time crash, not a silent
+  fallback, in every environment.
+- When `NODE_ENV=production`, a `superRefine` additionally rejects the known
+  `.env.example` placeholder values (e.g. the example `BETTER_AUTH_SECRET` or
+  `carnotea_dev_password`) even if pasted verbatim, so a copy-paste-without-
+  editing mistake fails at boot instead of shipping an insecure default.
+
+### Rotation procedure
+
+| Secret class                         | How to rotate                                                                                                                                                                                                   |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BETTER_AUTH_SECRET`                 | Generate a new value (`openssl rand -base64 32`), set it in Dokploy's Environment Variables for the `api` service, redeploy. All existing sessions are invalidated — expected.                                  |
+| `DATABASE_URL` / Postgres password   | Rotate the Postgres role password first (`ALTER ROLE ... PASSWORD ...` inside the `postgres` container), then update `DATABASE_URL` in Dokploy and redeploy `api`/`migrate` before the old password is revoked. |
+| SMTP credentials                     | Update `SMTP_USER`/`SMTP_PASS` in Dokploy's Environment Variables for `api`, redeploy. No downtime — only outgoing mail is affected.                                                                            |
+| Backup storage keys (`AWS_*`, T-047) | Issue a new access key scoped to the backup bucket/prefix, set it in Dokploy, redeploy the `backup` job, then revoke the old key once a scheduled run succeeds with the new one.                                |
+
+A redeploy in Dokploy re-runs `docker compose up -d` for the stack, which
+picks up the new environment values for the affected service(s) without
+requiring a fresh image build.
+
+### Web (`VITE_*`) build-time values
+
+`VITE_*` variables are compiled into the static `web` bundle at build time and
+shipped to every browser — they are **not** secrets. The only one in use today,
+`VITE_OTEL_EXPORTER_OTLP_ENDPOINT`, is a public trace-collector URL, not a
+credential. Never put a genuine secret behind a `VITE_`-prefixed name; keep it
+server-side (`apps/api`) only.
