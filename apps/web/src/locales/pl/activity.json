@@ -14,6 +14,7 @@
     "dueDate": "do {{date}}",
     "overdueKm": "{{km}} km po terminie",
     "none": "—",
+    "trendLabel": "Trend kosztów",
     "trendDown": "↓ {{pct}}% vs poprzedni miesiąc",
     "trendUp": "↑ {{pct}}% vs poprzedni miesiąc",
     "trendFlat": "tyle co poprzednio"

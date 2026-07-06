@@ -16,9 +16,12 @@
     "totalVehicles": "Total vehicles",
     "totalExpenses": "Total expenses",
     "totalFuelCost": "Total fuel cost",
+    "totalChargingCost": "Total charging cost",
     "avgFuelConsumption": "Avg fuel consumption",
+    "avgEnergyConsumption": "Avg energy consumption",
     "unit": "{{currency}} {{value}}",
     "consumptionUnit": "{{value}} L/100km",
+    "energyConsumptionUnit": "{{value}} kWh/100km",
     "noData": "—"
   },
   "expensesByCategory": {

@@ -121,7 +121,9 @@ export function VehiclePanelCard({ panel, locale }: { panel: VehiclePanelData; l
           ]}
         />
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm text-muted-foreground">
-          <span>{formatTrend(panel.monthCost.total, panel.monthCost.prevTotal, t)}</span>
+          <span>
+            {`${t('panel.trendLabel')}: ${formatTrend(panel.monthCost.total, panel.monthCost.prevTotal, t)}`}
+          </span>
         </div>
       </CardContent>
     </Card>

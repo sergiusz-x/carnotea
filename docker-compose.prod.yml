@@ -1,15 +1,18 @@
 # =============================================================================
 # CarNotea — Production docker compose stack
 #
-# Bring up on a fresh VPS:
-#   docker compose -f docker-compose.prod.yml up -d postgres
-#   docker compose -f docker-compose.prod.yml --profile release run --rm migrate
-#   docker compose -f docker-compose.prod.yml up -d api web caddy
+# Deployed through Dokploy (Docker Compose application type): Dokploy builds
+# `api`/`web`/`migrate` directly from the Dockerfiles below (no prebuilt
+# registry image needed) and injects the variables below from its
+# per-application Environment Variables UI at deploy time. Nothing here is
+# read from a committed or on-disk .env file.
 #
-# Requires a .env file (or env vars) with at minimum:
-#   DOMAIN, DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, CORS_ORIGINS
+# Required variables (see docs/deployment.md § Secrets management):
+#   DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, CORS_ORIGINS
 #
-# Requires prebuilt images published by CI. See docs/deployment.md.
+# TLS + the public domain are handled by Dokploy's own Traefik instance via
+# its Domains UI (assign `carnotea.<yourdomain>` to the `web` service on port
+# 80) — there is no reverse proxy in this stack.
 # =============================================================================
 
 name: carnotea-prod
@@ -40,7 +43,10 @@ services:
 
   # ---- Migration (run once to apply DB migrations) ----------------------------
   migrate:
-    image: ${IMAGE_REGISTRY:?error}/carnotea-api:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: carnotea-api:local
     container_name: carnotea-prod-migrate
     restart: 'no'
     profiles: ['release']
@@ -96,10 +102,12 @@ services:
 
   # ---- API (NestJS / Fastify) -----------------------------------------------
   api:
-    image: ${IMAGE_REGISTRY:?error}/carnotea-api:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: carnotea-api:local
     container_name: carnotea-prod-api
     restart: unless-stopped
-    pull_policy: always
     environment:
       NODE_ENV: production
       API_PORT: 3001
@@ -122,34 +130,16 @@ services:
 
   # ---- Web (Nginx static server) --------------------------------------------
   web:
-    image: ${IMAGE_REGISTRY:?error}/carnotea-web:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: carnotea-web:local
     container_name: carnotea-prod-web
     restart: unless-stopped
-    pull_policy: always
     networks:
       - carnotea-prod
     expose:
       - 80
-
-  # ---- Reverse proxy (Caddy + automatic TLS) --------------------------------
-  caddy:
-    image: caddy:2-alpine
-    container_name: carnotea-prod-caddy
-    restart: unless-stopped
-    ports:
-      - '80:80'
-      - '443:443'
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
-      - caddy_config:/config
-    environment:
-      DOMAIN: ${DOMAIN:?error}
-    depends_on:
-      - api
-      - web
-    networks:
-      - carnotea-prod
 
 networks:
   carnotea-prod:
@@ -159,7 +149,3 @@ networks:
 volumes:
   postgres_prod_data:
     name: carnotea-prod-postgres-data
-  caddy_data:
-    name: carnotea-prod-caddy-data
-  caddy_config:
-    name: carnotea-prod-caddy-config

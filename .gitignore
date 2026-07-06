@@ -40,9 +40,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Env files
-.env
-.env.local
-.env.*.local
+.env*
 !.env.example
 
 # Editor / OS
