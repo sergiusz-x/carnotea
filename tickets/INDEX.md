@@ -21,7 +21,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🟡 [T-043 — Accessibility pass across the web app](./T-043-accessibility-audit.md)
 - 🟢 [T-044 — Performance budget + Lighthouse and bundle-size CI check](./T-044-performance-budget-lighthouse.md)
-- 🟡 [T-048 — Production secrets handling for the deployed stack](./T-048-secrets-management.md)
 - 🟡 [T-050 — OpenTelemetry metrics + basic alerting (follow-up to T-018)](./T-050-metrics-alerting.md)
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
@@ -35,10 +34,13 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 ## In progress
 
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
+- 🟡 [T-068 — Electric dashboard labels, nav visibility, and mileage defaults](./T-068-electric-dashboard-nav-and-mileage-defaults.md)
 - 🔴 [T-069 — 'Redesign epic — Cockpit panel + unified Dziennik feed'](./T-069-redesign-cockpit-logbook.md)
 - 🔴 [T-073 — Web — vehicle panel and activity feed](./T-073-web-panel-and-activity-feed.md)
 - 🔴 [T-074 — Web — shell rail and dashboard composition](./T-074-web-shell-and-dashboard-composition.md)
+- 🟢 [T-076 — Web logo refresh - minimalist E2 mark](./T-076-web-logo-refresh-e2.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
+- 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
 
 ## Blocked
 
@@ -89,6 +91,7 @@ _None._
 - 🟡 [T-041 — Web profile and settings screen (locale, units, currency, account)](./T-041-web-profile-settings-screen.md)
 - 🔴 [T-045 — Production container images + docker compose with TLS reverse proxy](./T-045-prod-docker-compose-proxy.md)
 - 🟡 [T-047 — Automated Postgres backups + tested restore runbook](./T-047-postgres-backup-restore.md)
+- 🟡 [T-048 — Production secrets handling for the deployed stack](./T-048-secrets-management.md)
 - 🔴 [T-049 — API + web security hardening for production](./T-049-security-hardening.md)
 - 🔴 [T-051 — Transactional email for better-auth flows (verification + password reset)](./T-051-transactional-email.md)
 - 🔴 [T-052 — GDPR data export and account deletion](./T-052-gdpr-export-delete.md)
@@ -105,6 +108,7 @@ _None._
 - 🔴 [T-070 — 'Shared schemas — ActivityEntry feed + VehiclePanel vitals'](./T-070-shared-activity-panel-schemas.md)
 - 🔴 [T-071 — API — vehicle activity feed endpoint](./T-071-api-vehicle-activity-feed.md)
 - 🔴 [T-072 — API — vehicle panel endpoint](./T-072-api-vehicle-panel.md)
+- 🟡 [T-078 — Web profile language preference save regression](./T-078-web-profile-language-preference-save.md)
 - 🔴 [T-079 — 'Web — shared ListCard/StatStrip primitives and instrument-cluster design tokens'](./T-079-web-shared-listcard-design-foundation.md)
 - 🔴 [T-080 — Fix main CI after docker-compose merge](./T-080-fix-main-ci-after-docker-compose-merge.md)
 - 🔴 [T-081 — Fix API Docker workspace dependency build](./T-081-fix-api-docker-workspace-dependency-build.md)
