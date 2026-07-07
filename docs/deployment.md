@@ -24,8 +24,15 @@ public IP or port-forwarding.
 
 ## Release model
 
-- Push to `main` triggers a Dokploy deployment via the connected GitHub App
-  (webhook).
+- Push to `main` runs CI (`lint`, `format`, `typecheck`, `test`, `build`,
+  `audit` in `.github/workflows/ci.yml`). Only once **all** of those succeed
+  does the `deploy` job run, calling Dokploy's REST API
+  (`POST /api/application.deploy`) to start the deployment — see
+  § CI/CD (GitHub Actions → Dokploy) below.
+- Dokploy's app-level **native GitHub App auto-deploy** (webhook-on-every-push)
+  is deliberately left **off** (`Autodeploy` toggle in the app's General tab)
+  — it has no way to gate on CI passing, so the GitHub Actions API trigger is
+  the only deploy path for this app.
 - Dokploy builds `api`, `web`, and `migrate` from their Dockerfiles, runs the
   `migrate` service (profile `release`) to apply pending DB migrations, then
   rolls out `api`/`web` once migration succeeds.
@@ -36,6 +43,80 @@ public IP or port-forwarding.
 
 If `migrate` exits non-zero, Dokploy stops the deployment and the currently
 running `api`/`web` containers keep serving traffic.
+
+## CI/CD (GitHub Actions → Dokploy)
+
+`.github/workflows/deploy-dokploy.yml` is a **reusable** (`workflow_call`)
+workflow: it triggers a Dokploy deployment via the API, polls
+`GET /api/application.one`'s `applicationStatus` (`idle | running | done |
+error`) until the deploy finishes, and reports success/failure through the
+GitHub Deployments API so it shows up green/red in the repo's **Deployments**
+tab — the same visibility you'd get from a Vercel-style pipeline.
+
+`.github/workflows/ci.yml`'s `deploy` job wires this up for CarNotea:
+
+```yaml
+deploy:
+  needs: [lint, format, typecheck, test, build, audit]
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  uses: ./.github/workflows/deploy-dokploy.yml
+  with:
+    application-id: carnotea-9ajbgu
+    environment-url: https://carnotea.sergiusz.dev
+  secrets:
+    dokploy-api-key: ${{ secrets.DOKPLOY_API_KEY }}
+    cf-access-client-id: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+    cf-access-client-secret: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+```
+
+Dokploy's API (`/api/application.*`) sits behind Cloudflare Access, same as
+the dashboard — an unauthenticated request gets a `302` to the Access login
+page, not through to Dokploy. Since this is a non-interactive caller, it
+authenticates with a **Cloudflare Access Service Token** instead of a human
+login: the workflow sends `CF-Access-Client-Id` / `CF-Access-Client-Secret`
+headers alongside Dokploy's own `x-api-key`, so a leak of either credential
+alone is not enough to trigger a deploy.
+
+### One-time setup (already done for this Dokploy instance)
+
+- Generated an account-wide Dokploy API key: Dokploy → Settings → Profile →
+  API/CLI → Generate Token (scoped to the Organization, no expiration, no rate
+  limit). Stored as the `DOKPLOY_API_KEY` repository secret in GitHub.
+- Generated a Cloudflare Access Service Token: Zero Trust dashboard → Access →
+  Service Auth → Service Tokens → Create Service Token. Stored the resulting
+  Client ID / Client Secret as `CF_ACCESS_CLIENT_ID` / `CF_ACCESS_CLIENT_SECRET`
+  repository secrets in GitHub.
+- Added a Cloudflare Access **Application** for `dokploy.sergiusz.dev` at path
+  `api/application`, policy Action = **Service Auth**, allowing that token —
+  scoped narrowly to the API path the workflow actually calls, separate from
+  the dashboard's own Access application (email-login `Allow` policy).
+- None of the above is per-application — the same key/token pair covers every
+  app in this Dokploy instance.
+
+### Wiring up a future app (per-app cost: one `applicationId`)
+
+1. Create the app in Dokploy as usual (Compose or Application type, pick the
+   repo/branch) — this step is unavoidable in any platform, Vercel included.
+2. Leave that app's native `Autodeploy` toggle **off** if you want test-gated
+   deploys (recommended); its `applicationId` is visible in the app's URL in
+   the Dokploy dashboard.
+3. In that repo's own CI workflow, add a `deploy` job identical in shape to
+   the one above. If the app lives in a **different** repo than this one,
+   reference this file directly instead of copy-pasting it (this repo is
+   public):
+   ```yaml
+   uses: sergiusz-x/carnotea/.github/workflows/deploy-dokploy.yml@main
+   ```
+4. Add the same `DOKPLOY_API_KEY`, `CF_ACCESS_CLIENT_ID`, and
+   `CF_ACCESS_CLIENT_SECRET` values as repository secrets in that repo
+   (GitHub secrets don't cross repos on a personal account/free org tier — if
+   that becomes repetitive across many repos, Organization-level secrets would
+   remove even this step).
+
+No new Dokploy credential, Cloudflare Service Token, or Access policy is
+needed per app — both the API-path Access policy and the dashboard's own
+Access application (§ below) are instance-wide and already cover any future
+app's API calls.
 
 ## 1. Configure the production environment
 

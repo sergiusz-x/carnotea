@@ -1,0 +1,159 @@
+# Reusable workflow: trigger a Dokploy deployment and report status back to
+# GitHub via the Deployments API.
+#
+# One-time setup per Dokploy instance (already done for this repo):
+#   - Generate an account-wide API key: Dokploy → Settings → Profile →
+#     API/CLI → Generate Token.
+#   - Store it as a GitHub repository secret named DOKPLOY_API_KEY.
+#   - The Dokploy API path (/api/application.*) sits behind Cloudflare Access,
+#     same as the dashboard. Since this workflow calls it non-interactively,
+#     it authenticates with a Cloudflare Access Service Token (Zero Trust →
+#     Access → Service Auth → Service Tokens) instead of an interactive login.
+#     An Access policy on path `api/application` with Action=Service Auth
+#     must allow that token. Stored as CF_ACCESS_CLIENT_ID /
+#     CF_ACCESS_CLIENT_SECRET GitHub repository secrets.
+#
+# To wire up a NEW application (same repo or a different one), a caller job
+# only needs that application's Dokploy `applicationId` (visible in the app's
+# URL in the Dokploy dashboard) — no new secret, no webhook URL to hunt down.
+# The Dokploy API key and Cloudflare Service Token are both instance-wide, not
+# per-app. From another repo, reference this file as:
+#   sergiusz-x/carnotea/.github/workflows/deploy-dokploy.yml@main
+
+name: Deploy to Dokploy
+
+on:
+  workflow_call:
+    inputs:
+      application-id:
+        description: Dokploy applicationId to deploy
+        required: true
+        type: string
+      dokploy-url:
+        description: Base URL of the Dokploy instance
+        required: false
+        type: string
+        default: https://dokploy.sergiusz.dev
+      environment-name:
+        description: GitHub Environment name to record the deployment against
+        required: false
+        type: string
+        default: production
+      environment-url:
+        description: Public URL of the deployed app, shown on the GitHub deployment
+        required: false
+        type: string
+      timeout-minutes:
+        description: Minutes to wait for the Dokploy deployment to finish
+        required: false
+        type: number
+        default: 10
+    secrets:
+      dokploy-api-key:
+        description: Dokploy account-wide API key (x-api-key)
+        required: true
+      cf-access-client-id:
+        description: Cloudflare Access Service Token client ID
+        required: true
+      cf-access-client-secret:
+        description: Cloudflare Access Service Token client secret
+        required: true
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment-name }}
+      url: ${{ inputs.environment-url }}
+    steps:
+      - name: Create GitHub deployment
+        id: deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: '${{ inputs.environment-name }}',
+              auto_merge: false,
+              required_contexts: [],
+            });
+            core.setOutput('id', deployment.id);
+
+      - name: Mark deployment in progress
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deployment.outputs.id }},
+              state: 'in_progress',
+            });
+
+      - name: Trigger Dokploy deploy
+        run: |
+          set -euo pipefail
+          curl -sf -X POST "${DOKPLOY_URL}/api/application.deploy" \
+            -H "x-api-key: ${DOKPLOY_API_KEY}" \
+            -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
+            -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "{\"applicationId\":\"${APPLICATION_ID}\"}"
+        env:
+          DOKPLOY_URL: ${{ inputs.dokploy-url }}
+          DOKPLOY_API_KEY: ${{ secrets.dokploy-api-key }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.cf-access-client-id }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.cf-access-client-secret }}
+          APPLICATION_ID: ${{ inputs.application-id }}
+
+      - name: Wait for Dokploy deployment to finish
+        id: wait
+        run: |
+          set -euo pipefail
+          deadline=$(( $(date +%s) + TIMEOUT_MINUTES * 60 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            status=$(curl -sf "${DOKPLOY_URL}/api/application.one?applicationId=${APPLICATION_ID}" \
+              -H "x-api-key: ${DOKPLOY_API_KEY}" \
+              -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
+              -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
+              | jq -r '.applicationStatus // "unknown"')
+            echo "Dokploy applicationStatus: ${status}"
+            case "$status" in
+              done) exit 0 ;;
+              error) echo "::error::Dokploy reported deployment status 'error'"; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "::error::Timed out waiting for Dokploy deployment to finish"
+          exit 1
+        env:
+          DOKPLOY_URL: ${{ inputs.dokploy-url }}
+          DOKPLOY_API_KEY: ${{ secrets.dokploy-api-key }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.cf-access-client-id }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.cf-access-client-secret }}
+          APPLICATION_ID: ${{ inputs.application-id }}
+          TIMEOUT_MINUTES: ${{ inputs.timeout-minutes }}
+
+      - name: Mark deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const state = '${{ steps.wait.outcome }}' === 'success' ? 'success' : 'failure';
+            const payload = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deployment.outputs.id }},
+              state,
+            };
+            const environmentUrl = '${{ inputs.environment-url }}';
+            if (environmentUrl) {
+              payload.environment_url = environmentUrl;
+            }
+            await github.rest.repos.createDeploymentStatus(payload);
