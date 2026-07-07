@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # =============================================================================
 # CarNotea API — production container image
 # Multi-stage build: builder (full workspace) → runner (pruned prod tree)
@@ -45,14 +46,13 @@ RUN corepack enable && corepack prepare pnpm@9.12.0 --activate && \
 
 WORKDIR /app
 
-# Copy the pruned production tree
-COPY --from=builder /app/out /app
+# Copy the pruned production tree (--chown sets ownership per-file during the
+# copy itself; a separate `RUN chown -R` afterward was a full recursive stat+
+# chown pass over ~1000 node_modules entries, taking ~110s on its own)
+COPY --from=builder --chown=carnotea:carnotea /app/out /app
 
 # Overlay the compiled dist/ output on top of the deployed tree
-COPY --from=builder /app/apps/api/dist /app/apps/api/dist
-
-# Set runtime ownership
-RUN chown -R carnotea:carnotea /app
+COPY --from=builder --chown=carnotea:carnotea /app/apps/api/dist /app/apps/api/dist
 
 USER carnotea
 
