@@ -99,12 +99,21 @@ jobs:
       - name: Trigger Dokploy deploy
         run: |
           set -euo pipefail
-          curl -sf -X POST "${DOKPLOY_URL}/api/application.deploy" \
+          # Response body is discarded rather than logged: application.* endpoints
+          # can return the full application record, which includes production
+          # env vars (DB password, auth secret, SMTP credentials) — GitHub only
+          # masks values registered as Actions secrets, not arbitrary API output.
+          http_code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "${DOKPLOY_URL}/api/application.deploy" \
             -H "x-api-key: ${DOKPLOY_API_KEY}" \
             -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
             -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
             -H "Content-Type: application/json" \
-            -d "{\"applicationId\":\"${APPLICATION_ID}\"}"
+            -d "{\"applicationId\":\"${APPLICATION_ID}\"}")
+          echo "HTTP status: ${http_code}"
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "::error::Dokploy API returned HTTP ${http_code} (body withheld — may contain secrets). Check Dokploy's own deployment logs for detail."
+            exit 1
+          fi
         env:
           DOKPLOY_URL: ${{ inputs.dokploy-url }}
           DOKPLOY_API_KEY: ${{ secrets.dokploy-api-key }}
@@ -118,11 +127,20 @@ jobs:
           set -euo pipefail
           deadline=$(( $(date +%s) + TIMEOUT_MINUTES * 60 ))
           while [ "$(date +%s)" -lt "$deadline" ]; do
-            status=$(curl -sf "${DOKPLOY_URL}/api/application.one?applicationId=${APPLICATION_ID}" \
+            # /tmp/status-response.json holds the full application record —
+            # includes production env vars (DB password, auth secret, SMTP
+            # credentials). Never echo/cat it; only extract the one safe field.
+            http_code=$(curl -s -o /tmp/status-response.json -w '%{http_code}' "${DOKPLOY_URL}/api/application.one?applicationId=${APPLICATION_ID}" \
               -H "x-api-key: ${DOKPLOY_API_KEY}" \
               -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
-              -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
-              | jq -r '.applicationStatus // "unknown"')
+              -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}")
+            if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+              echo "::error::Dokploy API returned HTTP ${http_code} (body withheld — may contain secrets). Check Dokploy's own deployment logs for detail."
+              rm -f /tmp/status-response.json
+              exit 1
+            fi
+            status=$(jq -r '.applicationStatus // "unknown"' /tmp/status-response.json)
+            rm -f /tmp/status-response.json
             echo "Dokploy applicationStatus: ${status}"
             case "$status" in
               done) exit 0 ;;
