@@ -29,6 +29,24 @@ mistakes.
 
 ## Lessons
 
+### 2026-07-07 — Prefer proven platform-native automation over a hand-rolled integration
+
+**Context:** Building a test-gated deploy trigger for Dokploy from GitHub Actions (T-046).
+**Mistake:** Built a custom workflow calling Dokploy's REST API directly (API key + Cloudflare Access Service Token + a guessed `applicationId`) instead of using Dokploy's own native GitHub App auto-deploy. It failed twice in live runs on `main` — a Cloudflare Access path-matching mismatch, then an unverified `applicationId` returning 404 — because both required reverse-engineering undocumented platform internals instead of trusting a feature the platform already proved out.
+**Rule:** When a platform (Dokploy, Vercel, etc.) already offers a native mechanism for something (auto-deploy on push), prefer it over building a custom API integration to reach the same outcome, even if the native mechanism seems to lack a feature (here: test-gating). Get the missing piece from a layer that's designed for it instead (GitHub branch protection blocking merge of red PRs) rather than hand-rolling the platform's own trigger logic.
+
+### 2026-07-07 — Verify IDs/values against the live system before writing them into a merged workflow
+
+**Context:** Same Dokploy deploy workflow — needed the app's `applicationId` for the API call.
+**Mistake:** Took the human-readable slug shown in the Dokploy dashboard's URL (`carnotea-9ajbgu`) and assumed it was the API's `applicationId` without confirming against Dokploy's actual API, then merged it to `main` twice before it failed with `404`.
+**Rule:** Before writing an identifier sourced from a UI (URL slug, displayed ID, etc.) into a script or workflow that will run unattended, verify it against the actual API/system that will consume it — don't assume a dashboard's display value matches the backend's internal key.
+
+### 2026-07-07 — Never log API response bodies in CI without confirming what they can contain
+
+**Context:** Diagnosing the Dokploy deploy workflow's failures via `curl` output in GitHub Actions logs.
+**Mistake:** First diagnostic fix dumped the full HTTP response body to the workflow log on failure. The endpoint (`application.one`) returns the full application record, which likely includes production env vars (DB password, auth secret, SMTP credentials) — GitHub only masks values registered as Actions secrets, not arbitrary API output, so this would have been a real credential leak on the next failure.
+**Rule:** Before logging any API response body in CI (especially for debugging), check what the endpoint can return. If it might include configuration/secrets, log only specific, known-safe fields (or just the HTTP status code) — never the raw body by default.
+
 ### 2026-06-30 — Match the selected logo direction literally before stylising
 
 **Context:** Implementing the chosen E2 logo direction for the web app.
