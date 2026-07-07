@@ -42,6 +42,16 @@ public IP or port-forwarding.
   service through Dokploy's **Domains** tab, which configures Traefik routing
   and TLS automatically — no `DOMAIN` env var or reverse-proxy service needed
   in the compose file itself.
+- Only `web` gets a public domain; `api` is never directly exposed. The SPA
+  calls same-origin relative paths (`fetch('/api/vehicles')`), so `web`'s
+  nginx (`apps/web/nginx.conf`) reverse-proxies `/api/*`, `/healthz`, and
+  `/readyz` to the `api` container (`carnotea-prod-api:3001`) over the
+  `carnotea-prod` Docker network — everything else falls through to the SPA's
+  `index.html`. This means an unmatched `/api/*` path or a missing/misrouted
+  proxy rule fails as a **405/404 from nginx serving the SPA fallback**, not
+  as a connection error — check the actual response body, not just the
+  status code, when verifying the API is reachable (`curl .../healthz` alone
+  can return `200` from the SPA shell even when the API is unreachable).
 
 If `migrate` exits non-zero, Dokploy stops the deployment and the currently
 running `api`/`web` containers keep serving traffic.

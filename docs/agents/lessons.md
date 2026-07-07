@@ -41,6 +41,12 @@ mistakes.
 **Mistake:** Took the human-readable slug shown in the Dokploy dashboard's URL (`carnotea-9ajbgu`) and assumed it was the API's `applicationId` without confirming against Dokploy's actual API, then merged it to `main` twice before it failed with `404`.
 **Rule:** Before writing an identifier sourced from a UI (URL slug, displayed ID, etc.) into a script or workflow that will run unattended, verify it against the actual API/system that will consume it — don't assume a dashboard's display value matches the backend's internal key.
 
+### 2026-07-07 — A 200 status code alone doesn't prove the thing you meant to check is alive
+
+**Context:** Verifying the production deploy was healthy after the SMTP fix, using `curl https://carnotea.sergiusz.dev/healthz`.
+**Mistake:** Reported the API as fully healthy off a `200` response, without checking the response body. The SPA's nginx has no reverse-proxy rule for `/api/*` or `/healthz`, so every unmatched path falls through to `try_files ... /index.html` — the "200" was the React app's HTML shell, not the API's actual liveness response. The real API was unreachable through the public domain the entire time (confirmed later via a real user-facing failure: sign-up returned `405`).
+**Rule:** When verifying an endpoint is "up," check the response _content_, not just the status code — an SPA's catch-all fallback, a generic error page, or a caching layer can all return `200` for a path that was never actually routed to the service being checked. Curl with `-i` or pipe to `head -c N` and eyeball the body, especially for any endpoint reachable behind a single-page-app's static file server.
+
 ### 2026-07-07 — Never log API response bodies in CI without confirming what they can contain
 
 **Context:** Diagnosing the Dokploy deploy workflow's failures via `curl` output in GitHub Actions logs.
