@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 # =============================================================================
 # CarNotea Web — production container image
 # Multi-stage build: builder (Vite static bundle) → runtime (nginx:alpine)
