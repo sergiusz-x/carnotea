@@ -39,29 +39,9 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy the built static bundle
 COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
 
-# Minimal nginx config: serve static, gzip, security headers
-RUN { \
-      echo 'server {'; \
-      echo '    listen       80;'; \
-      echo '    server_name  _;'; \
-      echo ''; \
-      echo '    gzip on;'; \
-      echo '    gzip_types text/plain text/css application/json application/javascript image/svg+xml;'; \
-      echo '    gzip_min_length 256;'; \
-      echo ''; \
-      echo '    location / {'; \
-      echo '        root   /usr/share/nginx/html;'; \
-      echo '        index  index.html;'; \
-      echo '        try_files $uri $uri/ /index.html;'; \
-      echo '    }'; \
-      echo ''; \
-      echo '    # Security headers'; \
-      echo '    add_header X-Frame-Options "SAMEORIGIN" always;'; \
-      echo '    add_header X-Content-Type-Options "nosniff" always;'; \
-      echo '    add_header X-XSS-Protection "1; mode=block" always;'; \
-      echo '    add_header Referrer-Policy "strict-origin-when-cross-origin" always;'; \
-      echo '}'; \
-    } > /etc/nginx/conf.d/default.conf
+# nginx config: serve static, reverse-proxy /api + health checks to the api
+# container, gzip, security headers — see apps/web/nginx.conf
+COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
