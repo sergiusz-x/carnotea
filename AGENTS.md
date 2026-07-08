@@ -154,6 +154,7 @@ read all of them. Use an Explore agent only for topics no row covers.
 | **Code conventions**                          |                                                                                                                                          |
 | Style, naming, commits, branches, PRs         | [`docs/conventions.md`](./docs/conventions.md)                                                                                           |
 | Which tool does what + versions               | [`docs/tech-stack.md`](./docs/tech-stack.md)                                                                                             |
+| Versioning, SemVer, GitHub Releases           | [`docs/release-process.md`](./docs/release-process.md)                                                                                   |
 | **Areas** (exist after their scaffold ticket) |                                                                                                                                          |
 | API code (NestJS, routes, OpenAPI)            | `apps/api/AGENTS.md`                                                                                                                     |
 | Web code (React, routing, i18n, PWA)          | `apps/web/AGENTS.md`                                                                                                                     |

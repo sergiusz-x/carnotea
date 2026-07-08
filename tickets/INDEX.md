@@ -14,7 +14,6 @@ Legend: `🔴` high · `🟡` medium · `🟢` low
 These tickets are fully specced. An agent picks the first one whose `dependencies`
 are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (Codex).
 
-- 🟢 [T-013 — Tooling — Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
 - 🟢 [T-014 — Infra — dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
 - 🟢 [T-016 — Turborepo generators — scaffold new packages](./T-016-turbo-generators.md)
 - 🟢 [T-030 — Audit-logging interceptor for mutating actions](./T-030-api-audit-logging.md)
@@ -41,6 +40,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-076 — Web logo refresh - minimalist E2 mark](./T-076-web-logo-refresh-e2.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
+- 🟡 [T-087 — Automated SemVer releases via semantic-release](./T-087-automated-semver-releases.md)
 
 ## Blocked
 
@@ -64,6 +64,7 @@ _None._
 - 🟡 [T-010 — Web — i18n (pl + en) with i18next](./T-010-web-i18n-pl-en.md)
 - 🟡 [T-011 — Web — typesafe API client from OpenAPI](./T-011-web-typesafe-api-client.md)
 - 🟡 [T-012 — Web — PWA manifest + minimal service worker](./T-012-web-pwa-installable.md)
+- 🟢 [T-013 — Tooling — Changesets + Conventional Commits + commitlint](./T-013-tooling-changesets-commitlint.md)
 - 🔴 [T-015 — CI — GitHub Actions (lint, typecheck, test, build)](./T-015-ci-github-actions.md)
 - 🟡 [T-017 — Add /smart-commit slash command and Codex skill](./T-017-smart-commit.md)
 - 🟡 [T-018 — Observability baseline — OpenTelemetry tracing across api + web](./T-018-observability-opentelemetry-baseline.md)

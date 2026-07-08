@@ -18,10 +18,10 @@ live in the linked documents.
 | sherif           | Workspace dependency-consistency linter               | `pnpm lint:ws`, runs on postinstall; ignores empty app/package globs until scaffold tickets land      |
 | Vitest           | Unit / integration tests                              | `@carnotea/vitest-config` base config; [ADR-0009](./adr/0009-shared-tooling-config-packages.md)       |
 | Playwright       | End-to-end tests                                      |                                                                                                       |
-| Changesets       | Versioning, changelogs                                | T-013                                                                                                 |
+| semantic-release | Automated SemVer tags + GitHub Releases from commits  | [ADR-0014](./adr/0014-semantic-release-versioning.md); T-087                                          |
 | commitlint       | Conventional Commits enforcement                      | T-013                                                                                                 |
 | husky            | Git hooks                                             | T-013                                                                                                 |
-| GitHub Actions   | CI: lint, typecheck, test, build                      | T-015                                                                                                 |
+| GitHub Actions   | CI: lint, typecheck, test, build, release             | T-015, T-087                                                                                          |
 
 ## Database
 
