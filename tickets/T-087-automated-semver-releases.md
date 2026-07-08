@@ -1,7 +1,7 @@
 ---
 id: T-087
 title: Automated SemVer releases via semantic-release
-status: in_progress
+status: done
 priority: medium
 size: S
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-013]
 labels: [tooling, ci, repo]
 created_at: 2026-07-08
 updated_at: 2026-07-08
-closed_at: ~
+closed_at: 2026-07-08
 ---
 
 # T-087 — Automated SemVer releases via semantic-release
@@ -87,9 +87,11 @@ _n/a_
 - [x] `docs/tech-stack.md` and `tickets/T-013-...md` reflect the tool
       change (Changesets row → semantic-release row; T-013's changesets AC
       marked superseded, not silently left unchecked).
-- [ ] **Live verification**: after merging to `main`, the `release` job
+- [x] **Live verification**: after merging to `main`, the `release` job
       actually creates git tag `v1.0.0` and a GitHub Release titled `v1.0.0`
       with generated notes, visible in the repo's Releases sidebar.
+      Confirmed 2026-07-08: PR #120 merged, `release` job succeeded in
+      8m4s, `git tag -l` and `gh release list` both show `v1.0.0`.
 
 ## Test matrix
 

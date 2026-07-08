@@ -40,7 +40,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-076 — Web logo refresh - minimalist E2 mark](./T-076-web-logo-refresh-e2.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
-- 🟡 [T-087 — Automated SemVer releases via semantic-release](./T-087-automated-semver-releases.md)
 
 ## Blocked
 
@@ -117,6 +116,7 @@ _None._
 - 🔴 [T-083 — Skip deploy job when production secrets are missing](./T-083-skip-deploy-job-when-production-secrets-are-missing.md)
 - 🔴 [T-084 — Route deploy secret check through job output](./T-084-route-deploy-secret-check-through-job-output.md)
 - 🟡 [T-085 — Remove obsolete VPS deploy workflow](./T-085-remove-obsolete-vps-deploy-workflow.md)
+- 🟡 [T-087 — Automated SemVer releases via semantic-release](./T-087-automated-semver-releases.md)
 
 <!-- END GENERATED:tickets -->
 
