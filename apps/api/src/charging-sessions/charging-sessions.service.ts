@@ -1,4 +1,4 @@
-import { chargerTypes, chargingSessions, vehicles, type Db } from '@carnotea/db';
+import { chargerTypes, chargingSessions, fuelTypes, vehicles, type Db } from '@carnotea/db';
 import { type ChargingSessionCreate, type ChargingSessionUpdate } from '@carnotea/shared';
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq } from 'drizzle-orm';
@@ -118,6 +118,7 @@ export class ChargingSessionsService {
     input: ChargingSessionCreate,
   ): Promise<ChargingSessionResponse> {
     await this.assertVehicleOwned(userId, vehicleId);
+    await this.assertVehicleSupportsCharging(vehicleId);
 
     const chargerTypeId = await this.resolveChargerTypeId(input.chargerType);
     const totalCost = computeTotalCost(input.energyKwh, input.pricePerKwh);
@@ -276,6 +277,32 @@ export class ChargingSessionsService {
       .where(and(eq(vehicles.id, vehicleId), eq(vehicles.userId, userId)))
       .limit(1);
     if (!rows.at(0)) throw this.notFound();
+  }
+
+  // Mirrors the `enforce_vehicle_energy_source` DB trigger (packages/db/migrations/0002_constraints.sql)
+  // so this rejects with a clean 400 instead of surfacing the trigger's raw
+  // Postgres exception as an unhandled 500.
+  private async assertVehicleSupportsCharging(vehicleId: string): Promise<void> {
+    const rows = await this.db
+      .select({ fuelType: fuelTypes.code })
+      .from(vehicles)
+      .innerJoin(fuelTypes, eq(vehicles.fuelTypeId, fuelTypes.id))
+      .where(eq(vehicles.id, vehicleId))
+      .limit(1);
+    const fuelType = rows.at(0)?.fuelType;
+    if (fuelType !== undefined && ['petrol', 'diesel', 'lpg'].includes(fuelType)) {
+      throw new BadRequestException({
+        code: 'VALIDATION_ERROR',
+        message: 'ICE-only vehicles cannot have charging sessions; use fuel logs instead.',
+        issues: [
+          {
+            code: 'unsupported',
+            path: ['vehicleId'],
+            message: 'Vehicle does not support charging.',
+          },
+        ],
+      });
+    }
   }
 
   private async resolveChargerTypeId(code: string): Promise<number> {
