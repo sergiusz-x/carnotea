@@ -24,17 +24,16 @@ public IP or port-forwarding.
 
 ## Release model
 
-- Dokploy's app-level **native GitHub App auto-deploy** is **on**
-  (`Autodeploy` toggle in the app's General tab): every push to `main`
-  triggers a deploy through Dokploy's own GitHub App webhook — the same
-  mechanism that already got this app live, with no custom API calls, no
-  extra credentials, and nothing for this repo to guess (application IDs,
-  endpoint shapes) about Dokploy's internals.
+- Dokploy's app-level **native GitHub App auto-deploy is off**
+  (`Autodeploy` toggle in the app's General tab). GitHub Actions is the
+  deploy trigger instead: `.github/workflows/ci.yml`'s `deploy` job calls
+  Dokploy's `compose.deploy` API after CI passes on `main` and reports the
+  result back to GitHub as a Deployment — see § CI/CD below for why.
 - The test gate lives **before** the push even lands on `main`: a GitHub
   **branch protection rule** requires `lint`, `format`, `typecheck`, `test`,
   `build`, and `audit` (`.github/workflows/ci.yml`) to pass before a PR can be
   merged at all. A red PR cannot be merged, so nothing red ever reaches `main`
-  for Dokploy to deploy — see § CI/CD (branch protection) below.
+  for the `deploy` job to deploy — see § CI/CD below.
 - Dokploy builds `api`, `web`, and `migrate` from their Dockerfiles, runs the
   `migrate` service (profile `release`) to apply pending DB migrations, then
   rolls out `api`/`web` once migration succeeds.
@@ -63,32 +62,61 @@ API directly (a custom curl-based workflow, a Dokploy API key, and a
 Cloudflare Access Service Token to get through the dashboard's Access
 protection). It was reverted after repeatedly failing in practice — a wrong
 Cloudflare Access path match, then an unconfirmed `applicationId` — each
-requiring reverse-engineering Dokploy's internals to debug. None of those
-failures affected the running app (the job never touched the deployed
-containers), but they made deploys unreliable and added three credentials
-that don't exist anymore. See `tickets/T-046-cd-deploy-migrate.md`'s Notes for
-the full history.
+requiring reverse-engineering Dokploy's internals to debug. Neither failure
+affected the running app (the job never touched the deployed containers). See
+`tickets/T-046-cd-deploy-migrate.md`'s Notes for the full history.
 
-The current design gets the same outcome (nothing red reaches production)
-using only features that are already proven to work:
+That gap mattered more than it first looked: Dokploy's native auto-deploy has
+**no way to report success/failure back to GitHub** at all — confirmed by
+reading Dokploy `v0.29.10`'s own source, not assumed. It also has a known,
+currently-unresolved reliability bug where its GitHub webhook is received but
+the deploy doesn't trigger
+([Dokploy/dokploy#3787](https://github.com/Dokploy/dokploy/issues/3787)),
+which a webhook-only pipeline has no way to detect. Branch protection alone
+guarantees nothing red _merges_, but says nothing about whether the merge
+actually _deployed_.
 
-- **Dokploy's native auto-deploy** — zero configuration, zero credentials in
-  this repo, the exact mechanism Dokploy is built around.
-- **GitHub branch protection** — a mature, first-party GitHub feature, not a
-  hand-rolled script. Settings → Branches → branch protection rule for `main`
-  → require status checks (`lint`, `format`, `typecheck`, `test`, `build`,
-  `audit`) to pass before merging.
+The current design retries the original API-based approach with both root
+causes fixed:
+
+- **Dokploy's `compose.deploy` API** is a direct, synchronous call into
+  Dokploy's deploy queue — a different code path from the flaky GitHub
+  webhook handler, so it isn't affected by #3787.
+- The Cloudflare Access policy is scoped to path `api/compose*` (Access path
+  matching is segment-based; the original attempt used `api/application*`
+  correctly but for the wrong endpoint family — compose apps use
+  `/api/compose.*`, not `/api/application.*`).
+- The `composeId` is looked up and confirmed against Dokploy's own data before
+  use, not guessed from the dashboard's display slug.
+- **GitHub branch protection** stays as the pre-merge gate — Settings →
+  Branches → branch protection rule for `main` → require status checks
+  (`lint`, `format`, `typecheck`, `test`, `build`, `audit`) to pass before
+  merging.
+- **GitHub Actions owns the trigger**: `.github/workflows/ci.yml`'s `deploy`
+  job runs only on a `push` to `main` after every other CI job succeeds, and
+  calls the reusable `.github/workflows/deploy-dokploy.yml` workflow, which
+  calls `compose.deploy`, polls `compose.one`'s `composeStatus` until
+  `done`/`error`, and records the result as a GitHub Deployment
+  (`environment: production`) — the same mechanism Vercel/Netlify use, giving
+  a "View deployment" link on the commit/PR and a history in the repo's
+  **Environments** tab.
+- Dokploy's own `Autodeploy` (GitHub App webhook) toggle is turned **off** for
+  this app, so GitHub Actions is the single deploy trigger — leaving both on
+  would race a webhook-triggered build against the API-triggered one.
 
 ### Wiring up a future app
 
-1. Create the app in Dokploy as usual (Compose or Application type, pick the
-   repo/branch) — unavoidable in any platform, Vercel included.
-2. Leave that app's native `Autodeploy` toggle **on**.
-3. Add the same branch protection rule (required status checks matching that
-   repo's CI job names) on that repo's `main`.
-
-No Dokploy API key, Cloudflare Service Token, or Access policy is needed —
-nothing beyond what Dokploy and GitHub already provide out of the box.
+1. Create the app in Dokploy as usual (Compose type — this workflow targets
+   `compose.deploy`/`compose.one`; an `application`-type app would need the
+   `application.*` endpoints instead) and confirm its real `composeId`.
+2. Leave that app's native `Autodeploy` toggle **off** — GitHub Actions is the
+   trigger.
+3. Add a `deploy` job to that repo's CI calling
+   `sergiusz-x/carnotea/.github/workflows/deploy-dokploy.yml@main` with its
+   `compose-id`, gated on the same CI jobs passing.
+4. Reuse the existing `DOKPLOY_API_KEY`, `CF_ACCESS_CLIENT_ID`,
+   `CF_ACCESS_CLIENT_SECRET` secrets (instance-wide, not per-app) — only a new
+   `composeId` is app-specific.
 
 ## 1. Configure the production environment
 
@@ -332,6 +360,23 @@ See `.env.example` for the full, commented list (marked `[PROD]`). At minimum:
 public domain itself is assigned to the `web` service through Dokploy's
 Domains tab, not an env var.
 
+### GitHub Actions deploy-trigger secrets
+
+Separate from the app's own production env vars above — these let
+`.github/workflows/deploy-dokploy.yml` call Dokploy's API and are stored as
+**GitHub repository secrets** (Settings → Secrets and variables → Actions),
+not in Dokploy:
+
+| Secret                    | Purpose                                                                           |
+| ------------------------- | --------------------------------------------------------------------------------- |
+| `DOKPLOY_API_KEY`         | Account-wide Dokploy API key (`x-api-key` header) — Dokploy → Settings → Profile. |
+| `CF_ACCESS_CLIENT_ID`     | Cloudflare Access Service Token client ID, scoped to path `api/compose*`.         |
+| `CF_ACCESS_CLIENT_SECRET` | Cloudflare Access Service Token client secret.                                    |
+
+`DOKPLOY_COMPOSE_ID` is a plain repository **variable** (not a secret — it's
+an opaque ID, not a credential), currently `FV0R9T3polDcelIZHPv-h` for
+CarNotea.
+
 ### Fail-fast enforcement
 
 `apps/api/src/config/env.ts` validates `process.env` with Zod at boot:
@@ -352,6 +397,8 @@ Domains tab, not an env var.
 | `DATABASE_URL` / Postgres password   | Rotate the Postgres role password first (`ALTER ROLE ... PASSWORD ...` inside the `postgres` container), then update `DATABASE_URL` in Dokploy and redeploy `api`/`migrate` before the old password is revoked. |
 | SMTP credentials                     | Update `SMTP_USER`/`SMTP_PASS` in Dokploy's Environment Variables for `api`, redeploy. No downtime — only outgoing mail is affected.                                                                            |
 | Backup storage keys (`AWS_*`, T-047) | Issue a new access key scoped to the backup bucket/prefix, set it in Dokploy, redeploy the `backup` job, then revoke the old key once a scheduled run succeeds with the new one.                                |
+| `DOKPLOY_API_KEY`                    | Generate a new token in Dokploy (Settings → Profile → API/CLI), update the GitHub repository secret, revoke the old token in Dokploy.                                                                           |
+| `CF_ACCESS_CLIENT_ID`/`_SECRET`      | Rotate the Service Token in Cloudflare Zero Trust (Access → Service Auth), update both GitHub repository secrets, remove the old token from the Access policy.                                                  |
 
 A redeploy in Dokploy re-runs `docker compose up -d` for the stack, which
 picks up the new environment values for the affected service(s) without

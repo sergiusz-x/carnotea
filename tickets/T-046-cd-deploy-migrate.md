@@ -7,7 +7,7 @@ owner: codex
 dependencies: [T-045, T-015]
 labels: [ops, ci]
 created_at: 2026-06-15
-updated_at: 2026-07-07
+updated_at: 2026-07-08
 closed_at: ~
 ---
 
@@ -46,23 +46,47 @@ reached the point of altering containers), but the approach added three new
 credentials for a result no better than what Dokploy and GitHub already do
 natively. Full history in the Notes section.
 
-The final design: Dokploy's **native GitHub App auto-deploy** (`Autodeploy`
-toggle **on**) deploys on every push to `main`, and a **GitHub branch
-protection rule** on `main` requires CI (`lint`, `format`, `typecheck`,
-`test`, `build`, `audit`) to pass before a PR can be merged at all — so
-nothing red ever reaches `main` for Dokploy to deploy. Zero custom API calls,
-zero new credentials, both mechanisms already proven (auto-deploy is what
-originally got this app live; branch protection is a mature first-party
-GitHub feature).
+**Trigger-mechanism update (2026-07-08):** the "final design" below was
+revisited after confirming — by reading Dokploy `v0.29.10`'s own source, not
+assuming — that native auto-deploy has **no code path anywhere** that reports
+success/failure back to GitHub (no Check Run, Commit Status, or Deployment;
+its only GitHub-visible feedback is a PR comment for `application`-type
+Preview Deployments, which doesn't apply to `main` or to `compose`-type apps
+like CarNotea). It also has a known, unresolved reliability bug where its
+webhook is received but the deploy doesn't trigger
+([Dokploy/dokploy#3787](https://github.com/Dokploy/dokploy/issues/3787)).
+Branch protection alone cannot catch either gap — it guarantees nothing red
+_merges_, not that a merge actually _deployed_. The two root causes that sank
+the 2026-07-07 attempt are both fixed: the real `composeId`
+(`FV0R9T3polDcelIZHPv-h`) is now confirmed against Dokploy's own data, and the
+Cloudflare Access policy path was `api/application*` for a `compose`-type app
+— it needed `api/compose*` instead (the compose and application API families
+are genuinely different endpoints, not a typo in the same one). See the
+2026-07-08 Notes entry.
+
+The final design: Dokploy's `Autodeploy` toggle is **off**; GitHub Actions is
+now the deploy trigger. `.github/workflows/ci.yml`'s `deploy` job (gated on
+`lint`, `format`, `typecheck`, `test`, `build`, `audit` passing, only on push
+to `main`) calls the reusable `.github/workflows/deploy-dokploy.yml`, which
+calls Dokploy's `compose.deploy` API (a direct, synchronous call — not the
+flaky webhook path, so unaffected by #3787), polls `compose.one`'s
+`composeStatus`, and records the result as a GitHub Deployment
+(`environment: production`), giving a "View deployment" link and an
+Environments-tab history exactly like Vercel/Netlify. Branch protection stays
+as the pre-merge gate.
 
 ## Acceptance criteria
 
 - [x] Nothing that fails CI (`lint`, `format`, `typecheck`, `test`, `build`,
       `audit`) can reach `main` — enforced by a GitHub branch protection rule
       requiring those status checks before merge (not by a script).
-- [x] Dokploy deploys automatically on every push to `main` via its native
-      GitHub App auto-deploy (`Autodeploy` toggle on) — no custom trigger,
-      no per-app credential.
+- [x] Dokploy deploys on every push to `main` — via GitHub Actions calling
+      Dokploy's `compose.deploy` API (native `Autodeploy` toggle off, to avoid
+      a double trigger).
+- [ ] A GitHub Deployment (`environment: production`) is created for each
+      deploy and marked `success`/`failure` to match the real outcome,
+      visible as a "View deployment" link on the commit/PR and in the repo's
+      Environments tab — verified live, not just by inspecting the workflow.
 - [x] `drizzle-kit migrate` runs as a **release step ordered before** the api
       rollout — the existing `migrate` one-shot service (`profiles: [release]`
       in `docker-compose.prod.yml`) applies migrations from
@@ -74,26 +98,27 @@ GitHub feature).
       commit from Dokploy's Deployments tab — no image tag to roll back).
 - [x] The deploy is observable: a red PR cannot be merged (visible on the PR
       itself), and Dokploy's own Deployments tab shows the rollout result.
-- [x] `docs/deployment.md` documents the pipeline and how to reuse it (native
-      auto-deploy + branch protection) for a future app.
+- [x] `docs/deployment.md` documents the pipeline and how to reuse it
+      (GitHub Actions → Dokploy `compose.deploy` → poll → GitHub Deployment
+      status, plus branch protection) for a future app.
 
 ## Files to touch
 
-- `.github/workflows/ci.yml` (no `deploy` job — CI status checks are the gate)
+- `.github/workflows/ci.yml` (`deploy` job, gated on the other CI jobs)
+- `.github/workflows/deploy-dokploy.yml` (reusable, calls Dokploy's API)
 - `docs/deployment.md`
 
 ## Out of scope
 
 - Creating the prod compose stack itself (T-045).
-- Secrets storage/rotation strategy (T-048) — this design needs none.
+- Secrets storage/rotation strategy (T-048) — production app secrets still
+  need none of this; only the new GitHub Actions deploy-trigger secrets
+  (`DOKPLOY_API_KEY`, `CF_ACCESS_CLIENT_ID/SECRET`) are new, documented in
+  `docs/deployment.md` § 8.
 - Backups before migrate (T-047) — reference it, but the schedule lives there.
 - Blue/green or zero-downtime orchestration beyond Dokploy's own rollout.
 - Auto-generating migrations — those are authored via `pnpm db:generate`
   (ADR-0002) and reviewed in their own PRs.
-- A GitHub Deployments-tab green/red indicator tied to the Dokploy rollout —
-  the abandoned API-based design would have provided this; branch protection
-  provides an equivalent guarantee (nothing red merges) visible on the PR
-  instead.
 
 ## Implementation notes
 
@@ -137,8 +162,29 @@ GitHub feature).
   failed with `404` (the `applicationId` used, `carnotea-9ajbgu`, was the
   dashboard's display slug, not confirmed against Dokploy's actual API —
   never verified before merging).
-- 2026-07-07 (attempt 2, current): Reverted the custom workflow entirely.
-  Switched to Dokploy's native GitHub App auto-deploy (already configured,
-  already proven) plus a GitHub branch protection rule on `main` as the test
-  gate. No Dokploy API key, no Cloudflare Service Token, no Access policy
-  change — fewer credentials than either prior model.
+- 2026-07-07 (attempt 2): Reverted the custom workflow entirely. Switched to
+  Dokploy's native GitHub App auto-deploy plus a GitHub branch protection
+  rule on `main` as the test gate. No Dokploy API key, no Cloudflare Service
+  Token, no Access policy change — fewer credentials than either prior model.
+- 2026-07-08 (attempt 3, current): Confirmed directly in Dokploy `v0.29.10`
+  source that native auto-deploy has no GitHub status-reporting path at all
+  (searched for `checks.create`/`statuses.create`/`createCommitStatus`
+  repo-wide — zero matches; the only GitHub feedback is a PR comment for
+  `application`-type Preview Deployments, not applicable here), and that its
+  webhook has an open reliability bug (Dokploy/dokploy#3787) with no way for
+  this pipeline to detect a silently-dropped deploy. Re-attempted the API
+  approach with both 2026-07-07 root causes fixed: confirmed real
+  `composeId` (`FV0R9T3polDcelIZHPv-h`, found via Dokploy's own Postgres
+  `compose` table) and the correct endpoint family (`compose.deploy`/
+  `compose.one`, not `application.*` — CarNotea is a compose app; the prior
+  Access policy path `api/application*` was matching a real but wrong
+  endpoint, not failing to match at all). `compose.deploy`
+  (`apps/dokploy/server/api/routers/compose.ts:411`) enqueues a deployment job
+  directly and is a separate code path from the webhook handler, so it isn't
+  subject to #3787. Recreated `deploy-dokploy.yml` from git history
+  (`c25c6d2^`) with `application.*` → `compose.*` and `applicationStatus` →
+  `composeStatus` swapped throughout; the GitHub Deployments API steps were
+  reused unchanged since they never actually failed in the 2026-07-07 attempt.
+  Per T-085's lesson, this does **not** have GitHub Actions SSH into the VPS
+  and run `docker compose` itself — Dokploy remains the sole deploy executor;
+  GitHub Actions only triggers it and reports the result.

@@ -1,0 +1,182 @@
+# Reusable workflow: trigger a Dokploy deployment and report status back to
+# GitHub via the Deployments API.
+#
+# One-time setup per Dokploy instance:
+#   - Generate an account-wide API key: Dokploy → Settings → Profile →
+#     API/CLI → Generate Token.
+#   - Store it as a GitHub repository secret named DOKPLOY_API_KEY.
+#   - The Dokploy API path (/api/compose.*) sits behind Cloudflare Access,
+#     same as the dashboard. Since this workflow calls it non-interactively,
+#     it authenticates with a Cloudflare Access Service Token (Zero Trust →
+#     Access → Service Auth → Service Tokens) instead of an interactive login.
+#     An Access policy with Action=Service Auth must allow that token on a
+#     path matching `api/compose*` — Cloudflare Access path matching is
+#     segment-based, so a narrower `api/compose` alone will 302 instead of
+#     authenticating (this repo hit exactly that failure once before; see
+#     tickets/T-046-cd-deploy-migrate.md Notes for the full history). Stored
+#     as CF_ACCESS_CLIENT_ID / CF_ACCESS_CLIENT_SECRET GitHub repository
+#     secrets.
+#
+# This targets Dokploy's `compose` application type (docker-compose stacks),
+# not `application` (single-container). Use each app's Dokploy `composeId`
+# (not the dashboard's display slug/appName — confirm the real ID via
+# Dokploy's own API or DB, since the two differ) as the `compose-id` input.
+# The Dokploy API key and Cloudflare Service Token are both instance-wide,
+# not per-app. From another repo, reference this file as:
+#   sergiusz-x/carnotea/.github/workflows/deploy-dokploy.yml@main
+
+name: Deploy to Dokploy
+
+on:
+  workflow_call:
+    inputs:
+      compose-id:
+        description: Dokploy composeId to deploy
+        required: true
+        type: string
+      dokploy-url:
+        description: Base URL of the Dokploy instance
+        required: false
+        type: string
+        default: https://dokploy.sergiusz.dev
+      environment-name:
+        description: GitHub Environment name to record the deployment against
+        required: false
+        type: string
+        default: production
+      environment-url:
+        description: Public URL of the deployed app, shown on the GitHub deployment
+        required: false
+        type: string
+      timeout-minutes:
+        description: Minutes to wait for the Dokploy deployment to finish
+        required: false
+        type: number
+        default: 10
+    secrets:
+      dokploy-api-key:
+        description: Dokploy account-wide API key (x-api-key)
+        required: true
+      cf-access-client-id:
+        description: Cloudflare Access Service Token client ID
+        required: true
+      cf-access-client-secret:
+        description: Cloudflare Access Service Token client secret
+        required: true
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment-name }}
+      url: ${{ inputs.environment-url }}
+    steps:
+      - name: Create GitHub deployment
+        id: deployment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: context.sha,
+              environment: '${{ inputs.environment-name }}',
+              auto_merge: false,
+              required_contexts: [],
+            });
+            core.setOutput('id', deployment.id);
+
+      - name: Mark deployment in progress
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deployment.outputs.id }},
+              state: 'in_progress',
+            });
+
+      - name: Trigger Dokploy deploy
+        run: |
+          set -euo pipefail
+          # Response body is discarded rather than logged: compose.* endpoints
+          # can return the full compose record, which includes production
+          # env vars (DB password, auth secret, SMTP credentials) — GitHub only
+          # masks values registered as Actions secrets, not arbitrary API output.
+          http_code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "${DOKPLOY_URL}/api/compose.deploy" \
+            -H "x-api-key: ${DOKPLOY_API_KEY}" \
+            -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
+            -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d "{\"composeId\":\"${COMPOSE_ID}\"}")
+          echo "HTTP status: ${http_code}"
+          if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+            echo "::error::Dokploy API returned HTTP ${http_code} (body withheld — may contain secrets). Check Dokploy's own deployment logs for detail."
+            exit 1
+          fi
+        env:
+          DOKPLOY_URL: ${{ inputs.dokploy-url }}
+          DOKPLOY_API_KEY: ${{ secrets.dokploy-api-key }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.cf-access-client-id }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.cf-access-client-secret }}
+          COMPOSE_ID: ${{ inputs.compose-id }}
+
+      - name: Wait for Dokploy deployment to finish
+        id: wait
+        run: |
+          set -euo pipefail
+          deadline=$(( $(date +%s) + TIMEOUT_MINUTES * 60 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            # /tmp/status-response.json holds the full compose record —
+            # includes production env vars (DB password, auth secret, SMTP
+            # credentials). Never echo/cat it; only extract the one safe field.
+            http_code=$(curl -s -o /tmp/status-response.json -w '%{http_code}' "${DOKPLOY_URL}/api/compose.one?composeId=${COMPOSE_ID}" \
+              -H "x-api-key: ${DOKPLOY_API_KEY}" \
+              -H "CF-Access-Client-Id: ${CF_ACCESS_CLIENT_ID}" \
+              -H "CF-Access-Client-Secret: ${CF_ACCESS_CLIENT_SECRET}")
+            if [ "$http_code" -lt 200 ] || [ "$http_code" -ge 300 ]; then
+              echo "::error::Dokploy API returned HTTP ${http_code} (body withheld — may contain secrets). Check Dokploy's own deployment logs for detail."
+              rm -f /tmp/status-response.json
+              exit 1
+            fi
+            status=$(jq -r '.composeStatus // "unknown"' /tmp/status-response.json)
+            rm -f /tmp/status-response.json
+            echo "Dokploy composeStatus: ${status}"
+            case "$status" in
+              done) exit 0 ;;
+              error) echo "::error::Dokploy reported deployment status 'error'"; exit 1 ;;
+            esac
+            sleep 5
+          done
+          echo "::error::Timed out waiting for Dokploy deployment to finish"
+          exit 1
+        env:
+          DOKPLOY_URL: ${{ inputs.dokploy-url }}
+          DOKPLOY_API_KEY: ${{ secrets.dokploy-api-key }}
+          CF_ACCESS_CLIENT_ID: ${{ secrets.cf-access-client-id }}
+          CF_ACCESS_CLIENT_SECRET: ${{ secrets.cf-access-client-secret }}
+          COMPOSE_ID: ${{ inputs.compose-id }}
+          TIMEOUT_MINUTES: ${{ inputs.timeout-minutes }}
+
+      - name: Mark deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const state = '${{ steps.wait.outcome }}' === 'success' ? 'success' : 'failure';
+            const payload = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: ${{ steps.deployment.outputs.id }},
+              state,
+            };
+            const environmentUrl = '${{ inputs.environment-url }}';
+            if (environmentUrl) {
+              payload.environment_url = environmentUrl;
+            }
+            await github.rest.repos.createDeploymentStatus(payload);
