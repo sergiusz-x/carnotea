@@ -29,6 +29,18 @@ mistakes.
 
 ## Lessons
 
+### 2026-07-08 — A Dockerfile step run as root doesn't help a runtime user who has a different HOME
+
+**Context:** The `migrate` service (`pnpm --filter @carnotea/db db:deploy`, same image as `api`) crashed with `EACCES: permission denied, mkdir '/app/.cache/node/corepack/v1'` the first time it actually ran in production.
+**Mistake:** `apps/api/Dockerfile`'s runner stage ran `corepack prepare pnpm@9.12.0 --activate` as root, before `USER carnotea` was set — this cached the prepared package manager into root's home (`/root/.cache/...`), invisible to the `carnotea` user who actually runs commands at container runtime (different `HOME=/app`). Any build-time preparation step that a different runtime user later depends on needs to write somewhere that user can actually read — verify with the runtime user, not just "the build succeeded."
+**Rule:** When a Dockerfile switches to a non-root `USER` for runtime, any tool state prepared earlier as root (corepack, caches, generated config) must live under a path explicitly set via env var (e.g. `COREPACK_HOME`) _and_ be chowned to the runtime user — don't assume root's default cache locations carry over. Test the exact runtime command as the exact runtime user, not just that the image builds.
+
+### 2026-07-08 — A profile-gated Compose service needs its profile activated, not just referenced
+
+**Context:** Production had no database schema at all — sign-up failed with `relation "auth_user" does not exist` — despite `docker-compose.prod.yml` having a `migrate` service that runs `drizzle-kit migrate` before `api`/`web` roll out.
+**Mistake:** `migrate` has `profiles: [release]`, but nothing ever set `COMPOSE_PROFILES=release` (or passed `--profile release`) in the actual Dokploy deploy command (`docker compose up -d --build --remove-orphans`, no profile flag) — so `migrate` was silently never included in any deploy, ever, since this app was set up on Dokploy. This went unnoticed because every other issue that day (nginx routing, SMTP, Dokploy crashing) got fixed and re-tested before anyone actually tried a real sign-up against a real, fresh Postgres volume.
+**Rule:** A Compose service gated by `profiles:` is invisible to `docker compose up` unless something activates that profile — check this explicitly (`docker compose config --profile <name>` or an env var check) rather than assuming a `profiles:` declaration alone means the service runs. If a non-profiled service `depends_on` a profile-gated one, Compose does **not** auto-activate the profile — it hard-fails with "depends on undefined service" instead (verified locally with a minimal repro before relying on this), which is a deliberate, useful fail-loud signal if the profile is ever missing.
+
 ### 2026-07-07 — Prefer proven platform-native automation over a hand-rolled integration
 
 **Context:** Building a test-gated deploy trigger for Dokploy from GitHub Actions (T-046).

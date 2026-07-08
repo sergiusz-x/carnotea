@@ -38,11 +38,19 @@ RUN pnpm deploy --filter @carnotea/api --prod /app/out
 # ---- Stage 2: Slim runtime image -------------------------------------------
 FROM node:22-slim AS runner
 
-# Corepack still needed if the runtime script references workspace links;
-# the deploy output includes a minimal lockfile and pnpm is req'd to resolve it.
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate && \
-    groupadd --system --gid 1001 carnotea && \
-    useradd --system --uid 1001 -g carnotea --home-dir /app --shell /sbin/nologin carnotea
+# Corepack still needed at runtime: the migrate service's command runs
+# `pnpm --filter @carnotea/db db:deploy`. COREPACK_HOME must be set before
+# `corepack prepare` runs (as root, here) AND be readable by the `carnotea`
+# user at runtime — otherwise corepack's shim can't find the pnpm it already
+# prepared, tries to re-download it as `carnotea`, and fails with EACCES
+# writing to the default (root-owned) cache path.
+ENV COREPACK_HOME=/app/.corepack
+
+RUN groupadd --system --gid 1001 carnotea && \
+    useradd --system --uid 1001 -g carnotea --home-dir /app --shell /sbin/nologin carnotea && \
+    mkdir -p /app && \
+    corepack enable && corepack prepare pnpm@9.12.0 --activate && \
+    chown -R carnotea:carnotea /app/.corepack
 
 WORKDIR /app
 

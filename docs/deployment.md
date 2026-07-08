@@ -332,6 +332,12 @@ See `.env.example` for the full, commented list (marked `[PROD]`). At minimum:
 public domain itself is assigned to the `web` service through Dokploy's
 Domains tab, not an env var.
 
+**`COMPOSE_PROFILES=release` is also required** — without it, `docker compose
+up` refuses to start the whole stack (`api` depends on `migrate`, which only
+exists under the `release` profile). This was missing for the app's entire
+history on Dokploy; migrations never ran and the production database had no
+schema until it was discovered and fixed (2026-07-08).
+
 ### Fail-fast enforcement
 
 `apps/api/src/config/env.ts` validates `process.env` with Zod at boot:
