@@ -55,3 +55,5 @@ Don't write one for:
 | [0010](./0010-api-compiler-swc.md)                         | SWC as the apps/api compiler                       | accepted                                 |
 | [0011](./0011-vite8-oxc-api-test-transform.md)             | Vite 8 monorepo; native Oxc for api test transform | accepted                                 |
 | [0012](./0012-tickets-index-generated-from-frontmatter.md) | Ticket status in frontmatter; INDEX.md generated   | accepted                                 |
+| [0013](./0013-opentelemetry-observability.md)              | OpenTelemetry observability baseline               | accepted                                 |
+| [0014](./0014-semantic-release-versioning.md)              | semantic-release for SemVer tags + GitHub Releases | accepted                                 |

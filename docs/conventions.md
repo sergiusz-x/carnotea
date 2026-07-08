@@ -112,8 +112,9 @@ Closes T-012.
 
 - `Closes T-NNN` — links and closes the ticket (always include for ticket work).
 - `BREAKING CHANGE: <description>` — required when a public contract changes
-  (HTTP route shape, env-var name, shared Zod schema). Triggers a major version
-  bump in changesets.
+  (HTTP route shape, env-var name, shared Zod schema). Triggers a major
+  version bump — see [`docs/release-process.md`](./release-process.md) for
+  how commit types map to SemVer releases.
 - `Co-Authored-By: <name> <email>` — include when an AI agent co-wrote the
   commit (see below).
 
