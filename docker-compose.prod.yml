@@ -10,6 +10,12 @@
 # Required variables (see docs/deployment.md § Secrets management):
 #   DATABASE_URL, BETTER_AUTH_SECRET, BETTER_AUTH_URL, CORS_ORIGINS
 #
+# COMPOSE_PROFILES=release is also required. `migrate` is profile-gated and
+# `api` depends on it completing successfully before it starts — without the
+# profile active, `docker compose up` refuses to start the stack at all
+# ("api depends on undefined service migrate"), by design, so a missing
+# profile fails loudly instead of silently skipping migrations.
+#
 # TLS + the public domain are handled by Dokploy's own Traefik instance via
 # its Domains UI (assign `carnotea.<yourdomain>` to the `web` service on port
 # 80) — there is no reverse proxy in this stack.
@@ -150,6 +156,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     networks:
       - carnotea-prod
     expose:
