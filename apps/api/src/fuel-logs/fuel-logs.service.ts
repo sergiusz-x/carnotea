@@ -1,6 +1,6 @@
-import { fuelLogs, vehicles, type Db } from '@carnotea/db';
+import { fuelLogs, fuelTypes, vehicles, type Db } from '@carnotea/db';
 import { type FuelLogCreate, type FuelLogUpdate } from '@carnotea/shared';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, desc, eq, lt } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
@@ -95,6 +95,7 @@ export class FuelLogsService {
 
   async create(userId: string, vehicleId: string, input: FuelLogCreate): Promise<FuelLogResponse> {
     await this.assertVehicleOwned(userId, vehicleId);
+    await this.assertVehicleSupportsFuelLogs(vehicleId);
 
     const totalCost = computeTotalCost(input.liters, input.pricePerLiter);
 
@@ -232,6 +233,31 @@ export class FuelLogsService {
       .where(and(eq(vehicles.id, vehicleId), eq(vehicles.userId, userId)))
       .limit(1);
     if (!rows.at(0)) throw this.notFound();
+  }
+
+  // Mirrors the `enforce_vehicle_energy_source` DB trigger (packages/db/migrations/0002_constraints.sql)
+  // so this rejects with a clean 400 instead of surfacing the trigger's raw
+  // Postgres exception as an unhandled 500.
+  private async assertVehicleSupportsFuelLogs(vehicleId: string): Promise<void> {
+    const rows = await this.db
+      .select({ fuelType: fuelTypes.code })
+      .from(vehicles)
+      .innerJoin(fuelTypes, eq(vehicles.fuelTypeId, fuelTypes.id))
+      .where(eq(vehicles.id, vehicleId))
+      .limit(1);
+    if (rows.at(0)?.fuelType === 'electric') {
+      throw new BadRequestException({
+        code: 'VALIDATION_ERROR',
+        message: 'Electric vehicles cannot have fuel logs; use charging sessions instead.',
+        issues: [
+          {
+            code: 'unsupported',
+            path: ['vehicleId'],
+            message: 'Vehicle does not support fuel logs.',
+          },
+        ],
+      });
+    }
   }
 
   private async fetchPrevFullTankMileage(

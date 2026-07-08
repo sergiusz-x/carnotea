@@ -19,11 +19,11 @@ const baseFuelLogRow = {
 };
 
 function selectResult(rows: unknown[]) {
+  const terminal = { limit: vi.fn().mockResolvedValue(rows) };
   return {
     from: vi.fn().mockReturnValue({
-      where: vi.fn().mockReturnValue({
-        limit: vi.fn().mockResolvedValue(rows),
-      }),
+      where: vi.fn().mockReturnValue(terminal),
+      innerJoin: vi.fn().mockReturnValue({ where: vi.fn().mockReturnValue(terminal) }),
     }),
   };
 }
@@ -140,7 +140,12 @@ describe('FuelLogsService derived sync transactions', () => {
     const tx = createInsertTx();
     const { service, db, mileageSync, costSync } = createServiceHarness({
       tx,
-      selectRows: [[{ id: 'vehicle-id' }], [{ id: 'vehicle-id' }], [baseFuelLogRow]],
+      selectRows: [
+        [{ id: 'vehicle-id' }],
+        [{ fuelType: 'petrol' }],
+        [{ id: 'vehicle-id' }],
+        [baseFuelLogRow],
+      ],
     });
 
     const created = await service.create('user-id', 'vehicle-id', {
@@ -236,7 +241,7 @@ describe('FuelLogsService derived sync transactions', () => {
     let transactionRolledBack = false;
     const { service, db, mileageSync, costSync } = createServiceHarness({
       tx,
-      selectRows: [[{ id: 'vehicle-id' }]],
+      selectRows: [[{ id: 'vehicle-id' }], [{ fuelType: 'petrol' }]],
       transaction: async (callback) => {
         try {
           return await callback(tx);
