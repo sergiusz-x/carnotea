@@ -58,7 +58,24 @@ services:
       DATABASE_URL: ${DATABASE_URL:?error}
     networks:
       - carnotea-prod
-    command: ['pnpm', '--filter', '@carnotea/db', 'db:deploy']
+    # `pnpm --filter @carnotea/db` doesn't work here: this image is built via
+    # `pnpm deploy --filter @carnotea/api --prod`, which flattens @carnotea/db
+    # into node_modules as a regular dependency rather than keeping it as a
+    # separate pnpm-workspace project pnpm could --filter for. drizzle-kit is
+    # invoked directly via node instead, run from @carnotea/db's own directory
+    # so its relative drizzle.config.ts paths (./src/schema, ./migrations)
+    # resolve. There's no node_modules/.bin/drizzle-kit symlink either — it's
+    # a dependency of @carnotea/db, not a direct dependency of @carnotea/api,
+    # so pnpm never hoists its bin here — hence the glob straight into the
+    # pnpm store for its real entry point (bin.cjs isn't exposed via drizzle-
+    # kit's package.json "exports", so `node -e "require.resolve(...)"` can't
+    # be used to find it either; the glob is the simplest reliable path).
+    command:
+      [
+        'sh',
+        '-c',
+        'cd /app/node_modules/@carnotea/db && node /app/node_modules/.pnpm/drizzle-kit@*/node_modules/drizzle-kit/bin.cjs migrate',
+      ]
 
   # ---- Backups (run on demand; schedule via host cron) -----------------------
   backup:
