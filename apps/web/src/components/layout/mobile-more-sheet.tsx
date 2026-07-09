@@ -1,13 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { Bell, Car, CreditCard, TriangleAlert, User, Zap } from 'lucide-react';
+import { Bell, Car, CreditCard, Droplet, TriangleAlert, User, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
 import { cn } from '@/lib/utils';
 
-type MoreKey = 'charging' | 'issues' | 'expenses' | 'reminders' | 'vehicles' | 'profile';
+type MoreKey =
+  'charging' | 'fluidLogs' | 'issues' | 'expenses' | 'reminders' | 'vehicles' | 'profile';
 
 interface MoreItem {
   labelKey: MoreKey;
@@ -41,6 +42,11 @@ export function MobileMoreSheet({ vehicleId, open, onOpenChange }: MobileMoreShe
 
   const items: MoreItem[] = [
     ...chargingItem,
+    {
+      labelKey: 'fluidLogs',
+      to: vehicleId ? `/vehicles/${vehicleId}/fluid-logs` : null,
+      Icon: Droplet,
+    },
     {
       labelKey: 'issues',
       to: vehicleId ? `/vehicles/${vehicleId}/issues` : null,

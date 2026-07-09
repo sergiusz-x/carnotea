@@ -299,6 +299,16 @@ export interface paths {
               vehicleId: string;
               occurredAt: string;
               mileage: number | null;
+              kind: "fluid";
+              fluidType: "engine_oil" | "oil_filter" | "brake_fluid" | "coolant" | "power_steering_fluid" | "washer_fluid" | "transmission_fluid" | "other";
+              quantityLiters: number | null;
+              cost: number | null;
+              workshopName: string | null;
+            } | {
+              id: string;
+              vehicleId: string;
+              occurredAt: string;
+              mileage: number | null;
               kind: "service";
               title: string;
               totalCost: number | null;

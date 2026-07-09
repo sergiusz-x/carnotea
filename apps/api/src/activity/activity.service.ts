@@ -3,6 +3,8 @@ import {
   chargingSessions,
   expenseCategories,
   expenses,
+  fluidLogs,
+  fluidTypes,
   fuelLogs,
   fuelTypes,
   issuePriorities,
@@ -22,6 +24,7 @@ import {
   type ActivityQuery,
   type ChargerTypeCode,
   type ExpenseCategoryCode,
+  type FluidTypeCode,
   type VehiclePanel,
 } from '@carnotea/shared';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
@@ -85,6 +88,7 @@ export class ActivityService {
       await Promise.all([
         this.fuelEntries(vehicleId, cursor, take),
         this.chargeEntries(vehicleId, cursor, take),
+        this.fluidEntries(vehicleId, cursor, take),
         this.serviceEntries(vehicleId, cursor, take),
         this.expenseEntries(vehicleId, cursor, take),
         this.issueEntries(vehicleId, cursor, take),
@@ -186,6 +190,45 @@ export class ActivityService {
       stationName: r.stationName,
       socStartPercent: r.socStartPercent,
       socEndPercent: r.socEndPercent,
+    }));
+  }
+
+  private async fluidEntries(
+    vehicleId: string,
+    cursor: Cursor | null,
+    take: number,
+  ): Promise<ActivityEntry[]> {
+    const rows = await this.db
+      .select({
+        id: fluidLogs.id,
+        vehicleId: fluidLogs.vehicleId,
+        occurredAt: fluidLogs.changeDate,
+        mileage: fluidLogs.mileage,
+        fluidType: fluidTypes.code,
+        quantityLiters: fluidLogs.quantityLiters,
+        cost: fluidLogs.cost,
+        workshopName: fluidLogs.workshopName,
+      })
+      .from(fluidLogs)
+      .innerJoin(fluidTypes, eq(fluidLogs.fluidTypeId, fluidTypes.id))
+      .where(
+        cursor
+          ? and(eq(fluidLogs.vehicleId, vehicleId), lte(fluidLogs.changeDate, cursor.occurredAt))
+          : eq(fluidLogs.vehicleId, vehicleId),
+      )
+      .orderBy(desc(fluidLogs.changeDate), desc(fluidLogs.id))
+      .limit(take);
+
+    return rows.map((r) => ({
+      kind: 'fluid',
+      id: r.id,
+      vehicleId: r.vehicleId,
+      occurredAt: r.occurredAt,
+      mileage: r.mileage,
+      fluidType: r.fluidType as FluidTypeCode,
+      quantityLiters: r.quantityLiters != null ? Number(r.quantityLiters) : null,
+      cost: r.cost != null ? Number(r.cost) : null,
+      workshopName: r.workshopName,
     }));
   }
 

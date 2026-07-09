@@ -4,6 +4,7 @@ import {
   Bell,
   Car,
   CreditCard,
+  Droplet,
   Fuel,
   LayoutDashboard,
   TriangleAlert,
@@ -23,6 +24,7 @@ type NavKey =
   | 'vehicles'
   | 'fuel'
   | 'charging'
+  | 'fluidLogs'
   | 'service'
   | 'issues'
   | 'expenses'
@@ -83,6 +85,12 @@ function useNavItems(): NavItem[] {
               },
             ]
           : []),
+        {
+          labelKey: 'fluidLogs',
+          to: `/vehicles/${activeVehicleId}/fluid-logs`,
+          activePaths: [`/vehicles/${activeVehicleId}/fluid-logs`],
+          Icon: Droplet,
+        },
         {
           labelKey: 'service',
           to: `/vehicles/${activeVehicleId}/service`,

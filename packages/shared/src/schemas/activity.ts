@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CHARGER_TYPE_CODES } from '../constants/charger-types.js';
 import { EXPENSE_CATEGORY_CODES } from '../constants/expense-categories.js';
+import { FLUID_TYPE_CODES } from '../constants/fluid-types.js';
 import { ISSUE_PRIORITY_CODES } from '../constants/issue-priorities.js';
 import { ISSUE_STATUS_CODES } from '../constants/issue-statuses.js';
 import { REMINDER_STATUS_CODES } from '../constants/reminder-statuses.js';
@@ -26,6 +27,7 @@ import {
 export const ACTIVITY_KINDS = [
   'fuel',
   'charge',
+  'fluid',
   'service',
   'expense',
   'issue',
@@ -63,6 +65,15 @@ export const ChargeActivitySchema = z.object({
   stationName: z.string().nullable(),
   socStartPercent: socPercentField().nullable(),
   socEndPercent: socPercentField().nullable(),
+});
+
+export const FluidActivitySchema = z.object({
+  ...activityBase,
+  kind: z.literal('fluid'),
+  fluidType: z.enum(FLUID_TYPE_CODES),
+  quantityLiters: positiveDecimalField().nullable(),
+  cost: moneyField().nullable(),
+  workshopName: z.string().nullable(),
 });
 
 export const ServiceActivitySchema = z.object({
@@ -104,6 +115,7 @@ export const ReminderActivitySchema = z.object({
 export const ActivityEntrySchema = z.discriminatedUnion('kind', [
   FuelActivitySchema,
   ChargeActivitySchema,
+  FluidActivitySchema,
   ServiceActivitySchema,
   ExpenseActivitySchema,
   IssueActivitySchema,

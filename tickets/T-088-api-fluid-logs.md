@@ -138,6 +138,12 @@ List newest-first on `changeDate`, tie-broken by `mileage`.
       hub's nav (unconditional — fluid changes apply to every fuel type,
       unlike the fuel/charging tabs which are fuel-type-gated), all strings
       in `pl` + `en`.
+- [x] Web: discoverable from the **actual current UI**, not just a route —
+      a `fluidLogs` item in the sidebar `Nav`, `MobileMoreSheet`, and a
+      `fluid` entry in the Dziennik activity feed (filter chip + card
+      rendering), backed by `fluidEntries()` in `activity.service.ts` so
+      fluid logs actually appear in `GET /api/vehicles/{id}/activity` —
+      verified live, not assumed from route registration alone.
 
 ## Test matrix
 
@@ -179,6 +185,16 @@ Inherits the [baseline matrix](../docs/agents/patterns/resource-crud-api.md#base
   its label added there too)
 - `apps/web/src/features/vehicles/components/vehicle-detail-hub.tsx` (nav
   link, unconditional unlike `showFuel`/`showCharging`)
+- `packages/shared/src/schemas/activity.ts` (`'fluid'` kind,
+  `FluidActivitySchema`) + `activity.test.ts`
+- `apps/api/src/activity/activity.service.ts` (`fluidEntries()` query,
+  added to the `Promise.all` union)
+- `apps/web/src/components/layout/nav.tsx`, `mobile-more-sheet.tsx` (sidebar
+  - mobile "more" sheet nav items — the actual current UI shell)
+- `apps/web/src/features/activity/components/activity-feed.tsx` (filter
+  chip), `activity-entry.tsx` (icon/title/link rendering for `kind: 'fluid'`)
+- `apps/web/src/locales/{en,pl}/nav.json` (`fluidLogs`),
+  `{en,pl}/activity.json` (`filter.fluid`)
 
 ## Out of scope
 
@@ -192,6 +208,25 @@ Inherits the [baseline matrix](../docs/agents/patterns/resource-crud-api.md#base
 
 ## Implementation notes
 
+- **Correction (2026-07-09, same day):** the web UI as originally shipped
+  was reachable only from the old `vehicle-detail-hub.tsx` page
+  (`/vehicles/{id}`) — invisible from the actual redesigned UI (left
+  sidebar `Nav`/`BottomNav`/`MobileMoreSheet` + the unified "Dziennik"
+  activity feed on `/dashboard`, from T-069/T-073/T-074) because nobody
+  checked what the live app actually looks like before implementing. Fixed
+  in the same PR: added `fluidLogs` to `apps/web/src/components/layout/
+nav.tsx`, `bottom-nav.tsx`'s sibling `mobile-more-sheet.tsx`, a `'fluid'`
+  kind to `ACTIVITY_KINDS`/`FluidActivitySchema` in
+  `packages/shared/src/schemas/activity.ts`, a `fluidEntries()` query in
+  `apps/api/src/activity/activity.service.ts` (the Dziennik union had six
+  hand-written per-source queries with no generic sourceType mechanism —
+  charging/fuel are first-class there, fluids needed the same treatment
+  added fresh), and matching filter chip / entry renderer / i18n keys on
+  the web. Lesson: before wiring a new resource's nav/discoverability,
+  actually open the running app and find where its siblings (the resource
+  it was modeled on) are truly linked from — grepping for an old
+  `apps/web/src/features/charging/` pattern found a reference implementation
+  that was itself only partially representative of current navigation.
 - Resolve `fluidTypeId` through the same lookup-code helper pattern used
   for `fuelTypeId`/`chargerTypeId` (T-020/T-023) so code→id mapping stays
   in one place.
@@ -235,6 +270,13 @@ All run and confirmed green on 2026-07-09, against a real local Postgres
   regenerate `apps/web/src/lib/api/schema.d.ts` with the new routes (this
   generated file must be regenerated from a live API, never hand-edited —
   see AGENTS.md § Never).
+- Post-correction: `GET /api/vehicles/{id}/activity` confirmed to return a
+  `{"kind":"fluid",...}` entry for a fluid log with no cost — verified live
+  against the running API (`curl -b cookies.txt .../activity?limit=30`),
+  not just checked by reading the code. Screenshot-driven discovery (the
+  user reported "I don't see this anywhere") is what caught the original
+  gap; re-verified the fix the same way rather than trusting route
+  registration alone.
 
 ## References
 
