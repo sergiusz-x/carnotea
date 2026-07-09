@@ -19,7 +19,7 @@
     "cancel": "Cancel"
   },
   "version": {
-    "title": "Build {{version}} (commit {{commit}})",
-    "linkLabel": "Open build metadata for version {{version}} on commit {{commit}}"
+    "title": "Version {{version}}",
+    "linkLabel": "Open version metadata for {{version}}"
   }
 }

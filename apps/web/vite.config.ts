@@ -9,7 +9,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 import { computeBuildInfo } from './src/lib/build-version';
 
-function buildInfoPlugin(buildInfo: ReturnType<typeof computeBuildInfo>): Plugin {
+function buildInfoPlugin(buildInfo: Awaited<ReturnType<typeof computeBuildInfo>>): Plugin {
   const source = `${JSON.stringify(buildInfo, null, 2)}\n`;
 
   return {
@@ -31,8 +31,8 @@ function buildInfoPlugin(buildInfo: ReturnType<typeof computeBuildInfo>): Plugin
   };
 }
 
-export default defineConfig(() => {
-  const buildInfo = computeBuildInfo({ cwd: import.meta.dirname });
+export default defineConfig(async () => {
+  const buildInfo = await computeBuildInfo({ cwd: import.meta.dirname });
 
   return {
     define: {

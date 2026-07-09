@@ -166,3 +166,9 @@ create tickets only for follow-up work the human explicitly asks to track.
 **Context:** Cleaning up GitHub Actions after a temporary VPS-style deploy workflow was added.
 **Mistake:** Keeping SSH-and-Docker-Compose deployment automation even after the human clarified the hosting direction was moving toward a different self-hosted platform model.
 **Rule:** Before keeping or extending deployment automation, confirm it matches the intended hosting model; remove or disable platform-specific deploy workflows that no longer reflect the target architecture.
+
+### 2026-07-09 — Production build metadata must not depend solely on `.git` being present inside the Docker build context
+
+**Context:** Shipping T-090 to expose the deployed web version in the app shell and via `/version.json`.
+**Mistake:** Implemented build metadata exclusively from local git commands during the Vite build. It worked locally and in CI, but the production Dokploy build ran without usable git metadata in the container context, so the live app showed `v0.0.0+build.unknown`.
+**Rule:** When a production build runs inside a platform-managed Docker git context, never assume `.git` metadata is available inside the build container. Keep the git-based path as the preferred source, but add an automatic non-git fallback that still yields meaningful production version metadata.

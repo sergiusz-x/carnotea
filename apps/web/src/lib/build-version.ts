@@ -3,24 +3,40 @@ import { resolve } from 'node:path';
 
 import type { BuildInfo, ReleaseType } from './build-info';
 
+const DEFAULT_REPOSITORY = 'sergiusz-x/carnotea';
 const RELEASE_RANK: Record<ReleaseType, number> = {
   none: 0,
   patch: 1,
   minor: 2,
   major: 3,
 };
-
 const COMMIT_RELEASE_TYPE: Partial<Record<string, ReleaseType>> = {
   feat: 'minor',
   fix: 'patch',
   perf: 'patch',
   revert: 'patch',
 };
+const COMMIT_SHA_ENV_KEYS = [
+  'SOURCE_COMMIT',
+  'COMMIT_SHA',
+  'GITHUB_SHA',
+  'CI_COMMIT_SHA',
+  'VERCEL_GIT_COMMIT_SHA',
+  'RAILWAY_GIT_COMMIT_SHA',
+] as const;
 
 interface Semver {
   major: number;
   minor: number;
   patch: number;
+}
+
+interface GitHubReleaseResponse {
+  tag_name?: unknown;
+}
+
+interface GitHubTagResponse {
+  name?: unknown;
 }
 
 export function parseSemver(tag: string): Semver | null {
@@ -96,6 +112,21 @@ export function classifyCommits(messages: string[]): ReleaseType {
   }, 'none');
 }
 
+export function formatTimestampBuildId(builtAt: string): string {
+  return `ts${builtAt
+    .replace(/[-:]/g, '')
+    .replace(/\.\d+Z$/, 'z')
+    .replace('T', 't')}`;
+}
+
+export function formatBuildIdentifier(commitSha: string | null, builtAt: string): string {
+  return commitSha ? commitSha.slice(0, 7) : formatTimestampBuildId(builtAt);
+}
+
+function asNonEmptyString(value: unknown): string | null {
+  return typeof value === 'string' && value.length > 0 ? value : null;
+}
+
 function runGit(args: string[], cwd: string): string {
   return execFileSync('git', args, {
     cwd,
@@ -147,7 +178,82 @@ function computeNextReleaseVersion(latestTag: string | null, releaseType: Releas
   return formatSemver(bumpSemver(parsed, releaseType));
 }
 
-export function computeBuildInfo(options?: { cwd?: string; builtAt?: string }): BuildInfo {
+function getRepositorySlug(explicitRepository?: string): string {
+  return explicitRepository ?? process.env.GITHUB_REPOSITORY ?? DEFAULT_REPOSITORY;
+}
+
+function getCommitShaFromEnv(): string | null {
+  for (const key of COMMIT_SHA_ENV_KEYS) {
+    const value = process.env[key];
+    if (typeof value === 'string' && value.length > 0) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+async function fetchJson(url: string): Promise<unknown> {
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'carnotea-web-build-info',
+    },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return response.json();
+}
+
+async function fetchLatestGitHubReleaseTag(repository: string): Promise<string | null> {
+  const latestRelease = (await fetchJson(
+    `https://api.github.com/repos/${repository}/releases/latest`,
+  )) as GitHubReleaseResponse | null;
+  const releaseTag = asNonEmptyString(latestRelease?.tag_name);
+  if (releaseTag && parseSemver(releaseTag)) {
+    return releaseTag;
+  }
+
+  const tags = (await fetchJson(`https://api.github.com/repos/${repository}/tags?per_page=1`)) as
+    GitHubTagResponse[] | null;
+  const latestTag = tags?.[0];
+  const tagName = asNonEmptyString(latestTag?.name);
+
+  return tagName && parseSemver(tagName) ? tagName : null;
+}
+
+async function computeGitHubReleaseBuildInfo(options: {
+  builtAt: string;
+  repository?: string;
+}): Promise<BuildInfo | null> {
+  const releaseVersion = await fetchLatestGitHubReleaseTag(getRepositorySlug(options.repository));
+  if (!releaseVersion) {
+    return null;
+  }
+
+  const commitSha = getCommitShaFromEnv();
+  const buildIdentifier = formatBuildIdentifier(commitSha, options.builtAt);
+
+  return {
+    builtAt: options.builtAt,
+    commitSha: commitSha ?? 'unknown',
+    shortCommitSha: commitSha?.slice(0, 7) ?? 'unknown',
+    releaseType: 'none',
+    releaseVersion,
+    predictedReleaseVersion: releaseVersion,
+    displayVersion: `${releaseVersion}+build.${buildIdentifier}`,
+    source: 'github-release',
+  };
+}
+
+export async function computeBuildInfo(options?: {
+  builtAt?: string;
+  cwd?: string;
+  repository?: string;
+}): Promise<BuildInfo> {
   const cwd = options?.cwd ?? resolve(import.meta.dirname, '..');
   const builtAt = options?.builtAt ?? new Date().toISOString();
 
@@ -171,6 +277,18 @@ export function computeBuildInfo(options?: { cwd?: string; builtAt?: string }): 
       source: 'git',
     };
   } catch {
+    try {
+      const githubBuildInfo = await computeGitHubReleaseBuildInfo({
+        builtAt,
+        repository: options?.repository,
+      });
+      if (githubBuildInfo) {
+        return githubBuildInfo;
+      }
+    } catch {
+      // ignore secondary fallback failures and return the static fallback below
+    }
+
     return {
       builtAt,
       commitSha: 'unknown',
