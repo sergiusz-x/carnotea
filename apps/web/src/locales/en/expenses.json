@@ -50,6 +50,7 @@
     "electricity": "Electricity",
     "service": "Service",
     "parts": "Parts",
+    "fluids": "Fluids",
     "insurance": "Insurance",
     "inspection": "Inspection",
     "other": "Other"
@@ -58,7 +59,8 @@
     "manual": "Manual",
     "fuel_log": "Fuel log",
     "service_record": "Service record",
-    "charging_session": "Charging session"
+    "charging_session": "Charging session",
+    "fluid_log": "Fluid log"
   },
   "wizard": {
     "step1": "Details",

@@ -1,16 +1,16 @@
 ---
 id: T-088
 title: API — Operating fluid changes (fluid logs) CRUD
-status: ready
+status: done
 priority: medium
 size: M
 spec_version: 1
-owner: ~
+owner: claude
 dependencies: [T-020, T-026]
-labels: [api, feature]
+labels: [api, web, feature]
 created_at: 2026-07-08
-updated_at: 2026-07-08
-closed_at: ~
+updated_at: 2026-07-09
+closed_at: 2026-07-09
 ---
 
 # T-088 — API: Operating fluid changes (fluid logs)
@@ -39,6 +39,13 @@ closest existing reference (vehicle-scoped child resource + a type lookup
 table + cost-sync, no SoC-style validation quirks to drop).
 
 Follows [`patterns/resource-crud-api.md`](../docs/agents/patterns/resource-crud-api.md).
+
+**Scope update (2026-07-09):** the web UI was explicitly requested alongside
+the API in the same pass ("zaimplementuj ten ticket... zarówno frontend i
+backend"), so it's included here rather than deferred to a follow-up ticket
+as originally scoped below. It mirrors `apps/web/src/features/charging/`
+exactly (list/form/card + routes + i18n), following
+[`patterns/web-screens.md`](../docs/agents/patterns/web-screens.md).
 
 ## Contract
 
@@ -76,9 +83,12 @@ List newest-first on `changeDate`, tie-broken by `mileage`.
   resolved to `fluidTypeId` on write, joined back on read.
 - Response includes computed, read-only `nextDueMileage`/`nextDueDate`
   (current `mileage`/`changeDate` + `intervalKm`/`intervalMonths` when both
-  the source value and interval are present; `null` otherwise) — reuse
-  `computeDueState`'s interval-math approach from
-  `packages/shared/src/helpers/due-state.ts` rather than duplicating it.
+  the source value and interval are present; `null` otherwise). Implemented
+  as a small local `addMonths` helper in `fluid-logs.service.ts` — on
+  inspection, `computeDueState` in `due-state.ts` classifies an existing
+  due date/mileage against thresholds (`overdue`/`due_soon`/`ok`), it
+  doesn't do the `base + interval` arithmetic this ticket needs, so it
+  wasn't the right thing to force-reuse.
 
 ### Provides
 
@@ -98,33 +108,36 @@ List newest-first on `changeDate`, tie-broken by `mileage`.
   adding the `fluids` row to `expense_categories` seed data. This is a
   **public-contract change** (shared union type) — flag it in the PR per
   AGENTS.md § Ask First rather than changing it silently.
-- `packages/shared/src/helpers/due-state.ts`'s interval-math (reused, not
-  duplicated, for the computed `nextDue*` fields).
 
 ## Acceptance criteria
 
-- [ ] List + single-item `GET`/`PATCH`/`DELETE` ownership-scoped through the
+- [x] List + single-item `GET`/`PATCH`/`DELETE` ownership-scoped through the
       parent vehicle (cross-user → 404).
-- [ ] `POST` creates from `FluidLogCreate`; `cost` is a direct optional
+- [x] `POST` creates from `FluidLogCreate`; `cost` is a direct optional
       value (not server-computed — no `quantity × price` rule exists for
       fluids, unlike fuel/charging `totalCost`).
-- [ ] `fluidType` resolves from `FLUID_TYPE_CODES`; an unknown code is a
+- [x] `fluidType` resolves from `FLUID_TYPE_CODES`; an unknown code is a
       clean 400 VALIDATION_ERROR, not an FK 500.
-- [ ] Boundary validation: `mileage >= 0`, `quantityLiters > 0` when
+- [x] Boundary validation: `mileage >= 0`, `quantityLiters > 0` when
       present, `cost >= 0` when present, `intervalKm > 0` /
       `intervalMonths > 0` when present.
-- [ ] `nextDueMileage`/`nextDueDate` are computed correctly when both the
+- [x] `nextDueMileage`/`nextDueDate` are computed correctly when both the
       relevant interval and base value are present, and `null` when either
       is missing.
-- [ ] On create/update/delete, the matching `expenses` row syncs via
+- [x] On create/update/delete, the matching `expenses` row syncs via
       `CostSyncService` with `sourceType='fluid_log'`, category `fluids` —
       **only** when `cost` is present (unlike fuel/charging, cost here is
       optional, so a fluid log with no cost must not create a zero-cost
       expense row).
-- [ ] Fluid logs do **not** create or update a mileage reading (explicitly
+- [x] Fluid logs do **not** create or update a mileage reading (explicitly
       tested — this is the one behavioral delta from fuel/charging that's
       easy to copy-paste wrong from the reference implementation).
-- [ ] Routes registered via `zodRoute()` and present in `/openapi.json`.
+- [x] Routes registered via `zodRoute()` and present in `/openapi.json`.
+- [x] Web: list/create/edit screens under
+      `/vehicles/{vehicleId}/fluid-logs`, reachable from the vehicle detail
+      hub's nav (unconditional — fluid changes apply to every fuel type,
+      unlike the fuel/charging tabs which are fuel-type-gated), all strings
+      in `pl` + `en`.
 
 ## Test matrix
 
@@ -153,14 +166,22 @@ Inherits the [baseline matrix](../docs/agents/patterns/resource-crud-api.md#base
   `apps/api/src/charging-sessions/` structure)
 - `apps/api/src/fluid-logs/*.test.ts`
 - `apps/api/src/expenses/cost-sync.service.ts` (extend `sourceType` union)
-- `apps/web/src/locales/*` (new `fluidType` code labels, pl + en, per
-  ADR-0007 — every user-facing string ships in both languages)
+- `apps/web/src/features/fluid-logs/` (queries, list/form/card components —
+  mirrors `apps/web/src/features/charging/`)
+- `apps/web/src/routes/_authenticated/vehicles/$vehicleId/fluid-logs/**`
+  (route files) + `apps/web/src/routes/_authenticated/vehicles/index.tsx`
+  (wiring)
+- `apps/web/src/locales/{en,pl}/fluid-logs.json` (new), `i18n/index.ts`,
+  `i18n/i18next.d.ts` (namespace registration), `{en,pl}/vehicles.json`
+  (`detail.nav.fluidLogs`), `{en,pl}/expenses.json` (`categories.fluids`,
+  `sources.fluid_log` — the manual-expense form and expense list already
+  read `EXPENSE_CATEGORY_CODES` generically, so the new `fluids` code needed
+  its label added there too)
+- `apps/web/src/features/vehicles/components/vehicle-detail-hub.tsx` (nav
+  link, unconditional unlike `showFuel`/`showCharging`)
 
 ## Out of scope
 
-- Web UI (list/form screens, dashboard tiles) — a follow-up ticket once
-  the API contract is settled; this ticket is API-only, matching how
-  T-022/T-023 shipped API-first.
 - Auto-generating a `reminders` row when a fluid log's `nextDueMileage`/
   `nextDueDate` approaches — the computed fields exist so a future
   reminder-integration ticket can read them, but wiring that up is separate
@@ -185,11 +206,35 @@ Inherits the [baseline matrix](../docs/agents/patterns/resource-crud-api.md#base
 
 ## Verification
 
-- `pnpm --filter @carnotea/api test fluid-logs` → all pass
-- `curl -s localhost:3001/openapi.json | jq '.paths | keys[] | select(contains("fluid-logs"))'` → all 5 routes present
-- Manually verify via `psql`: a fluid log with `cost` set produces exactly
-  one `expenses` row with `source_type='fluid_log'`; one without `cost`
-  produces zero.
+All run and confirmed green on 2026-07-09, against a real local Postgres
+(not just mocks):
+
+- `pnpm --filter @carnotea/api test fluid-logs` → 21/21 pass (14 controller,
+  7 service).
+- `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm lint:ws`,
+  `pnpm lint:tickets`, `pnpm format:check` → all pass across the whole
+  monorepo (`i18n-parity.test.ts` included, confirming `pl`/`en` key parity
+  for the new `fluid-logs.json`).
+- Live smoke test via `curl` against a running `pnpm --filter @carnotea/api dev`
+  - local `pnpm db:up` / `pnpm db:migrate`:
+  * `curl localhost:3001/openapi.json` → both `fluid-logs` routes present.
+  * Created a fluid log with `cost: 45.50` → response had
+    `nextDueMileage: 60000`, `nextDueDate: "2027-01-15"` (from
+    `mileage: 50000` + `intervalKm: 10000` / `changeDate: "2026-01-15"` +
+    `intervalMonths: 12`) → `GET .../expenses` showed exactly one row,
+    `category: "fluids"`, `sourceType: "fluid_log"`.
+  * Created a second fluid log with no `cost` → `GET .../expenses` still
+    showed exactly one row (no zero-cost row created).
+  * `GET .../mileage-readings` stayed `[]` throughout — confirmed no
+    mileage-sync side effect.
+  * `DELETE` the cost-bearing log → its expense row was removed too (204,
+    then `GET .../expenses` → `[]`).
+  * Unknown `fluidType`, negative `mileage` → both `400 VALIDATION_ERROR`;
+    no-cookie request → `401`.
+- `pnpm --filter @carnotea/web codegen:api` run against the local API to
+  regenerate `apps/web/src/lib/api/schema.d.ts` with the new routes (this
+  generated file must be regenerated from a live API, never hand-edited —
+  see AGENTS.md § Never).
 
 ## References
 

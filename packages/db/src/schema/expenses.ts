@@ -46,7 +46,7 @@ export const expenses = pgTable(
     check('expenses_amount_chk', sql`${t.amount} >= 0`),
     check(
       'expenses_source_type_chk',
-      sql`${t.sourceType} IN ('fuel_log', 'service_record', 'manual', 'charging_session')`,
+      sql`${t.sourceType} IN ('fuel_log', 'service_record', 'manual', 'charging_session', 'fluid_log')`,
     ),
     check(
       'expenses_source_id_chk',
