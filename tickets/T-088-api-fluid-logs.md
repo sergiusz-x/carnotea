@@ -108,8 +108,6 @@ List newest-first on `changeDate`, tie-broken by `mileage`.
   adding the `fluids` row to `expense_categories` seed data. This is a
   **public-contract change** (shared union type) — flag it in the PR per
   AGENTS.md § Ask First rather than changing it silently.
-- `packages/shared/src/helpers/due-state.ts`'s interval-math (reused, not
-  duplicated, for the computed `nextDue*` fields).
 
 ## Acceptance criteria
 
@@ -218,20 +216,20 @@ All run and confirmed green on 2026-07-09, against a real local Postgres
   monorepo (`i18n-parity.test.ts` included, confirming `pl`/`en` key parity
   for the new `fluid-logs.json`).
 - Live smoke test via `curl` against a running `pnpm --filter @carnotea/api dev`
-  + local `pnpm db:up` / `pnpm db:migrate`:
-  - `curl localhost:3001/openapi.json` → both `fluid-logs` routes present.
-  - Created a fluid log with `cost: 45.50` → response had
+  - local `pnpm db:up` / `pnpm db:migrate`:
+  * `curl localhost:3001/openapi.json` → both `fluid-logs` routes present.
+  * Created a fluid log with `cost: 45.50` → response had
     `nextDueMileage: 60000`, `nextDueDate: "2027-01-15"` (from
     `mileage: 50000` + `intervalKm: 10000` / `changeDate: "2026-01-15"` +
     `intervalMonths: 12`) → `GET .../expenses` showed exactly one row,
     `category: "fluids"`, `sourceType: "fluid_log"`.
-  - Created a second fluid log with no `cost` → `GET .../expenses` still
+  * Created a second fluid log with no `cost` → `GET .../expenses` still
     showed exactly one row (no zero-cost row created).
-  - `GET .../mileage-readings` stayed `[]` throughout — confirmed no
+  * `GET .../mileage-readings` stayed `[]` throughout — confirmed no
     mileage-sync side effect.
-  - `DELETE` the cost-bearing log → its expense row was removed too (204,
+  * `DELETE` the cost-bearing log → its expense row was removed too (204,
     then `GET .../expenses` → `[]`).
-  - Unknown `fluidType`, negative `mileage` → both `400 VALIDATION_ERROR`;
+  * Unknown `fluidType`, negative `mileage` → both `400 VALIDATION_ERROR`;
     no-cookie request → `401`.
 - `pnpm --filter @carnotea/web codegen:api` run against the local API to
   regenerate `apps/web/src/lib/api/schema.d.ts` with the new routes (this
