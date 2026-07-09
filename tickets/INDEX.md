@@ -118,6 +118,7 @@ _None._
 - 🟡 [T-085 — Remove obsolete VPS deploy workflow](./T-085-remove-obsolete-vps-deploy-workflow.md)
 - 🟡 [T-087 — Automated SemVer releases via semantic-release](./T-087-automated-semver-releases.md)
 - 🟡 [T-088 — API — Operating fluid changes (fluid logs) CRUD](./T-088-api-fluid-logs.md)
+- 🔴 [T-089 — Fix invalid profile names in /api/me provisioning](./T-089-fix-profile-provisioning-invalid-names.md)
 
 <!-- END GENERATED:tickets -->
 

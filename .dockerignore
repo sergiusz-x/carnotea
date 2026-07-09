@@ -1,0 +1,24 @@
+# No file existed here at all before, so `COPY . .` in apps/api/Dockerfile
+# and apps/web/Dockerfile copied the host's own node_modules (Windows
+# symlinks, wrong platform binaries) over the container's freshly
+# `pnpm install`-ed Linux node_modules, breaking module resolution
+# (e.g. "Cannot find module '.../node_modules/typescript/bin/tsc'").
+# Never caught in Dokploy, which clones fresh from git server-side with no
+# local node_modules to leak in — only surfaced when testing `docker build`
+# from an already-`pnpm install`-ed local working directory.
+
+**/node_modules
+.git
+.turbo
+.cache
+**/.cache
+**/dist
+**/build
+**/coverage
+.worktrees
+.claude
+.vscode
+.env
+.env.*
+!.env.example
+*.log

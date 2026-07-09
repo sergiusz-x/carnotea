@@ -52,10 +52,16 @@ const dbStub = {
     },
   },
   insert: () => ({
-    values: () => ({
+    values: (data: typeof users.$inferInsert) => ({
       returning: () => {
-        storedProfile = baseProfile;
-        return Promise.resolve([baseProfile]);
+        storedProfile = {
+          ...baseProfile,
+          ...data,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+        };
+        return Promise.resolve([storedProfile]);
       },
     }),
   }),
@@ -125,9 +131,25 @@ describe('MeController', () => {
       const res = await app.inject({ method: 'GET', url: '/api/me' });
 
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toMatchObject({
-        id: userId,
-        email: 'jan@example.com',
+      expect(res.json()).toEqual({
+        ...contractProfile,
+        lastName: 'Jan',
+      });
+    });
+
+    it('normalizes legacy blank name fields before returning the profile', async () => {
+      storedProfile = {
+        ...baseProfile,
+        firstName: '',
+        lastName: '',
+      };
+
+      const res = await app.inject({ method: 'GET', url: '/api/me' });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toEqual({
+        ...contractProfile,
+        lastName: 'Jan',
       });
     });
   });
@@ -175,8 +197,6 @@ describe('MeController', () => {
         payload: { localePref: 'de' },
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      console.log('invalid locale response:', { status: res.statusCode, body: res.json() });
       expect(res.statusCode).toBe(400);
       expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
     });
