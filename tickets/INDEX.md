@@ -24,7 +24,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
 - 🟡 [T-055 — Web Push notifications for due reminders](./T-055-pwa-push-notifications.md)
-- 🟡 [T-088 — API — Operating fluid changes (fluid logs) CRUD](./T-088-api-fluid-logs.md)
 
 ## Backlog
 
@@ -119,6 +118,7 @@ _None._
 - 🔴 [T-084 — Route deploy secret check through job output](./T-084-route-deploy-secret-check-through-job-output.md)
 - 🟡 [T-085 — Remove obsolete VPS deploy workflow](./T-085-remove-obsolete-vps-deploy-workflow.md)
 - 🟡 [T-087 — Automated SemVer releases via semantic-release](./T-087-automated-semver-releases.md)
+- 🟡 [T-088 — API — Operating fluid changes (fluid logs) CRUD](./T-088-api-fluid-logs.md)
 - 🔴 [T-089 — Fix invalid profile names in /api/me provisioning](./T-089-fix-profile-provisioning-invalid-names.md)
 
 <!-- END GENERATED:tickets -->

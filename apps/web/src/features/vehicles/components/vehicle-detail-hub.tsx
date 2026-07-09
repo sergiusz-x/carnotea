@@ -306,6 +306,13 @@ export function VehicleDetailPage() {
             <Link to="/vehicles/$vehicleId/service" params={{ vehicleId }} className={navLinkClass}>
               {t('detail.nav.service')}
             </Link>
+            <Link
+              to="/vehicles/$vehicleId/fluid-logs"
+              params={{ vehicleId }}
+              className={navLinkClass}
+            >
+              {t('detail.nav.fluidLogs')}
+            </Link>
             <Link to="/vehicles/$vehicleId/issues" params={{ vehicleId }} className={navLinkClass}>
               {t('detail.nav.issues')}
             </Link>

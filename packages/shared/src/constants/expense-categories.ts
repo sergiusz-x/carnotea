@@ -3,6 +3,7 @@ export const EXPENSE_CATEGORY_CODES = [
   'electricity',
   'service',
   'parts',
+  'fluids',
   'insurance',
   'inspection',
   'other',

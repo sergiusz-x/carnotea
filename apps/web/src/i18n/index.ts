@@ -9,6 +9,7 @@ import enCharging from '../locales/en/charging.json';
 import enCommon from '../locales/en/common.json';
 import enDashboard from '../locales/en/dashboard.json';
 import enExpenses from '../locales/en/expenses.json';
+import enFluidLogs from '../locales/en/fluid-logs.json';
 import enForms from '../locales/en/forms.json';
 import enFuelLogs from '../locales/en/fuel-logs.json';
 import enGdpr from '../locales/en/gdpr.json';
@@ -26,6 +27,7 @@ import plCharging from '../locales/pl/charging.json';
 import plCommon from '../locales/pl/common.json';
 import plDashboard from '../locales/pl/dashboard.json';
 import plExpenses from '../locales/pl/expenses.json';
+import plFluidLogs from '../locales/pl/fluid-logs.json';
 import plForms from '../locales/pl/forms.json';
 import plFuelLogs from '../locales/pl/fuel-logs.json';
 import plGdpr from '../locales/pl/gdpr.json';
@@ -59,6 +61,7 @@ export const resources = {
     vehicles: enVehicles,
     'fuel-logs': enFuelLogs,
     charging: enCharging,
+    'fluid-logs': enFluidLogs,
     service: enService,
     expenses: enExpenses,
     gdpr: enGdpr,
@@ -78,6 +81,7 @@ export const resources = {
     vehicles: plVehicles,
     'fuel-logs': plFuelLogs,
     charging: plCharging,
+    'fluid-logs': plFluidLogs,
     service: plService,
     expenses: plExpenses,
     gdpr: plGdpr,
@@ -108,6 +112,7 @@ void i18n
       'vehicles',
       'fuel-logs',
       'charging',
+      'fluid-logs',
       'service',
       'expenses',
       'gdpr',

@@ -1,0 +1,67 @@
+{
+  "pageTitle": "Fluid changes",
+  "addFluidLog": "Add fluid change",
+  "loading": "Loading fluid changes…",
+  "empty": {
+    "title": "No fluid changes yet",
+    "description": "Add your first fluid change to start tracking oil, coolant, and other fluids.",
+    "cta": "Add fluid change"
+  },
+  "error": {
+    "load": "Failed to load fluid changes. Please try again.",
+    "retry": "Retry"
+  },
+  "fields": {
+    "changeDate": "Date",
+    "mileage": "Mileage (km)",
+    "fluidType": "Fluid type",
+    "selectFluidType": "Select fluid type",
+    "quantityLiters": "Quantity (L)",
+    "cost": "Cost",
+    "intervalKm": "Next change interval (km)",
+    "intervalMonths": "Next change interval (months)",
+    "months": "months",
+    "workshopName": "Workshop / Location",
+    "notes": "Notes"
+  },
+  "fluidType": {
+    "engine_oil": "Engine oil",
+    "oil_filter": "Oil filter",
+    "brake_fluid": "Brake fluid",
+    "coolant": "Coolant",
+    "power_steering_fluid": "Power steering fluid",
+    "washer_fluid": "Washer fluid",
+    "transmission_fluid": "Transmission fluid",
+    "other": "Other"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "quantity": "{{quantity}} L",
+    "nextDue": "Next due: {{mileage}} km / {{date}}"
+  },
+  "create": {
+    "title": "Add fluid change",
+    "submit": "Save fluid change",
+    "success": "Fluid change added successfully."
+  },
+  "edit": {
+    "title": "Edit fluid change",
+    "submit": "Save changes",
+    "success": "Fluid change updated successfully."
+  },
+  "delete": {
+    "confirmTitle": "Delete fluid change",
+    "confirmMessage": "Are you sure you want to delete this fluid change from {{date}}?",
+    "confirm": "Yes, delete",
+    "cancel": "Cancel"
+  },
+  "wizard": {
+    "step1": "What & when?",
+    "step2": "Details",
+    "summaryDate": "Date",
+    "summaryMileage": "Mileage",
+    "summaryFluidType": "Fluid",
+    "summaryWorkshop": "Workshop",
+    "summaryHint": "Cost is optional — leave it blank if you don't know it yet. Currency: {{currency}}."
+  }
+}
