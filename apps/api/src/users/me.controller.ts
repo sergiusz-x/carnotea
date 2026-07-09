@@ -25,6 +25,8 @@ import { CurrentUser } from '../auth/current-user.decorator.js';
 import { DB } from '../db/db.constants.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
 
+import { deriveProfileNames } from './profile-name.js';
+
 const meNestPath = ROUTES.me.slice(1);
 
 zodRoute({
@@ -65,13 +67,15 @@ export class MeController {
     });
 
     if (!profile) {
+      const { firstName, lastName } = deriveProfileNames({ email: user.email });
+
       // Provision a domain profile from the auth identity (edge case: no users row).
       const [inserted] = await this.db
         .insert(users)
         .values({
           id: user.id,
-          firstName: '',
-          lastName: '',
+          firstName,
+          lastName,
           email: user.email,
         })
         .returning();
@@ -115,10 +119,16 @@ export class MeController {
   }
 
   private toContract(row: typeof users.$inferSelect): UserProfile {
-    return {
-      id: row.id,
+    const { firstName, lastName } = deriveProfileNames({
       firstName: row.firstName,
       lastName: row.lastName,
+      email: row.email,
+    });
+
+    return {
+      id: row.id,
+      firstName,
+      lastName,
       email: row.email,
       localePref: row.localePref as 'pl' | 'en',
       unitsPref: row.unitsPref as 'metric' | 'imperial',

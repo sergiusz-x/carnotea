@@ -5,27 +5,13 @@ import { eq } from 'drizzle-orm';
 
 import { type EmailService } from '../emails/email.service.js';
 import { type SupportedLocale } from '../emails/email.templates.js';
+import { deriveProfileNames } from '../users/profile-name.js';
 
 export interface AuthOptions {
   secret: string;
   baseURL: string;
   trustedOrigins: string[];
   emailService: EmailService;
-}
-
-// The domain profile requires first/last name, while better-auth signup carries a
-// single `name`. Split on the first space; a single-word name yields an empty last
-// name. Profile editing (T-041) refines this later.
-function splitName(name: string): { firstName: string; lastName: string } {
-  const trimmed = name.trim();
-  const spaceIndex = trimmed.indexOf(' ');
-  if (spaceIndex === -1) {
-    return { firstName: trimmed, lastName: '' };
-  }
-  return {
-    firstName: trimmed.slice(0, spaceIndex),
-    lastName: trimmed.slice(spaceIndex + 1).trim(),
-  };
 }
 
 /** Look up the user's persisted locale from the domain users table; fall back to 'en'. */
@@ -65,7 +51,7 @@ export function createAuth(db: Db, options: AuthOptions) {
         user: { email: string; name: string };
         url: string;
       }) => {
-        const { firstName } = splitName(user.name);
+        const { firstName } = deriveProfileNames({ name: user.name, email: user.email });
         const locale = await getUserLocale(db, user.email);
         await emailSvc.sendPasswordResetEmail(user.email, firstName, url, locale);
       },
@@ -76,7 +62,7 @@ export function createAuth(db: Db, options: AuthOptions) {
         user: { email: string; name: string };
         url: string;
       }) => {
-        const { firstName } = splitName(user.name);
+        const { firstName } = deriveProfileNames({ name: user.name, email: user.email });
         const locale = await getUserLocale(db, user.email);
         await emailSvc.sendVerificationEmail(user.email, firstName, url, locale);
       },
@@ -97,7 +83,10 @@ export function createAuth(db: Db, options: AuthOptions) {
       user: {
         create: {
           after: async (user): Promise<void> => {
-            const { firstName, lastName } = splitName(user.name);
+            const { firstName, lastName } = deriveProfileNames({
+              name: user.name,
+              email: user.email,
+            });
             await db
               .insert(users)
               .values({
