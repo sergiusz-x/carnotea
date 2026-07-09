@@ -17,6 +17,7 @@ import {
 
 describe('build-version', () => {
   afterEach(() => {
+    vi.unstubAllEnvs();
     vi.unstubAllGlobals();
   });
 
@@ -77,6 +78,13 @@ describe('build-version', () => {
   it('falls back to GitHub release metadata when git metadata is unavailable', async () => {
     const tempDir = mkdtempSync(join(tmpdir(), 'carnotea-build-info-'));
 
+    vi.stubEnv('SOURCE_COMMIT', '');
+    vi.stubEnv('COMMIT_SHA', '');
+    vi.stubEnv('GITHUB_SHA', '');
+    vi.stubEnv('CI_COMMIT_SHA', '');
+    vi.stubEnv('VERCEL_GIT_COMMIT_SHA', '');
+    vi.stubEnv('RAILWAY_GIT_COMMIT_SHA', '');
+
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -87,19 +95,21 @@ describe('build-version', () => {
       ),
     );
 
-    await expect(
-      computeBuildInfo({
-        builtAt: '2026-07-09T20:17:58.655Z',
-        cwd: tempDir,
-        repository: 'sergiusz-x/carnotea',
-      }),
-    ).resolves.toMatchObject({
-      source: 'github-release',
-      releaseVersion: 'v1.0.1',
-      predictedReleaseVersion: 'v1.0.1',
-      displayVersion: 'v1.0.1+build.ts20260709t201758z',
-    });
-
-    rmSync(tempDir, { force: true, recursive: true });
+    try {
+      await expect(
+        computeBuildInfo({
+          builtAt: '2026-07-09T20:17:58.655Z',
+          cwd: tempDir,
+          repository: 'sergiusz-x/carnotea',
+        }),
+      ).resolves.toMatchObject({
+        source: 'github-release',
+        releaseVersion: 'v1.0.1',
+        predictedReleaseVersion: 'v1.0.1',
+        displayVersion: 'v1.0.1+build.ts20260709t201758z',
+      });
+    } finally {
+      rmSync(tempDir, { force: true, recursive: true });
+    }
   });
 });
