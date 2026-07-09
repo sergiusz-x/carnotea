@@ -49,3 +49,10 @@ export const chargerTypes = pgTable('charger_types', {
   sortOrder: smallint().notNull().default(0),
   isActive: boolean().notNull().default(true),
 });
+
+export const fluidTypes = pgTable('fluid_types', {
+  id: smallint().generatedAlwaysAsIdentity().primaryKey(),
+  code: varchar({ length: 30 }).notNull().unique(),
+  sortOrder: smallint().notNull().default(0),
+  isActive: boolean().notNull().default(true),
+});

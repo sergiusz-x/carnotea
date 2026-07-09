@@ -50,6 +50,7 @@
     "electricity": "Elektryczność",
     "service": "Serwis",
     "parts": "Części",
+    "fluids": "Płyny",
     "insurance": "Ubezpieczenie",
     "inspection": "Przegląd",
     "other": "Inne"
@@ -58,7 +59,8 @@
     "manual": "Ręczny",
     "fuel_log": "Log paliwa",
     "service_record": "Serwis",
-    "charging_session": "Ładowanie"
+    "charging_session": "Ładowanie",
+    "fluid_log": "Płyn eksploatacyjny"
   },
   "wizard": {
     "step1": "Szczegóły",

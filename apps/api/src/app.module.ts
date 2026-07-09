@@ -12,6 +12,7 @@ import { validateEnv } from './config/env.js';
 import { DashboardModule } from './dashboard/dashboard.module.js';
 import { DbModule } from './db/db.module.js';
 import { ExpensesModule } from './expenses/expenses.module.js';
+import { FluidLogsModule } from './fluid-logs/fluid-logs.module.js';
 import { FuelLogsModule } from './fuel-logs/fuel-logs.module.js';
 import { HealthController } from './health/health.controller.js';
 import { ReadinessController } from './health/readiness.controller.js';
@@ -40,6 +41,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     VehiclesModule,
     FuelLogsModule,
     ChargingSessionsModule,
+    FluidLogsModule,
     MileageReadingsModule,
     RemindersModule,
     IssuesModule,

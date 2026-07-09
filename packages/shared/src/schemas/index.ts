@@ -4,6 +4,7 @@ export * from './vehicle.js';
 export * from './mileage-reading.js';
 export * from './fuel-log.js';
 export * from './charging-session.js';
+export * from './fluid-log.js';
 export * from './service-record.js';
 export * from './part.js';
 export * from './service-part.js';

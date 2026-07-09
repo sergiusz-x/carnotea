@@ -6,15 +6,15 @@ import { type DbTx } from '../mileage/mileage-sync.service.js';
 
 export interface UpsertFromSourceParams {
   vehicleId: string;
-  sourceType: 'fuel_log' | 'charging_session' | 'service_record';
+  sourceType: 'fuel_log' | 'charging_session' | 'service_record' | 'fluid_log';
   sourceId: string;
   amount: number;
   date: string;
-  categoryCode: 'fuel' | 'electricity' | 'service';
+  categoryCode: 'fuel' | 'electricity' | 'service' | 'fluids';
 }
 
 export interface RemoveForSourceParams {
-  sourceType: 'fuel_log' | 'charging_session' | 'service_record';
+  sourceType: 'fuel_log' | 'charging_session' | 'service_record' | 'fluid_log';
   sourceId: string;
 }
 

@@ -17,6 +17,8 @@ export const ROUTES = {
   mileageReadingById: '/api/vehicles/{vehicleId}/mileage-readings/{id}',
   chargingSessionsByVehicle: '/api/vehicles/{vehicleId}/charging-sessions',
   chargingSessionById: '/api/vehicles/{vehicleId}/charging-sessions/{id}',
+  fluidLogsByVehicle: '/api/vehicles/{vehicleId}/fluid-logs',
+  fluidLogById: '/api/vehicles/{vehicleId}/fluid-logs/{id}',
   issuesByVehicle: '/api/vehicles/{vehicleId}/issues',
   issueById: '/api/vehicles/{vehicleId}/issues/{id}',
   serviceRecordsByVehicle: '/api/vehicles/{vehicleId}/service-records',

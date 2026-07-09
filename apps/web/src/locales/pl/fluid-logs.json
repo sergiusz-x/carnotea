@@ -1,0 +1,67 @@
+{
+  "pageTitle": "Płyny eksploatacyjne",
+  "addFluidLog": "Dodaj wymianę płynu",
+  "loading": "Ładowanie płynów eksploatacyjnych…",
+  "empty": {
+    "title": "Brak wpisów o płynach",
+    "description": "Dodaj pierwszą wymianę płynu, aby śledzić olej, płyn chłodniczy i inne płyny.",
+    "cta": "Dodaj wymianę płynu"
+  },
+  "error": {
+    "load": "Nie udało się załadować płynów eksploatacyjnych. Spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
+  },
+  "fields": {
+    "changeDate": "Data",
+    "mileage": "Przebieg (km)",
+    "fluidType": "Rodzaj płynu",
+    "selectFluidType": "Wybierz rodzaj płynu",
+    "quantityLiters": "Ilość (L)",
+    "cost": "Koszt",
+    "intervalKm": "Interwał kolejnej wymiany (km)",
+    "intervalMonths": "Interwał kolejnej wymiany (miesiące)",
+    "months": "miesięcy",
+    "workshopName": "Warsztat / Lokalizacja",
+    "notes": "Notatki"
+  },
+  "fluidType": {
+    "engine_oil": "Olej silnikowy",
+    "oil_filter": "Filtr oleju",
+    "brake_fluid": "Płyn hamulcowy",
+    "coolant": "Płyn chłodniczy",
+    "power_steering_fluid": "Płyn wspomagania kierownicy",
+    "washer_fluid": "Płyn do spryskiwaczy",
+    "transmission_fluid": "Olej przekładniowy",
+    "other": "Inne"
+  },
+  "list": {
+    "mileage": "{{mileage}} km",
+    "quantity": "{{quantity}} L",
+    "nextDue": "Następna wymiana: {{mileage}} km / {{date}}"
+  },
+  "create": {
+    "title": "Dodaj wymianę płynu",
+    "submit": "Zapisz wymianę płynu",
+    "success": "Wymiana płynu dodana pomyślnie."
+  },
+  "edit": {
+    "title": "Edytuj wymianę płynu",
+    "submit": "Zapisz zmiany",
+    "success": "Wymiana płynu zaktualizowana pomyślnie."
+  },
+  "delete": {
+    "confirmTitle": "Usuń wymianę płynu",
+    "confirmMessage": "Czy na pewno chcesz usunąć tę wymianę płynu z {{date}}?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "wizard": {
+    "step1": "Co i kiedy?",
+    "step2": "Szczegóły",
+    "summaryDate": "Data",
+    "summaryMileage": "Przebieg",
+    "summaryFluidType": "Płyn",
+    "summaryWorkshop": "Warsztat",
+    "summaryHint": "Koszt jest opcjonalny — zostaw puste, jeśli jeszcze go nie znasz. Waluta: {{currency}}."
+  }
+}

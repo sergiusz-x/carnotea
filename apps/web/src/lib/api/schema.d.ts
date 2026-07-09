@@ -115,7 +115,7 @@ export interface paths {
             expenses: ({
               id: string;
               vehicleId: string;
-              category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+              category: "fuel" | "electricity" | "service" | "parts" | "fluids" | "insurance" | "inspection" | "other";
               expenseDate: string;
               amount: number | null;
               description?: string | null;
@@ -310,7 +310,7 @@ export interface paths {
               occurredAt: string;
               mileage: number | null;
               kind: "expense";
-              category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+              category: "fuel" | "electricity" | "service" | "parts" | "fluids" | "insurance" | "inspection" | "other";
               amount: number | null;
               description: string | null;
               isAutoSynced: boolean;
@@ -717,7 +717,7 @@ export interface paths {
         200: { content: {
           "application/json": {
             items: ({
-              category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+              category: "fuel" | "electricity" | "service" | "parts" | "fluids" | "insurance" | "inspection" | "other";
               total: number | null;
               count: number;
             })[];
@@ -839,7 +839,7 @@ export interface paths {
     post: {
       requestBody: { content: {
         "application/json": {
-          category: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+          category: "fuel" | "electricity" | "service" | "parts" | "fluids" | "insurance" | "inspection" | "other";
           expenseDate: string;
           amount: number | null;
           description?: string | null;
@@ -982,7 +982,7 @@ export interface paths {
     patch: {
       requestBody: { content: {
         "application/json": {
-          category?: "fuel" | "electricity" | "service" | "parts" | "insurance" | "inspection" | "other";
+          category?: "fuel" | "electricity" | "service" | "parts" | "fluids" | "insurance" | "inspection" | "other";
           expenseDate?: string;
           amount?: number | null;
           description?: string | null;
@@ -1038,6 +1038,263 @@ export interface paths {
           };
         } };
         409: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/fluid-logs": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": ({
+            id: string;
+            vehicleId: string;
+            changeDate: string;
+            mileage: number;
+            fluidType: string;
+            quantityLiters: number | null;
+            cost: number | null;
+            intervalKm: number | null;
+            intervalMonths: number | null;
+            workshopName: string | null;
+            notes: string | null;
+            nextDueMileage: number | null;
+            nextDueDate: string | null;
+            createdAt: string;
+          })[];
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    post: {
+      requestBody: { content: {
+        "application/json": {
+          changeDate: string;
+          mileage: number;
+          fluidType: "engine_oil" | "oil_filter" | "brake_fluid" | "coolant" | "power_steering_fluid" | "washer_fluid" | "transmission_fluid" | "other";
+          quantityLiters?: number | null;
+          cost?: number | null;
+          intervalKm?: number | null;
+          intervalMonths?: number | null;
+          workshopName?: string | null;
+          notes?: string | null;
+        };
+      } };
+      responses: {
+        201: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            changeDate: string;
+            mileage: number;
+            fluidType: string;
+            quantityLiters: number | null;
+            cost: number | null;
+            intervalKm: number | null;
+            intervalMonths: number | null;
+            workshopName: string | null;
+            notes: string | null;
+            nextDueMileage: number | null;
+            nextDueDate: string | null;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+  };
+  "/api/vehicles/{vehicleId}/fluid-logs/{id}": {
+    get: {
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            changeDate: string;
+            mileage: number;
+            fluidType: string;
+            quantityLiters: number | null;
+            cost: number | null;
+            intervalKm: number | null;
+            intervalMonths: number | null;
+            workshopName: string | null;
+            notes: string | null;
+            nextDueMileage: number | null;
+            nextDueDate: string | null;
+            createdAt: string;
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    delete: {
+      responses: {
+        204: { content: {
+
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+      };
+    };
+    patch: {
+      requestBody: { content: {
+        "application/json": {
+          changeDate?: string;
+          mileage?: number;
+          fluidType?: "engine_oil" | "oil_filter" | "brake_fluid" | "coolant" | "power_steering_fluid" | "washer_fluid" | "transmission_fluid" | "other";
+          quantityLiters?: number | null;
+          cost?: number | null;
+          intervalKm?: number | null;
+          intervalMonths?: number | null;
+          workshopName?: string | null;
+          notes?: string | null;
+        };
+      } };
+      responses: {
+        200: { content: {
+          "application/json": {
+            id: string;
+            vehicleId: string;
+            changeDate: string;
+            mileage: number;
+            fluidType: string;
+            quantityLiters: number | null;
+            cost: number | null;
+            intervalKm: number | null;
+            intervalMonths: number | null;
+            workshopName: string | null;
+            notes: string | null;
+            nextDueMileage: number | null;
+            nextDueDate: string | null;
+            createdAt: string;
+          };
+        } };
+        400: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        401: { content: {
+          "application/json": {
+            code: string;
+            message: string;
+            issues?: ({
+              code: string;
+              path: (string | number)[];
+              message: string;
+            })[];
+          };
+        } };
+        404: { content: {
           "application/json": {
             code: string;
             message: string;

@@ -5,6 +5,7 @@ import tseslint from 'typescript-eslint';
 const ignoredPaths = [
   '**/.cache/**',
   '**/.turbo/**',
+  '**/.worktrees/**',
   '**/build/**',
   '**/coverage/**',
   '**/dist/**',

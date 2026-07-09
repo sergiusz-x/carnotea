@@ -62,6 +62,11 @@ drizzle/meta/_journal.local.json
 .claude/settings.json
 .claude/worktrees/
 
+# work-ticket agent worktrees (per-developer, not shared) — also excluded
+# from ESLint's root scan below, since a nested worktree's own node_modules
+# isn't guaranteed to resolve the same way as the parent's.
+.worktrees/
+
 # agent-browser — browser session data (per-developer)
 .agent-browser/
 
