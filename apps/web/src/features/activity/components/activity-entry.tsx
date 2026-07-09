@@ -1,7 +1,15 @@
 import type { DueState, IssuePriorityCode } from '@carnotea/shared';
 import { Link } from '@tanstack/react-router';
 import type { TFunction } from 'i18next';
-import { BatteryCharging, Bell, CreditCard, Fuel, TriangleAlert, Wrench } from 'lucide-react';
+import {
+  BatteryCharging,
+  Bell,
+  CreditCard,
+  Droplet,
+  Fuel,
+  TriangleAlert,
+  Wrench,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -56,6 +64,7 @@ function MoneyValue({ children }: { children: ReactNode }) {
 
 function useEntryMeta(entry: ActivityFeedEntry, locale: string, currency: string) {
   const { t } = useTranslation('activity');
+  const { t: tf } = useTranslation('fluid-logs');
 
   switch (entry.kind) {
     case 'fuel':
@@ -71,6 +80,13 @@ function useEntryMeta(entry: ActivityFeedEntry, locale: string, currency: string
         kindLabel: t('filter.charge'),
         title: t('entry.charge'),
         right: <MoneyValue>{formatOptionalMoney(entry.totalCost, currency, locale, t)}</MoneyValue>,
+      };
+    case 'fluid':
+      return {
+        icon: <Droplet className="h-4 w-4" aria-hidden="true" />,
+        kindLabel: t('filter.fluid'),
+        title: tf(`fluidType.${entry.fluidType}`),
+        right: <MoneyValue>{formatOptionalMoney(entry.cost, currency, locale, t)}</MoneyValue>,
       };
     case 'service':
       return {
@@ -139,6 +155,16 @@ function EntryLink({
         <Link
           to="/vehicles/$vehicleId/charging/$sessionId/edit"
           params={{ vehicleId, sessionId: entry.id }}
+          className={className}
+        >
+          {children}
+        </Link>
+      );
+    case 'fluid':
+      return (
+        <Link
+          to="/vehicles/$vehicleId/fluid-logs/$logId/edit"
+          params={{ vehicleId, logId: entry.id }}
           className={className}
         >
           {children}
