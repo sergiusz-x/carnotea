@@ -1,4 +1,5 @@
 export type ReleaseType = 'none' | 'patch' | 'minor' | 'major';
+export type BuildInfoSource = 'git' | 'github-release' | 'fallback';
 
 export interface BuildInfo {
   builtAt: string;
@@ -8,7 +9,7 @@ export interface BuildInfo {
   releaseVersion: string | null;
   predictedReleaseVersion: string;
   displayVersion: string;
-  source: 'git' | 'fallback';
+  source: BuildInfoSource;
 }
 
 const fallbackBuildInfo: BuildInfo = {

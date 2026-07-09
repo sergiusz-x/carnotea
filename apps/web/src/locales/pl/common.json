@@ -19,7 +19,7 @@
     "cancel": "Anuluj"
   },
   "version": {
-    "title": "Wersja {{version}} (commit {{commit}})",
-    "linkLabel": "Otwórz metadane wersji {{version}} z commita {{commit}}"
+    "title": "Wersja {{version}}",
+    "linkLabel": "Otwórz metadane wersji {{version}}"
   }
 }
