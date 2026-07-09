@@ -112,8 +112,8 @@ domain row is missing.
 - Implemented on 2026-07-09 by routing both auth signup and /api/me through the
   same deriveProfileNames(...) helper.
 - Validation in this worktree used the main checkout's installed dependencies via
-  local junctions because a fresh git worktree does not carry its own 
-ode_modules.
+  local junctions because a fresh git worktree does not carry its own
+  ode_modules.
 
 ## Verification
 
@@ -126,5 +126,3 @@ ode_modules.
 - Related tickets: T-029, T-041
 - Pattern: [web-screens](../docs/agents/patterns/web-screens.md)
 - Schema: `packages/shared/src/schemas/user-profile.ts`
-
-
