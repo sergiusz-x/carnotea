@@ -1,7 +1,7 @@
 ---
 id: T-089
 title: Fix invalid profile names in /api/me provisioning
-status: in_progress
+status: done
 priority: high
 size: S
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-029, T-041]
 labels: [api, web, bug, production]
 created_at: 2026-07-09
 updated_at: 2026-07-09
-closed_at: ~
+closed_at: 2026-07-09
 ---
 
 # T-089 — Fix invalid profile names in /api/me provisioning
@@ -126,4 +126,5 @@ ode_modules.
 - Related tickets: T-029, T-041
 - Pattern: [web-screens](../docs/agents/patterns/web-screens.md)
 - Schema: `packages/shared/src/schemas/user-profile.ts`
+
 
