@@ -7,7 +7,11 @@
 # ---- Stage 1: Build the static bundle --------------------------------------
 FROM node:22-slim AS builder
 
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git \
+ && rm -rf /var/lib/apt/lists/* \
+ && corepack enable \
+ && corepack prepare pnpm@9.12.0 --activate
 
 WORKDIR /app
 

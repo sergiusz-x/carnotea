@@ -38,6 +38,11 @@ public IP or port-forwarding.
 - Dokploy builds `api`, `web`, and `migrate` from their Dockerfiles, runs the
   `migrate` service (profile `release`) to apply pending DB migrations, then
   rolls out `api`/`web` once migration succeeds.
+- The deployed web build exposes its metadata in the UI and at
+  `/version.json`. Refreshing the browser after a rollout should show a new
+  `displayVersion` (`<release-version>+build.<short-sha>`) once Dokploy has
+  started serving the new static bundle. If the value is still old, the deploy
+  has not reached the browser yet.
 - The public domain (e.g. `carnotea.sergiusz.dev`) is assigned to the `web`
   service through Dokploy's **Domains** tab, which configures Traefik routing
   and TLS automatically — no `DOMAIN` env var or reverse-proxy service needed
@@ -55,6 +60,10 @@ public IP or port-forwarding.
 
 If `migrate` exits non-zero, Dokploy stops the deployment and the currently
 running `api`/`web` containers keep serving traffic.
+
+The web nginx config serves both `index.html` and `version.json` with
+`Cache-Control: no-store`, so a normal refresh pulls the newest shell/build
+metadata rather than a stale cached copy.
 
 ## CI/CD (branch protection → Dokploy)
 
