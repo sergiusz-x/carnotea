@@ -17,5 +17,9 @@
     "edit": "Edytuj",
     "delete": "Usuń",
     "cancel": "Anuluj"
+  },
+  "version": {
+    "title": "Wersja {{version}} (commit {{commit}})",
+    "linkLabel": "Otwórz metadane wersji {{version}} z commita {{commit}}"
   }
 }
