@@ -17,5 +17,9 @@
     "edit": "Edit",
     "delete": "Delete",
     "cancel": "Cancel"
+  },
+  "version": {
+    "title": "Build {{version}} (commit {{commit}})",
+    "linkLabel": "Open build metadata for version {{version}} on commit {{commit}}"
   }
 }

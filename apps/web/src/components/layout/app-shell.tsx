@@ -17,6 +17,7 @@ import { Nav } from './nav';
 import { UserMenu } from './user-menu';
 import { VehiclePicker } from './vehicle-picker';
 import { VehiclePickerSheet } from './vehicle-picker-sheet';
+import { VersionBadge } from './version-badge';
 
 export function AppShell() {
   const { t } = useTranslation('common');
@@ -101,6 +102,7 @@ export function AppShell() {
       {/* Mobile only */}
       <BottomNav />
       <Fab />
+      <VersionBadge />
       <VehiclePickerSheet open={vehicleSheetOpen} onOpenChange={setVehicleSheetOpen} />
     </div>
   );

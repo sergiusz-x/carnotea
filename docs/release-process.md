@@ -67,6 +67,26 @@ git describe --tags --abbrev=0   # latest release tag reachable from HEAD
 gh release view --repo sergiusz-x/carnotea   # latest GitHub Release + notes
 ```
 
+## Web build version visibility
+
+The web app exposes its deployed build metadata in two places:
+
+- a visible build badge in the shell,
+- `/version.json` served by nginx.
+
+The value is derived automatically from the checked-out git history during the
+web build:
+
+- `predictedReleaseVersion` follows the same Conventional Commit rules
+  semantic-release uses,
+- `displayVersion` appends build metadata from the current commit SHA:
+  `v1.2.3+build.abc1234`.
+
+This matters because Dokploy builds directly from the pushed `main` commit,
+while semantic-release creates the git tag slightly later in GitHub Actions.
+The web badge therefore reflects the deployed build immediately, even before the
+GitHub Release UI catches up.
+
 ## For agents
 
 Nothing extra to do beyond writing correctly-typed Conventional Commits,
