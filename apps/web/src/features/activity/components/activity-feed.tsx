@@ -10,7 +10,16 @@ import { activityFeedInfiniteQueryOptions } from '../queries';
 
 import { ActivityEntryCard } from './activity-entry';
 
-const FILTERS = ['all', 'charge', 'fuel', 'service', 'expense', 'issue', 'reminder'] as const;
+const FILTERS = [
+  'all',
+  'charge',
+  'fuel',
+  'fluid',
+  'service',
+  'expense',
+  'issue',
+  'reminder',
+] as const;
 
 type ActivityFilter = (typeof FILTERS)[number];
 

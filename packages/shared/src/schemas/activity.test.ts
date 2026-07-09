@@ -68,6 +68,22 @@ describe('ActivityEntrySchema', () => {
     if (parsed.kind === 'service') expect(parsed.totalCost).toBe(540);
   });
 
+  it('parses a fluid entry with an optional cost', () => {
+    const parsed = ActivityEntrySchema.parse({
+      ...base,
+      kind: 'fluid',
+      fluidType: 'engine_oil',
+      quantityLiters: '4.50',
+      cost: null,
+      workshopName: 'ACME Garage',
+    });
+    expect(parsed.kind).toBe('fluid');
+    if (parsed.kind === 'fluid') {
+      expect(parsed.quantityLiters).toBe(4.5);
+      expect(parsed.cost).toBeNull();
+    }
+  });
+
   it('rejects an unknown discriminant', () => {
     expect(() => ActivityEntrySchema.parse({ ...base, kind: 'spaceship' })).toThrow();
   });
