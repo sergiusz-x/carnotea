@@ -31,6 +31,25 @@ function buildInfoPlugin(buildInfo: Awaited<ReturnType<typeof computeBuildInfo>>
   };
 }
 
+function serviceWorkerRegistrationPlugin(): Plugin {
+  const script = [
+    '<script id="carnotea-sw-registration">',
+    "if('serviceWorker' in navigator){",
+    "window.addEventListener('load',()=>{",
+    "navigator.serviceWorker.register('/sw.js',{scope:'/',updateViaCache:'none'}).then((registration)=>registration.update()).catch(()=>{});",
+    '});',
+    '}',
+    '</script>',
+  ].join('');
+
+  return {
+    name: 'carnotea-sw-registration',
+    transformIndexHtml(html) {
+      return html.replace('</head>', `${script}</head>`);
+    },
+  };
+}
+
 export default defineConfig(async () => {
   const buildInfo = await computeBuildInfo({ cwd: import.meta.dirname });
 
@@ -42,7 +61,9 @@ export default defineConfig(async () => {
       tailwindcss(),
       react(),
       buildInfoPlugin(buildInfo),
+      serviceWorkerRegistrationPlugin(),
       VitePWA({
+        injectRegister: false,
         registerType: 'autoUpdate',
         manifest: false,
         workbox: {

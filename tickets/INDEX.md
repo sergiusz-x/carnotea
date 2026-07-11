@@ -121,6 +121,7 @@ _None._
 - 🔴 [T-089 — Fix invalid profile names in /api/me provisioning](./T-089-fix-profile-provisioning-invalid-names.md)
 - 🟢 [T-091 — Move web version badge into profile](./T-091-web-version-badge-profile.md)
 - 🔴 [T-092 — Fix version.json service worker caching](./T-092-version-json-service-worker-cache.md)
+- 🔴 [T-093 — Inline service worker registration for uncached updates](./T-093-inline-service-worker-registration.md)
 
 <!-- END GENERATED:tickets -->
 
