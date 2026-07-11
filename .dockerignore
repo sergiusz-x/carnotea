@@ -8,7 +8,7 @@
 # from an already-`pnpm install`-ed local working directory.
 
 **/node_modules
-.git
+# Keep .git in the build context: the web build derives /version.json and the visible build badge from git metadata during docker build, and Dokploy builds directly from a cloned repo rather than from a pre-generated artifact.
 .turbo
 .cache
 **/.cache
