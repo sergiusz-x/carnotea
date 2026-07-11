@@ -1,7 +1,7 @@
 ---
 id: T-090
 title: Show deployed web build version and release metadata
-status: in_progress
+status: in_review
 priority: high
 size: M
 spec_version: 1
@@ -9,7 +9,7 @@ owner: codex
 dependencies: [T-012, T-087]
 labels: [web, deploy, release, ux]
 created_at: 2026-07-09
-updated_at: 2026-07-09
+updated_at: 2026-07-11
 closed_at: ~
 ---
 
