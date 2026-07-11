@@ -1,7 +1,7 @@
 ---
 id: T-094
 title: Activate waiting service worker updates
-status: in_progress
+status: done
 priority: high
 size: S
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-093]
 labels: [web, pwa, production]
 created_at: 2026-07-11
 updated_at: 2026-07-11
-closed_at: ~
+closed_at: 2026-07-11
 ---
 
 # T-094 — Activate waiting service worker updates
