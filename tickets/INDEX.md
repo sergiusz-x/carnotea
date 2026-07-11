@@ -120,6 +120,7 @@ _None._
 - 🟡 [T-088 — API — Operating fluid changes (fluid logs) CRUD](./T-088-api-fluid-logs.md)
 - 🔴 [T-089 — Fix invalid profile names in /api/me provisioning](./T-089-fix-profile-provisioning-invalid-names.md)
 - 🟢 [T-091 — Move web version badge into profile](./T-091-web-version-badge-profile.md)
+- 🔴 [T-092 — Fix version.json service worker caching](./T-092-version-json-service-worker-cache.md)
 
 <!-- END GENERATED:tickets -->
 
