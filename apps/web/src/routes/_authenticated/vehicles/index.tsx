@@ -10,6 +10,7 @@ import { createChargingEditRoute } from './$vehicleId/charging/$sessionId/edit';
 import { createChargingListRoute } from './$vehicleId/charging/index';
 import { createChargingNewRoute } from './$vehicleId/charging/new';
 import { createExpenseEditRoute } from './$vehicleId/expenses/$expenseId/edit';
+import { createExpenseDetailRoute } from './$vehicleId/expenses/$expenseId/index';
 import { createExpenseListRoute } from './$vehicleId/expenses/index';
 import { createExpenseNewRoute } from './$vehicleId/expenses/new';
 import { createFluidLogEditRoute } from './$vehicleId/fluid-logs/$logId/edit';
@@ -27,6 +28,7 @@ import { createReminderDetailRoute } from './$vehicleId/reminders/$reminderId/in
 import { createReminderListRoute } from './$vehicleId/reminders/index';
 import { createReminderNewRoute } from './$vehicleId/reminders/new';
 import { createServiceEditRoute } from './$vehicleId/service/$recordId/edit';
+import { createServiceDetailRoute } from './$vehicleId/service/$recordId/index';
 import { createServiceListRoute } from './$vehicleId/service/index';
 import { createServiceNewRoute } from './$vehicleId/service/new';
 
@@ -93,10 +95,12 @@ const fluidLogEditRoute = createFluidLogEditRoute(vehicleDetailRoute);
 
 const expenseListRoute = createExpenseListRoute(vehicleDetailRoute);
 const expenseNewRoute = createExpenseNewRoute(vehicleDetailRoute);
+const expenseDetailRoute = createExpenseDetailRoute(vehicleDetailRoute);
 const expenseEditRoute = createExpenseEditRoute(vehicleDetailRoute);
 
 const serviceListRoute = createServiceListRoute(vehicleDetailRoute);
 const serviceNewRoute = createServiceNewRoute(vehicleDetailRoute);
+const serviceDetailRoute = createServiceDetailRoute(vehicleDetailRoute);
 const serviceEditRoute = createServiceEditRoute(vehicleDetailRoute);
 
 export const vehiclesRoute = vehicleParentRoute.addChildren([
@@ -124,9 +128,11 @@ export const vehiclesRoute = vehicleParentRoute.addChildren([
     fluidLogEditRoute,
     expenseListRoute,
     expenseNewRoute,
+    expenseDetailRoute,
     expenseEditRoute,
     serviceListRoute,
     serviceNewRoute,
+    serviceDetailRoute,
     serviceEditRoute,
   ]),
 ]);

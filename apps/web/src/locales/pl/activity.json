@@ -27,6 +27,8 @@
     "loading": "Ładowanie…",
     "emptyTitle": "Tu jeszcze nic nie ma",
     "emptyDescription": "Dodaj pierwszy wpis, aby rozpocząć dziennik pojazdu.",
+    "filteredEmptyTitle": "Brak pasujących wpisów",
+    "filteredEmptyDescription": "Brak wpisów typu {{filter}} w aktualnie załadowanych elementach dziennika.",
     "error": "Nie udało się załadować dziennika.",
     "retry": "Spróbuj ponownie"
   },

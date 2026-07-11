@@ -50,7 +50,13 @@ export function ServiceCard({
   return (
     <ListCard
       primary={
-        <span className="font-display text-base font-semibold tnum">{record.serviceDate}</span>
+        <Link
+          to="/vehicles/$vehicleId/service/$recordId"
+          params={{ vehicleId, recordId: record.id }}
+          className="font-display text-base font-semibold tnum hover:underline"
+        >
+          {record.serviceDate}
+        </Link>
       }
       actions={
         <>
@@ -73,7 +79,15 @@ export function ServiceCard({
       }
     >
       <div className="px-4 pb-3 pt-0.5">
-        <h3 className="font-display text-base font-semibold">{record.title}</h3>
+        <h3 className="font-display text-base font-semibold">
+          <Link
+            to="/vehicles/$vehicleId/service/$recordId"
+            params={{ vehicleId, recordId: record.id }}
+            className="hover:underline"
+          >
+            {record.title}
+          </Link>
+        </h3>
         {record.workshopName && (
           <p className="text-sm text-muted-foreground">{record.workshopName}</p>
         )}

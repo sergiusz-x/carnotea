@@ -16,6 +16,7 @@ export interface FuelLogResponse {
   pricePerLiter: number;
   totalCost: number;
   stationName: string | null;
+  description: string | null;
   isFullTank: boolean;
   consumptionHint: number | null;
   createdAt: string;
@@ -30,6 +31,7 @@ interface FuelLogRow {
   pricePerLiter: string;
   totalCost: string;
   stationName: string | null;
+  description: string | null;
   isFullTank: boolean;
   createdAt: Date;
 }
@@ -110,6 +112,7 @@ export class FuelLogsService {
           pricePerLiter: String(input.pricePerLiter),
           totalCost: String(totalCost),
           stationName: input.stationName ?? null,
+          description: input.description ?? null,
           isFullTank: input.isFullTank,
         })
         .returning({ id: fuelLogs.id });
@@ -170,6 +173,7 @@ export class FuelLogsService {
       if (input.liters !== undefined) updates.liters = String(input.liters);
       if (input.pricePerLiter !== undefined) updates.pricePerLiter = String(input.pricePerLiter);
       if (input.stationName !== undefined) updates.stationName = input.stationName ?? null;
+      if (input.description !== undefined) updates.description = input.description ?? null;
       if (input.isFullTank !== undefined) updates.isFullTank = input.isFullTank;
       updates.totalCost = String(totalCost);
 
@@ -304,6 +308,7 @@ export class FuelLogsService {
       pricePerLiter: Number(row.pricePerLiter),
       totalCost: Number(row.totalCost),
       stationName: row.stationName,
+      description: row.description,
       isFullTank: row.isFullTank,
       consumptionHint: computeConsumptionHint(
         liters,

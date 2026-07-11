@@ -4,10 +4,10 @@
     "mileage": "Mileage",
     "charge": "Charge",
     "nextService": "Next service",
-    "monthCost": "Costs this month",
-    "avgConsumption": "Avg consumption",
+    "monthCost": "Costs (this month)",
+    "avgConsumption": "Avg usage",
     "chargePercent": "{{value}}%",
-    "fuelConsumption": "{{value}} L/100 km",
+    "fuelConsumption": "{{value}} l/100 km",
     "energyConsumption": "{{value}} kWh/100 km",
     "range": "≈ {{km}}",
     "dueKm": "in {{km}} km",
@@ -15,9 +15,9 @@
     "overdueKm": "{{km}} km overdue",
     "none": "—",
     "trendLabel": "Cost trend",
-    "trendDown": "↓ {{pct}}% vs last month",
-    "trendUp": "↑ {{pct}}% vs last month",
-    "trendFlat": "same as last month"
+    "trendDown": "↓ {{pct}}% vs previous month",
+    "trendUp": "↑ {{pct}}% vs previous month",
+    "trendFlat": "same as previous month"
   },
   "feed": {
     "title": "Logbook",
@@ -26,12 +26,14 @@
     "loadMore": "Load more",
     "loading": "Loading…",
     "emptyTitle": "Nothing here yet",
-    "emptyDescription": "Add your first entry to start your vehicle's logbook.",
-    "error": "Couldn't load the logbook.",
+    "emptyDescription": "Add your first entry to start the vehicle logbook.",
+    "filteredEmptyTitle": "No matching entries",
+    "filteredEmptyDescription": "There are no {{filter}} entries in the loaded logbook items.",
+    "error": "Failed to load the logbook.",
     "retry": "Try again"
   },
   "filter": {
-    "all": "All",
+    "all": "Everything",
     "charge": "Charging",
     "fuel": "Fuel",
     "fluid": "Fluids",
@@ -48,9 +50,11 @@
     "liters": "{{value}} l",
     "energy": "{{value}} kWh",
     "parts_one": "{{count}} part",
+    "parts_few": "{{count}} parts",
+    "parts_many": "{{count}} parts",
     "parts_other": "{{count}} parts",
     "fullTank": "Full tank",
-    "partialTank": "Partial",
+    "partialTank": "Top-up",
     "fullCharge": "Full",
     "auto": "Auto"
   },
@@ -86,6 +90,6 @@
   "dueState": {
     "overdue": "Overdue",
     "due_soon": "Due soon",
-    "ok": "On track"
+    "ok": "On time"
   }
 }

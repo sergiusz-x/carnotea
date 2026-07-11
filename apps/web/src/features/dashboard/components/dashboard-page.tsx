@@ -56,6 +56,7 @@ export function DashboardPage() {
         vehicleId={activeVehicleId}
         currency={panelQuery.data.currency}
         locale={locale}
+        fuelType={panelQuery.data.fuelType}
       />
 
       <section className="space-y-4 border-t pt-6">

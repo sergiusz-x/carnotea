@@ -46,6 +46,7 @@ export interface paths {
               pricePerLiter: number;
               totalCost: number | null;
               stationName?: string | null;
+              description?: string | null;
               isFullTank: boolean;
               createdAt: string;
             })[];
@@ -1331,6 +1332,7 @@ export interface paths {
             pricePerLiter: number;
             totalCost: number;
             stationName: string | null;
+            description: string | null;
             isFullTank: boolean;
             consumptionHint: number | null;
             createdAt: string;
@@ -1368,6 +1370,7 @@ export interface paths {
           liters: number;
           pricePerLiter: number;
           stationName?: string | null;
+          description?: string | null;
           isFullTank?: boolean;
         };
       } };
@@ -1382,6 +1385,7 @@ export interface paths {
             pricePerLiter: number;
             totalCost: number;
             stationName: string | null;
+            description: string | null;
             isFullTank: boolean;
             consumptionHint: number | null;
             createdAt: string;
@@ -1436,6 +1440,7 @@ export interface paths {
             pricePerLiter: number;
             totalCost: number;
             stationName: string | null;
+            description: string | null;
             isFullTank: boolean;
             consumptionHint: number | null;
             createdAt: string;
@@ -1502,6 +1507,7 @@ export interface paths {
           liters?: number;
           pricePerLiter?: number;
           stationName?: string | null;
+          description?: string | null;
           isFullTank?: boolean;
         };
       } };
@@ -1516,6 +1522,7 @@ export interface paths {
             pricePerLiter: number;
             totalCost: number;
             stationName: string | null;
+            description: string | null;
             isFullTank: boolean;
             consumptionHint: number | null;
             createdAt: string;
