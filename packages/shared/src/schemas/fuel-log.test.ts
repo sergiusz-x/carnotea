@@ -10,9 +10,11 @@ describe('FuelLogCreateSchema', () => {
       liters: '42.50',
       pricePerLiter: '1.89',
       stationName: 'Orlen',
+      description: 'Return trip refill',
     });
     expect(parsed.liters).toBeCloseTo(42.5);
     expect(parsed.isFullTank).toBe(true);
+    expect(parsed.description).toBe('Return trip refill');
     expect('totalCost' in parsed).toBe(false);
   });
 

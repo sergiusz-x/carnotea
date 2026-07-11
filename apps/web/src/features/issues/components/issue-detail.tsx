@@ -126,7 +126,7 @@ export function IssueDetailPage() {
             <dd>
               {issue.relatedServiceRecordId ? (
                 <Link
-                  to="/vehicles/$vehicleId/service/$recordId/edit"
+                  to="/vehicles/$vehicleId/service/$recordId"
                   params={{ vehicleId, recordId: issue.relatedServiceRecordId }}
                   className="font-medium text-primary hover:underline"
                 >

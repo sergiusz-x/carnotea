@@ -47,6 +47,7 @@ const FuelLogResponseSchema = z.object({
   pricePerLiter: z.number().positive(),
   totalCost: z.number().nonnegative(),
   stationName: z.string().max(120).nullable(),
+  description: z.string().nullable(),
   isFullTank: z.boolean(),
   consumptionHint: z.number().nullable(),
   createdAt: z.iso.datetime({ offset: true }),

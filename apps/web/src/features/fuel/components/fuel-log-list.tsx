@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/EmptyState';
 import { ErrorState } from '@/components/ErrorState';
+import { ListCard } from '@/components/ListCard';
 import { DeleteAction, EditActionIcon, editActionClassName } from '@/components/ListCardActions';
-import { LogCard } from '@/components/LogCard';
 import { PageContainer } from '@/components/PageContainer';
 import { PageHeader } from '@/components/PageHeader';
+import { StatStrip } from '@/components/StatStrip';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { fuelLogsQueryOptions, useDeleteFuelLog } from '@/features/fuel/queries';
@@ -22,7 +23,9 @@ interface FuelLogRow {
   pricePerLiter: number;
   totalCost: number;
   stationName: string | null;
+  description: string | null;
   isFullTank: boolean;
+  consumptionHint: number | null;
 }
 
 function FuelLogCard({
@@ -40,37 +43,31 @@ function FuelLogCard({
   const locale = i18n.resolvedLanguage ?? 'en';
 
   return (
-    <LogCard
-      date={log.fuelDate}
-      badges={
-        <Badge variant={log.isFullTank ? 'default' : 'secondary'} className="text-xs">
-          {log.isFullTank ? t('list.fullTank') : t('list.partialFill')}
-        </Badge>
+    <ListCard
+      primary={
+        <Link
+          to="/vehicles/$vehicleId/fuel/$fuelId"
+          params={{ vehicleId, fuelId: log.id }}
+          className="font-display text-base font-semibold tnum hover:underline"
+        >
+          {log.fuelDate}
+        </Link>
       }
-      stats={[
-        { label: t('fields.liters'), value: String(log.liters) + ' L' },
-        {
-          label: t('fields.pricePerLiter'),
-          value: formatMoney(log.pricePerLiter, currency, locale),
-        },
-        {
-          label: t('fields.totalCost'),
-          value: formatMoney(log.totalCost, currency, locale),
-          highlight: true,
-        },
-      ]}
-      footer={
+      badges={
         <>
-          <span>
-            {log.mileage.toLocaleString(locale)}
-            {' km'}
-          </span>
-          {log.stationName && (
-            <>
-              <span aria-hidden>{'·'}</span>
-              <span className="truncate">{log.stationName}</span>
-            </>
-          )}
+          <Badge variant={log.isFullTank ? 'default' : 'secondary'} className="text-xs">
+            {log.isFullTank ? t('list.fullTank') : t('list.partialFill')}
+          </Badge>
+          {log.consumptionHint != null ? (
+            <Badge variant="outline" className="text-xs">
+              {t('list.consumptionHint', {
+                hint: new Intl.NumberFormat(locale, {
+                  minimumFractionDigits: 1,
+                  maximumFractionDigits: 2,
+                }).format(log.consumptionHint),
+              })}
+            </Badge>
+          ) : null}
         </>
       }
       actions={
@@ -91,7 +88,41 @@ function FuelLogCard({
           />
         </>
       }
-    />
+    >
+      <StatStrip
+        stats={[
+          { label: t('fields.liters'), value: `${String(log.liters)} L` },
+          {
+            label: t('fields.pricePerLiter'),
+            value: formatMoney(log.pricePerLiter, currency, locale),
+          },
+          {
+            label: t('fields.totalCost'),
+            value: formatMoney(log.totalCost, currency, locale),
+            highlight: true,
+          },
+        ]}
+      />
+
+      {log.description ? (
+        <div className="border-t px-4 py-2.5 text-sm text-muted-foreground whitespace-pre-wrap">
+          {log.description}
+        </div>
+      ) : null}
+
+      <div className="flex items-center gap-2 px-4 py-2.5 text-sm text-muted-foreground tnum">
+        <span>
+          {log.mileage.toLocaleString(locale)}
+          {' km'}
+        </span>
+        {log.stationName ? (
+          <>
+            <span aria-hidden>{'·'}</span>
+            <span className="truncate">{log.stationName}</span>
+          </>
+        ) : null}
+      </div>
+    </ListCard>
   );
 }
 

@@ -40,6 +40,8 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-076 — Web logo refresh - minimalist E2 mark](./T-076-web-logo-refresh-e2.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
+- 🔴 [T-090 — Show deployed web build version and release metadata](./T-090-web-build-version-visibility.md)
+- 🔴 [T-091 — Detail-first activity flow and fuel log descriptions](./T-091-activity-detail-flow-and-fuel-descriptions.md)
 
 ## Blocked
 

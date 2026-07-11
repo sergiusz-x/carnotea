@@ -22,6 +22,7 @@ const fuelLogFields = z.object({
   pricePerLiter: positiveDecimalField(8),
   totalCost: moneyField(10),
   stationName: z.string().max(120).nullish(),
+  description: z.string().nullish(),
   isFullTank: z.boolean(),
   createdAt: timestampField(),
 });

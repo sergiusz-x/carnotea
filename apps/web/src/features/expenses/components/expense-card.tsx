@@ -39,7 +39,15 @@ export function ExpenseCard({
 
   return (
     <ListCard
-      primary={<span className="font-display text-base font-semibold tnum">{expenseDate}</span>}
+      primary={
+        <Link
+          to="/vehicles/$vehicleId/expenses/$expenseId"
+          params={{ vehicleId, expenseId: id }}
+          className="font-display text-base font-semibold tnum hover:underline"
+        >
+          {expenseDate}
+        </Link>
+      }
       badges={
         <>
           <Badge variant="default">

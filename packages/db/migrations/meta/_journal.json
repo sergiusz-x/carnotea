@@ -85,6 +85,13 @@
       "when": 1783614714211,
       "tag": "0011_serious_leopardon",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1783774408520,
+      "tag": "0012_real_karma",
+      "breakpoints": true
     }
   ]
 }
