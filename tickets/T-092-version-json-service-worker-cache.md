@@ -1,7 +1,7 @@
 ---
 id: T-092
 title: Fix version.json service worker caching
-status: in_progress
+status: done
 priority: high
 size: S
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-090]
 labels: [web, pwa, release]
 created_at: 2026-07-11
 updated_at: 2026-07-11
-closed_at: ~
+closed_at: 2026-07-11
 ---
 
 # T-092 - Fix version.json service worker caching
