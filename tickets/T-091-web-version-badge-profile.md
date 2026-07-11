@@ -1,7 +1,7 @@
 ---
 id: T-091
 title: Move web version badge into profile
-status: in_progress
+status: done
 priority: low
 size: S
 spec_version: 1
@@ -10,7 +10,7 @@ dependencies: [T-090]
 labels: [web, release]
 created_at: 2026-07-11
 updated_at: 2026-07-11
-closed_at: ~
+closed_at: 2026-07-11
 ---
 
 # T-091 - Move web version badge into profile

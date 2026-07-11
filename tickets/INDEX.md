@@ -40,7 +40,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-076 — Web logo refresh - minimalist E2 mark](./T-076-web-logo-refresh-e2.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
-- 🟢 [T-091 — Move web version badge into profile](./T-091-web-version-badge-profile.md)
 
 ## Blocked
 
@@ -120,6 +119,7 @@ _None._
 - 🟡 [T-087 — Automated SemVer releases via semantic-release](./T-087-automated-semver-releases.md)
 - 🟡 [T-088 — API — Operating fluid changes (fluid logs) CRUD](./T-088-api-fluid-logs.md)
 - 🔴 [T-089 — Fix invalid profile names in /api/me provisioning](./T-089-fix-profile-provisioning-invalid-names.md)
+- 🟢 [T-091 — Move web version badge into profile](./T-091-web-version-badge-profile.md)
 
 <!-- END GENERATED:tickets -->
 
