@@ -12,6 +12,7 @@ import {
   useZodForm,
   setServerErrors,
 } from '@/components/form';
+import { VersionBadge } from '@/components/layout/version-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -218,6 +219,10 @@ function ProfileContent({ profile }: { profile: UserProfile }) {
       </Card>
 
       <GdprSection userEmail={profile.email} />
+
+      <div className="flex justify-center border-t pt-4">
+        <VersionBadge className="shadow-none" />
+      </div>
     </div>
   );
 }
