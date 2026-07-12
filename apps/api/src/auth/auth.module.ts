@@ -63,13 +63,7 @@ export class AuthModule implements OnModuleInit {
     const auth = this.auth;
     const baseURL = this.config.get('BETTER_AUTH_URL', { infer: true });
 
-    // Mount better-auth inside an encapsulated plugin so its raw-body content-type
-    // parser only applies to /api/auth/*, leaving the rest of the API on Fastify's
-    // default JSON parsing.
     fastify.register((instance, _opts, done) => {
-      // This encapsulated context inherits Fastify's JSON parser; replace it with a
-      // raw-string parser so better-auth receives the untouched body (and empty
-      // bodies don't 400). The parent context keeps its default JSON parsing.
       instance.removeContentTypeParser('application/json');
       instance.addContentTypeParser(
         'application/json',
@@ -90,9 +84,10 @@ export class AuthModule implements OnModuleInit {
         const response = await auth.handler(webRequest);
 
         reply.status(response.status);
+        reply.header('Cache-Control', 'no-store, no-cache, must-revalidate');
         const setCookies = response.headers.getSetCookie();
         response.headers.forEach((value, key) => {
-          if (key.toLowerCase() !== 'set-cookie') {
+          if (key.toLowerCase() !== 'set-cookie' && key.toLowerCase() !== 'cache-control') {
             reply.header(key, value);
           }
         });

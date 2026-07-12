@@ -33,7 +33,6 @@ export function AppShell() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Top header — logo + utility actions only */}
       <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center gap-4 px-4">
           <Link
@@ -81,9 +80,7 @@ export function AppShell() {
         </div>
       </header>
 
-      {/* Body: sidebar + content */}
       <div className="flex flex-1">
-        {/* Left sidebar — desktop only */}
         <aside className="hidden w-60 shrink-0 border-r md:flex md:flex-col">
           <div className="sticky top-16 flex h-[calc(100vh-4rem)] flex-col overflow-y-auto p-3">
             <VehiclePicker className="mb-1 h-9 w-full justify-start gap-2 px-3 text-sm" />
@@ -92,13 +89,11 @@ export function AppShell() {
           </div>
         </aside>
 
-        {/* Main content */}
-        <main className="min-w-0 flex-1 pb-16 md:pb-0">
+        <main className="min-w-0 flex-1 pb-24 md:pb-0">
           <Outlet />
         </main>
       </div>
 
-      {/* Mobile only */}
       <BottomNav />
       <Fab />
       <VehiclePickerSheet open={vehicleSheetOpen} onOpenChange={setVehicleSheetOpen} />

@@ -13,10 +13,8 @@ import { vehiclesRoute } from '@/routes/_authenticated/vehicles';
 import { loginRoute } from '@/routes/login';
 import { rootRoute } from '@/routes/root';
 
-// Stub dev-only devtools so routes render synchronously in jsdom
 vi.mock('@/components/Devtools', () => ({ Devtools: () => null }));
 
-// Mock better-auth client to avoid real HTTP requests
 vi.mock('@/lib/auth-client', () => ({
   authClient: {
     getSession: vi.fn(),
@@ -104,6 +102,34 @@ describe('auth guard', () => {
 
     await screen.findByText('CarNotea');
     expect(router.state.location.pathname).toBe('/');
+  });
+
+  it('shows a recoverable session state instead of the router error screen', async () => {
+    vi.mocked(authClient.getSession).mockResolvedValue({
+      data: null,
+      error: { message: 'Session request failed' },
+    });
+    const { router, queryClient } = buildRouter('/vehicles');
+
+    renderRouter(router, queryClient);
+
+    await screen.findByText(/couldn't verify your session/i, undefined, { timeout: 5000 });
+    expect(screen.queryByText(/something went wrong/i)).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/vehicles');
+  });
+
+  it('still renders the login screen when session bootstrap fails on /login', async () => {
+    vi.mocked(authClient.getSession).mockResolvedValue({
+      data: null,
+      error: { message: 'Session request failed' },
+    });
+    const { router, queryClient } = buildRouter('/login');
+
+    renderRouter(router, queryClient);
+
+    await screen.findByText(/couldn't verify your session/i, undefined, { timeout: 5000 });
+    expect(screen.queryByText(/something went wrong/i)).not.toBeInTheDocument();
+    expect(router.state.location.pathname).toBe('/login');
   });
 });
 

@@ -57,7 +57,7 @@ export function QuickAddSheet({ vehicleId, open, onOpenChange }: QuickAddSheetPr
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="bottom">
         <SheetHeader className="text-left">
-          <SheetTitle>{t('more')}</SheetTitle>
+          <SheetTitle>{t('quickAdd')}</SheetTitle>
         </SheetHeader>
         <div className="mt-4 grid grid-cols-2 gap-3 pb-4">
           {actions.map(({ labelKey, to, Icon }) => (
