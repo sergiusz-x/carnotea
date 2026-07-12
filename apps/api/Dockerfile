@@ -9,7 +9,7 @@ FROM node:22-slim AS builder
 
 # Install git (needed for build-version scripts) and Corepack for pnpm
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git \
+ && apt-get install -y --no-install-recommends git ca-certificates \
  && rm -rf /var/lib/apt/lists/* \
  && corepack enable && corepack prepare pnpm@9.12.0 --activate
 
