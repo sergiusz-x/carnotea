@@ -1,5 +1,5 @@
 ---
-id: T-095
+id: T-096
 title: Harden session bootstrap and fix mobile bottom nav overflow
 status: in_review
 priority: high
@@ -13,7 +13,7 @@ updated_at: 2026-07-12
 closed_at: ~
 ---
 
-# T-095 — Harden session bootstrap and fix mobile bottom nav overflow
+# T-096 — Harden session bootstrap and fix mobile bottom nav overflow
 
 > Fill every section. A section that does not apply gets `_n/a_` — never delete
 > it, so the next agent knows you considered it. A ticket is only moved to
