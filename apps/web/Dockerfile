@@ -8,7 +8,7 @@
 FROM node:22-slim AS builder
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git \
+ && apt-get install -y --no-install-recommends git ca-certificates \
  && rm -rf /var/lib/apt/lists/* \
  && corepack enable \
  && corepack prepare pnpm@9.12.0 --activate
@@ -31,6 +31,8 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the web bundle (Vite outputs to apps/web/dist)
+# Force fetch tags from public repo so git-version-gen has tags even if Dokploy cloned without them
+RUN git fetch --tags https://github.com/sergiusz-x/carnotea.git || true
 RUN pnpm --filter @carnotea/web... build
 
 

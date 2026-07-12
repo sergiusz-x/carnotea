@@ -7,8 +7,11 @@
 # ---- Stage 1: Build the monorepo -------------------------------------------
 FROM node:22-slim AS builder
 
-# Corepack for pnpm
-RUN corepack enable && corepack prepare pnpm@9.12.0 --activate
+# Install git (needed for build-version scripts) and Corepack for pnpm
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git ca-certificates \
+ && rm -rf /var/lib/apt/lists/* \
+ && corepack enable && corepack prepare pnpm@9.12.0 --activate
 
 WORKDIR /app
 
@@ -29,6 +32,8 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 # Build the API and its workspace dependencies
+# Force fetch tags from public repo so git-version-gen has tags even if Dokploy cloned without them
+RUN git fetch --tags https://github.com/sergiusz-x/carnotea.git || true
 RUN pnpm --filter @carnotea/api... build
 
 # Deploy a pruned production tree into /app/out
