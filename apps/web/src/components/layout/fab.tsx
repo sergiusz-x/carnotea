@@ -27,8 +27,9 @@ export function Fab() {
       <Button
         size="icon"
         onClick={handleClick}
-        aria-label={t('more')}
-        className="fixed bottom-20 right-4 z-50 h-14 w-14 rounded-full shadow-lg md:hidden"
+        aria-label={t('quickAdd')}
+        className="fixed right-4 z-50 h-14 w-14 rounded-full shadow-lg md:hidden"
+        style={{ bottom: 'calc(env(safe-area-inset-bottom) + 5rem)' }}
       >
         <Plus className="h-6 w-6" aria-hidden="true" />
       </Button>

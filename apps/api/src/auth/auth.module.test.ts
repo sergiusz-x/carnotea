@@ -9,8 +9,6 @@ import { DB } from '../db/db.constants.js';
 import { AUTH } from './auth.constants.js';
 import { AuthModule } from './auth.module.js';
 
-// A stub better-auth instance: handler echoes the request path + body so we can
-// assert the Fastify ↔ Web Request/Response bridge forwards everything.
 const authStub = {
   handler: async (request: Request): Promise<Response> => {
     const body = request.method === 'GET' ? '' : await request.text();
@@ -45,7 +43,7 @@ const configStub = {
   ],
   exports: [DB, ConfigService],
 })
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class -- Nest module shells are empty by design
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class -- Nest module classes are intentionally empty.
 class FakeDepsModule {}
 
 describe('AuthModule mounts better-auth at /api/auth/*', () => {
@@ -55,8 +53,6 @@ describe('AuthModule mounts better-auth at /api/auth/*', () => {
     const moduleRef = await Test.createTestingModule({ imports: [FakeDepsModule, AuthModule] })
       .overrideProvider(AUTH)
       .useValue(authStub)
-      // Cast via unknown: the factory is overridden above, so configStub.get is
-      // never called in this test. The cast satisfies TS without altering runtime.
       .overrideProvider(ConfigService)
       .useValue(configStub)
       .compile();
@@ -70,12 +66,13 @@ describe('AuthModule mounts better-auth at /api/auth/*', () => {
     await app.close();
   });
 
-  it('forwards GET requests and the set-cookie header', async () => {
+  it('forwards GET requests, set-cookie, and no-store cache headers', async () => {
     const res = await app.inject({ method: 'GET', url: '/api/auth/get-session' });
 
     expect(res.statusCode).toBe(200);
     expect(res.json()).toEqual({ path: '/api/auth/get-session', body: '' });
     expect(res.headers['set-cookie']).toContain('session=abc; Path=/');
+    expect(res.headers['cache-control']).toContain('no-store');
   });
 
   it('forwards the raw POST body untouched', async () => {

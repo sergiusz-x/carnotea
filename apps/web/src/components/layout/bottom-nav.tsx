@@ -1,14 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation } from '@tanstack/react-router';
-import { Bell, Fuel, LayoutDashboard, MoreHorizontal, User, Wrench, Zap } from 'lucide-react';
-import { useState } from 'react';
+import { Bell, Fuel, LayoutDashboard, User, Wrench, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
 import { cn } from '@/lib/utils';
-
-import { MobileMoreSheet } from './mobile-more-sheet';
 
 type BottomTabKey = 'dashboard' | 'fuel' | 'charging' | 'service' | 'reminders' | 'profile';
 
@@ -78,69 +75,54 @@ function isActivePath(pathname: string, activePaths: string[]): boolean {
 export function BottomNav() {
   const { t } = useTranslation('nav');
   const { pathname } = useLocation();
-  const { activeVehicleId } = useActiveVehicle();
   const tabs = useTabs();
-  const [moreOpen, setMoreOpen] = useState(false);
 
   return (
-    <>
-      <nav
-        aria-label={t('primary')}
-        className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden"
-      >
-        <ul className="flex h-16 items-stretch">
-          {tabs.map(({ labelKey, Icon, to, activePaths }) => {
-            const isActive = isActivePath(pathname, activePaths);
-            const isDisabled = to === null;
+    <nav
+      aria-label={t('primary')}
+      className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden"
+      style={{
+        paddingLeft: 'max(0.5rem, env(safe-area-inset-left))',
+        paddingRight: 'max(0.5rem, env(safe-area-inset-right))',
+        paddingBottom: 'max(0.35rem, env(safe-area-inset-bottom))',
+      }}
+    >
+      <ul className="flex min-h-16 items-stretch gap-1">
+        {tabs.map(({ labelKey, Icon, to, activePaths }) => {
+          const isActive = isActivePath(pathname, activePaths);
+          const isDisabled = to === null;
 
-            return (
-              <li key={labelKey} className="flex flex-1">
-                {to !== null ? (
-                  <Link
-                    to={to}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={cn(
-                      'flex flex-1 flex-col items-center justify-center gap-1 text-xs font-medium transition-colors',
-                      isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
-                    )}
-                  >
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                    <span>{t(labelKey)}</span>
-                  </Link>
-                ) : (
-                  <span
-                    aria-disabled="true"
-                    className={cn(
-                      'flex flex-1 flex-col items-center justify-center gap-1 text-xs font-medium',
-                      'cursor-default text-muted-foreground/40',
-                      isDisabled && 'select-none',
-                    )}
-                  >
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                    <span>{t(labelKey)}</span>
-                  </span>
-                )}
-              </li>
-            );
-          })}
-
-          <li className="flex flex-1">
-            <button
-              type="button"
-              onClick={() => {
-                setMoreOpen(true);
-              }}
-              aria-expanded={moreOpen}
-              className="flex flex-1 flex-col items-center justify-center gap-1 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
-              <span>{t('more')}</span>
-            </button>
-          </li>
-        </ul>
-      </nav>
-
-      <MobileMoreSheet vehicleId={activeVehicleId} open={moreOpen} onOpenChange={setMoreOpen} />
-    </>
+          return (
+            <li key={labelKey} className="flex min-w-0 flex-1">
+              {to !== null ? (
+                <Link
+                  to={to}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={cn(
+                    'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 text-[11px] font-medium transition-colors',
+                    isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
+                  )}
+                >
+                  <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span className="max-w-full truncate leading-none">{t(labelKey)}</span>
+                </Link>
+              ) : (
+                <span
+                  aria-disabled="true"
+                  className={cn(
+                    'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 text-[11px] font-medium',
+                    'cursor-default text-muted-foreground/40',
+                    isDisabled && 'select-none',
+                  )}
+                >
+                  <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
+                  <span className="max-w-full truncate leading-none">{t(labelKey)}</span>
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
   );
 }

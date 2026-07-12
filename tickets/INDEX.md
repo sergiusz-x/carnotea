@@ -48,6 +48,7 @@ _None._
 ## In review
 
 - 🔴 [T-090 — Show deployed web build version and release metadata](./T-090-web-build-version-visibility.md)
+- 🔴 [T-096 — Harden session bootstrap and fix mobile bottom nav overflow](./T-096-session-bootstrap-and-mobile-nav.md)
 
 ## Done
 

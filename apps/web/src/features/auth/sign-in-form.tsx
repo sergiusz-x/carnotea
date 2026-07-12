@@ -39,7 +39,18 @@ export function SignInForm({ redirectTo, onSwitchToSignUp }: SignInFormProps) {
     }
 
     queryClient.removeQueries({ queryKey: ['session'] });
-    await queryClient.ensureQueryData(sessionQueryOptions);
+
+    try {
+      const session = await queryClient.ensureQueryData(sessionQueryOptions);
+      if (!session?.user) {
+        form.setError('root', { message: t('errors.sessionSync') });
+        return;
+      }
+    } catch {
+      form.setError('root', { message: t('errors.sessionSync') });
+      return;
+    }
+
     await navigate({ to: redirectTo ?? '/', replace: true });
   }
 
