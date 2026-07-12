@@ -41,7 +41,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
 - 🔴 [T-097 — Move production PostgreSQL management to Dokploy](./T-097-dokploy-managed-postgres.md)
-- 🔴 [T-098 — Add recurring reminders with dual time and mileage triggers](./T-098-recurring-reminders-dual-triggers.md)
 
 ## Blocked
 
@@ -51,6 +50,7 @@ _None._
 
 - 🔴 [T-090 — Show deployed web build version and release metadata](./T-090-web-build-version-visibility.md)
 - 🔴 [T-096 — Harden session bootstrap and fix mobile bottom nav overflow](./T-096-session-bootstrap-and-mobile-nav.md)
+- 🔴 [T-098 — Add recurring reminders with dual time and mileage triggers](./T-098-recurring-reminders-dual-triggers.md)
 
 ## Done
 
