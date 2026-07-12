@@ -44,6 +44,7 @@ services:
       DATABASE_URL: ${DATABASE_URL:?error}
     networks:
       - carnotea-prod
+      - dokploy-network
     # `pnpm --filter @carnotea/db` doesn't work here: this image is built via
     # `pnpm deploy --filter @carnotea/api --prod`, which flattens @carnotea/db
     # into node_modules as a regular dependency rather than keeping it as a
@@ -94,6 +95,7 @@ services:
         condition: service_completed_successfully
     networks:
       - carnotea-prod
+      - dokploy-network
     expose:
       - 3001
 
@@ -107,6 +109,7 @@ services:
     restart: unless-stopped
     networks:
       - carnotea-prod
+      - dokploy-network
     expose:
       - 80
 
@@ -114,3 +117,5 @@ networks:
   carnotea-prod:
     name: carnotea-prod
     driver: bridge
+  dokploy-network:
+    external: true
