@@ -41,10 +41,14 @@
   "upcomingReminders": {
     "title": "Nadchodzące przypomnienia",
     "empty": "Brak nadchodzących przypomnień",
-    "dueDate": "Termin: {{date}}",
-    "dueMileage": "Przebieg: {{value}} km",
+    "nextDueDate": "Następny termin: {{date}}",
+    "nextDueMileage": "Następny przebieg: {{value}} km",
     "overdue": "Po terminie",
     "dueSoon": "Wkrótce",
-    "viewVehicle": "Zobacz pojazd"
+    "viewVehicle": "Zobacz pojazd",
+    "mode": {
+      "one_off": "Jednorazowe",
+      "recurring": "Cykliczne"
+    }
   }
 }

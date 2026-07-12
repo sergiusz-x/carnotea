@@ -14,11 +14,22 @@
   "fields": {
     "title": "Tytuł",
     "description": "Opis",
+    "mode": "Tryb",
     "status": "Status",
     "dueDate": "Termin",
-    "dueMileage": "Przebieg (km)",
+    "dueMileage": "Przebieg docelowy (km)",
+    "nextDueDate": "Następny termin",
+    "nextDueMileage": "Następny przebieg (km)",
+    "intervalKm": "Interwał przebiegu (km)",
+    "intervalMonths": "Interwał czasu (mies.)",
+    "lastPerformedDate": "Ostatnie wykonanie",
+    "lastPerformedMileage": "Przebieg przy ostatnim wykonaniu (km)",
     "notifiedAt": "Powiadomiono",
     "dueState": "Stan terminu"
+  },
+  "mode": {
+    "one_off": "Jednorazowe",
+    "recurring": "Cykliczne"
   },
   "status": {
     "pending": "Oczekujące",
@@ -33,15 +44,26 @@
   "list": {
     "dueDate": "Termin: {{date}}",
     "dueMileage": "Przebieg: {{value}} km",
+    "nextDueDate": "Następny termin: {{date}}",
+    "nextDueMileage": "Następny przebieg: {{value}} km",
     "noDueDate": "Brak terminu",
     "noDueMileage": "Brak celu przebiegu",
+    "noNextDueDate": "Brak następnego terminu",
+    "noNextDueMileage": "Brak następnego celu przebiegu",
     "markDone": "Oznacz jako zrealizowane",
     "marking": "Oznaczanie…"
   },
   "detail": {
     "title": "Przypomnienie: {{title}}",
     "backToReminders": "Powrót do przypomnień",
-    "description": "Opis"
+    "description": "Opis",
+    "intervalKm": "Co {{value}} km",
+    "intervalMonths": "Co {{value}} mies.",
+    "lastPerformedMileage": "{{value}} km",
+    "noIntervalKm": "Brak interwału przebiegu",
+    "noIntervalMonths": "Brak interwału czasu",
+    "noLastPerformedDate": "Brak daty ostatniego wykonania",
+    "noLastPerformedMileage": "Brak przebiegu ostatniego wykonania"
   },
   "create": {
     "title": "Dodaj przypomnienie",

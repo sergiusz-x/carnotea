@@ -1,9 +1,4 @@
-import {
-  ReminderCreateSchema,
-  ReminderUpdateSchema,
-  REMINDER_STATUS_CODES,
-  type ReminderStatusCode,
-} from '@carnotea/shared';
+import { REMINDER_MODES, ReminderCreateSchema, type ReminderStatusCode } from '@carnotea/shared';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
@@ -28,17 +23,23 @@ import {
   useUpdateReminder,
 } from '@/features/reminders/queries';
 
-// ─── Shared status select options ────────────────────────────────────────────
+const STATUS_CODES: ReminderStatusCode[] = ['pending', 'done', 'cancelled'];
 
 function useStatusOptions(): SelectOption[] {
   const { t } = useTranslation('reminders');
-  return REMINDER_STATUS_CODES.map((code) => ({
+  return STATUS_CODES.map((code) => ({
     value: code,
     label: t(`status.${code}`),
   }));
 }
 
-// ─── Create page ───────────────────────────────────────────────────────────────
+function useModeOptions(): SelectOption[] {
+  const { t } = useTranslation('reminders');
+  return REMINDER_MODES.map((mode) => ({
+    value: mode,
+    label: t(`mode.${mode}`),
+  }));
+}
 
 export function ReminderCreatePage() {
   const { vehicleId }: { vehicleId: string } = useParams({
@@ -48,13 +49,19 @@ export function ReminderCreatePage() {
 
   const createMutation = useCreateReminder(vehicleId);
   const statusOptions = useStatusOptions();
+  const modeOptions = useModeOptions();
 
   const form = useZodForm(ReminderCreateSchema, {
     defaultValues: {
       title: '',
       description: '',
+      mode: 'one_off',
       dueDate: undefined,
       dueMileage: undefined,
+      intervalKm: undefined,
+      intervalMonths: undefined,
+      lastPerformedDate: undefined,
+      lastPerformedMileage: undefined,
       status: 'pending',
     },
   });
@@ -74,12 +81,11 @@ export function ReminderCreatePage() {
       form={form}
       onSubmit={onSubmit}
       statusOptions={statusOptions}
+      modeOptions={modeOptions}
       isEditing={false}
     />
   );
 }
-
-// ─── Edit page ─────────────────────────────────────────────────────────────────
 
 export function ReminderEditPage() {
   const { vehicleId, reminderId }: { vehicleId: string; reminderId: string } = useParams({
@@ -91,14 +97,20 @@ export function ReminderEditPage() {
 
   const updateMutation = useUpdateReminder(vehicleId, reminderId);
   const statusOptions = useStatusOptions();
+  const modeOptions = useModeOptions();
 
-  const form = useZodForm(ReminderUpdateSchema, {
+  const form = useZodForm(ReminderCreateSchema, {
     defaultValues: {
       title: existingReminder.title,
       description: existingReminder.description ?? undefined,
-      status: existingReminder.status as ReminderStatusCode,
+      mode: existingReminder.mode,
       dueDate: existingReminder.dueDate ?? undefined,
       dueMileage: existingReminder.dueMileage ?? undefined,
+      intervalKm: existingReminder.intervalKm ?? undefined,
+      intervalMonths: existingReminder.intervalMonths ?? undefined,
+      lastPerformedDate: existingReminder.lastPerformedDate ?? undefined,
+      lastPerformedMileage: existingReminder.lastPerformedMileage ?? undefined,
+      status: existingReminder.status,
     },
   });
 
@@ -117,12 +129,11 @@ export function ReminderEditPage() {
       form={form}
       onSubmit={onSubmit}
       statusOptions={statusOptions}
+      modeOptions={modeOptions}
       isEditing
     />
   );
 }
-
-// ─── Shared form shell ─────────────────────────────────────────────────────────
 
 function FormShell({
   title,
@@ -130,6 +141,7 @@ function FormShell({
   form,
   onSubmit,
   statusOptions,
+  modeOptions,
   isEditing,
 }: {
   title: string;
@@ -137,9 +149,11 @@ function FormShell({
   form: ReturnType<typeof useZodForm>;
   onSubmit: (values: Record<string, unknown>) => Promise<void>;
   statusOptions: SelectOption[];
+  modeOptions: SelectOption[];
   isEditing: boolean;
 }) {
   const { t } = useTranslation('reminders');
+  const mode = form.watch('mode') === 'recurring' ? 'recurring' : 'one_off';
 
   return (
     <FormContainer>
@@ -153,8 +167,27 @@ function FormShell({
           placeholder={t('fields.description')}
           rows={4}
         />
-        <DateField name="dueDate" label={t('fields.dueDate')} />
-        <NumberField name="dueMileage" label={t('fields.dueMileage')} />
+        <SelectField
+          name="mode"
+          label={t('fields.mode')}
+          options={modeOptions}
+          placeholder={t('fields.mode')}
+        />
+
+        {mode === 'one_off' ? (
+          <>
+            <DateField name="dueDate" label={t('fields.dueDate')} />
+            <NumberField name="dueMileage" label={t('fields.dueMileage')} />
+          </>
+        ) : (
+          <>
+            <NumberField name="intervalKm" label={t('fields.intervalKm')} />
+            <NumberField name="intervalMonths" label={t('fields.intervalMonths')} />
+            <DateField name="lastPerformedDate" label={t('fields.lastPerformedDate')} />
+            <NumberField name="lastPerformedMileage" label={t('fields.lastPerformedMileage')} />
+          </>
+        )}
+
         <SelectField
           name="status"
           label={t('fields.status')}

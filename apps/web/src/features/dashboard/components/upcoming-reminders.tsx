@@ -54,40 +54,45 @@ export function UpcomingReminders() {
           <p className="text-sm text-muted-foreground">{t('upcomingReminders.empty')}</p>
         ) : (
           <div className="space-y-4">
-            {items.map((reminder) => (
-              <div
-                key={reminder.id}
-                className="flex items-start justify-between border-b pb-3 last:border-b-0 last:pb-0"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-display font-semibold">{reminder.title}</span>
-                    <Badge variant={reminder.dueState === 'overdue' ? 'destructive' : 'warning'}>
-                      {reminder.dueState === 'overdue'
-                        ? t('upcomingReminders.overdue')
-                        : t('upcomingReminders.dueSoon')}
-                    </Badge>
-                  </div>
-                  {reminder.dueDate && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('upcomingReminders.dueDate', { date: reminder.dueDate })}
-                    </p>
-                  )}
-                  {reminder.dueMileage != null && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('upcomingReminders.dueMileage', { value: reminder.dueMileage })}
-                    </p>
-                  )}
-                </div>
-                <Link
-                  to="/vehicles/$vehicleId/reminders"
-                  params={{ vehicleId: reminder.vehicleId }}
-                  className="text-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+            {items.map((reminder) => {
+              const mode = reminder.mode === 'recurring' ? 'recurring' : 'one_off';
+
+              return (
+                <div
+                  key={reminder.id}
+                  className="flex items-start justify-between border-b pb-3 last:border-b-0 last:pb-0"
                 >
-                  {t('upcomingReminders.viewVehicle')}
-                </Link>
-              </div>
-            ))}
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-display font-semibold">{reminder.title}</span>
+                      <Badge variant="outline">{t(`upcomingReminders.mode.${mode}`)}</Badge>
+                      <Badge variant={reminder.dueState === 'overdue' ? 'destructive' : 'warning'}>
+                        {reminder.dueState === 'overdue'
+                          ? t('upcomingReminders.overdue')
+                          : t('upcomingReminders.dueSoon')}
+                      </Badge>
+                    </div>
+                    {reminder.nextDueDate && (
+                      <p className="text-xs text-muted-foreground">
+                        {t('upcomingReminders.nextDueDate', { date: reminder.nextDueDate })}
+                      </p>
+                    )}
+                    {reminder.nextDueMileage != null && (
+                      <p className="text-xs text-muted-foreground">
+                        {t('upcomingReminders.nextDueMileage', { value: reminder.nextDueMileage })}
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    to="/vehicles/$vehicleId/reminders"
+                    params={{ vehicleId: reminder.vehicleId }}
+                    className="text-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80"
+                  >
+                    {t('upcomingReminders.viewVehicle')}
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         )}
       </CardContent>

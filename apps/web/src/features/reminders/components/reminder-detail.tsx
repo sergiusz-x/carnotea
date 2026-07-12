@@ -1,10 +1,8 @@
-import type { ReminderStatusCode } from '@carnotea/shared';
 import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { ErrorState } from '@/components/ErrorState';
-import { ListCard } from '@/components/ListCard';
 import {
   DeleteAction,
   EditActionIcon,
@@ -75,6 +73,8 @@ export function ReminderDetailPage() {
     );
   }
 
+  const mode = reminder.mode;
+
   return (
     <PageContainer>
       <Link
@@ -110,33 +110,84 @@ export function ReminderDetailPage() {
         }
       />
 
-      <ListCard
-        primary={<span className="font-display text-base font-semibold">{reminder.title}</span>}
-        badges={
-          <>
-            <Badge variant={reminderStatusBadgeVariant[reminder.status] ?? 'default'}>
-              {t(`status.${reminder.status as ReminderStatusCode}`)}
-            </Badge>
-            <Badge variant={reminderDueStateBadgeVariant[reminder.dueState] ?? 'outline'}>
-              {t(dueStateKey(reminder.dueState))}
-            </Badge>
-          </>
-        }
-      >
-        <dl className="divide-y border-t px-4 text-sm">
+      <div className="rounded-xl border bg-card">
+        <div className="flex flex-wrap gap-2 border-b px-4 py-4">
+          <Badge variant="outline">{t(`mode.${mode}`)}</Badge>
+          <Badge variant={reminderStatusBadgeVariant[reminder.status] ?? 'default'}>
+            {t(`status.${reminder.status}`)}
+          </Badge>
+          <Badge variant={reminderDueStateBadgeVariant[reminder.dueState] ?? 'outline'}>
+            {t(dueStateKey(reminder.dueState))}
+          </Badge>
+        </div>
+
+        <dl className="divide-y px-4 text-sm">
           <div className="flex justify-between py-2.5">
-            <dt className="text-muted-foreground">{t('fields.dueDate')}</dt>
-            <dd className="font-medium">{reminder.dueDate ?? t('list.noDueDate')}</dd>
+            <dt className="text-muted-foreground">{t('fields.mode')}</dt>
+            <dd className="font-medium">{t(`mode.${mode}`)}</dd>
           </div>
 
-          <div className="flex justify-between py-2.5">
-            <dt className="text-muted-foreground">{t('fields.dueMileage')}</dt>
-            <dd className="font-medium">
-              {reminder.dueMileage != null
-                ? t('list.dueMileage', { value: reminder.dueMileage })
-                : t('list.noDueMileage')}
-            </dd>
-          </div>
+          {mode === 'one_off' ? (
+            <>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.dueDate')}</dt>
+                <dd className="font-medium">{reminder.dueDate ?? t('list.noDueDate')}</dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.dueMileage')}</dt>
+                <dd className="font-medium">
+                  {reminder.dueMileage != null
+                    ? t('list.dueMileage', { value: reminder.dueMileage })
+                    : t('list.noDueMileage')}
+                </dd>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.nextDueDate')}</dt>
+                <dd className="font-medium">{reminder.nextDueDate ?? t('list.noNextDueDate')}</dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.nextDueMileage')}</dt>
+                <dd className="font-medium">
+                  {reminder.nextDueMileage != null
+                    ? t('list.nextDueMileage', { value: reminder.nextDueMileage })
+                    : t('list.noNextDueMileage')}
+                </dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.intervalKm')}</dt>
+                <dd className="font-medium">
+                  {reminder.intervalKm != null
+                    ? t('detail.intervalKm', { value: reminder.intervalKm })
+                    : t('detail.noIntervalKm')}
+                </dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.intervalMonths')}</dt>
+                <dd className="font-medium">
+                  {reminder.intervalMonths != null
+                    ? t('detail.intervalMonths', { value: reminder.intervalMonths })
+                    : t('detail.noIntervalMonths')}
+                </dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.lastPerformedDate')}</dt>
+                <dd className="font-medium">
+                  {reminder.lastPerformedDate ?? t('detail.noLastPerformedDate')}
+                </dd>
+              </div>
+              <div className="flex justify-between py-2.5">
+                <dt className="text-muted-foreground">{t('fields.lastPerformedMileage')}</dt>
+                <dd className="font-medium">
+                  {reminder.lastPerformedMileage != null
+                    ? t('detail.lastPerformedMileage', { value: reminder.lastPerformedMileage })
+                    : t('detail.noLastPerformedMileage')}
+                </dd>
+              </div>
+            </>
+          )}
 
           {reminder.notifiedAt && (
             <div className="flex justify-between py-2.5">
@@ -152,7 +203,7 @@ export function ReminderDetailPage() {
             </div>
           )}
         </dl>
-      </ListCard>
+      </div>
     </PageContainer>
   );
 }

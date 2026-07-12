@@ -1,63 +1,97 @@
 /**
- * Threshold constants and helper for computing a reminder's derived `dueState`.
- *
- * Shared between the API response transform (T-027) and the web UI display
- * (T-039) so the same thresholds apply everywhere.
+ * Shared reminder due-date helpers.
  */
 
-/** How many days before `dueDate` a reminder is considered `due_soon`. */
+/** How many days before a due date a reminder is considered due soon. */
 export const DUE_SOON_DAYS = 14;
 
-/** How many km before `dueMileage` a reminder is considered `due_soon`. */
+/** How many km before a due mileage a reminder is considered due soon. */
 export const DUE_SOON_MILEAGE = 500;
 
+export const REMINDER_MODES = ['one_off', 'recurring'] as const;
+
+export type ReminderMode = (typeof REMINDER_MODES)[number];
 export type DueState = 'overdue' | 'due_soon' | 'ok';
 
-export interface DueStateInput {
+export interface ReminderDueInput {
+  mode?: ReminderMode;
   dueDate?: string | null;
   dueMileage?: number | null;
-  currentMileage?: number | null;
-  status?: string;
+  intervalKm?: number | null;
+  intervalMonths?: number | null;
+  lastPerformedDate?: string | null;
+  lastPerformedMileage?: number | null;
 }
 
-/**
- * Compute the derived `dueState` for a reminder.
- *
- * - `overdue` if `dueDate` is in the past (regardless of mileage) OR
- *   `dueMileage` ≤ `currentMileage`.
- * - `due_soon` if `dueDate` is within DUE_SOON_DAYS OR `dueMileage` is
- *   within DUE_SOON_MILEAGE of `currentMileage`.
- * - `ok` otherwise.
- *
- * Completed / dismissed reminders return `ok` regardless of date/mileage
- * since the trigger was already satisfied.
- */
-export function computeDueState(input: DueStateInput): DueState {
-  const { dueDate, dueMileage, currentMileage, status } = input;
+export interface ReminderDueTargets {
+  nextDueDate: string | null;
+  nextDueMileage: number | null;
+}
 
-  // Terminal/completed states are always ok.
-  if (status && !['pending'].includes(status)) {
+export interface DueStateInput extends ReminderDueInput {
+  currentMileage?: number | null;
+  status?: string;
+  nextDueDate?: string | null;
+  nextDueMileage?: number | null;
+}
+
+function addMonths(date: string, months: number): string {
+  const [year, month, day] = date.split('-').map(Number);
+  const result = new Date(Date.UTC(year ?? 0, (month ?? 1) - 1 + months, day ?? 1));
+  return result.toISOString().slice(0, 10);
+}
+
+export function computeNextDueTargets(input: ReminderDueInput): ReminderDueTargets {
+  if ((input.mode ?? 'one_off') === 'one_off') {
+    return {
+      nextDueDate: input.dueDate ?? null,
+      nextDueMileage: input.dueMileage ?? null,
+    };
+  }
+
+  return {
+    nextDueDate:
+      input.intervalMonths != null && input.lastPerformedDate
+        ? addMonths(input.lastPerformedDate, input.intervalMonths)
+        : null,
+    nextDueMileage:
+      input.intervalKm != null && input.lastPerformedMileage != null
+        ? input.lastPerformedMileage + input.intervalKm
+        : null,
+  };
+}
+
+export function computeDueState(input: DueStateInput): DueState {
+  const { currentMileage, status } = input;
+
+  if (status && status !== 'pending') {
     return 'ok';
   }
 
-  // Check overdue first (stronger signal).
-  if (dueDate) {
+  const targets = {
+    nextDueDate: input.nextDueDate ?? computeNextDueTargets(input).nextDueDate,
+    nextDueMileage: input.nextDueMileage ?? computeNextDueTargets(input).nextDueMileage,
+  };
+
+  if (targets.nextDueDate) {
     const today = new Date();
-    const due = new Date(dueDate);
-    // Strip time for day-level comparison
+    const due = new Date(targets.nextDueDate);
     today.setHours(0, 0, 0, 0);
     due.setHours(0, 0, 0, 0);
     if (due < today) return 'overdue';
   }
 
-  if (dueMileage != null && currentMileage != null) {
-    if (currentMileage >= dueMileage) return 'overdue';
+  if (
+    targets.nextDueMileage != null &&
+    currentMileage != null &&
+    currentMileage >= targets.nextDueMileage
+  ) {
+    return 'overdue';
   }
 
-  // Check due_soon
-  if (dueDate) {
+  if (targets.nextDueDate) {
     const today = new Date();
-    const due = new Date(dueDate);
+    const due = new Date(targets.nextDueDate);
     today.setHours(0, 0, 0, 0);
     due.setHours(0, 0, 0, 0);
     const diffMs = due.getTime() - today.getTime();
@@ -65,8 +99,8 @@ export function computeDueState(input: DueStateInput): DueState {
     if (diffDays >= 0 && diffDays <= DUE_SOON_DAYS) return 'due_soon';
   }
 
-  if (dueMileage != null && currentMileage != null) {
-    const diff = dueMileage - currentMileage;
+  if (targets.nextDueMileage != null && currentMileage != null) {
+    const diff = targets.nextDueMileage - currentMileage;
     if (diff >= 0 && diff <= DUE_SOON_MILEAGE) return 'due_soon';
   }
 

@@ -19,10 +19,13 @@ import {
 interface ReminderCardProps {
   id: string;
   title: string;
-  status: string;
+  status: ReminderStatusCode;
   dueState: string;
-  dueDate: string | null;
-  dueMileage: number | null;
+  mode: 'one_off' | 'recurring';
+  dueDate?: string | null;
+  dueMileage?: number | null;
+  nextDueDate?: string | null;
+  nextDueMileage?: number | null;
   onDelete: (id: string, title: string) => void;
   onMarkDone: (id: string) => void;
   isDeleting: boolean;
@@ -34,8 +37,11 @@ export function ReminderCard({
   title,
   status,
   dueState,
+  mode,
   dueDate,
   dueMileage,
+  nextDueDate,
+  nextDueMileage,
   onDelete,
   onMarkDone,
   isDeleting,
@@ -46,6 +52,9 @@ export function ReminderCard({
   });
   const { t } = useTranslation('reminders');
   const { t: tc } = useTranslation('common');
+
+  const displayDate = mode === 'recurring' ? (nextDueDate ?? null) : (dueDate ?? null);
+  const displayMileage = mode === 'recurring' ? (nextDueMileage ?? null) : (dueMileage ?? null);
 
   return (
     <ListCard
@@ -60,8 +69,9 @@ export function ReminderCard({
       }
       badges={
         <>
+          <Badge variant="outline">{t(`mode.${mode}`)}</Badge>
           <Badge variant={reminderStatusBadgeVariant[status] ?? 'default'}>
-            {t(`status.${status as ReminderStatusCode}`)}
+            {t(`status.${status}`)}
           </Badge>
           <Badge variant={reminderDueStateBadgeVariant[dueState] ?? 'outline'}>
             {t(dueStateKey(dueState))}
@@ -98,13 +108,21 @@ export function ReminderCard({
       }
     >
       <div className="px-4 pb-4 text-sm text-muted-foreground tnum">
-        {dueDate ? (
-          <span>{t('list.dueDate', { date: dueDate })}</span>
+        {displayDate ? (
+          <span>
+            {mode === 'recurring'
+              ? t('list.nextDueDate', { date: displayDate })
+              : t('list.dueDate', { date: displayDate })}
+          </span>
         ) : (
-          <span>{t('list.noDueDate')}</span>
+          <span>{mode === 'recurring' ? t('list.noNextDueDate') : t('list.noDueDate')}</span>
         )}
-        {dueMileage != null && (
-          <span className="ml-4">{t('list.dueMileage', { value: dueMileage })}</span>
+        {displayMileage != null && (
+          <span className="ml-4">
+            {mode === 'recurring'
+              ? t('list.nextDueMileage', { value: displayMileage })
+              : t('list.dueMileage', { value: displayMileage })}
+          </span>
         )}
       </div>
     </ListCard>
