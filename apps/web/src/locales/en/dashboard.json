@@ -41,10 +41,14 @@
   "upcomingReminders": {
     "title": "Upcoming reminders",
     "empty": "No upcoming reminders",
-    "dueDate": "Due: {{date}}",
-    "dueMileage": "Mileage: {{value}} km",
+    "nextDueDate": "Next due: {{date}}",
+    "nextDueMileage": "Next mileage: {{value}} km",
     "overdue": "Overdue",
     "dueSoon": "Due soon",
-    "viewVehicle": "View vehicle"
+    "viewVehicle": "View vehicle",
+    "mode": {
+      "one_off": "One-off",
+      "recurring": "Recurring"
+    }
   }
 }

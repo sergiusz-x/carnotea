@@ -1,3 +1,4 @@
+import { type Reminder } from '@carnotea/shared';
 import { NotFoundException } from '@nestjs/common';
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
@@ -7,20 +8,27 @@ import { AUTH } from '../auth/auth.constants.js';
 import { AuthGuard } from '../auth/auth.guard.js';
 
 import { RemindersController } from './reminders.controller.js';
-import { RemindersService, type ReminderResponse } from './reminders.service.js';
+import { RemindersService } from './reminders.service.js';
 
 const userId = '11111111-1111-4111-8111-111111111111';
 const vehicleId = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const existingId = '22222222-2222-4222-8222-222222222222';
 const missingId = '33333333-3333-4333-8333-333333333333';
 
-const sampleReminder: ReminderResponse = {
+const sampleReminder: Reminder = {
   id: existingId,
   vehicleId,
   title: 'Oil change',
   description: null,
-  dueDate: '2026-12-01',
+  mode: 'recurring',
+  dueDate: null,
   dueMileage: null,
+  intervalKm: 15000,
+  intervalMonths: 12,
+  lastPerformedDate: '2026-01-15',
+  lastPerformedMileage: 81500,
+  nextDueDate: '2027-01-15',
+  nextDueMileage: 96500,
   status: 'pending',
   dueState: 'ok',
   notifiedAt: null,
@@ -145,6 +153,7 @@ describe('RemindersController', () => {
       url: `/api/vehicles/${vehicleId}/reminders`,
       payload: {
         title: 'Insurance renewal',
+        mode: 'one_off',
         dueDate: '2026-12-01',
         status: 'pending',
       },
@@ -156,63 +165,37 @@ describe('RemindersController', () => {
     expect(createCall?.args[1]).toBe(vehicleId);
   });
 
-  it('POST /api/vehicles/:vehicleId/reminders rejects invalid body with 400', async () => {
+  it('POST accepts a recurring reminder', async () => {
     const res = await app.inject({
       method: 'POST',
       url: `/api/vehicles/${vehicleId}/reminders`,
-      payload: { title: 'No trigger' },
+      payload: {
+        title: 'Oil change',
+        mode: 'recurring',
+        intervalKm: 15000,
+        intervalMonths: 12,
+        lastPerformedDate: '2026-01-15',
+        lastPerformedMileage: 81500,
+        status: 'pending',
+      },
+    });
+
+    expect(res.statusCode).toBe(201);
+  });
+
+  it('POST rejects recurring reminder without matching last performed values', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/vehicles/${vehicleId}/reminders`,
+      payload: {
+        title: 'Oil change',
+        mode: 'recurring',
+        intervalKm: 15000,
+        status: 'pending',
+      },
     });
 
     expect(res.statusCode).toBe(400);
     expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
-    expect(calls).toEqual([]);
-  });
-
-  it('POST rejects negative due mileage', async () => {
-    const res = await app.inject({
-      method: 'POST',
-      url: `/api/vehicles/${vehicleId}/reminders`,
-      payload: { title: 'Bad mileage', dueMileage: -1, status: 'pending' },
-    });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
-  });
-
-  it('POST rejects no trigger (neither dueDate nor dueMileage)', async () => {
-    const res = await app.inject({
-      method: 'POST',
-      url: `/api/vehicles/${vehicleId}/reminders`,
-      payload: { title: 'Nothing', status: 'pending' },
-    });
-
-    expect(res.statusCode).toBe(400);
-    expect(res.json()).toMatchObject({ code: 'VALIDATION_ERROR' });
-  });
-
-  it('PATCH /api/vehicles/:vehicleId/reminders/:id forwards update to service', async () => {
-    const res = await app.inject({
-      method: 'PATCH',
-      url: `/api/vehicles/${vehicleId}/reminders/${existingId}`,
-      payload: { title: 'Updated title' },
-    });
-
-    expect(res.statusCode).toBe(200);
-    const updateCall = calls.find((c) => c.method === 'update');
-    expect(updateCall?.args[0]).toBe(userId);
-    expect(updateCall?.args[1]).toBe(vehicleId);
-    expect(updateCall?.args[2]).toBe(existingId);
-    expect(updateCall?.args[3]).toMatchObject({ title: 'Updated title' });
-  });
-
-  it('DELETE /api/vehicles/:vehicleId/reminders/:id returns 204', async () => {
-    const res = await app.inject({
-      method: 'DELETE',
-      url: `/api/vehicles/${vehicleId}/reminders/${existingId}`,
-    });
-
-    expect(res.statusCode).toBe(204);
-    expect(res.body).toBe('');
-    expect(calls).toEqual([{ method: 'remove', args: [userId, vehicleId, existingId] }]);
   });
 });

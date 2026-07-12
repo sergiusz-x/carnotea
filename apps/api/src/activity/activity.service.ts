@@ -18,7 +18,6 @@ import {
   type Db,
 } from '@carnotea/db';
 import {
-  computeDueState,
   type ActivityEntry,
   type ActivityFeedResponse,
   type ActivityQuery,
@@ -31,6 +30,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { and, asc, count, desc, eq, gte, lt, lte, sql } from 'drizzle-orm';
 
 import { DB } from '../db/db.constants.js';
+import { compareReminderUrgency, computeReminderUrgency } from '../reminders/reminder-urgency.js';
 
 interface Cursor {
   occurredAt: string;
@@ -51,29 +51,20 @@ function decodeCursor(raw: string): Cursor | null {
   }
 }
 
-/** Descending (occurredAt, id) order — newest first, id as a stable tiebreak. */
 function compareDesc(a: ActivityEntry, b: ActivityEntry): number {
   if (a.occurredAt !== b.occurredAt) return a.occurredAt < b.occurredAt ? 1 : -1;
   return a.id < b.id ? 1 : -1;
 }
 
-/** Is  strictly after cur in descending order (i.e. belongs on a later page)? */
 function isAfter(e: ActivityEntry, cur: Cursor): boolean {
   if (e.occurredAt !== cur.occurredAt) return e.occurredAt < cur.occurredAt;
   return e.id < cur.id;
 }
+
 @Injectable()
 export class ActivityService {
   constructor(@Inject(DB) private readonly db: Db) {}
 
-  /**
-   * GET /api/vehicles/{vehicleId}/activity — the unified Dziennik feed.
-   *
-   * Unions the vehicle event sources (fuel, charge, service, expense, issue,
-   * reminder) for one owned vehicle, newest first, with keyset pagination over
-   * (occurredAt, id). The feed stays data-only; reminder urgency is surfaced via
-   * dueState, not translated server-side.
-   */
   async getActivity(
     userId: string,
     vehicleId: string,
@@ -97,14 +88,15 @@ export class ActivityService {
     ).flat();
 
     const page = entries.filter((e) => (cursor ? isAfter(e, cursor) : true)).sort(compareDesc);
-
     const hasMore = page.length > query.limit;
     const items = page.slice(0, query.limit);
     const last = items.at(-1);
-    const nextCursor =
-      hasMore && last ? encodeCursor({ occurredAt: last.occurredAt, id: last.id }) : null;
 
-    return { items, nextCursor };
+    return {
+      items,
+      nextCursor:
+        hasMore && last ? encodeCursor({ occurredAt: last.occurredAt, id: last.id }) : null,
+    };
   }
 
   private async fuelEntries(
@@ -361,8 +353,13 @@ export class ActivityService {
         vehicleId: reminders.vehicleId,
         occurredAt: sql<string>`(${reminders.createdAt} at time zone 'UTC')::date::text`,
         title: reminders.title,
+        mode: reminders.mode,
         dueDate: reminders.dueDate,
         dueMileage: reminders.dueMileage,
+        intervalKm: reminders.intervalKm,
+        intervalMonths: reminders.intervalMonths,
+        lastPerformedDate: reminders.lastPerformedDate,
+        lastPerformedMileage: reminders.lastPerformedMileage,
         status: reminderStatuses.code,
         currentMileage: vehicles.currentMileage,
       })
@@ -380,29 +377,41 @@ export class ActivityService {
       .orderBy(desc(sql`(${reminders.createdAt} at time zone 'UTC')::date`), desc(reminders.id))
       .limit(take);
 
-    return rows.map((r) => ({
-      kind: 'reminder',
-      id: r.id,
-      vehicleId: r.vehicleId,
-      occurredAt: r.occurredAt,
-      mileage: null,
-      title: r.title,
-      status: r.status as 'pending' | 'done' | 'cancelled',
-      dueState: computeDueState({
+    return rows.map((r) => {
+      const urgency = computeReminderUrgency({
+        mode: r.mode as 'one_off' | 'recurring',
         dueDate: r.dueDate,
         dueMileage: r.dueMileage,
+        intervalKm: r.intervalKm,
+        intervalMonths: r.intervalMonths,
+        lastPerformedDate: r.lastPerformedDate,
+        lastPerformedMileage: r.lastPerformedMileage,
         currentMileage: r.currentMileage,
         status: r.status,
-      }),
-      dueDate: r.dueDate,
-      dueMileage: r.dueMileage,
-    }));
+      });
+
+      return {
+        kind: 'reminder',
+        id: r.id,
+        vehicleId: r.vehicleId,
+        occurredAt: r.occurredAt,
+        mileage: null,
+        title: r.title,
+        mode: r.mode as 'one_off' | 'recurring',
+        status: r.status as 'pending' | 'done' | 'cancelled',
+        dueState: urgency.dueState,
+        dueDate: r.dueDate,
+        dueMileage: r.dueMileage,
+        intervalKm: r.intervalKm,
+        intervalMonths: r.intervalMonths,
+        lastPerformedDate: r.lastPerformedDate,
+        lastPerformedMileage: r.lastPerformedMileage,
+        nextDueDate: urgency.nextDueDate,
+        nextDueMileage: urgency.nextDueMileage,
+      };
+    });
   }
 
-  /**
-   * GET /api/vehicles/{vehicleId}/panel — the minimal vitals panel.
-   * Every vital is derived from stored data; uncertain ones are null.
-   */
   async getPanel(userId: string, vehicleId: string): Promise<VehiclePanel> {
     const vehicleRows = await this.db
       .select({
@@ -446,17 +455,14 @@ export class ActivityService {
 
   private async energyVital(vehicleId: string, fuelType: string): Promise<VehiclePanel['energy']> {
     if (fuelType !== 'electric' && fuelType !== 'hybrid') return null;
-
     const rows = await this.db
       .select({ soc: chargingSessions.socEndPercent })
       .from(chargingSessions)
       .where(eq(chargingSessions.vehicleId, vehicleId))
       .orderBy(desc(chargingSessions.chargeDate), desc(chargingSessions.id))
       .limit(1);
-
     const soc = rows.at(0)?.soc ?? null;
-    if (soc === null) return null;
-    return { kind: 'charge', socPercent: soc, rangeKm: null };
+    return soc === null ? null : { kind: 'charge', socPercent: soc, rangeKm: null };
   }
 
   private async nextServiceVital(
@@ -465,27 +471,39 @@ export class ActivityService {
   ): Promise<VehiclePanel['nextService']> {
     const rows = await this.db
       .select({
+        mode: reminders.mode,
         dueDate: reminders.dueDate,
         dueMileage: reminders.dueMileage,
+        intervalKm: reminders.intervalKm,
+        intervalMonths: reminders.intervalMonths,
+        lastPerformedDate: reminders.lastPerformedDate,
+        lastPerformedMileage: reminders.lastPerformedMileage,
       })
       .from(reminders)
       .innerJoin(reminderStatuses, eq(reminders.statusId, reminderStatuses.id))
-      .where(and(eq(reminders.vehicleId, vehicleId), eq(reminderStatuses.code, 'pending')))
-      .orderBy(sql`${reminders.dueDate} ASC NULLS LAST`)
-      .limit(1);
+      .where(and(eq(reminders.vehicleId, vehicleId), eq(reminderStatuses.code, 'pending')));
 
-    const r = rows.at(0);
-    if (!r) return null;
+    const sorted = rows.sort((a, b) =>
+      compareReminderUrgency(
+        { ...a, mode: a.mode as 'one_off' | 'recurring', currentMileage, status: 'pending' },
+        { ...b, mode: b.mode as 'one_off' | 'recurring', currentMileage, status: 'pending' },
+      ),
+    );
+
+    const row = sorted.at(0);
+    if (!row) return null;
+
+    const urgency = computeReminderUrgency({
+      ...row,
+      mode: row.mode as 'one_off' | 'recurring',
+      currentMileage,
+      status: 'pending',
+    });
 
     return {
-      dueDate: r.dueDate,
-      dueInKm: r.dueMileage != null ? r.dueMileage - currentMileage : null,
-      dueState: computeDueState({
-        dueDate: r.dueDate,
-        dueMileage: r.dueMileage,
-        currentMileage,
-        status: 'pending',
-      }),
+      dueDate: urgency.nextDueDate,
+      dueInKm: urgency.dueInKm,
+      dueState: urgency.dueState,
     };
   }
 
@@ -520,7 +538,6 @@ export class ActivityService {
       sumBetween(thisStart, nextStart),
       sumBetween(prevStart, thisStart),
     ]);
-
     return { total, prevTotal, currency };
   }
 
@@ -529,7 +546,6 @@ export class ActivityService {
     fuelType: string,
   ): Promise<VehiclePanel['avgConsumption']> {
     const electric = fuelType === 'electric';
-
     const rows = electric
       ? await this.db
           .select({ mileage: chargingSessions.mileage, qty: chargingSessions.energyKwh })
