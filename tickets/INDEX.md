@@ -124,6 +124,7 @@ _None._
 - 🔴 [T-092 — Fix version.json service worker caching](./T-092-version-json-service-worker-cache.md)
 - 🔴 [T-093 — Inline service worker registration for uncached updates](./T-093-inline-service-worker-registration.md)
 - 🔴 [T-094 — Activate waiting service worker updates](./T-094-activate-waiting-service-worker.md)
+- 🔴 [T-095 — Detail-first activity flow and fuel log descriptions](./T-095-activity-detail-flow-and-fuel-descriptions.md)
 
 <!-- END GENERATED:tickets -->
 

@@ -14,6 +14,7 @@ const baseFuelLogRow = {
   pricePerLiter: '1.8',
   totalCost: '72',
   stationName: null,
+  description: null,
   isFullTank: false,
   createdAt: new Date('2026-01-15T00:00:00Z'),
 };

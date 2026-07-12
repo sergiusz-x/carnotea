@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Link, useParams } from '@tanstack/react-router';
+import { Link, useNavigate, useParams } from '@tanstack/react-router';
 import { ChevronLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +18,7 @@ export function FuelLogDetailPage() {
   const { vehicleId, fuelId }: { vehicleId: string; fuelId: string } = useParams({
     from: '/_authenticated/vehicles/$vehicleId/fuel/$fuelId',
   });
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation('fuel-logs');
   const { t: tc } = useTranslation('common');
   const currency = useCurrencyPref();
@@ -32,10 +33,11 @@ export function FuelLogDetailPage() {
   } = useQuery(fuelLogQueryOptions(vehicleId, fuelId));
   const deleteMutation = useDeleteFuelLog(vehicleId);
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!log) return;
     if (window.confirm(t('delete.confirmMessage', { date: log.fuelDate }))) {
-      void deleteMutation.mutateAsync(fuelId);
+      await deleteMutation.mutateAsync(fuelId);
+      await navigate({ to: '/vehicles/$vehicleId/fuel', params: { vehicleId } });
     }
   }
 
@@ -84,18 +86,27 @@ export function FuelLogDetailPage() {
             >
               <EditActionIcon />
             </Link>
-            <DeleteAction onClick={handleDelete} disabled={deleteMutation.isPending} />
+            <DeleteAction onClick={() => void handleDelete()} disabled={deleteMutation.isPending} />
           </div>
         }
       />
 
-      <div className="mb-4">
+      <div className="mb-4 flex flex-wrap gap-2">
         <Badge variant={log.isFullTank ? 'default' : 'secondary'}>
           {log.isFullTank ? t('list.fullTank') : t('list.partialFill')}
         </Badge>
+        {log.consumptionHint != null ? (
+          <Badge variant="outline">
+            {t('list.consumptionHint', {
+              hint: new Intl.NumberFormat(locale, {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 2,
+              }).format(log.consumptionHint),
+            })}
+          </Badge>
+        ) : null}
       </div>
 
-      {/* Cost highlight */}
       <Card className="mb-4">
         <CardContent className="p-0">
           <StatStrip
@@ -115,7 +126,6 @@ export function FuelLogDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Details */}
       <Card>
         <CardContent className="pt-4">
           <dl className="divide-y">
@@ -132,11 +142,22 @@ export function FuelLogDetailPage() {
                 <dd className="font-medium">{log.stationName}</dd>
               </div>
             )}
+            {log.description && (
+              <div className="py-2.5 text-sm">
+                <dt className="text-muted-foreground">{t('fields.description')}</dt>
+                <dd className="mt-1 whitespace-pre-wrap font-medium">{log.description}</dd>
+              </div>
+            )}
             {log.consumptionHint != null && (
               <div className="flex justify-between py-2.5 text-sm">
                 <dt className="text-muted-foreground">{t('fields.consumptionHint')}</dt>
                 <dd className="font-medium">
-                  {t('detail.consumptionHint', { hint: log.consumptionHint })}
+                  {t('detail.consumptionHint', {
+                    hint: new Intl.NumberFormat(locale, {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 2,
+                    }).format(log.consumptionHint),
+                  })}
                 </dd>
               </div>
             )}

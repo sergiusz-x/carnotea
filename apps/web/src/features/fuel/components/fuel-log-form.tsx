@@ -9,6 +9,7 @@ import {
   BigNumberField,
   DateField,
   StepWizard,
+  TextareaField,
   TextField,
   ToggleField,
   handleApiError,
@@ -23,15 +24,11 @@ import { useCurrencyPref } from '@/lib/useCurrencyPref';
 import { useLastMileage } from '@/lib/useLastMileage';
 import { useTotalCost } from '@/lib/useTotalCost';
 
-// ─── Step field groups ────────────────────────────────────────────────────────
-
 const STEP_FIELDS = [
-  ['fuelDate', 'mileage', 'stationName'],
+  ['fuelDate', 'mileage', 'stationName', 'description'],
   ['liters', 'pricePerLiter', 'isFullTank'],
   [],
 ];
-
-// ─── Summary (step 3) ─────────────────────────────────────────────────────────
 
 function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
   const { t, i18n } = useTranslation('fuel-logs');
@@ -41,6 +38,7 @@ function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
     fuelDate?: string;
     mileage?: number;
     stationName?: string;
+    description?: string;
     liters?: number;
     pricePerLiter?: number;
     isFullTank?: boolean;
@@ -48,7 +46,7 @@ function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
 
   return (
     <div className="space-y-3 rounded-xl border bg-muted/30 p-4">
-      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+      <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
         {t('wizard.step3')}
       </h3>
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
@@ -71,6 +69,12 @@ function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
           <>
             <dt className="text-muted-foreground">{t('wizard.summaryStation')}</dt>
             <dd className="font-medium">{values.stationName}</dd>
+          </>
+        )}
+        {values.description && (
+          <>
+            <dt className="text-muted-foreground">{t('wizard.summaryDescription')}</dt>
+            <dd className="font-medium">{values.description}</dd>
           </>
         )}
         {values.liters != null && (
@@ -109,8 +113,6 @@ function FuelLogSummary({ form }: { form: ReturnType<typeof useZodForm> }) {
     </div>
   );
 }
-
-// ─── Shared form shell ─────────────────────────────────────────────────────────
 
 function FormShell({
   title,
@@ -171,6 +173,11 @@ function FormShell({
                 label={t('fields.stationName')}
                 placeholder={t('fields.stationName')}
               />
+              <TextareaField
+                name="description"
+                label={t('fields.description')}
+                placeholder={t('fields.description')}
+              />
             </>
           )}
 
@@ -211,8 +218,6 @@ function FormShell({
   );
 }
 
-// ─── Create page ───────────────────────────────────────────────────────────────
-
 export function FuelLogCreatePage() {
   const { vehicleId }: { vehicleId: string } = useParams({
     from: '/_authenticated/vehicles/$vehicleId/fuel/new',
@@ -249,8 +254,6 @@ export function FuelLogCreatePage() {
   );
 }
 
-// ─── Edit page ─────────────────────────────────────────────────────────────────
-
 export function FuelLogEditPage() {
   const { vehicleId, fuelId }: { vehicleId: string; fuelId: string } = useParams({
     from: '/_authenticated/vehicles/$vehicleId/fuel/$fuelId/edit',
@@ -268,6 +271,7 @@ export function FuelLogEditPage() {
       liters: existingLog.liters,
       pricePerLiter: existingLog.pricePerLiter,
       stationName: existingLog.stationName ?? undefined,
+      description: existingLog.description ?? undefined,
       isFullTank: existingLog.isFullTank,
     },
   });

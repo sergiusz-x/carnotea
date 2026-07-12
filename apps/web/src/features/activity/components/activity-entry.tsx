@@ -173,7 +173,7 @@ function EntryLink({
     case 'service':
       return (
         <Link
-          to="/vehicles/$vehicleId/service/$recordId/edit"
+          to="/vehicles/$vehicleId/service/$recordId"
           params={{ vehicleId, recordId: entry.id }}
           className={className}
         >
@@ -183,7 +183,7 @@ function EntryLink({
     case 'expense':
       return (
         <Link
-          to="/vehicles/$vehicleId/expenses/$expenseId/edit"
+          to="/vehicles/$vehicleId/expenses/$expenseId"
           params={{ vehicleId, expenseId: entry.id }}
           className={className}
         >

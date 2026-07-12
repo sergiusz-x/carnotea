@@ -174,6 +174,7 @@ export class AccountController {
       pricePerLiter: Number(row.pricePerLiter),
       totalCost: Number(row.totalCost),
       stationName: row.stationName ?? null,
+      description: row.description ?? null,
       isFullTank: row.isFullTank,
       createdAt: row.createdAt.toISOString(),
     }));

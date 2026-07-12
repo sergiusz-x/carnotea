@@ -27,6 +27,7 @@ const sampleLog: FuelLogResponse = {
   pricePerLiter: 1.8,
   totalCost: 72,
   stationName: null,
+  description: 'Highway refill',
   isFullTank: true,
   consumptionHint: null,
   createdAt: '2026-01-15T10:00:00.000Z',
@@ -153,6 +154,7 @@ describe('FuelLogsController', () => {
         liters: 40,
         pricePerLiter: 1.8,
         isFullTank: true,
+        description: 'Highway refill',
       },
     });
 
@@ -160,6 +162,7 @@ describe('FuelLogsController', () => {
     const createCall = calls.find((c) => c.method === 'create');
     expect(createCall?.args[0]).toBe(userId);
     expect(createCall?.args[1]).toBe(vehicleId);
+    expect(createCall?.args[2]).toMatchObject({ description: 'Highway refill' });
     expect(createCall?.args[2]).not.toHaveProperty('totalCost');
   });
 
