@@ -145,15 +145,22 @@ the legacy `sql/` design that used them was superseded by schema-as-code in T-00
 
 ## Deployment
 
-Production runs on a VPS via `docker compose`. The compose file orchestrates:
+Production runs on a self-hosted Dokploy instance. The Dokploy setup
+orchestrates two independent units:
 
-- `postgres` (the existing image, persisted volume),
-- `api` (built `apps/api` image),
-- `web` (a static container or served by the API).
+1. **CarNotea Compose** (`docker-compose.prod.yml`) — runs `migrate` (one-shot
+   Drizzle migration runner), `api` (NestJS/Fastify), and `web` (Nginx SPA
+   server).
+2. **PostgreSQL 16 Database service** (Dokploy: Create Service → Database →
+   PostgreSQL 16) — a separate lifecycle unit that the compose stack connects
+   to via `DATABASE_URL`. Backups to Cloudflare R2 are configured from the
+   Dokploy UI; no backup credentials are stored in this repo.
 
-The development compose file (`docker-compose.yml` in the repo root) currently
-only starts Postgres. The production compose lives separately - that ticket
-comes later.
+See [ADR-0015](./adr/0015-dokploy-managed-postgres.md) for the rationale for
+keeping Postgres outside the compose stack.
+
+The development compose file (`docker-compose.yml` in the repo root) still
+runs a local Postgres container for development use only.
 
 ## Security hardening
 

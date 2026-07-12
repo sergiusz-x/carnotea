@@ -13,6 +13,30 @@ The server itself sits on a private LAN and is reached from the internet only
 through a Cloudflare Tunnel (`cloudflared`), never via a directly exposed
 public IP or port-forwarding.
 
+## Architecture overview
+
+```
+Dokploy
+├── CarNotea Compose (docker-compose.prod.yml)
+│   ├── migrate    — one-shot Drizzle migration runner (profile: release)
+│   ├── api        — NestJS / Fastify backend
+│   └── web        — Nginx static server (SPA + reverse proxy to api)
+└── PostgreSQL Database Service (Create Service → Database → PostgreSQL 16)
+    └── Backups managed by Dokploy → Cloudflare R2
+```
+
+PostgreSQL is **not** part of `docker-compose.prod.yml`. It runs as a separate
+Dokploy Database service, independent of the app stack lifecycle. The app
+connects to it exclusively through `DATABASE_URL`. See [ADR-0015](./adr/0015-dokploy-managed-postgres.md)
+for the full rationale.
+
+> [!CAUTION]
+> **DO NOT merge this codebase before completing the Dokploy database cutover.**
+> Merging while the old in-compose Postgres volume is still the live database,
+> without first creating the new Dokploy Database service and migrating data,
+> **will cause downtime**. Follow the cutover runbook in § Cutover runbook below
+> before merging and deploying.
+
 ## Prerequisites
 
 | Requirement          | Notes                                                                                               |
@@ -99,22 +123,78 @@ using only features that are already proven to work:
 No Dokploy API key, Cloudflare Service Token, or Access policy is needed —
 nothing beyond what Dokploy and GitHub already provide out of the box.
 
-## 1. Configure the production environment
+## 1. PostgreSQL Database service
+
+PostgreSQL 16 runs as a **separate Dokploy Database service**, not as a service
+inside `docker-compose.prod.yml`.
+
+### Create the service
+
+1. In Dokploy: **Create Service → Database → PostgreSQL** → choose version 16.
+2. Give it a recognisable name (e.g. `carnotea-db`).
+3. Set the database name, username, and password in Dokploy's database
+   configuration panel (these stay inside Dokploy — never in this repo).
+4. Once created, copy the **Internal Connection URL** from the database's
+   Overview tab. It looks like:
+   ```
+   postgresql://<user>:<password>@<internal-host>:<port>/<dbname>
+   ```
+5. Set this URL as `DATABASE_URL` in the CarNotea compose application's
+   **Environment Variables** tab in Dokploy.
+
+The database does **not** need a public endpoint. `migrate` and `api` reach it
+over Dokploy's internal Docker network using the Internal Connection URL.
+
+### Why not in compose?
+
+See [ADR-0015](./adr/0015-dokploy-managed-postgres.md). In short:
+
+- independent lifecycle (app restarts don't touch the DB);
+- backups managed from Dokploy UI, R2 credentials stay in Dokploy;
+- simpler compose file, smaller secret surface.
+
+## 2. Backups
+
+Backups are configured entirely from **Dokploy's UI** for the PostgreSQL
+Database service. CarNotea's repository contains no backup scripts, no
+retention logic, and no R2 credentials.
+
+### Configure in Dokploy
+
+1. Open the Postgres Database service in Dokploy.
+2. Go to its **Backups** tab.
+3. Configure the Cloudflare R2 destination (bucket name, R2 endpoint, access
+   key ID, secret access key). These credentials are stored in Dokploy and
+   never leave it.
+4. Set a schedule (e.g. daily at 02:15 UTC) and retention policy.
+5. Trigger a **manual backup** immediately and verify that the backup object
+   appears in the R2 bucket.
+6. Test a **restore** from that backup into a throwaway database before going
+   live (see § Cutover runbook step 5).
+
+### Restore
+
+Use Dokploy's UI restore flow for the PostgreSQL Database service. No shell
+scripts or `docker compose` commands are needed.
+
+## 3. Configure the production environment
 
 Environment variables are **never** set via a committed or on-disk `.env`
 file in production. Set each variable listed (uncommented) in `.env.example`
 directly in Dokploy's per-application **Environment Variables** tab — see
 § 8 Secrets management below for the full list and rotation procedure.
 
-## 2. First production start
+## 4. First production start
 
 In Dokploy, create the application (Docker Compose type) pointing at this
-repo's `docker-compose.prod.yml`, set the environment variables, then deploy.
-Equivalent manual steps, if ever needed outside Dokploy:
+repo's `docker-compose.prod.yml`, set the environment variables (including
+`DATABASE_URL` from the Dokploy Database service), then deploy. Equivalent
+manual steps, if ever needed outside Dokploy:
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d postgres
-docker compose -f docker-compose.prod.yml --profile release run --rm migrate
+COMPOSE_PROFILES=release \
+DATABASE_URL='postgresql://...' \
+docker compose -f docker-compose.prod.yml run --rm migrate
 docker compose -f docker-compose.prod.yml up -d --wait api web
 ```
 
@@ -126,7 +206,7 @@ curl https://carnotea.sergiusz.dev/healthz
 curl https://carnotea.sergiusz.dev/readyz
 ```
 
-## 3. Day-to-day operations
+## 5. Day-to-day operations
 
 ### Logs
 
@@ -142,155 +222,120 @@ docker compose -f docker-compose.prod.yml logs -f migrate
 docker compose -f docker-compose.prod.yml restart api
 ```
 
-### Run an ad-hoc backup
-
-```bash
-docker compose -f docker-compose.prod.yml --profile ops run --rm backup
-```
-
 ### Stop everything
 
 ```bash
 docker compose -f docker-compose.prod.yml down
 ```
 
-### Full reset (destroys all data)
+> [!NOTE]
+> `docker compose down` stops only `migrate`, `api`, and `web`. The Dokploy
+> PostgreSQL Database service continues running independently and is unaffected.
+
+## 6. Cutover runbook
+
+> [!CAUTION]
+> Complete every step below **before** merging and deploying this PR. Merging
+> while the old in-compose Postgres is still live **will cause downtime**.
+
+The steps assume there is an existing production Postgres volume
+(`carnotea-prod-postgres-data`) from the previous compose stack, and you are
+migrating its data to a new Dokploy Database service.
+
+### Step 1 — Create the new Dokploy PostgreSQL 16 service
+
+In Dokploy: **Create Service → Database → PostgreSQL** (version 16). Configure
+database name, username, and password. Note the Internal Connection URL.
+
+### Step 2 — Copy data from the old database to the new one
+
+With the old compose stack still running (do not stop it yet):
 
 ```bash
-docker compose -f docker-compose.prod.yml down -v
+# 1. Dump from the old in-compose postgres
+docker exec carnotea-prod-postgres \
+  pg_dump -U carnotea -Fc carnotea > /tmp/carnotea-premigration.dump
+
+# 2. Restore into the new Dokploy database
+# Replace <new-host>, <new-port>, <new-user>, <new-dbname> with the values
+# from Dokploy's Internal Connection URL.
+pg_restore \
+  -h <new-host> \
+  -p <new-port> \
+  -U <new-user> \
+  -d <new-dbname> \
+  --no-owner \
+  /tmp/carnotea-premigration.dump
 ```
 
-## 4. Automated backups
+If you cannot reach the new Dokploy DB directly from the host, run `pg_restore`
+inside a temporary postgres container on the Dokploy Docker network.
 
-Backups are driven from the production compose stack through the one-shot
-`backup` service. The service uses `pg_dump -Fc` against the `postgres` service,
-uploads the dump to S3-compatible object storage, and prunes old objects by
-retention count.
+### Step 3 — Verify the data
 
-### Required backup environment
-
-Set these production-only values in Dokploy's Environment Variables tab for
-the app (never in a committed or on-disk file):
-
-```env
-BACKUP_S3_BUCKET=car-notea-prod-backups
-BACKUP_S3_REGION=eu-central-1
-BACKUP_S3_PREFIX=carnotea/postgres
-BACKUP_S3_ENDPOINT_URL=https://s3.eu-central-1.amazonaws.com
-BACKUP_S3_SSE=AES256
-BACKUP_S3_SSE_KMS_KEY_ID=
-BACKUP_KEEP_DAILY=7
-BACKUP_KEEP_WEEKLY=8
-BACKUP_WEEKLY_DAY=7
-AWS_ACCESS_KEY_ID=<backup-user-access-key>
-AWS_SECRET_ACCESS_KEY=<backup-user-secret-key>
-AWS_SESSION_TOKEN=
-```
-
-Security notes:
-
-- Keep the bucket private; do not set any public ACLs or public bucket policy.
-- `BACKUP_S3_ENDPOINT_URL` must use `https://`; the backup script rejects plain
-  `http://`.
-- `BACKUP_S3_SSE=AES256` enables server-side encryption by default. If your
-  storage uses KMS, set `BACKUP_S3_SSE=aws:kms` and optionally provide
-  `BACKUP_S3_SSE_KMS_KEY_ID`.
-- Backup credentials should be scoped to the target bucket/prefix only.
-
-### Schedule with host cron
-
-Install a root cron entry on the server, pointing at the directory where
-Dokploy checked out this app's compose stack:
-
-```cron
-15 2 * * * cd <dokploy-app-directory> && docker compose -f docker-compose.prod.yml --profile ops run --rm backup >> /var/log/carnotea-backup.log 2>&1
-```
-
-This runs every day at 02:15 UTC. Adjust the schedule to your maintenance
-window.
-
-### Retention policy
-
-- Daily backups: keep the newest `BACKUP_KEEP_DAILY` objects in
-  `s3://<bucket>/<prefix>/daily/`
-- Weekly backups: on `BACKUP_WEEKLY_DAY`, also upload to
-  `s3://<bucket>/<prefix>/weekly/` and keep the newest
-  `BACKUP_KEEP_WEEKLY` objects there
-
-Objects are named with an ISO-like UTC timestamp, so lexicographic order matches
-backup age. Older objects beyond the keep-count are pruned automatically during
-each successful run.
-
-### Failure visibility
-
-- `pg_dump` failure, upload failure, or prune failure returns a non-zero exit
-  code from the `backup` service.
-- Cron captures stdout/stderr in `/var/log/carnotea-backup.log`.
-- A successful run ends with `Backup completed successfully`.
-
-## 5. Restore runbook
-
-The restore flow below assumes you are restoring into a throwaway database on
-the VPS first, verifying it, and only then planning a cutover.
-
-### 1. Stop app traffic
+Connect to the new database and confirm critical record counts match the old one:
 
 ```bash
-docker compose -f docker-compose.prod.yml stop api web
+psql '<new-DATABASE_URL>' \
+  -c 'SELECT count(*) FROM users;' \
+  -c 'SELECT count(*) FROM vehicles;' \
+  -c 'SELECT count(*) FROM fuel_logs;'
 ```
 
-### 2. Pick a backup object
+Compare against the same counts from the old database. Inspect a known
+user/vehicle row if you have a safe fixture.
 
-List the most recent backup objects:
+### Step 4 — Configure Dokploy backups for the new database
+
+1. Open the new Dokploy Postgres service → **Backups** tab.
+2. Configure Cloudflare R2 destination and schedule.
+3. Trigger a manual backup immediately.
+
+### Step 5 — Verify backup and restore
+
+Test that the backup can be restored into a throwaway database before going
+live. Use Dokploy's own restore UI, or:
 
 ```bash
-aws --endpoint-url "$BACKUP_S3_ENDPOINT_URL" s3 ls "s3://$BACKUP_S3_BUCKET/$BACKUP_S3_PREFIX/daily/" --recursive
+# Download the backup object from R2 and restore into a throwaway DB
+# (use the Dokploy UI for this — no scripts needed)
 ```
 
-Pick one `s3://...dump` URI from that list.
+### Step 6 — Set the new DATABASE_URL in Dokploy
 
-### 3. Restore into a throwaway database
+In the CarNotea compose application's **Environment Variables** tab, update
+`DATABASE_URL` to the Internal Connection URL of the new Dokploy Database
+service.
+
+### Step 7 — Merge and deploy this PR
+
+Only now is it safe to merge. Dokploy will:
+
+1. Pull the updated `docker-compose.prod.yml` (no `postgres`/`backup` services).
+2. Run `migrate` against the new Dokploy database.
+3. Start `api` and `web`.
+
+### Step 8 — Verify the deployment
 
 ```bash
-docker compose -f docker-compose.prod.yml --profile ops run --rm \
-  -e RESTORE_TARGET_DB=carnotea_restore \
-  -e RESTORE_SOURCE="s3://$BACKUP_S3_BUCKET/$BACKUP_S3_PREFIX/daily/<backup-file>.dump" \
-  backup \
-  sh -ceu 'apk add --no-cache aws-cli >/dev/null && /scripts/restore.sh'
+curl https://carnotea.sergiusz.dev/healthz   # check body, not just status
+curl https://carnotea.sergiusz.dev/readyz
 ```
 
-If you prefer to restore from a local file instead of S3, pass the local dump
-path to `/scripts/restore.sh` inside the container.
+Log in and verify that user data and vehicles are present and correct.
 
-### 4. Verify the restored data
+### Step 9 — Retain the old volume temporarily
 
-Check a couple of high-signal invariants:
+Do **not** immediately remove the old `carnotea-prod-postgres-data` Docker
+volume. Keep it for at least one week as an additional rollback safety net.
+Once you are confident the new database is stable and backups are working,
+remove it:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec postgres \
-  psql -U "$POSTGRES_USER" -d carnotea_restore -c 'select count(*) from users;'
-
-docker compose -f docker-compose.prod.yml exec postgres \
-  psql -U "$POSTGRES_USER" -d carnotea_restore -c 'select count(*) from vehicles;'
+docker volume rm carnotea-prod-postgres-data
 ```
 
-Also inspect one known user/vehicle row if you have a safe fixture to compare
-against.
-
-### 5. Cut over or discard
-
-If the restore is only a drill, drop the throwaway database:
-
-```bash
-docker compose -f docker-compose.prod.yml exec postgres \
-  dropdb -U "$POSTGRES_USER" carnotea_restore
-```
-
-If you are performing a real disaster recovery, repeat the same restore flow
-into the production database only after you are satisfied with the throwaway
-verification.
-
-## 6. Rollback
+## 7. Rollback
 
 Rollback is a **code rollback**, not a database rollback. The schema changes
 must therefore follow the expand-then-contract pattern:
@@ -310,17 +355,17 @@ Do **not** run a down-migration as part of routine rollback. If the previous
 app cannot run against the migrated schema, the migration was not
 release-safe and must be fixed in a forward patch.
 
-## 7. Out of scope
+## 8. Out of scope
 
 | Feature            | Ticket |
 | ------------------ | ------ |
 | Security hardening | T-049  |
 
-## 8. Secrets management
+## 9. Secrets management
 
 Production secrets (`DATABASE_URL`, `BETTER_AUTH_SECRET`, SMTP credentials,
-backup storage keys, etc.) are **never** stored in a committed file or an
-on-disk `.env` on the host. The canonical mechanism is:
+etc.) are **never** stored in a committed file or an on-disk `.env` on the
+host. The canonical mechanism is:
 
 - Each Dokploy application (the `docker-compose.prod.yml` stack) has its own
   **Environment Variables** tab in the Dokploy dashboard. Values entered there
@@ -333,6 +378,9 @@ on-disk `.env` on the host. The canonical mechanism is:
   placeholders.
 - `.gitignore` ignores every `.env*` file except `.env.example`, so a real
   `.env` can never be committed by accident.
+- R2 backup credentials for the Dokploy Database service stay inside Dokploy's
+  own configuration — they are never entered into the compose application's
+  Environment Variables and are not listed in `.env.example`.
 
 ### Required production variables
 
@@ -355,12 +403,11 @@ Domains tab, not an env var.
 
 ### Rotation procedure
 
-| Secret class                         | How to rotate                                                                                                                                                                                                   |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `BETTER_AUTH_SECRET`                 | Generate a new value (`openssl rand -base64 32`), set it in Dokploy's Environment Variables for the `api` service, redeploy. All existing sessions are invalidated — expected.                                  |
-| `DATABASE_URL` / Postgres password   | Rotate the Postgres role password first (`ALTER ROLE ... PASSWORD ...` inside the `postgres` container), then update `DATABASE_URL` in Dokploy and redeploy `api`/`migrate` before the old password is revoked. |
-| SMTP credentials                     | Update `SMTP_USER`/`SMTP_PASS` in Dokploy's Environment Variables for `api`, redeploy. No downtime — only outgoing mail is affected.                                                                            |
-| Backup storage keys (`AWS_*`, T-047) | Issue a new access key scoped to the backup bucket/prefix, set it in Dokploy, redeploy the `backup` job, then revoke the old key once a scheduled run succeeds with the new one.                                |
+| Secret class                       | How to rotate                                                                                                                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BETTER_AUTH_SECRET`               | Generate a new value (`openssl rand -base64 32`), set it in Dokploy's Environment Variables for the `api` service, redeploy. All existing sessions are invalidated — expected.         |
+| `DATABASE_URL` / Postgres password | Rotate the Postgres role password in Dokploy's Database service panel, then update `DATABASE_URL` in Dokploy's Environment Variables for the compose app and redeploy `api`/`migrate`. |
+| SMTP credentials                   | Update `SMTP_USER`/`SMTP_PASS` in Dokploy's Environment Variables for `api`, redeploy. No downtime — only outgoing mail is affected.                                                   |
 
 A redeploy in Dokploy re-runs `docker compose up -d` for the stack, which
 picks up the new environment values for the affected service(s) without
