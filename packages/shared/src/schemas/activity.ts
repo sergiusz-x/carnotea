@@ -42,7 +42,7 @@ export const FuelActivitySchema = z.object({
   liters: positiveDecimalField(),
   totalCost: moneyField(),
   isFullTank: z.boolean(),
-  stationName: z.string().nullable(),
+  stationName: z.string().max(120).nullable(),
 });
 
 export const ChargeActivitySchema = z.object({
@@ -52,7 +52,7 @@ export const ChargeActivitySchema = z.object({
   totalCost: moneyField(),
   chargerType: z.enum(CHARGER_TYPE_CODES),
   isFullCharge: z.boolean(),
-  stationName: z.string().nullable(),
+  stationName: z.string().max(120).nullable(),
   socStartPercent: socPercentField().nullable(),
   socEndPercent: socPercentField().nullable(),
 });
@@ -63,15 +63,15 @@ export const FluidActivitySchema = z.object({
   fluidType: z.enum(FLUID_TYPE_CODES),
   quantityLiters: positiveDecimalField().nullable(),
   cost: moneyField().nullable(),
-  workshopName: z.string().nullable(),
+  workshopName: z.string().max(160).nullable(),
 });
 
 export const ServiceActivitySchema = z.object({
   ...activityBase,
   kind: z.literal('service'),
-  title: z.string(),
+  title: z.string().max(160),
   totalCost: moneyField(),
-  workshopName: z.string().nullable(),
+  workshopName: z.string().max(160).nullable(),
   partCount: z.number().int().nonnegative(),
 });
 
@@ -80,14 +80,14 @@ export const ExpenseActivitySchema = z.object({
   kind: z.literal('expense'),
   category: z.enum(EXPENSE_CATEGORY_CODES),
   amount: moneyField(),
-  description: z.string().nullable(),
+  description: z.string().max(2000).nullable(),
   isAutoSynced: z.boolean(),
 });
 
 export const IssueActivitySchema = z.object({
   ...activityBase,
   kind: z.literal('issue'),
-  title: z.string(),
+  title: z.string().max(160),
   status: z.enum(ISSUE_STATUS_CODES),
   priority: z.enum(ISSUE_PRIORITY_CODES),
 });
@@ -95,7 +95,7 @@ export const IssueActivitySchema = z.object({
 export const ReminderActivitySchema = z.object({
   ...activityBase,
   kind: z.literal('reminder'),
-  title: z.string(),
+  title: z.string().max(160),
   mode: z.enum(REMINDER_MODES),
   status: z.enum(REMINDER_STATUS_CODES),
   dueState: z.enum(['overdue', 'due_soon', 'ok']),

@@ -46,6 +46,7 @@ export function NumberField({
             <FormControl>
               <Input
                 type="number"
+                inputMode="decimal"
                 placeholder={placeholder}
                 disabled={disabled}
                 min={min}

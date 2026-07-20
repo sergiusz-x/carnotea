@@ -7,6 +7,7 @@ import { ErrorState } from '@/components/ErrorState';
 import { PageContainer } from '@/components/PageContainer';
 import { PageHeader } from '@/components/PageHeader';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
 
 import { VehicleCard } from './vehicle-card';
@@ -18,7 +19,25 @@ export function VehicleListPage() {
   if (isLoading) {
     return (
       <PageContainer>
-        <p>{t('loading')}</p>
+        <PageHeader title={t('pageTitle')} action={<Button disabled>{t('addVehicle')}</Button>} />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-2 rounded-xl border bg-card p-6 shadow-sm h-[200px]"
+            >
+              <div className="flex justify-between items-center">
+                <Skeleton className="h-6 w-1/3" />
+                <Skeleton className="h-4 w-12" />
+              </div>
+              <Skeleton className="h-4 w-2/3 mt-2" />
+              <div className="mt-auto flex gap-2">
+                <Skeleton className="h-8 w-20" />
+                <Skeleton className="h-8 w-20" />
+              </div>
+            </div>
+          ))}
+        </div>
       </PageContainer>
     );
   }
