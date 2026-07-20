@@ -67,6 +67,11 @@ export function createAuth(db: Db, options: AuthOptions) {
         await emailSvc.sendVerificationEmail(user.email, firstName, url, locale);
       },
     },
+    // Extended session duration for PWA convenience (T-049)
+    session: {
+      expiresIn: 60 * 60 * 24 * 30, // 30 days
+      updateAge: 60 * 60 * 24, // 1 day
+    },
     // Hardened session cookies in production (T-049)
     advanced: {
       useSecureCookies: isProduction,

@@ -1,5 +1,6 @@
 import './otel';
-import { QueryClientProvider } from '@tanstack/react-query';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -17,12 +18,32 @@ if (!rootElement) {
   throw new Error('Root element #root not found');
 }
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+});
+
+const persistOptions = {
+  persister,
+  dehydrateOptions: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    shouldDehydrateQuery: (query: any) => {
+      // Zabezpieczenie przed zapisem wrażliwych danych lokalnie (T-14)
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (['session', 'profile'].includes(query.queryKey[0] as string)) {
+        return false;
+      }
+      return true;
+    },
+  },
+};
+
 createRoot(rootElement).render(
   <StrictMode>
     <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
+      <PersistQueryClientProvider client={queryClient} persistOptions={persistOptions}>
         <RouterProvider router={router} />
-      </QueryClientProvider>
+      </PersistQueryClientProvider>
     </ThemeProvider>
   </StrictMode>,
 );
