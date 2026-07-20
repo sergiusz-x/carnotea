@@ -14,11 +14,22 @@
   "fields": {
     "title": "Title",
     "description": "Description",
+    "mode": "Mode",
     "status": "Status",
     "dueDate": "Due date",
     "dueMileage": "Due mileage (km)",
+    "nextDueDate": "Next due date",
+    "nextDueMileage": "Next due mileage (km)",
+    "intervalKm": "Mileage interval (km)",
+    "intervalMonths": "Time interval (months)",
+    "lastPerformedDate": "Last performed date",
+    "lastPerformedMileage": "Mileage at last service (km)",
     "notifiedAt": "Notified at",
     "dueState": "Due state"
+  },
+  "mode": {
+    "one_off": "One-off",
+    "recurring": "Recurring"
   },
   "status": {
     "pending": "Pending",
@@ -33,15 +44,26 @@
   "list": {
     "dueDate": "Due: {{date}}",
     "dueMileage": "Mileage: {{value}} km",
+    "nextDueDate": "Next due: {{date}}",
+    "nextDueMileage": "Next mileage: {{value}} km",
     "noDueDate": "No due date",
     "noDueMileage": "No mileage target",
+    "noNextDueDate": "No next due date",
+    "noNextDueMileage": "No next mileage target",
     "markDone": "Mark done",
     "marking": "Marking…"
   },
   "detail": {
     "title": "Reminder: {{title}}",
     "backToReminders": "Back to reminders",
-    "description": "Description"
+    "description": "Description",
+    "intervalKm": "Every {{value}} km",
+    "intervalMonths": "Every {{value}} months",
+    "lastPerformedMileage": "{{value}} km",
+    "noIntervalKm": "No mileage interval",
+    "noIntervalMonths": "No time interval",
+    "noLastPerformedDate": "No last performed date",
+    "noLastPerformedMileage": "No last performed mileage"
   },
   "create": {
     "title": "Add reminder",

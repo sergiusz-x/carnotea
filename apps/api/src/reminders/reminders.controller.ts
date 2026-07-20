@@ -1,9 +1,11 @@
 import {
   ErrorResponseSchema,
   ReminderCreateSchema,
+  ReminderSchema,
   ReminderUpdateSchema,
   REMINDER_STATUS_CODES,
   ROUTES,
+  type Reminder,
   type ReminderCreate,
   type ReminderUpdate,
 } from '@carnotea/shared';
@@ -34,13 +36,12 @@ import {
   vehicleIdPipe,
 } from '../lib/route-params.js';
 
-import { RemindersService, type ReminderResponse } from './reminders.service.js';
+import { RemindersService } from './reminders.service.js';
 
 const reminderIdParam = resourceWithVehicleParam;
 const remindersByVehicleNestPath = nestListPath(ROUTES.remindersByVehicle);
 const reminderByIdNestPath = nestDetailPath(ROUTES.reminderById);
 
-/** List query: optional `?status=` (comma-separated) and `?dueState=` filters. */
 const ReminderQuerySchema = z.object({
   status: z
     .string()
@@ -52,20 +53,6 @@ const ReminderQuerySchema = z.object({
 const queryPipe = new ZodValidationPipe(ReminderQuerySchema);
 type ReminderQuery = z.infer<typeof ReminderQuerySchema>;
 
-const ReminderResponseSchema = z.object({
-  id: z.uuid(),
-  vehicleId: z.uuid(),
-  title: z.string(),
-  description: z.string().nullable(),
-  dueDate: z.string().nullable(),
-  dueMileage: z.number().int().nullable(),
-  status: z.string(),
-  dueState: z.enum(['overdue', 'due_soon', 'ok']),
-  notifiedAt: z.string().nullable(),
-  createdAt: z.iso.datetime({ offset: true }),
-  updatedAt: z.iso.datetime({ offset: true }),
-});
-
 zodRoute({
   method: 'get',
   path: ROUTES.remindersByVehicle,
@@ -74,7 +61,7 @@ zodRoute({
   tags: ['Reminders'],
   request: { params: vehicleIdParam, query: ReminderQuerySchema },
   responses: {
-    '200': { description: 'Reminders for the vehicle', schema: z.array(ReminderResponseSchema) },
+    '200': { description: 'Reminders for the vehicle', schema: z.array(ReminderSchema) },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Vehicle not found', schema: ErrorResponseSchema },
   },
@@ -88,7 +75,7 @@ zodRoute({
   tags: ['Reminders'],
   request: { params: reminderIdParam },
   responses: {
-    '200': { description: 'The reminder', schema: ReminderResponseSchema },
+    '200': { description: 'The reminder', schema: ReminderSchema },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Reminder not found', schema: ErrorResponseSchema },
   },
@@ -102,7 +89,7 @@ zodRoute({
   tags: ['Reminders'],
   request: { params: vehicleIdParam, body: ReminderCreateSchema },
   responses: {
-    '201': { description: 'The created reminder', schema: ReminderResponseSchema },
+    '201': { description: 'The created reminder', schema: ReminderSchema },
     '400': { description: 'Invalid request body', schema: ErrorResponseSchema },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Vehicle not found', schema: ErrorResponseSchema },
@@ -117,7 +104,7 @@ zodRoute({
   tags: ['Reminders'],
   request: { params: reminderIdParam, body: ReminderUpdateSchema },
   responses: {
-    '200': { description: 'The updated reminder', schema: ReminderResponseSchema },
+    '200': { description: 'The updated reminder', schema: ReminderSchema },
     '400': { description: 'Invalid request body', schema: ErrorResponseSchema },
     '401': { description: 'Not authenticated', schema: ErrorResponseSchema },
     '404': { description: 'Reminder not found', schema: ErrorResponseSchema },
@@ -148,7 +135,7 @@ export class RemindersController {
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
     @Query(queryPipe) query?: ReminderQuery,
-  ): Promise<ReminderResponse[]> {
+  ): Promise<Reminder[]> {
     const filters =
       query?.status || query?.dueState
         ? { status: query.status, dueState: query.dueState }
@@ -161,7 +148,7 @@ export class RemindersController {
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
     @Param('id', idPipe) id: string,
-  ): Promise<ReminderResponse> {
+  ): Promise<Reminder> {
     return this.reminders.getOwnedOrThrow(user.id, vehicleId, id);
   }
 
@@ -170,7 +157,7 @@ export class RemindersController {
     @CurrentUser() user: AuthUser,
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
     @Body(new ZodValidationPipe(ReminderCreateSchema)) body: ReminderCreate,
-  ): Promise<ReminderResponse> {
+  ): Promise<Reminder> {
     return this.reminders.create(user.id, vehicleId, body);
   }
 
@@ -180,7 +167,7 @@ export class RemindersController {
     @Param('vehicleId', vehicleIdPipe) vehicleId: string,
     @Param('id', idPipe) id: string,
     @Body(new ZodValidationPipe(ReminderUpdateSchema)) body: ReminderUpdate,
-  ): Promise<ReminderResponse> {
+  ): Promise<Reminder> {
     return this.reminders.update(user.id, vehicleId, id, body);
   }
 

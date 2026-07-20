@@ -51,14 +51,12 @@ export function ReminderListPage() {
 
   function handleDelete(id: string, title: string) {
     if (window.confirm(t('delete.confirmMessage', { title }))) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      deleteMutation.mutateAsync(id);
+      void deleteMutation.mutateAsync(id);
     }
   }
 
   function handleMarkDone(id: string) {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    markDoneMutation.mutateAsync(id);
+    void markDoneMutation.mutateAsync(id);
   }
 
   if (isLoading) {
@@ -95,7 +93,6 @@ export function ReminderListPage() {
         }
       />
 
-      {/* Status filter */}
       <div className="mb-6 flex items-center gap-2">
         <Label>{t('fields.status')}</Label>
         <Select
@@ -138,33 +135,26 @@ export function ReminderListPage() {
         />
       )}
 
-      {/* Reminder cards */}
       {reminderList.length > 0 && (
         <div className="space-y-4">
-          {reminderList.map(
-            (reminder: {
-              id: string;
-              title: string;
-              status: string;
-              dueState: string;
-              dueDate: string | null;
-              dueMileage: number | null;
-            }) => (
-              <ReminderCard
-                key={reminder.id}
-                id={reminder.id}
-                title={reminder.title}
-                status={reminder.status}
-                dueState={reminder.dueState}
-                dueDate={reminder.dueDate}
-                dueMileage={reminder.dueMileage}
-                onDelete={handleDelete}
-                onMarkDone={handleMarkDone}
-                isDeleting={deleteMutation.isPending}
-                isMarking={markDoneMutation.isPending}
-              />
-            ),
-          )}
+          {reminderList.map((reminder) => (
+            <ReminderCard
+              key={reminder.id}
+              id={reminder.id}
+              title={reminder.title}
+              status={reminder.status}
+              dueState={reminder.dueState}
+              mode={reminder.mode}
+              dueDate={reminder.dueDate ?? null}
+              dueMileage={reminder.dueMileage ?? null}
+              nextDueDate={reminder.nextDueDate ?? null}
+              nextDueMileage={reminder.nextDueMileage ?? null}
+              onDelete={handleDelete}
+              onMarkDone={handleMarkDone}
+              isDeleting={deleteMutation.isPending}
+              isMarking={markDoneMutation.isPending}
+            />
+          ))}
         </div>
       )}
     </PageContainer>

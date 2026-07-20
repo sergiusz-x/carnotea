@@ -42,16 +42,23 @@ describe('ActivityEntrySchema', () => {
     expect(parsed.kind).toBe('charge');
   });
 
-  it('parses a reminder entry with a nullable dueDate', () => {
+  it('parses a recurring reminder entry with a nullable dueDate', () => {
     const parsed = ActivityEntrySchema.parse({
       ...base,
       mileage: null,
       kind: 'reminder',
       title: 'Wymiana oleju',
+      mode: 'recurring',
       status: 'pending',
       dueState: 'due_soon',
       dueDate: null,
-      dueMileage: 90000,
+      dueMileage: null,
+      intervalKm: 10000,
+      intervalMonths: 12,
+      lastPerformedDate: '2026-01-15',
+      lastPerformedMileage: 80000,
+      nextDueDate: '2027-01-15',
+      nextDueMileage: 90000,
     });
     expect(parsed.kind).toBe('reminder');
   });

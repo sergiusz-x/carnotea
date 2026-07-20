@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { EXPENSE_CATEGORY_CODES } from '../constants/expense-categories.js';
+import { REMINDER_MODES } from '../helpers/due-state.js';
 
 import { currencyCodeField, dateField, moneyField, timestampField, uuidField } from './_shared.js';
 
@@ -52,17 +53,23 @@ export type MonthlySpend = z.infer<typeof MonthlySpendSchema>;
 export type MonthlySpendResponse = z.infer<typeof MonthlySpendResponseSchema>;
 
 /**
- * Upcoming reminder (due within 30 days).
- * Mirrors the fields from ReminderSchema but adds dueState.
+ * Upcoming reminder (due soon or overdue across all vehicles).
  */
 export const UpcomingReminderSchema = z.object({
   id: uuidField(),
   vehicleId: uuidField(),
   title: z.string().min(1).max(160),
-  description: z.string().nullable(),
+  description: z.string().max(2000).nullable(),
+  mode: z.enum(REMINDER_MODES),
   dueDate: dateField().nullable(),
   dueMileage: z.number().int().nonnegative().nullable(),
-  status: z.string(),
+  intervalKm: z.number().int().positive().nullable(),
+  intervalMonths: z.number().int().positive().nullable(),
+  lastPerformedDate: dateField().nullable(),
+  lastPerformedMileage: z.number().int().nonnegative().nullable(),
+  nextDueDate: dateField().nullable(),
+  nextDueMileage: z.number().int().nonnegative().nullable(),
+  status: z.string().max(80),
   dueState: z.enum(['overdue', 'due_soon']),
   createdAt: timestampField(),
   updatedAt: timestampField(),

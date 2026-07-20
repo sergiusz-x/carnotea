@@ -21,7 +21,6 @@ import {
 import {
   ErrorResponseSchema,
   ROUTES,
-  computeDueState,
   type ChargingSession,
   type Expense,
   type FuelLog,
@@ -51,6 +50,7 @@ import { type AuthUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import { DB } from '../db/db.constants.js';
 import { zodRoute, ZodValidationPipe } from '../lib/openapi/index.js';
+import { computeReminderUrgency } from '../reminders/reminder-urgency.js';
 
 import {
   AccountExportSchema,
@@ -339,8 +339,13 @@ export class AccountController {
             vehicleId: reminders.vehicleId,
             title: reminders.title,
             description: reminders.description,
+            mode: reminders.mode,
             dueDate: reminders.dueDate,
             dueMileage: reminders.dueMileage,
+            intervalKm: reminders.intervalKm,
+            intervalMonths: reminders.intervalMonths,
+            lastPerformedDate: reminders.lastPerformedDate,
+            lastPerformedMileage: reminders.lastPerformedMileage,
             statusCode: reminderStatuses.code,
             notifiedAt: reminders.notifiedAt,
             createdAt: reminders.createdAt,
@@ -351,24 +356,44 @@ export class AccountController {
           .where(inArray(reminders.vehicleId, vehicleIds))
       : [];
 
-    const reminderList: Reminder[] = reminderRows.map((row) => ({
-      id: row.id,
-      vehicleId: row.vehicleId,
-      title: row.title,
-      description: row.description ?? null,
-      dueDate: row.dueDate ?? null,
-      dueMileage: row.dueMileage ?? null,
-      status: row.statusCode as Reminder['status'],
-      dueState: computeDueState({
+    const mileageByVehicleId = new Map(
+      vehicleList.map((vehicle) => [vehicle.id, vehicle.currentMileage]),
+    );
+
+    const reminderList: Reminder[] = reminderRows.map((row) => {
+      const urgency = computeReminderUrgency({
+        mode: row.mode as Reminder['mode'],
         dueDate: row.dueDate,
         dueMileage: row.dueMileage,
-        currentMileage: null,
+        intervalKm: row.intervalKm,
+        intervalMonths: row.intervalMonths,
+        lastPerformedDate: row.lastPerformedDate,
+        lastPerformedMileage: row.lastPerformedMileage,
+        currentMileage: mileageByVehicleId.get(row.vehicleId) ?? null,
         status: row.statusCode,
-      }),
-      notifiedAt: row.notifiedAt?.toISOString() ?? null,
-      createdAt: row.createdAt.toISOString(),
-      updatedAt: row.updatedAt.toISOString(),
-    }));
+      });
+
+      return {
+        id: row.id,
+        vehicleId: row.vehicleId,
+        title: row.title,
+        description: row.description ?? null,
+        mode: row.mode as Reminder['mode'],
+        dueDate: row.dueDate ?? null,
+        dueMileage: row.dueMileage ?? null,
+        intervalKm: row.intervalKm ?? null,
+        intervalMonths: row.intervalMonths ?? null,
+        lastPerformedDate: row.lastPerformedDate ?? null,
+        lastPerformedMileage: row.lastPerformedMileage ?? null,
+        nextDueDate: urgency.nextDueDate,
+        nextDueMileage: urgency.nextDueMileage,
+        status: row.statusCode as Reminder['status'],
+        dueState: urgency.dueState,
+        notifiedAt: row.notifiedAt?.toISOString() ?? null,
+        createdAt: row.createdAt.toISOString(),
+        updatedAt: row.updatedAt.toISOString(),
+      };
+    });
 
     return {
       exportedAt: new Date().toISOString(),

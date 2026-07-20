@@ -44,8 +44,15 @@ const mockUpcomingReminders: UpcomingReminder[] = [
     vehicleId: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
     title: 'Oil change overdue',
     description: null,
-    dueDate: '2026-06-10',
+    mode: 'recurring',
+    dueDate: null,
     dueMileage: null,
+    intervalKm: 15000,
+    intervalMonths: 12,
+    lastPerformedDate: '2025-06-10',
+    lastPerformedMileage: 70000,
+    nextDueDate: '2026-06-10',
+    nextDueMileage: 85000,
     status: 'pending',
     dueState: 'overdue',
     createdAt: '2026-05-01T10:00:00.000Z',
@@ -56,8 +63,15 @@ const mockUpcomingReminders: UpcomingReminder[] = [
     vehicleId: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
     title: 'Tire rotation due soon',
     description: 'Rotate all 4 tires',
+    mode: 'one_off',
     dueDate: '2026-07-05',
     dueMileage: null,
+    intervalKm: null,
+    intervalMonths: null,
+    lastPerformedDate: null,
+    lastPerformedMileage: null,
+    nextDueDate: '2026-07-05',
+    nextDueMileage: null,
     status: 'pending',
     dueState: 'due_soon',
     createdAt: '2026-06-01T10:00:00.000Z',
@@ -71,18 +85,11 @@ const authStub = {
 };
 
 const serviceStub = {
-  getOverview: (_uid: string) => {
-    return Promise.resolve(mockOverview);
-  },
-  getExpensesByCategory: (_uid: string) => {
-    return Promise.resolve({ items: mockCategoryItems, currency: 'EUR' });
-  },
-  getMonthlySpend: (_uid: string) => {
-    return Promise.resolve(mockMonthlySpend);
-  },
-  getUpcomingReminders: (_uid: string) => {
-    return Promise.resolve(mockUpcomingReminders);
-  },
+  getOverview: (_uid: string) => Promise.resolve(mockOverview),
+  getExpensesByCategory: (_uid: string) =>
+    Promise.resolve({ items: mockCategoryItems, currency: 'EUR' }),
+  getMonthlySpend: (_uid: string) => Promise.resolve(mockMonthlySpend),
+  getUpcomingReminders: (_uid: string) => Promise.resolve(mockUpcomingReminders),
 };
 
 describe('DashboardController', () => {
