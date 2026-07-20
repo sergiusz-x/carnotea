@@ -1,8 +1,4 @@
-import { createRoute, Outlet } from '@tanstack/react-router';
-
-import { VehicleDetailPage } from '@/features/vehicles/components/vehicle-detail-hub';
-import { VehicleCreatePage, VehicleEditPage } from '@/features/vehicles/components/vehicle-form';
-import { VehicleListPage } from '@/features/vehicles/components/vehicle-list';
+import { createRoute, lazyRouteComponent, Outlet } from '@tanstack/react-router';
 
 import { authenticatedLayoutRoute } from '../../_authenticated';
 
@@ -44,13 +40,19 @@ const vehicleParentRoute = createRoute({
 const vehicleListRoute = createRoute({
   getParentRoute: () => vehicleParentRoute,
   path: '/',
-  component: VehicleListPage,
+  component: lazyRouteComponent(
+    () => import('@/features/vehicles/components/vehicle-list'),
+    'VehicleListPage',
+  ),
 });
 
 const vehicleCreateRoute = createRoute({
   getParentRoute: () => vehicleParentRoute,
   path: '/new',
-  component: VehicleCreatePage,
+  component: lazyRouteComponent(
+    () => import('@/features/vehicles/components/vehicle-form'),
+    'VehicleCreatePage',
+  ),
 });
 
 export const vehicleDetailRoute = createRoute({
@@ -62,13 +64,19 @@ export const vehicleDetailRoute = createRoute({
 const vehicleDetailIndexRoute = createRoute({
   getParentRoute: () => vehicleDetailRoute,
   path: '/',
-  component: VehicleDetailPage,
+  component: lazyRouteComponent(
+    () => import('@/features/vehicles/components/vehicle-detail-hub'),
+    'VehicleDetailPage',
+  ),
 });
 
 const vehicleEditRoute = createRoute({
   getParentRoute: () => vehicleDetailRoute,
   path: '/edit',
-  component: VehicleEditPage,
+  component: lazyRouteComponent(
+    () => import('@/features/vehicles/components/vehicle-form'),
+    'VehicleEditPage',
+  ),
 });
 
 const fuelListRoute = createFuelListRoute(vehicleDetailRoute);

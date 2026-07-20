@@ -91,6 +91,7 @@ export function BigNumberField({
                 <div className="relative flex-1">
                   <input
                     type="number"
+                    inputMode="decimal"
                     placeholder={placeholder}
                     disabled={disabled}
                     min={min}
