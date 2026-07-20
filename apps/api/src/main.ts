@@ -53,16 +53,30 @@ async function bootstrap(): Promise<void> {
     options: Record<string, unknown>,
   ) => PromiseLike<unknown>;
 
-  // 1. Helmet — security response headers
-  await register(helmet, {
-    contentSecurityPolicy: isProduction ? undefined : false,
-    hsts: isProduction ? { maxAge: 31_536_000, includeSubDomains: true, preload: true } : false,
-  });
-
   // 2. CORS — strict allow-list in production, permissive in dev
   const allowedOrigins = env.CORS_ORIGINS.split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
+
+  // 1. Helmet — security response headers
+  await register(helmet, {
+    contentSecurityPolicy: isProduction
+      ? {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", 'data:', 'https:'],
+            connectSrc: ["'self'", ...allowedOrigins],
+            fontSrc: ["'self'", 'data:'],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: [],
+          },
+        }
+      : false,
+    hsts: isProduction ? { maxAge: 31_536_000, includeSubDomains: true, preload: true } : false,
+  });
+
   await register(cors, {
     origin: isProduction ? allowedOrigins : true,
     credentials: true,
