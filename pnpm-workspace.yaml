@@ -16,40 +16,40 @@ onlyBuiltDependencies:
 catalog:
   # Language + lint toolchain
   typescript: ^6.0.3
-  eslint: ^10.6.0
+  eslint: ^10.7.0
   '@eslint/js': ^10.0.1
   eslint-plugin-import-x: ^4.17.1
   eslint-plugin-jsx-a11y: ^6.10.0
   eslint-plugin-react: ^7.37.2
   eslint-plugin-react-hooks: ^7.1.1
   globals: ^17.7.0
-  prettier: ^3.9.4
-  typescript-eslint: ^8.62.1
+  prettier: ^3.9.5
+  typescript-eslint: ^8.64.0
   # Validation (used by api, web, shared)
   zod: ^4.4.3
   # Web build toolchain
-  vite: ^8.1.3
+  vite: ^8.1.5
   '@vitejs/plugin-react': ^6.0.3
   # i18n (apps/web) — ADR-0007
-  i18next: ^26.3.4
-  react-i18next: ^17.0.8
+  i18next: ^26.3.6
+  react-i18next: ^17.0.10
   i18next-browser-languagedetector: ^8.2.1
   # Forms (apps/web) — T-031
-  react-hook-form: ^7.81.0
+  react-hook-form: ^7.82.0
   '@hookform/resolvers': ^5.4.0
-  '@radix-ui/react-label': ^2.1.11
+  '@radix-ui/react-label': ^2.1.12
   '@radix-ui/react-slot': ^1.3.0
   # Tailwind CSS v4 + shadcn/ui dependencies
-  tailwindcss: ^4.3.2
-  '@tailwindcss/vite': ^4.3.2
-  lucide-react: ^1.23.0
+  tailwindcss: ^4.3.3
+  '@tailwindcss/vite': ^4.3.3
+  lucide-react: ^1.25.0
   clsx: ^2.1.1
   tailwind-merge: ^3.6.0
   class-variance-authority: ^0.7.1
   # Web routing + server-state (TanStack)
-  '@tanstack/react-query': ^5.101.2
-  '@tanstack/react-query-devtools': ^5.101.2
-  '@tanstack/react-router': ^1.170.17
+  '@tanstack/react-query': ^5.101.3
+  '@tanstack/react-query-devtools': ^5.101.3
+  '@tanstack/react-router': ^1.170.18
   '@tanstack/react-router-devtools': ^1.167.0
   # Testing
   vitest: ^4.1.10
@@ -58,7 +58,7 @@ catalog:
   '@testing-library/dom': ^10.4.1
   '@testing-library/jest-dom': ^6.9.1
   # Types
-  '@types/node': ^26.1.0
+  '@types/node': ^26.1.1
   # Database
   drizzle-orm: ^0.45.2
   drizzle-kit: ^0.31.10
@@ -66,12 +66,12 @@ catalog:
   # OpenAPI / Zod-to-OpenAPI
   '@asteasolutions/zod-to-openapi': ^8.5.0
   # API (apps/api) — NestJS + Fastify stack
-  '@nestjs/common': ^11.1.26
-  '@nestjs/core': ^11.1.26
+  '@nestjs/common': ^11.1.28
+  '@nestjs/core': ^11.1.28
   '@nestjs/config': ^4.0.4
-  '@nestjs/platform-fastify': ^11.1.26
-  '@nestjs/testing': ^11.1.26
-  '@nestjs/cli': ^11.0.23
+  '@nestjs/platform-fastify': ^11.1.28
+  '@nestjs/testing': ^11.1.28
+  '@nestjs/cli': ^11.0.24
   fastify: ^5.10.0
   nestjs-pino: ^4.6.1
   pino-http: ^11.0.0
@@ -79,16 +79,16 @@ catalog:
   reflect-metadata: ^0.2.2
   rxjs: ^7.8.2
   '@swc/cli': ^0.8.1
-  '@swc/core': ^1.15.43
+  '@swc/core': ^1.15.46
   # Auth (apps/api) — better-auth, ADR-0004
   better-auth: ^1.6.23
   # Email transport (apps/api) — T-051
   nodemailer: ^9.0.3
   '@types/nodemailer': ^8.0.1
   # Security — T-049
-  '@fastify/helmet': ^13.0.2
+  '@fastify/helmet': ^13.1.0
   '@fastify/rate-limit': ^11.1.0
-  '@fastify/cors': ^11.2.0
+  '@fastify/cors': ^11.3.0
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.
