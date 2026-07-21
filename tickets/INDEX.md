@@ -17,7 +17,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟢 [T-014 — Infra — dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
 - 🟢 [T-016 — Turborepo generators — scaffold new packages](./T-016-turbo-generators.md)
 - 🟢 [T-030 — Audit-logging interceptor for mutating actions](./T-030-api-audit-logging.md)
-- 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🟡 [T-043 — Accessibility pass across the web app](./T-043-accessibility-audit.md)
 - 🟡 [T-050 — OpenTelemetry metrics + basic alerting (follow-up to T-018)](./T-050-metrics-alerting.md)
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
@@ -30,6 +29,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## In progress
 
+- 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
 - 🟡 [T-068 — Electric dashboard labels, nav visibility, and mileage defaults](./T-068-electric-dashboard-nav-and-mileage-defaults.md)
 - 🔴 [T-069 — 'Redesign epic — Cockpit panel + unified Dziennik feed'](./T-069-redesign-cockpit-logbook.md)

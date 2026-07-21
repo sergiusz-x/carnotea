@@ -142,6 +142,7 @@ pnpm build           # builds all packages (if needed)
 | Lint             | `pnpm lint`                     |
 | Format           | `pnpm format`                   |
 | Run all tests    | `pnpm test`                     |
+| Run E2E tests    | `pnpm test:e2e` (requires API & DB) |
 | Run a single app | `pnpm --filter <name> <script>` |
 
 CI (GitHub Actions) runs the same commands on every PR — see
