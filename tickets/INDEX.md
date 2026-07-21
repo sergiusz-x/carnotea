@@ -81,6 +81,7 @@ _None._
 - 🟡 [T-027 — Reminders CRUD with date/mileage triggers and status transitions](./T-027-api-reminders.md)
 - 🟡 [T-028 — Dashboard and analytics read endpoints](./T-028-api-dashboard-analytics.md)
 - 🟡 [T-029 — User profile endpoints linked to better-auth identity](./T-029-api-user-profile.md)
+- 🟢 [T-030 — Audit-logging interceptor for mutating actions](./T-030-api-audit-logging.md)
 - 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
 - 🔴 [T-032 — Web app shell — auth guard, login/logout, nav, layout](./T-032-web-app-shell-auth.md)
 - 🔴 [T-033 — Web vehicles screens — list, detail hub, create/edit/delete](./T-033-web-vehicles-screens.md)
