@@ -33,7 +33,10 @@ export function AppShell() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header
+        className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+        style={{ paddingTop: 'env(safe-area-inset-top)' }}
+      >
         <div className="flex h-16 items-center gap-4 px-4">
           <Link
             to="/dashboard"
