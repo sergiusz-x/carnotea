@@ -3,6 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "size-limit": [
+    {
+      "path": "dist/assets/*.js",
+      "limit": "250 kB"
+    },
+    {
+      "path": "dist/assets/*.css",
+      "limit": "50 kB"
+    }
+  ],
   "scripts": {
     "dev": "vite",
     "codegen:api": "node scripts/generate-api-schema.mjs http://localhost:3001/openapi.json src/lib/api/schema.d.ts",
@@ -13,7 +23,9 @@
     "format": "prettier --write . --ignore-path ../../.prettierignore",
     "format:check": "prettier --check . --ignore-path ../../.prettierignore",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:size": "size-limit",
+    "test:lighthouse": "lhci autorun"
   },
   "dependencies": {
     "@carnotea/shared": "workspace:*",
@@ -52,6 +64,8 @@
     "@carnotea/prettier-config": "workspace:*",
     "@carnotea/tsconfig": "workspace:*",
     "@carnotea/vitest-config": "workspace:*",
+    "@lhci/cli": "catalog:",
+    "@size-limit/preset-app": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query-devtools": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
@@ -65,6 +79,7 @@
     "jsdom": "catalog:",
     "prettier": "catalog:",
     "sharp": "^0.35.3",
+    "size-limit": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",

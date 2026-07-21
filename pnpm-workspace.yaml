@@ -89,6 +89,10 @@ catalog:
   '@fastify/helmet': ^13.1.0
   '@fastify/rate-limit': ^11.1.0
   '@fastify/cors': ^11.3.0
+  # Performance budget — T-044
+  '@lhci/cli': ^0.15.1
+  size-limit: ^12.1.0
+  '@size-limit/preset-app': ^12.1.0
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.
