@@ -23,8 +23,12 @@ if (!rootElement) {
 const persister = createAsyncStoragePersister({
   storage: {
     getItem: async (key) => await get(key),
-    setItem: async (key, value) => { await set(key, value); },
-    removeItem: async (key) => { await del(key); },
+    setItem: async (key, value) => {
+      await set(key, value);
+    },
+    removeItem: async (key) => {
+      await del(key);
+    },
   },
 });
 
