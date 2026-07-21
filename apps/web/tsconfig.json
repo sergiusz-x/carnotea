@@ -7,6 +7,7 @@
       "@/features/*": ["./src/features/*"],
       "@/lib/*": ["./src/lib/*"],
       "@/offline/*": ["./src/offline/*"],
+      "@/offline": ["./src/offline/index"],
       "@/routes/*": ["./src/routes/*"]
     }
   },
