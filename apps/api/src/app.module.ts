@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggerModule } from 'nestjs-pino';
 
 import { AccountModule } from './account/account.module.js';
 import { ActivityModule } from './activity/activity.module.js';
-import { AuditLoggingInterceptor } from './audit-logging.interceptor.js';
+import { AuditModule } from './audit/audit.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { ChargingSessionsModule } from './charging-sessions/charging-sessions.module.js';
 import { validateEnv } from './config/env.js';
@@ -37,6 +36,7 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     DbModule,
     OpenApiModule,
     AccountModule,
+    AuditModule,
     AuthModule,
     VehiclesModule,
     FuelLogsModule,
@@ -51,11 +51,5 @@ import { VehiclesModule } from './vehicles/vehicles.module.js';
     ActivityModule,
   ],
   controllers: [HealthController, ReadinessController, MeController],
-  providers: [
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: AuditLoggingInterceptor,
-    },
-  ],
 })
 export class AppModule {}
