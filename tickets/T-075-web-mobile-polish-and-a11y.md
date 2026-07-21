@@ -1,16 +1,16 @@
 ---
 id: T-075
 title: Web — mobile polish, quick-add alignment, and accessibility pass
-status: backlog
+status: done
 priority: medium
 size: M
 spec_version: 1
-owner: ~
+owner: Antigravity
 dependencies: [T-074]
 labels: [redesign, web, mobile, a11y]
 created_at: 2026-06-30
-updated_at: 2026-06-30
-closed_at: ~
+updated_at: 2026-07-21
+closed_at: 2026-07-21
 ---
 
 # T-075 — Web — mobile polish, quick-add alignment, and accessibility pass
@@ -78,6 +78,11 @@ Reuse existing T-073 and T-074 web contracts. No new shared schemas or routes.
 ## Implementation notes
 
 - Keep this as polish on top of the implemented design, not a new visual direction.
+
+## Notes
+
+- Added a global `@media (prefers-reduced-motion: reduce)` rule to `globals.css` to instantly address all animation/transition suppression without needing to prefix every Tailwind class with `motion-safe:`.
+- `StatStrip` minimum column width adjusted to `5.5rem` to prevent wrapping issues on 375px screens with 5 stats.
 
 ## Verification
 
