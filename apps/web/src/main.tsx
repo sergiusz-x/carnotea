@@ -1,8 +1,8 @@
 import './otel';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
-import { get, set, del } from 'idb-keyval';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { RouterProvider } from '@tanstack/react-router';
+import { get, set, del } from 'idb-keyval';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -23,8 +23,8 @@ if (!rootElement) {
 const persister = createAsyncStoragePersister({
   storage: {
     getItem: async (key) => await get(key),
-    setItem: async (key, value) => await set(key, value),
-    removeItem: async (key) => await del(key),
+    setItem: async (key, value) => { await set(key, value); },
+    removeItem: async (key) => { await del(key); },
   },
 });
 

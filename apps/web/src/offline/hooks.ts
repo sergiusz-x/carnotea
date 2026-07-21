@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+
 import { getMutationQueue, type QueuedMutation } from './mutation-queue';
 
 export function useOfflineStatus() {
@@ -7,8 +8,8 @@ export function useOfflineStatus() {
   useEffect(() => {
     setIsOffline(!navigator.onLine);
 
-    const handleOnline = () => setIsOffline(false);
-    const handleOffline = () => setIsOffline(true);
+    const handleOnline = () => { setIsOffline(false); };
+    const handleOffline = () => { setIsOffline(true); };
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
