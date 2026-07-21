@@ -27,7 +27,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 ## Backlog
 
 - 🟡 [T-066 — Vehicle form VIN lookup autofill](./T-066-vehicle-vin-lookup-autofill.md)
-- 🟡 [T-075 — Web — mobile polish, quick-add alignment, and accessibility pass](./T-075-web-mobile-polish-and-a11y.md)
 
 ## In progress
 
@@ -111,6 +110,7 @@ _None._
 - 🔴 [T-070 — 'Shared schemas — ActivityEntry feed + VehiclePanel vitals'](./T-070-shared-activity-panel-schemas.md)
 - 🔴 [T-071 — API — vehicle activity feed endpoint](./T-071-api-vehicle-activity-feed.md)
 - 🔴 [T-072 — API — vehicle panel endpoint](./T-072-api-vehicle-panel.md)
+- 🟡 [T-075 — Web — mobile polish, quick-add alignment, and accessibility pass](./T-075-web-mobile-polish-and-a11y.md)
 - 🟡 [T-078 — Web profile language preference save regression](./T-078-web-profile-language-preference-save.md)
 - 🔴 [T-079 — 'Web — shared ListCard/StatStrip primitives and instrument-cluster design tokens'](./T-079-web-shared-listcard-design-foundation.md)
 - 🔴 [T-080 — Fix main CI after docker-compose merge](./T-080-fix-main-ci-after-docker-compose-merge.md)

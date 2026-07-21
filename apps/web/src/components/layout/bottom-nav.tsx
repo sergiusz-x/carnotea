@@ -99,7 +99,8 @@ export function BottomNav() {
                   to={to}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                    'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 text-[11px] font-medium transition-colors',
+                    'flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-md px-1 text-[11px] font-medium transition-colors',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                     isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground',
                   )}
                 >
