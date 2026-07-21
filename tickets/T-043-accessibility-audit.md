@@ -1,13 +1,13 @@
 ---
 id: T-043
 title: Accessibility pass across the web app
-status: ready
+status: in_progress
 priority: medium
-owner: ~
+owner: Antigravity
 dependencies: [T-033]
 labels: [quality, a11y]
 created_at: 2026-06-15
-updated_at: 2026-06-15
+updated_at: 2026-07-21
 closed_at: ~
 ---
 
