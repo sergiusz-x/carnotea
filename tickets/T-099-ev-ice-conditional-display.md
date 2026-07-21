@@ -1,6 +1,6 @@
 ---
 id: T-099
-title: "EV vs ICE Conditional Display Fixes"
+title: 'EV vs ICE Conditional Display Fixes'
 status: done
 priority: high
 owner: antigravity
@@ -11,7 +11,7 @@ updated_at: 2026-07-21
 
 # T-099: EV vs ICE Conditional Display Fixes
 
-## Goal
+## Context
 
 The application currently exhibits bugs where fields meant for internal combustion engine (ICE) vehicles (like fuel consumption) are shown for electric vehicles (EV), and vice-versa (EV charging states shown for ICE cars).
 
