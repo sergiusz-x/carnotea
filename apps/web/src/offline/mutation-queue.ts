@@ -32,5 +32,8 @@ export async function clearMutationQueue() {
 
 export async function removeMutationFromQueue(id: string) {
   const queue = await getMutationQueue();
-  await set(QUEUE_KEY, queue.filter((m) => m.id !== id));
+  await set(
+    QUEUE_KEY,
+    queue.filter((m) => m.id !== id),
+  );
 }
