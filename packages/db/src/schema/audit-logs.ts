@@ -9,6 +9,7 @@ export const auditLogs = pgTable(
       .default(sql`gen_random_uuid()`),
     tableName: varchar({ length: 120 }).notNull(),
     recordId: uuid().notNull(),
+    actorId: uuid().notNull(),
     operation: varchar({ length: 20 }).notNull(),
     oldData: jsonb(),
     newData: jsonb(),
