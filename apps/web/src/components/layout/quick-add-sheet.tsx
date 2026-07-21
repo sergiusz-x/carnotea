@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
+import { supportsCharging, supportsFuelLogs } from '@/features/vehicles/vehicle-usage';
 
 type QuickAddKey = 'fuel' | 'charging' | 'service' | 'issues' | 'expenses' | 'reminders';
 
@@ -27,9 +28,8 @@ export function QuickAddSheet({ vehicleId, open, onOpenChange }: QuickAddSheetPr
   const { data: vehicles } = useQuery(vehiclesQueryOptions);
 
   const activeVehicle = vehicles?.find((v) => v.id === vehicleId);
-  const showFuel = activeVehicle?.fuelType !== 'electric';
-  const showCharging =
-    activeVehicle?.fuelType === 'electric' || activeVehicle?.fuelType === 'hybrid';
+  const showFuel = supportsFuelLogs(activeVehicle?.fuelType);
+  const showCharging = supportsCharging(activeVehicle?.fuelType);
 
   const fuelAction: QuickAddAction[] = showFuel
     ? [{ labelKey: 'fuel', to: `/vehicles/${vehicleId}/fuel/new`, Icon: Fuel }]

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StatStrip } from '@/components/StatStrip';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { supportsCharging, supportsFuelLogs } from '@/features/vehicles/vehicle-usage';
 import { formatDate, formatMoney } from '@/lib/format';
 
 import type { VehiclePanelData } from '../queries';
@@ -111,13 +112,17 @@ export function VehiclePanelCard({ panel, locale }: { panel: VehiclePanelData; l
               value: new Intl.NumberFormat(locale).format(panel.currentMileage),
               highlight: true,
             },
-            { label: t('panel.charge'), value: chargeValue },
+            ...(supportsCharging(panel.fuelType)
+              ? [{ label: t('panel.charge'), value: chargeValue }]
+              : []),
             { label: t('panel.nextService'), value: nextService },
             {
               label: t('panel.monthCost'),
               value: formatOptionalMoney(panel.monthCost.total, panel.currency, locale, t),
             },
-            { label: t('panel.avgConsumption'), value: avgConsumption },
+            ...(supportsFuelLogs(panel.fuelType) || panel.avgConsumption?.unit === 'kwh_per_100km'
+              ? [{ label: t('panel.avgConsumption'), value: avgConsumption }]
+              : []),
           ]}
         />
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-sm text-muted-foreground">
