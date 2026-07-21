@@ -16,10 +16,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 - 🟢 [T-014 — Infra — dev docker-compose for full stack](./T-014-infra-dev-docker-compose.md)
 - 🟢 [T-016 — Turborepo generators — scaffold new packages](./T-016-turbo-generators.md)
-- 🟢 [T-030 — Audit-logging interceptor for mutating actions](./T-030-api-audit-logging.md)
-- 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🟡 [T-043 — Accessibility pass across the web app](./T-043-accessibility-audit.md)
-- 🟢 [T-044 — Performance budget + Lighthouse and bundle-size CI check](./T-044-performance-budget-lighthouse.md)
 - 🟡 [T-050 — OpenTelemetry metrics + basic alerting (follow-up to T-018)](./T-050-metrics-alerting.md)
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
@@ -28,10 +25,10 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 ## Backlog
 
 - 🟡 [T-066 — Vehicle form VIN lookup autofill](./T-066-vehicle-vin-lookup-autofill.md)
-- 🟡 [T-075 — Web — mobile polish, quick-add alignment, and accessibility pass](./T-075-web-mobile-polish-and-a11y.md)
 
 ## In progress
 
+- 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
 - 🟡 [T-068 — Electric dashboard labels, nav visibility, and mileage defaults](./T-068-electric-dashboard-nav-and-mileage-defaults.md)
 - 🔴 [T-069 — 'Redesign epic — Cockpit panel + unified Dziennik feed'](./T-069-redesign-cockpit-logbook.md)
@@ -81,6 +78,7 @@ _None._
 - 🟡 [T-027 — Reminders CRUD with date/mileage triggers and status transitions](./T-027-api-reminders.md)
 - 🟡 [T-028 — Dashboard and analytics read endpoints](./T-028-api-dashboard-analytics.md)
 - 🟡 [T-029 — User profile endpoints linked to better-auth identity](./T-029-api-user-profile.md)
+- 🟢 [T-030 — Audit-logging interceptor for mutating actions](./T-030-api-audit-logging.md)
 - 🔴 [T-031 — Web forms foundation — react-hook-form + Zod resolver + fields](./T-031-web-forms-foundation.md)
 - 🔴 [T-032 — Web app shell — auth guard, login/logout, nav, layout](./T-032-web-app-shell-auth.md)
 - 🔴 [T-033 — Web vehicles screens — list, detail hub, create/edit/delete](./T-033-web-vehicles-screens.md)
@@ -92,6 +90,7 @@ _None._
 - 🟡 [T-039 — Web reminder screens with due/mileage triggers and status](./T-039-web-reminders-screens.md)
 - 🟡 [T-040 — Web home dashboard with cost, consumption, reminders, activity](./T-040-web-dashboard-screen.md)
 - 🟡 [T-041 — Web profile and settings screen (locale, units, currency, account)](./T-041-web-profile-settings-screen.md)
+- 🟢 [T-044 — Performance budget + Lighthouse and bundle-size CI check](./T-044-performance-budget-lighthouse.md)
 - 🔴 [T-045 — Production container images + docker compose with TLS reverse proxy](./T-045-prod-docker-compose-proxy.md)
 - 🟡 [T-047 — Automated Postgres backups + tested restore runbook](./T-047-postgres-backup-restore.md)
 - 🟡 [T-048 — Production secrets handling for the deployed stack](./T-048-secrets-management.md)
@@ -111,6 +110,7 @@ _None._
 - 🔴 [T-070 — 'Shared schemas — ActivityEntry feed + VehiclePanel vitals'](./T-070-shared-activity-panel-schemas.md)
 - 🔴 [T-071 — API — vehicle activity feed endpoint](./T-071-api-vehicle-activity-feed.md)
 - 🔴 [T-072 — API — vehicle panel endpoint](./T-072-api-vehicle-panel.md)
+- 🟡 [T-075 — Web — mobile polish, quick-add alignment, and accessibility pass](./T-075-web-mobile-polish-and-a11y.md)
 - 🟡 [T-078 — Web profile language preference save regression](./T-078-web-profile-language-preference-save.md)
 - 🔴 [T-079 — 'Web — shared ListCard/StatStrip primitives and instrument-cluster design tokens'](./T-079-web-shared-listcard-design-foundation.md)
 - 🔴 [T-080 — Fix main CI after docker-compose merge](./T-080-fix-main-ci-after-docker-compose-merge.md)

@@ -79,6 +79,18 @@ live in the linked documents.
 | Constants            | E.g. fuel type codes, expense category codes |
 | Pure utility helpers | Currency formatting, mileage parsing         |
 
+## Performance Budget (apps/web)
+
+We strictly enforce a performance budget in CI using `size-limit` and Lighthouse CI (T-044) to prevent bundle bloat and regression in PWA features and Core Web Vitals.
+
+- **Bundle Size**: Configured in `apps/web/package.json` under `"size-limit"`. Initial limits are 250kB for JS and 50kB for CSS (gzipped).
+- **Lighthouse CI**: Configured in `apps/web/lighthouserc.yml`.
+  - **Scores**: Performance ≥ 85, Best Practices ≥ 90, PWA = 100.
+  - **PWA criteria**: Enforces installable manifest, service worker, icons, splash screen, and themed omnibox.
+  - **Core Web Vitals**: Target LCP ≤ 2.5s, CLS ≤ 0.1, TBT ≤ 200ms.
+
+**How to update**: If a threshold fails due to legitimate new features, measure the new baseline against production, document the reasoning in the PR, and bump the threshold in `lighthouserc.yml` or `package.json`.
+
 ## Infra
 
 | Thing          | Purpose                              |

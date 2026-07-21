@@ -3,6 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "size-limit": [
+    {
+      "path": "dist/assets/*.js",
+      "limit": "250 kB"
+    },
+    {
+      "path": "dist/assets/*.css",
+      "limit": "50 kB"
+    }
+  ],
   "scripts": {
     "dev": "vite",
     "codegen:api": "node scripts/generate-api-schema.mjs http://localhost:3001/openapi.json src/lib/api/schema.d.ts",
@@ -13,7 +23,10 @@
     "format": "prettier --write . --ignore-path ../../.prettierignore",
     "format:check": "prettier --check . --ignore-path ../../.prettierignore",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:size": "size-limit",
+    "test:lighthouse": "lhci autorun",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@carnotea/shared": "workspace:*",
@@ -48,10 +61,14 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@carnotea/db": "workspace:*",
     "@carnotea/eslint-config": "workspace:*",
     "@carnotea/prettier-config": "workspace:*",
     "@carnotea/tsconfig": "workspace:*",
     "@carnotea/vitest-config": "workspace:*",
+    "@lhci/cli": "catalog:",
+    "@playwright/test": "catalog:",
+    "@size-limit/preset-app": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query-devtools": "catalog:",
     "@tanstack/react-router-devtools": "catalog:",
@@ -61,10 +78,12 @@
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "@vitejs/plugin-react": "catalog:",
+    "drizzle-orm": "catalog:",
     "eslint": "catalog:",
     "jsdom": "catalog:",
     "prettier": "catalog:",
     "sharp": "^0.35.3",
+    "size-limit": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
