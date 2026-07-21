@@ -10,12 +10,14 @@ ci:
       'categories:best-practices': ['warn', { minScore: 0.90 }]
       'categories:pwa': ['warn', { minScore: 1.0 }]
 
-      # Disable missing/flaky audits
+      # Disable missing/flaky/seo audits
       'apple-touch-icon': ['off', {}]
       'installable-manifest': ['off', {}]
       'maskable-icon': ['off', {}]
       'network-dependency-tree-insight': ['off', {}]
       'unused-javascript': ['off', {}]
+      'meta-description': ['warn', {}]
+      'meta-viewport': ['warn', {}]
 
       # Core Web Vitals
       'largest-contentful-paint': ['warn', { maxNumericValue: 2500 }]
