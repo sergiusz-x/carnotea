@@ -31,7 +31,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## In progress
 
-- 🟡 [T-043 — Accessibility pass across the web app](./T-043-accessibility-audit.md)
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
 - 🟡 [T-068 — Electric dashboard labels, nav visibility, and mileage defaults](./T-068-electric-dashboard-nav-and-mileage-defaults.md)
 - 🔴 [T-069 — 'Redesign epic — Cockpit panel + unified Dziennik feed'](./T-069-redesign-cockpit-logbook.md)
@@ -92,6 +91,7 @@ _None._
 - 🟡 [T-039 — Web reminder screens with due/mileage triggers and status](./T-039-web-reminders-screens.md)
 - 🟡 [T-040 — Web home dashboard with cost, consumption, reminders, activity](./T-040-web-dashboard-screen.md)
 - 🟡 [T-041 — Web profile and settings screen (locale, units, currency, account)](./T-041-web-profile-settings-screen.md)
+- 🟡 [T-043 — Accessibility pass across the web app](./T-043-accessibility-audit.md)
 - 🔴 [T-045 — Production container images + docker compose with TLS reverse proxy](./T-045-prod-docker-compose-proxy.md)
 - 🟡 [T-047 — Automated Postgres backups + tested restore runbook](./T-047-postgres-backup-restore.md)
 - 🟡 [T-048 — Production secrets handling for the deployed stack](./T-048-secrets-management.md)
