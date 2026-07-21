@@ -35,7 +35,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-069 — 'Redesign epic — Cockpit panel + unified Dziennik feed'](./T-069-redesign-cockpit-logbook.md)
 - 🔴 [T-073 — Web — vehicle panel and activity feed](./T-073-web-panel-and-activity-feed.md)
 - 🔴 [T-074 — Web — shell rail and dashboard composition](./T-074-web-shell-and-dashboard-composition.md)
-- ⚪ [T-076 — undefined](./T-076-ev-ice-conditional-display.md)
 - 🟢 [T-076 — Web logo refresh - minimalist E2 mark](./T-076-web-logo-refresh-e2.md)
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
@@ -128,6 +127,7 @@ _None._
 - 🔴 [T-093 — Inline service worker registration for uncached updates](./T-093-inline-service-worker-registration.md)
 - 🔴 [T-094 — Activate waiting service worker updates](./T-094-activate-waiting-service-worker.md)
 - 🔴 [T-095 — Detail-first activity flow and fuel log descriptions](./T-095-activity-detail-flow-and-fuel-descriptions.md)
+- 🔴 [T-099 — "EV vs ICE Conditional Display Fixes"](./T-099-ev-ice-conditional-display.md)
 
 <!-- END GENERATED:tickets -->
 
