@@ -6,7 +6,8 @@ import { defineConfig, devices } from '@playwright/test';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgres://carnotea:carnotea_dev_password@localhost:5433/carnotea';
+process.env.DATABASE_URL =
+  process.env.DATABASE_URL || 'postgres://carnotea:carnotea_dev_password@localhost:5433/carnotea';
 
 export default defineConfig({
   testDir: './e2e',

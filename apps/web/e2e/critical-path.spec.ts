@@ -1,33 +1,16 @@
 import { test, expect } from './fixtures/db-helpers';
 
 test.describe('Critical path', () => {
-  test('sign in, create vehicle, add fuel log, see on dashboard', async ({ page, testUser, request }) => {
-    // 1. Setup: create user via API
-    const res = await request.post('/api/auth/sign-up/email', {
-      data: {
-        email: testUser.email,
-        password: testUser.password,
-        name: testUser.name,
-      },
-    });
-    if (!res.ok()) {
-      console.error('Sign up failed', await res.text());
-    }
-    expect(res.ok()).toBeTruthy();
-    
-    // Some setups might log in automatically or not, but we still hit the login page
-    // to prove the UI flow works.
-    
-    // Sign out just in case the API call set a cookie in the context
-    await request.post('/api/auth/sign-out');
-
-    // 2. Sign in via UI
+  test('sign in, create vehicle, add fuel log, see on dashboard', async ({ page, testUser }) => {
+    // 1. Sign up via UI
     await page.goto('/login');
+    await page.getByText("Don't have an account? Sign up").click();
+    await page.getByLabel('Full name').fill(testUser.name);
     await page.getByLabel('Email').fill(testUser.email);
     await page.getByLabel('Password').fill(testUser.password);
-    await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+    await page.getByRole('button', { name: 'Create account' }).click();
 
-    // 3. Verify successful sign-in
+    // 2. Verify successful sign-up / sign-in
     // Should navigate away from login and not show the sign in button
     await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toHaveCount(0);
 
@@ -43,7 +26,7 @@ test.describe('Critical path', () => {
     await page.getByLabel('Year').fill('2020');
     await page.getByLabel('Fuel type').selectOption({ label: 'Petrol' });
     await page.getByLabel('Current mileage').fill('50000');
-    
+
     await page.getByRole('button', { name: 'Save vehicle' }).click();
 
     // Verify vehicle created
@@ -52,10 +35,10 @@ test.describe('Critical path', () => {
     // 5. Add fuel log
     // Click on the vehicle row/card
     await page.getByText('Toyota Corolla').click();
-    
+
     // In detail view, switch to Fuel logs tab if there is one
     await page.getByRole('tab', { name: 'Fuel logs' }).click();
-    
+
     // Click Add fuel log
     await page.getByRole('button', { name: 'Add fuel log' }).click();
 
@@ -72,10 +55,10 @@ test.describe('Critical path', () => {
     if (isWizard) {
       await page.getByRole('button', { name: 'Next' }).click();
     }
-    
+
     await page.getByLabel('Liters').fill('40');
     await page.getByLabel('Price per liter').fill('1.5');
-    
+
     if (isWizard) {
       await page.getByRole('button', { name: 'Next' }).click();
     }

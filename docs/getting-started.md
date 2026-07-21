@@ -136,14 +136,14 @@ pnpm build           # builds all packages (if needed)
 
 ## 6. Working day-to-day
 
-| Goal             | Command                         |
-| ---------------- | ------------------------------- |
-| Type-check       | `pnpm typecheck`                |
-| Lint             | `pnpm lint`                     |
-| Format           | `pnpm format`                   |
-| Run all tests    | `pnpm test`                     |
+| Goal             | Command                             |
+| ---------------- | ----------------------------------- |
+| Type-check       | `pnpm typecheck`                    |
+| Lint             | `pnpm lint`                         |
+| Format           | `pnpm format`                       |
+| Run all tests    | `pnpm test`                         |
 | Run E2E tests    | `pnpm test:e2e` (requires API & DB) |
-| Run a single app | `pnpm --filter <name> <script>` |
+| Run a single app | `pnpm --filter <name> <script>`     |
 
 CI (GitHub Actions) runs the same commands on every PR — see
 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml).
