@@ -19,7 +19,7 @@ describe('Accessibility Audit', () => {
     const { container } = renderApp();
     const results = await axe(container);
     // @ts-expect-error - vitest-axe types don't augment vitest Assertion
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
     expect(results).toHaveNoViolations();
   });
 });
