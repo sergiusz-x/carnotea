@@ -1,15 +1,15 @@
 ---
 id: T-030
 title: Audit-logging interceptor for mutating actions
-status: ready
+status: done
 priority: low
 size: M
 spec_version: 1
-owner: ~
+owner: Antigravity
 dependencies: [T-004, T-006]
 labels: [api, security]
 created_at: 2026-06-15
-updated_at: 2026-06-21
+updated_at: 2026-07-21
 closed_at: ~
 ---
 
