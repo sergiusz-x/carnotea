@@ -11,6 +11,10 @@ updated_at: 2026-07-21
 
 # T-099: EV vs ICE Conditional Display Fixes
 
+## Goal
+
+Audit and fix conditional display bugs based on vehicle powertrain.
+
 ## Context
 
 The application currently exhibits bugs where fields meant for internal combustion engine (ICE) vehicles (like fuel consumption) are shown for electric vehicles (EV), and vice-versa (EV charging states shown for ICE cars).
