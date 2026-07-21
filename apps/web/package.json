@@ -25,7 +25,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:size": "size-limit",
-    "test:lighthouse": "lhci autorun"
+    "test:lighthouse": "lhci autorun",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@carnotea/shared": "workspace:*",
@@ -60,11 +61,13 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@carnotea/db": "workspace:*",
     "@carnotea/eslint-config": "workspace:*",
     "@carnotea/prettier-config": "workspace:*",
     "@carnotea/tsconfig": "workspace:*",
     "@carnotea/vitest-config": "workspace:*",
     "@lhci/cli": "catalog:",
+    "@playwright/test": "catalog:",
     "@size-limit/preset-app": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/react-query-devtools": "catalog:",
@@ -75,6 +78,7 @@
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "@vitejs/plugin-react": "catalog:",
+    "drizzle-orm": "catalog:",
     "eslint": "catalog:",
     "jsdom": "catalog:",
     "prettier": "catalog:",

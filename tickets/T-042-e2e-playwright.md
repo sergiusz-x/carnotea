@@ -1,13 +1,13 @@
 ---
 id: T-042
 title: End-to-end tests with Playwright for the critical path
-status: ready
+status: in_progress
 priority: medium
-owner: ~
+owner: Antigravity
 dependencies: [T-032, T-033]
 labels: [quality, testing]
 created_at: 2026-06-15
-updated_at: 2026-06-15
+updated_at: 2026-07-21
 closed_at: ~
 ---
 
@@ -77,3 +77,9 @@ flow. `turbo.json` already declares `test:e2e` with `playwright-report/**` and
 - Related tickets: T-032 (web app shell), T-033 (web vehicles),
   T-043 (a11y), T-044 (performance budget)
 - External: Playwright — <https://playwright.dev/>
+
+## Notes
+
+- Included `e2e/**/*` in `apps/web/tsconfig.json` to ensure ESLint can resolve the typescript files for type-aware linting.
+- The `testUser` fixture generates a random user ID and deletes it directly via `@carnotea/db` to guarantee idempotency and avoid leaving unused test users.
+- Placed Playwright fully in `apps/web` (including `playwright.config.ts`) as that aligns with Turborepo script mappings (`pnpm --filter @carnotea/web test:e2e`).
