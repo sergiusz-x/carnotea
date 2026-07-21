@@ -1,13 +1,15 @@
 import './otel';
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { RouterProvider } from '@tanstack/react-router';
+import { get, set, del } from 'idb-keyval';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { queryClient } from '@/lib/queryClient';
 import { router } from '@/lib/router';
+import { registerSyncRunner } from '@/offline';
 
 import './i18n';
 import './styles/globals.css';
@@ -18,9 +20,16 @@ if (!rootElement) {
   throw new Error('Root element #root not found');
 }
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-const persister = createSyncStoragePersister({
-  storage: window.localStorage,
+const persister = createAsyncStoragePersister({
+  storage: {
+    getItem: async (key) => await get(key),
+    setItem: async (key, value) => {
+      await set(key, value);
+    },
+    removeItem: async (key) => {
+      await del(key);
+    },
+  },
 });
 
 const persistOptions = {
@@ -37,6 +46,8 @@ const persistOptions = {
     },
   },
 };
+
+registerSyncRunner();
 
 createRoot(rootElement).render(
   <StrictMode>

@@ -10,6 +10,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { Button } from '@/components/ui/button';
 import { useActiveVehicle } from '@/features/vehicles/active-vehicle-context';
 import { vehiclesQueryOptions } from '@/features/vehicles/queries';
+import { useOfflineStatus, useSyncQueue } from '@/offline';
 
 import { BottomNav } from './bottom-nav';
 import { Fab } from './fab';
@@ -25,6 +26,8 @@ export function AppShell() {
   const { activeVehicleId } = useActiveVehicle();
   const { data: vehicles } = useQuery(vehiclesQueryOptions);
   const [vehicleSheetOpen, setVehicleSheetOpen] = useState(false);
+  const isOffline = useOfflineStatus();
+  const syncQueue = useSyncQueue();
 
   const activeVehicle = vehicles?.find((v) => v.id === activeVehicleId);
   const vehicleLabel = activeVehicle
@@ -62,7 +65,22 @@ export function AppShell() {
             <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-50" aria-hidden="true" />
           </Button>
 
-          <div className="ml-auto flex items-center gap-1">
+          <div className="ml-auto flex items-center gap-2">
+            {(isOffline || syncQueue.length > 0) && (
+              <div className="mr-2 flex items-center text-xs font-medium text-muted-foreground">
+                {isOffline ? (
+                  <span className="flex items-center gap-1.5 text-destructive">
+                    <span className="h-2 w-2 rounded-full bg-destructive" />
+                    <span className="hidden sm:inline">{t('offline.status')}</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1.5 text-amber-500">
+                    <span className="h-2 w-2 animate-pulse rounded-full bg-amber-500" />
+                    <span className="hidden sm:inline">{t('offline.pendingSync')}</span>
+                  </span>
+                )}
+              </div>
+            )}
             <div className="hidden sm:block">
               <LanguageSwitcher />
             </div>

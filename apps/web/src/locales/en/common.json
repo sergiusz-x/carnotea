@@ -21,5 +21,10 @@
   "version": {
     "title": "Version {{version}}",
     "linkLabel": "Open version metadata for {{version}}"
+  },
+  "offline": {
+    "status": "Offline",
+    "pendingSync": "Pending sync",
+    "synced": "Synced"
   }
 }

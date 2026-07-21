@@ -1,5 +1,7 @@
 import { ErrorResponseSchema, type ApiIssue } from '@carnotea/shared';
 
+import { enqueueMutation } from '@/offline';
+
 import { type paths } from './schema';
 
 type GetPath = Extract<
@@ -133,6 +135,16 @@ export const apiClient = {
     response: Response;
   }> {
     const url = resolvePath(path, params);
+
+    if (!navigator.onLine) {
+      const queued = await enqueueMutation({ method: 'POST', url, body });
+      // Return a mock response so the UI updates optimistically
+      return {
+        data: { id: queued.id, ...body } as unknown as SuccessResponse<paths[Path]['post']>,
+        response: new Response(null, { status: 202 }),
+      };
+    }
+
     const response = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -159,6 +171,15 @@ export const apiClient = {
     response: Response;
   }> {
     const url = resolvePath(path, params);
+
+    if (!navigator.onLine) {
+      const queued = await enqueueMutation({ method: 'PATCH', url, body });
+      return {
+        data: { id: queued.id, ...body } as unknown as SuccessResponse<paths[Path]['patch']>,
+        response: new Response(null, { status: 202 }),
+      };
+    }
+
     const response = await fetch(url, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -184,6 +205,15 @@ export const apiClient = {
     response: Response;
   }> {
     const url = resolvePath(path, params);
+
+    if (!navigator.onLine) {
+      await enqueueMutation({ method: 'DELETE', url });
+      return {
+        data: undefined as unknown as SuccessResponse<paths[Path]['delete']>,
+        response: new Response(null, { status: 202 }),
+      };
+    }
+
     const response = await fetch(url, { method: 'DELETE' });
 
     if (!response.ok) {

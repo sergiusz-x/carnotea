@@ -89,13 +89,8 @@ export default defineConfig(async () => {
         manifest: false,
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+          navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/version\.json$/, /^\/api\//, /^\/healthz$/, /^\/readyz$/],
-          runtimeCaching: [
-            {
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkOnly',
-            },
-          ],
         },
       }),
     ],
@@ -104,6 +99,7 @@ export default defineConfig(async () => {
         '@/components': resolve(import.meta.dirname, 'src/components'),
         '@/features': resolve(import.meta.dirname, 'src/features'),
         '@/lib': resolve(import.meta.dirname, 'src/lib'),
+        '@/offline': resolve(import.meta.dirname, 'src/offline'),
         '@/routes': resolve(import.meta.dirname, 'src/routes'),
       },
     },
