@@ -78,18 +78,19 @@ export function DashboardOverview() {
           ? t('overview.unit', { currency, value: totalVariableCost.toFixed(2) })
           : t('overview.noData'),
     },
-    {
-      title: showElectricMetrics
-        ? t('overview.avgEnergyConsumption')
-        : t('overview.avgFuelConsumption'),
+  ];
+
+  if (!showElectricMetrics) {
+    cards.push({
+      title: t('overview.avgFuelConsumption'),
       value:
         averageConsumption != null
-          ? t(showElectricMetrics ? 'overview.energyConsumptionUnit' : 'overview.consumptionUnit', {
+          ? t('overview.consumptionUnit', {
               value: averageConsumption.toFixed(1),
             })
           : t('overview.noData'),
-    },
-  ];
+    });
+  }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
