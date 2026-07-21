@@ -21,5 +21,10 @@
   "version": {
     "title": "Wersja {{version}}",
     "linkLabel": "Otwórz metadane wersji {{version}}"
+  },
+  "offline": {
+    "status": "Offline",
+    "pendingSync": "Oczekuje na synchronizację",
+    "synced": "Zsynchronizowano"
   }
 }

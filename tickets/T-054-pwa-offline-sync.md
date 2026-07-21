@@ -1,13 +1,13 @@
 ---
 id: T-054
 title: PWA offline-first caching and queued-mutation sync
-status: ready
+status: in_progress
 priority: low
-owner: ~
+owner: antigravity
 dependencies: [T-012]
 labels: [pwa]
 created_at: 2026-06-15
-updated_at: 2026-06-15
+updated_at: 2026-07-21
 closed_at: ~
 ---
 
