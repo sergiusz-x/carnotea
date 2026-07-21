@@ -99,6 +99,7 @@ export default defineConfig(async () => {
         '@/components': resolve(import.meta.dirname, 'src/components'),
         '@/features': resolve(import.meta.dirname, 'src/features'),
         '@/lib': resolve(import.meta.dirname, 'src/lib'),
+        '@/offline': resolve(import.meta.dirname, 'src/offline'),
         '@/routes': resolve(import.meta.dirname, 'src/routes'),
       },
     },

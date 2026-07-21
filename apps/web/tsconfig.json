@@ -6,6 +6,7 @@
       "@/components/*": ["./src/components/*"],
       "@/features/*": ["./src/features/*"],
       "@/lib/*": ["./src/lib/*"],
+      "@/offline/*": ["./src/offline/*"],
       "@/routes/*": ["./src/routes/*"]
     }
   },
