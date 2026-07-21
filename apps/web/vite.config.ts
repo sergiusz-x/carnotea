@@ -89,13 +89,8 @@ export default defineConfig(async () => {
         manifest: false,
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
+          navigateFallback: '/index.html',
           navigateFallbackDenylist: [/^\/version\.json$/, /^\/api\//, /^\/healthz$/, /^\/readyz$/],
-          runtimeCaching: [
-            {
-              urlPattern: ({ request }) => request.mode === 'navigate',
-              handler: 'NetworkOnly',
-            },
-          ],
         },
       }),
     ],
