@@ -22,7 +22,7 @@ interface QuickAddSheetProps {
 }
 
 export function QuickAddSheet({ vehicleId, open, onOpenChange }: QuickAddSheetProps) {
-  const { t } = useTranslation('nav');
+  const { t } = useTranslation(['nav', 'common']);
   const navigate = useNavigate();
   const { data: vehicles } = useQuery(vehiclesQueryOptions);
 
@@ -55,7 +55,7 @@ export function QuickAddSheet({ vehicleId, open, onOpenChange }: QuickAddSheetPr
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="bottom">
+      <SheetContent side="bottom" aria-describedby={undefined} closeLabel={t('common:nav.close')}>
         <SheetHeader className="text-left">
           <SheetTitle>{t('quickAdd')}</SheetTitle>
         </SheetHeader>

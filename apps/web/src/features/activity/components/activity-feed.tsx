@@ -89,10 +89,12 @@ export function ActivityFeed({
   const showFilteredEmpty = !showFeedEmpty && entries.length === 0;
 
   return (
-    <section className="space-y-4">
+    <section className="space-y-4" aria-labelledby="activity-feed-heading">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-display text-2xl font-bold tracking-tight">{t('feed.title')}</h2>
-        <div className="flex flex-wrap gap-2" aria-label={t('feed.filters')}>
+        <h2 id="activity-feed-heading" className="font-display text-2xl font-bold tracking-tight">
+          {t('feed.title')}
+        </h2>
+        <div className="flex flex-wrap gap-2" aria-label={t('feed.filters')} role="group">
           {visibleFilters.map((item) => (
             <Button
               key={item}
@@ -140,6 +142,7 @@ export function ActivityFeed({
             variant="outline"
             onClick={() => void fetchNextPage()}
             disabled={isFetchingNextPage}
+            aria-busy={isFetchingNextPage}
           >
             {isFetchingNextPage ? t('feed.loading') : t('feed.loadMore')}
           </Button>

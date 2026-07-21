@@ -17,7 +17,7 @@ export function StatStrip({ stats }: { stats: Stat[] }) {
   return (
     <div
       className="grid gap-px border-y bg-border"
-      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(6.5rem, 1fr))' }}
+      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(5.5rem, 1fr))' }}
     >
       {stats.map((stat) => (
         <div key={stat.label} className="bg-card px-3 py-2.5 text-center">
