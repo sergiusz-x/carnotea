@@ -22,7 +22,7 @@ describe('AuditInterceptor', () => {
     method: string,
     user: unknown,
     params: unknown = {},
-    body: unknown = {}
+    body: unknown = {},
   ): ExecutionContext => {
     return {
       getHandler: () => ({}),
@@ -59,10 +59,14 @@ describe('AuditInterceptor', () => {
   it('should not audit if handler throws', async () => {
     vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue('test_table');
     const context = createMockContext('POST', { id: 'u1' });
-    const next: CallHandler = { handle: vi.fn().mockReturnValue(throwError(() => new Error('Failed'))) };
+    const next: CallHandler = {
+      handle: vi.fn().mockReturnValue(throwError(() => new Error('Failed'))),
+    };
 
     try {
-      await new Promise((resolve, reject) => interceptor.intercept(context, next).subscribe({ next: resolve, error: reject }));
+      await new Promise((resolve, reject) =>
+        interceptor.intercept(context, next).subscribe({ next: resolve, error: reject }),
+      );
     } catch {
       // ignored
     }
@@ -123,7 +127,11 @@ describe('AuditInterceptor', () => {
   it('should redact secrets in payload', async () => {
     vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue('test_table');
     const context = createMockContext('POST', { id: 'u1' });
-    const next: CallHandler = { handle: vi.fn().mockReturnValue(of({ id: 'r1', token: 'secret', inner: { password: 'pass' } })) };
+    const next: CallHandler = {
+      handle: vi
+        .fn()
+        .mockReturnValue(of({ id: 'r1', token: 'secret', inner: { password: 'pass' } })),
+    };
 
     await new Promise((resolve) => interceptor.intercept(context, next).subscribe(resolve));
 

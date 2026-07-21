@@ -22,7 +22,11 @@ function redactSecrets(data: unknown): unknown {
   const redacted = { ...(data as Record<string, unknown>) };
   for (const key of Object.keys(redacted)) {
     const lowerKey = key.toLowerCase();
-    if (lowerKey.includes('token') || lowerKey.includes('secret') || lowerKey.includes('password')) {
+    if (
+      lowerKey.includes('token') ||
+      lowerKey.includes('secret') ||
+      lowerKey.includes('password')
+    ) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete redacted[key];
     } else if (typeof redacted[key] === 'object') {
@@ -71,13 +75,13 @@ export class AuditInterceptor implements NestInterceptor {
       tap({
         next: (responseBody: unknown) => {
           try {
-            const resObj = (typeof responseBody === 'object' && responseBody !== null) 
-              ? (responseBody as Record<string, unknown>) 
-              : null;
-            
+            const resObj =
+              typeof responseBody === 'object' && responseBody !== null
+                ? (responseBody as Record<string, unknown>)
+                : null;
+
             const recordId =
-              (resObj?.id as string) ||
-              ((request.params as Record<string, string>).id);
+              (resObj?.id as string) || (request.params as Record<string, string>).id;
 
             if (!recordId) {
               return;
