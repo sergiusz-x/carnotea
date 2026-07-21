@@ -1,14 +1,14 @@
 ---
 id: T-044
 title: Performance budget + Lighthouse and bundle-size CI check
-status: ready
+status: done
 priority: low
-owner: ~
+owner: Antigravity
 dependencies: [T-012, T-033]
 labels: [quality, perf]
 created_at: 2026-06-15
-updated_at: 2026-06-15
-closed_at: ~
+updated_at: 2026-07-21
+closed_at: 2026-07-21
 ---
 
 # T-044 — Performance budget + Lighthouse and bundle-size CI check
