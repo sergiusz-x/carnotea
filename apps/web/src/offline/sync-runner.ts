@@ -24,7 +24,7 @@ export async function replayMutations() {
         // 5xx error, might be temporary, stop queue
         break;
       }
-    } catch (err) {
+    } catch (_err) {
       // Network error (still offline or connection dropped), stop replaying for now
       break;
     }
