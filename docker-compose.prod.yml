@@ -41,7 +41,7 @@ services:
     profiles: ['release']
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:?error}
+      DATABASE_URL: ${DATABASE_URL}
     networks:
       - carnotea-prod
       - dokploy-network
@@ -76,10 +76,10 @@ services:
       NODE_ENV: production
       API_PORT: 3001
       API_HOST: 0.0.0.0
-      DATABASE_URL: ${DATABASE_URL:?error}
-      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?error}
-      BETTER_AUTH_URL: ${BETTER_AUTH_URL:?error}
-      CORS_ORIGINS: ${CORS_ORIGINS:?error}
+      DATABASE_URL: ${DATABASE_URL}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL}
+      CORS_ORIGINS: ${CORS_ORIGINS}
       RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
       RATE_LIMIT_AUTH_MAX: ${RATE_LIMIT_AUTH_MAX:-10}
       RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
@@ -93,6 +93,7 @@ services:
     depends_on:
       migrate:
         condition: service_completed_successfully
+        required: false
     networks:
       - carnotea-prod
       - dokploy-network
