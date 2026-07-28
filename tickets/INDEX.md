@@ -25,6 +25,12 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 ## Backlog
 
 - 🟡 [T-066 — Vehicle form VIN lookup autofill](./T-066-vehicle-vin-lookup-autofill.md)
+- 🔴 [T-099 — Decide the outbound webhook delivery and security architecture](./T-099-adr-outbound-webhook-delivery.md)
+- 🔴 [T-100 — Add webhook subscription, outbox, and delivery contracts](./T-100-webhook-persistence-and-contracts.md)
+- 🔴 [T-101 — Add user-owned webhook management API](./T-101-webhook-management-api.md)
+- 🔴 [T-102 — Emit transactional expense lifecycle events](./T-102-transactional-expense-events.md)
+- 🔴 [T-103 — Deliver signed webhooks with retries and network protections](./T-103-secure-webhook-dispatcher.md)
+- 🟡 [T-104 — Add webhook settings, delivery diagnostics, and receiver docs](./T-104-webhook-settings-ui-and-docs.md)
 
 ## In progress
 
