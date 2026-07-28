@@ -93,7 +93,7 @@ catalog:
   # Performance budget — T-044
   '@lhci/cli': ^0.15.1
   size-limit: ^12.1.0
-  '@size-limit/preset-app': ^12.1.0
+  '@size-limit/preset-app': ^13.0.1
 
 # React-family versions live in a named catalog so non-React packages never
 # accidentally pull them in.
