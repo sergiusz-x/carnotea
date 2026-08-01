@@ -31,6 +31,8 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-102 — Emit transactional expense lifecycle events](./T-102-transactional-expense-events.md)
 - 🔴 [T-103 — Deliver signed webhooks with retries and network protections](./T-103-secure-webhook-dispatcher.md)
 - 🟡 [T-104 — Add webhook settings, delivery diagnostics, and receiver docs](./T-104-webhook-settings-ui-and-docs.md)
+- 🟡 [T-105 — Web — vehicle mileage history chart](./T-105-web-vehicle-mileage-history-chart.md)
+- 🟡 [T-106 — Integrate official HistoriaPojazdu.gov.pl vehicle history](./T-106-historypojazdu-gov-vehicle-history-integration.md)
 
 ## In progress
 
