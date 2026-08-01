@@ -18,7 +18,7 @@ import {
 import { FastifyAdapter, type NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 import { eq, inArray } from 'drizzle-orm';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { AUTH } from '../auth/auth.constants.js';
 import { AuthGuard } from '../auth/auth.guard.js';
@@ -80,6 +80,8 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
   };
 
   beforeAll(async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(baseDate);
     db = createDb(databaseUrl as string);
 
     const [
@@ -276,6 +278,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
     await db.delete(vehicles).where(inArray(vehicles.userId, [ownerId, otherId]));
     await db.delete(users).where(inArray(users.id, [ownerId, otherId]));
     await app.close();
+    vi.useRealTimers();
   });
 
   it('GET /api/vehicles/:vehicleId/activity returns a mixed feed sorted newest-first', async () => {
