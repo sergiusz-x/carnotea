@@ -33,8 +33,8 @@ First validate the official integration path, permitted data scope, authenticati
 
 ### Endpoints / routes
 
-| Method | Path | Auth | Success | Errors |
-| ------ | ---- | ---- | ------- | ------ |
+| Method                             | Path  | Auth    | Success                           | Errors                                           |
+| ---------------------------------- | ----- | ------- | --------------------------------- | ------------------------------------------------ |
 | _TBD after official API discovery_ | _TBD_ | session | Imported official vehicle history | Validation, upstream availability, authorization |
 
 ### Request / response shapes
@@ -59,13 +59,13 @@ An official HistoriaPojazdu.gov.pl API/programme specification and terms that ex
 
 ## Test matrix
 
-| Case | Input | Expected |
-| ---- | ----- | -------- |
-| Official success response | Valid documented upstream fixture | Validated data maps to the approved import/view model |
-| Malformed upstream response | Missing or invalid upstream fields | Boundary rejects it safely without persisting partial data |
-| Unauthorized vehicle access | Another user's vehicle identifier | No data is fetched or exposed; existing authorization error |
-| Upstream unavailable | Timeout or documented upstream failure | Localized safe error, no credentials or sensitive identifiers leaked |
-| Unsupported integration | Official documentation shows no permitted API | Evidence recorded and compliant follow-up ticket created |
+| Case                        | Input                                         | Expected                                                             |
+| --------------------------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| Official success response   | Valid documented upstream fixture             | Validated data maps to the approved import/view model                |
+| Malformed upstream response | Missing or invalid upstream fields            | Boundary rejects it safely without persisting partial data           |
+| Unauthorized vehicle access | Another user's vehicle identifier             | No data is fetched or exposed; existing authorization error          |
+| Upstream unavailable        | Timeout or documented upstream failure        | Localized safe error, no credentials or sensitive identifiers leaked |
+| Unsupported integration     | Official documentation shows no permitted API | Evidence recorded and compliant follow-up ticket created             |
 
 ## Files to touch
 

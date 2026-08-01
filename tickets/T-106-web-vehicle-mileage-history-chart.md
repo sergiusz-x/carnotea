@@ -33,9 +33,9 @@ The vehicle detail experience gains a mileage-history visualization based solely
 
 ### Endpoints / routes
 
-| Method | Path | Auth | Success | Errors |
-| ------ | ---- | ---- | ------- | ------ |
-| _n/a_ | Existing vehicle-detail route | session | Rendered chart | Existing loading/error states |
+| Method | Path                          | Auth    | Success        | Errors                        |
+| ------ | ----------------------------- | ------- | -------------- | ----------------------------- |
+| _n/a_  | Existing vehicle-detail route | session | Rendered chart | Existing loading/error states |
 
 ### Request / response shapes
 
@@ -59,13 +59,13 @@ The existing authenticated vehicle-detail data and mileage-reading records intro
 
 ## Test matrix
 
-| Case | Input | Expected |
-| ---- | ----- | -------- |
-| Chronological series | Readings submitted out of date order | Points and line render in ascending date order |
-| Exact point detail | Keyboard-focus or hover a point | Localized date and mileage are available |
-| Insufficient history | Zero or one reading | Localized empty/insufficient-data state, no trend line |
-| Mobile viewport | Narrow viewport | Chart remains legible and usable without horizontal page overflow |
-| Accessibility | Screen-reader semantics | Chart has a meaningful localized text alternative/summary |
+| Case                 | Input                                | Expected                                                          |
+| -------------------- | ------------------------------------ | ----------------------------------------------------------------- |
+| Chronological series | Readings submitted out of date order | Points and line render in ascending date order                    |
+| Exact point detail   | Keyboard-focus or hover a point      | Localized date and mileage are available                          |
+| Insufficient history | Zero or one reading                  | Localized empty/insufficient-data state, no trend line            |
+| Mobile viewport      | Narrow viewport                      | Chart remains legible and usable without horizontal page overflow |
+| Accessibility        | Screen-reader semantics              | Chart has a meaningful localized text alternative/summary         |
 
 ## Files to touch
 
