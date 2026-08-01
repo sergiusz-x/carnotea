@@ -1,5 +1,5 @@
 ---
-id: T-105
+id: T-106
 title: Web — vehicle mileage history chart
 status: backlog
 priority: medium
@@ -13,7 +13,7 @@ updated_at: 2026-08-01
 closed_at: ~
 ---
 
-# T-105 — Web — vehicle mileage history chart
+# T-106 — Web — vehicle mileage history chart
 
 > Fill every section. A section that does not apply gets `_n/a_` — never delete
 > it, so the next agent knows you considered it. A ticket is only moved to

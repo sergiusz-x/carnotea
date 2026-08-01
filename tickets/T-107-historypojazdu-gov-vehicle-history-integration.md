@@ -1,5 +1,5 @@
 ---
-id: T-106
+id: T-107
 title: Integrate official HistoriaPojazdu.gov.pl vehicle history
 status: backlog
 priority: medium
@@ -13,7 +13,7 @@ updated_at: 2026-08-01
 closed_at: ~
 ---
 
-# T-106 — Integrate official HistoriaPojazdu.gov.pl vehicle history
+# T-107 — Integrate official HistoriaPojazdu.gov.pl vehicle history
 
 > Fill every section. A section that does not apply gets `_n/a_` — never delete
 > it, so the next agent knows you considered it. A ticket is only moved to
