@@ -78,7 +78,7 @@ The existing activity/panel service, month-boundary helper(s), and API integrati
 
 ## Implementation notes
 
-The production date range was correct; the integration fixture used a fixed July 2026 date while the service used the wall clock. The suite now pins its system time to that fixture date and restores real timers after cleanup, making the month boundary deterministic.
+The production date range was correct; the integration fixture used a fixed July 2026 date while the service used the wall clock. The fixture now writes its costs directly into the current and previous calendar months, avoiding clock mocks that interfere with DB connections in CI.
 
 ## Verification
 
