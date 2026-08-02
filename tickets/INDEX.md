@@ -57,7 +57,6 @@ _None._
 - 🔴 [T-090 — Show deployed web build version and release metadata](./T-090-web-build-version-visibility.md)
 - 🔴 [T-096 — Harden session bootstrap and fix mobile bottom nav overflow](./T-096-session-bootstrap-and-mobile-nav.md)
 - 🔴 [T-098 — Add recurring reminders with dual time and mileage triggers](./T-098-recurring-reminders-dual-triggers.md)
-- 🔴 [T-108 — Fix vehicle-panel monthly cost calculation test](./T-108-fix-vehicle-panel-month-cost-test.md)
 
 ## Done
 
@@ -137,6 +136,7 @@ _None._
 - 🔴 [T-093 — Inline service worker registration for uncached updates](./T-093-inline-service-worker-registration.md)
 - 🔴 [T-094 — Activate waiting service worker updates](./T-094-activate-waiting-service-worker.md)
 - 🔴 [T-095 — Detail-first activity flow and fuel log descriptions](./T-095-activity-detail-flow-and-fuel-descriptions.md)
+- 🔴 [T-108 — Fix vehicle-panel monthly cost calculation test](./T-108-fix-vehicle-panel-month-cost-test.md)
 
 <!-- END GENERATED:tickets -->
 
