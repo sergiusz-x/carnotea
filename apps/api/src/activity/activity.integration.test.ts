@@ -54,9 +54,8 @@ function realDaysAgo(days: number): string {
 }
 
 function monthDate(offsetMonths: number, day: number): string {
-  return toYmd(
-    new Date(Date.UTC(baseDate.getUTCFullYear(), baseDate.getUTCMonth() + offsetMonths, day)),
-  );
+  const now = new Date();
+  return toYmd(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + offsetMonths, day)));
 }
 
 describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
@@ -224,7 +223,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       {
         vehicleId: evVehicleId,
         categoryId: serviceCategory.id,
-        expenseDate: daysAgo(7),
+        expenseDate: monthDate(0, 1),
         amount: '80.00',
         description: 'Cabin filter',
         sourceType: 'manual',
@@ -232,7 +231,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       {
         vehicleId: evVehicleId,
         categoryId: serviceCategory.id,
-        expenseDate: monthDate(-1, 12),
+        expenseDate: monthDate(-1, 11),
         amount: '30.00',
         description: 'Washer fluid',
         sourceType: 'manual',
@@ -287,13 +286,13 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
     expect(res.statusCode).toBe(200);
     const body = res.json<{ items: Array<{ kind: string }>; nextCursor: string | null }>();
     expect(body.items.map((item) => item.kind)).toEqual([
+      'expense',
       'charge',
       'service',
-      'expense',
       'issue',
+      'expense',
       'reminder',
       'charge',
-      'expense',
     ]);
     expect(body.nextCursor).toBeNull();
   });

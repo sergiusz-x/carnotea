@@ -31,6 +31,8 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-102 — Emit transactional expense lifecycle events](./T-102-transactional-expense-events.md)
 - 🔴 [T-103 — Deliver signed webhooks with retries and network protections](./T-103-secure-webhook-dispatcher.md)
 - 🟡 [T-104 — Add webhook settings, delivery diagnostics, and receiver docs](./T-104-webhook-settings-ui-and-docs.md)
+- 🟡 [T-106 — Web — vehicle mileage history chart](./T-106-web-vehicle-mileage-history-chart.md)
+- 🟡 [T-107 — Integrate official HistoriaPojazdu.gov.pl vehicle history](./T-107-historypojazdu-gov-vehicle-history-integration.md)
 
 ## In progress
 
@@ -55,6 +57,7 @@ _None._
 - 🔴 [T-090 — Show deployed web build version and release metadata](./T-090-web-build-version-visibility.md)
 - 🔴 [T-096 — Harden session bootstrap and fix mobile bottom nav overflow](./T-096-session-bootstrap-and-mobile-nav.md)
 - 🔴 [T-098 — Add recurring reminders with dual time and mileage triggers](./T-098-recurring-reminders-dual-triggers.md)
+- 🔴 [T-108 — Fix vehicle-panel monthly cost calculation test](./T-108-fix-vehicle-panel-month-cost-test.md)
 
 ## Done
 
