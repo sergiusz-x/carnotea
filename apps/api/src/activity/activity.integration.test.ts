@@ -223,7 +223,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       {
         vehicleId: evVehicleId,
         categoryId: serviceCategory.id,
-        expenseDate: monthDate(0, 15),
+        expenseDate: monthDate(0, 1),
         amount: '80.00',
         description: 'Cabin filter',
         sourceType: 'manual',
@@ -286,13 +286,13 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
     expect(res.statusCode).toBe(200);
     const body = res.json<{ items: Array<{ kind: string }>; nextCursor: string | null }>();
     expect(body.items.map((item) => item.kind)).toEqual([
+      'expense',
       'charge',
       'service',
       'expense',
       'issue',
       'reminder',
       'charge',
-      'expense',
     ]);
     expect(body.nextCursor).toBeNull();
   });
