@@ -1,7 +1,7 @@
 ---
 id: T-108
 title: Fix vehicle-panel monthly cost calculation test
-status: in_review
+status: done
 priority: high
 size: S # S = <half a day · one seam · M = one PR · L = split it (see Definition of Ready)
 spec_version: 1 # bump when you change the contract after work has started
@@ -9,8 +9,8 @@ owner: codex
 dependencies: []
 labels: [api, bug, ci]
 created_at: 2026-08-01
-updated_at: 2026-08-01
-closed_at: ~
+updated_at: 2026-08-02
+closed_at: 2026-08-02
 ---
 
 # T-108 — Fix vehicle-panel monthly cost calculation test
