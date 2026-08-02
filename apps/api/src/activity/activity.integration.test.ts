@@ -231,7 +231,7 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       {
         vehicleId: evVehicleId,
         categoryId: serviceCategory.id,
-        expenseDate: monthDate(-1, 12),
+        expenseDate: monthDate(-1, 11),
         amount: '30.00',
         description: 'Washer fluid',
         sourceType: 'manual',
@@ -289,8 +289,8 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       'expense',
       'charge',
       'service',
-      'expense',
       'issue',
+      'expense',
       'reminder',
       'charge',
     ]);
