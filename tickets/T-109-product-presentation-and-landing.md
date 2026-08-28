@@ -9,8 +9,8 @@ owner: codex
 dependencies: []
 labels: [web, docs, ux, presentation]
 created_at: 2026-08-26
-updated_at: 2026-08-27
-closed_at: 2026-08-27
+updated_at: 2026-08-28
+closed_at: 2026-08-28
 ---
 
 # T-109 — Present CarNotea in README and public landing page
