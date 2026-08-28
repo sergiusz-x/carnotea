@@ -1,8 +1,89 @@
 {
-  "tagline": "Your personal vehicle diary.",
-  "getStarted": "Get started",
-  "preview": {
-    "today": "Today",
-    "sampleDistance": "Sample distance"
-  }
+  "session": { "loading": "Opening CarNotea…" },
+  "nav": {
+    "label": "Landing navigation",
+    "features": "Benefits",
+    "preview": "See the app",
+    "howItWorks": "Getting started"
+  },
+  "eyebrow": "Your car diary",
+  "hero": {
+    "title": "Everything important about your car. In one place.",
+    "description": "Keep track of costs, refuels, service, and important dates. Always know what is happening with your car and what it costs."
+  },
+  "actions": { "signUp": "Create an account", "signIn": "Sign in", "preview": "See the app" },
+  "proof": {
+    "private": "Your data stays under your control",
+    "pwa": "Easy access on your phone",
+    "bilingual": "Available in Polish and English"
+  },
+  "features": {
+    "eyebrow": "Less to remember, more in control",
+    "title": "Know what is happening with your car",
+    "description": "Keep the important details close at hand instead of searching through receipts, messages, and notes.",
+    "items": [
+      {
+        "title": "Your car’s full history",
+        "description": "See what happened to your car and when, all in one place."
+      },
+      {
+        "title": "Stay on top of refuels",
+        "description": "Record fuel, prices, and mileage to better understand consumption."
+      },
+      {
+        "title": "Charging without the maths",
+        "description": "Keep the energy, cost, and battery level of your electric car together."
+      },
+      {
+        "title": "Service without guesswork",
+        "description": "Keep information about repairs, parts, and workshops in one place."
+      },
+      {
+        "title": "Know what your car costs",
+        "description": "See where your money goes and how your spending changes over time."
+      },
+      {
+        "title": "Remember important dates",
+        "description": "Add reminders for inspections, insurance, and service."
+      }
+    ]
+  },
+  "tour": {
+    "eyebrow": "A clear picture, not guesswork",
+    "title": "Make decisions with your car’s history in view",
+    "description": "Every entry becomes part of your vehicle’s timeline. You can see when it was serviced, what repairs cost, and what needs attention next.",
+    "points": [
+      "Refuels, service, costs, and issues in one list",
+      "The most useful details are ready as soon as you open a car",
+      "One place for petrol and electric vehicles"
+    ]
+  },
+  "how": {
+    "eyebrow": "A simple start",
+    "title": "Get started in three steps",
+    "steps": [
+      { "title": "Add your car", "description": "Enter the basic details just once." },
+      {
+        "title": "Record the important things",
+        "description": "Add a refuel, service, cost, issue, or date to remember."
+      },
+      {
+        "title": "Keep everything close",
+        "description": "Check the history, costs, and next tasks whenever you need to."
+      }
+    ]
+  },
+  "closing": {
+    "title": "Bring order to your car’s important details.",
+    "description": "Create an account and start with the car you know best."
+  },
+  "screens": {
+    "vehicleHubAlt": "CarNotea view of saved vehicles",
+    "dashboardAlt": "Full electric car dashboard with history and key information",
+    "evAlt": "CarNotea mobile view for an electric car",
+    "activityAlt": "CarNotea mobile car history view",
+    "openPreview": "Enlarge application screenshot",
+    "closePreview": "Close enlarged screenshot"
+  },
+  "footer": { "github": "GitHub" }
 }

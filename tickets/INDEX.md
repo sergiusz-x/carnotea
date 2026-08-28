@@ -20,7 +20,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🟡 [T-050 — OpenTelemetry metrics + basic alerting (follow-up to T-018)](./T-050-metrics-alerting.md)
 - 🟡 [T-053 — Privacy Policy and Terms of Service pages](./T-053-legal-privacy-terms.md)
 - 🟡 [T-055 — Web Push notifications for due reminders](./T-055-pwa-push-notifications.md)
-- 🔴 [T-105 — Fix high-severity transitive dependency advisories](./T-105-fix-high-severity-dependency-audit.md)
 
 ## Backlog
 
@@ -36,6 +35,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## In progress
 
+- 🔴 [T-105 — Resolve CI dependency advisories and activity ordering](./T-105-fix-high-severity-dependency-audit.md)
 - 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
@@ -137,6 +137,7 @@ _None._
 - 🔴 [T-094 — Activate waiting service worker updates](./T-094-activate-waiting-service-worker.md)
 - 🔴 [T-095 — Detail-first activity flow and fuel log descriptions](./T-095-activity-detail-flow-and-fuel-descriptions.md)
 - 🔴 [T-108 — Fix vehicle-panel monthly cost calculation test](./T-108-fix-vehicle-panel-month-cost-test.md)
+- 🔴 [T-109 — Present CarNotea in README and public landing page](./T-109-product-presentation-and-landing.md)
 
 <!-- END GENERATED:tickets -->
 

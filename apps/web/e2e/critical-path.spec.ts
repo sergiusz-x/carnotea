@@ -11,8 +11,7 @@ test.describe('Critical path', () => {
     await page.getByRole('button', { name: 'Create account' }).click();
 
     // 2. Verify successful sign-up / sign-in
-    // Should navigate away from login and not show the sign in button
-    await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toHaveCount(0);
+    await expect(page).toHaveURL(/\/dashboard$/);
 
     // 4. Create vehicle
     await page.goto('/vehicles');
@@ -24,29 +23,24 @@ test.describe('Critical path', () => {
     await page.getByLabel('Make').fill('Toyota');
     await page.getByLabel('Model').fill('Corolla');
     await page.getByLabel('Year').fill('2020');
-    await page.getByLabel('Fuel type').selectOption({ label: 'Petrol' });
-    await page.getByLabel('Current mileage').fill('50000');
-
+    await page.getByLabel('Fuel type').click();
+    await page.getByRole('option', { name: 'Petrol' }).click();
     await page.getByRole('button', { name: 'Save vehicle' }).click();
 
     // Verify vehicle created
-    await expect(page.getByText('Toyota Corolla')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Toyota Corolla' })).toBeVisible();
 
     // 5. Add fuel log
-    // Click on the vehicle row/card
-    await page.getByText('Toyota Corolla').click();
-
-    // In detail view, switch to Fuel logs tab if there is one
-    await page.getByRole('tab', { name: 'Fuel logs' }).click();
+    await page.getByRole('link', { name: 'Fuel', exact: true }).click();
 
     // Click Add fuel log
-    await page.getByRole('button', { name: 'Add fuel log' }).click();
+    await page.getByRole('button', { name: 'Add fuel log' }).first().click();
 
     // Wizard or form
     // The translation file has 'wizard' steps: 'When & where?', 'How much?', 'Summary'.
     // If it's a wizard:
     await page.getByLabel('Date').fill('2026-06-15');
-    await page.getByLabel('Mileage (km)').fill('50500');
+    await page.locator('input[type="number"]').fill('50500');
     // Usually next step button is just 'Next' or 'Continue'. Let's look for standard terms or just try to fill.
     // If it's all on one page vs wizard. The translation says "wizard": { "step1": "When & where?"... }
     // Wait, the form might just be standard AppForm with wizard steps inside.
@@ -56,8 +50,8 @@ test.describe('Critical path', () => {
       await page.getByRole('button', { name: 'Next' }).click();
     }
 
-    await page.getByLabel('Liters').fill('40');
-    await page.getByLabel('Price per liter').fill('1.5');
+    await page.locator('input[type="number"]').first().fill('40');
+    await page.locator('input[type="number"]').nth(1).fill('1.5');
 
     if (isWizard) {
       await page.getByRole('button', { name: 'Next' }).click();
@@ -71,6 +65,6 @@ test.describe('Critical path', () => {
     // 6. Dashboard
     await page.goto('/');
     // Check for the vehicle on the dashboard
-    await expect(page.getByText('Toyota Corolla')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Toyota Corolla' })).toBeVisible();
   });
 });

@@ -57,3 +57,4 @@ Don't write one for:
 | [0012](./0012-tickets-index-generated-from-frontmatter.md) | Ticket status in frontmatter; INDEX.md generated   | accepted                                 |
 | [0013](./0013-opentelemetry-observability.md)              | OpenTelemetry observability baseline               | accepted                                 |
 | [0014](./0014-semantic-release-versioning.md)              | semantic-release for SemVer tags + GitHub Releases | accepted                                 |
+| [0016](./0016-public-product-landing-in-vite-spa.md)       | Public product landing in the existing Vite SPA    | accepted                                 |
