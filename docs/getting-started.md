@@ -170,7 +170,21 @@ agent-browser snapshot -i                 # list interactive elements
 agent-browser chat                        # natural-language control
 ```
 
-## 8. Adding UI components (shadcn/ui)
+## 8. Refreshing product screenshots
+
+The public landing page and root README use the same real-app screenshots from
+`apps/web/public/showcase/`. With the local database, API, and web app running,
+refresh the controlled showcase images with:
+
+```bash
+pnpm --filter @carnotea/web showcase:capture
+```
+
+The capture uses the local showcase account and dark mode. See
+[`docs/media/README.md`](./media/README.md) before changing the capture flow or
+adding an image.
+
+## 9. Adding UI components (shadcn/ui)
 
 shadcn/ui components are copied into `apps/web/src/components/ui/` rather than
 installed as a package. To add a new one:
@@ -183,7 +197,7 @@ pnpm dlx shadcn@latest add <component-name>   # e.g. input, dialog, select
 The CLI reads `apps/web/components.json` for paths and configuration. See
 `apps/web/AGENTS.md` for the component location conventions.
 
-## 9. Committing changes
+## 10. Committing changes
 
 Instead of staging and committing manually, use `/smart-commit` (Claude Code)
 or the `smart-commit` Codex skill. It will:
@@ -197,7 +211,7 @@ or the `smart-commit` Codex skill. It will:
 
 To then push and open a PR, run `/ship-pr`.
 
-## 10. Where to look next
+## 11. Where to look next
 
 - **Architecture overview**: [`docs/architecture.md`](./architecture.md)
 - **Conventions**: [`docs/conventions.md`](./conventions.md)

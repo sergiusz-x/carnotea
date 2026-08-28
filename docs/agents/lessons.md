@@ -29,6 +29,12 @@ mistakes.
 
 ## Lessons
 
+### 2026-08-26 — Never expose a visual dependency before its asset exists
+
+**Context:** Building the public CarNotea landing page.
+**Mistake:** Rendered screenshot paths before the capture workflow had produced committed assets, leaving visitors with broken image placeholders.
+**Rule:** When a UI depends on generated media, generate and verify every referenced asset before exposing the UI; until then, use a self-contained code-native visual that cannot fail at runtime.
+
 ### 2026-07-07 — Prefer proven platform-native automation over a hand-rolled integration
 
 **Context:** Building a test-gated deploy trigger for Dokploy from GitHub Actions (T-046).
@@ -172,3 +178,33 @@ create tickets only for follow-up work the human explicitly asks to track.
 **Context:** Shipping T-090 to expose the deployed web version in the app shell and via `/version.json`.
 **Mistake:** Implemented build metadata exclusively from local git commands during the Vite build. It worked locally and in CI, but the production Dokploy build ran without usable git metadata in the container context, so the live app showed `v0.0.0+build.unknown`.
 **Rule:** When a production build runs inside a platform-managed Docker git context, never assume `.git` metadata is available inside the build container. Keep the git-based path as the preferred source, but add an automatic non-git fallback that still yields meaningful production version metadata.
+
+### 2026-08-27 — Validate showcase compositions at their rendered size
+
+**Context:** Presenting real application screenshots on the public landing page.
+**Mistake:** Combining a desktop screenshot with an overlapping phone frame and cropping another mobile screenshot into an arbitrary aspect ratio. The source assets were real, but the rendered composition hid content and made both views difficult to understand.
+**Rule:** Show product screenshots at their native aspect ratio unless a deliberately captured crop exists. Verify the final rendered composition at desktop and mobile breakpoints; never let one device mockup cover meaningful content in another.
+
+### 2026-08-27 — A product screenshot must communicate before it is enlarged
+
+**Context:** Choosing the desktop hero image for the public product landing.
+**Mistake:** Used a technically valid screenshot whose meaningful content occupied only a small part of the frame. At landing-page size it looked empty and did not explain the product.
+**Rule:** Select and capture a focused state with recognizable data and a clear user story at thumbnail size. For detailed application views, also provide a shared, accessible zoom interaction so visitors can inspect the full-resolution asset.
+
+### 2026-08-27 — Never cut application boundaries with coordinate-based crops
+
+**Context:** Preparing the full desktop dashboard screenshot for the landing hero.
+**Mistake:** Cropped the screenshot with fixed coordinates that removed the right and bottom edges of the application, making the interface look broken even though the chosen data was useful.
+**Rule:** A screenshot presented as a full application view must preserve all viewport boundaries. Use an uncropped viewport capture; reserve focused crops for clearly framed detail shots that do not imply they show the complete screen.
+
+### 2026-08-27 — Screenshot filenames and descriptions must match their content
+
+**Context:** Auditing the generated product-presentation assets.
+**Mistake:** Saved one mobile dashboard capture under dashboard, activity, and reminders filenames, and described a dashboard capture as analytics. The page rendered correctly, but the presentation overstated the variety of demonstrated screens.
+**Rule:** Capture each advertised feature in its real application state and verify the resulting pixels, filename, alt text, and surrounding copy as one unit.
+
+### 2026-08-28 — Verify the asset as loaded by its final consumer
+
+**Context:** Replacing a cropped screenshot referenced from the repository README.
+**Mistake:** Verified the regenerated file directly while the README preview continued to display a cached image under the unchanged filename, then incorrectly reported the visible result as fixed.
+**Rule:** After replacing media, verify it through the final rendered consumer. When a preview cache keeps stale pixels under the same path, use a new descriptive filename, update every reference, and remove the obsolete asset before reporting completion.

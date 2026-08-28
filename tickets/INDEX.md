@@ -137,6 +137,7 @@ _None._
 - 🔴 [T-094 — Activate waiting service worker updates](./T-094-activate-waiting-service-worker.md)
 - 🔴 [T-095 — Detail-first activity flow and fuel log descriptions](./T-095-activity-detail-flow-and-fuel-descriptions.md)
 - 🔴 [T-108 — Fix vehicle-panel monthly cost calculation test](./T-108-fix-vehicle-panel-month-cost-test.md)
+- 🔴 [T-109 — Present CarNotea in README and public landing page](./T-109-product-presentation-and-landing.md)
 
 <!-- END GENERATED:tickets -->
 

@@ -1,48 +1,37 @@
-# CarNotea
+# 🚗 CarNotea
 
-CarNotea is a private vehicle-diary PWA for tracking cars, refuels, charging,
-services, parts, issues, expenses, and reminders.
+## 📋 Overview
 
-The app is intentionally small: a personal logbook, not a fleet manager or
-workshop ERP.
+CarNotea is a personal car diary for keeping refuels, charging, service, costs, issues, and important dates in one clear place.
 
-## Current Shape
+## 🌐 Live App
 
-- `apps/api` — NestJS REST API with Zod-registered OpenAPI routes and better-auth.
-- `apps/web` — Vite + React PWA shell with TanStack Router/Query and i18n.
-- `packages/db` — Drizzle schema, migrations, and DB factory.
-- `packages/shared` — shared Zod schemas, constants, and route paths.
-- `tooling/*` — shared build, lint, format, TypeScript, and test config packages.
+Visit the app at **[carnotea.sergiusz.dev](https://carnotea.sergiusz.dev)**.
 
-Canonical docs:
+## 🖼️ Preview
 
-- Architecture: [`docs/architecture.md`](./docs/architecture.md)
-- Decisions: [`docs/adr/`](./docs/adr/)
-- Tech stack: [`docs/tech-stack.md`](./docs/tech-stack.md)
-- Setup: [`docs/getting-started.md`](./docs/getting-started.md)
+<p align="center">
+  <img src="./apps/web/public/showcase/dashboard-ev-mobile.png" alt="Mobile electric vehicle dashboard" width="30%" />
+  <img src="./apps/web/public/showcase/activity-mobile.png" alt="Mobile vehicle activity history" width="30%" />
+  <img src="./apps/web/public/showcase/reminders-mobile.png" alt="Mobile vehicle reminders" width="30%" />
+</p>
 
-## Quick Start
+<p align="center">
+  <img src="./apps/web/public/showcase/vehicles-desktop.png" alt="Full CarNotea vehicle overview" />
+</p>
 
-Prerequisites: Node.js 24+, pnpm 9+, and Docker.
+<p align="center">
+  <img src="./apps/web/public/showcase/analytics-desktop.png" alt="Vehicle cost analytics and upcoming reminders" />
+</p>
 
-```bash
-cp .env.example .env
-pnpm install
-pnpm db:up
-pnpm db:migrate
-pnpm --filter @carnotea/api dev
-pnpm --filter @carnotea/web dev
-```
+<br />
 
-See [`docs/getting-started.md`](./docs/getting-started.md) for the full local
-workflow.
+## ✨ Features
 
-## Working Here
-
-Work is ticket-driven. Start with [`AGENTS.md`](./AGENTS.md) and
-[`tickets/INDEX.md`](./tickets/INDEX.md). The validation commands and agent
-workflow live there; keep this README as a small entry point.
-
-## License
-
-Private project, all rights reserved. No license granted unless explicitly stated.
+- One timeline for refuels, charging, service, costs, issues, and reminders.
+- Fuel entries with mileage, prices, and consumption tracking.
+- Charging history with energy use, battery level, and costs for electric cars.
+- Service records, repairs, parts, and workshops kept with the vehicle.
+- Cost summaries that show where money goes.
+- Reminders for inspections, insurance, service, and other dates worth remembering.
+- Available in Polish and English on desktop and phone.
