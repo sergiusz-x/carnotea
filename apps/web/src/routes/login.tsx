@@ -1,4 +1,4 @@
-import { createRoute, redirect, useSearch } from '@tanstack/react-router';
+import { createRoute, redirect } from '@tanstack/react-router';
 import { Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ import { rootRoute } from './root';
 
 const loginSearchSchema = z.object({
   redirect: z.string().optional(),
+  mode: z.enum(['signIn', 'signUp']).optional(),
 });
 
 export const loginRoute = createRoute({
@@ -41,9 +42,9 @@ export const loginRoute = createRoute({
 function LoginPage() {
   const { t } = useTranslation('common');
   const { theme, toggleTheme } = useTheme();
-  const search = useSearch({ from: '/login' });
+  const search = loginRoute.useSearch();
   const redirectTo = search.redirect;
-  const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
+  const [mode, setMode] = useState<'signIn' | 'signUp'>(search.mode ?? 'signIn');
 
   return (
     <SessionGate>

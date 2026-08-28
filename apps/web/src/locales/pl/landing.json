@@ -1,8 +1,89 @@
 {
-  "tagline": "Twój osobisty dziennik pojazdu.",
-  "getStarted": "Zaczynamy",
-  "preview": {
-    "today": "Dziś",
-    "sampleDistance": "Przykładowy dystans"
-  }
+  "session": { "loading": "Otwieramy CarNotea…" },
+  "nav": {
+    "label": "Nawigacja strony głównej",
+    "features": "Co zyskujesz",
+    "preview": "Zobacz aplikację",
+    "howItWorks": "Jak zacząć"
+  },
+  "eyebrow": "Twój dziennik samochodu",
+  "hero": {
+    "title": "Wszystko ważne o Twoim samochodzie. W jednym miejscu.",
+    "description": "Zapisuj wydatki, tankowania, serwisy i ważne terminy. Zawsze wiesz, co dzieje się z autem i ile Cię kosztuje."
+  },
+  "actions": { "signUp": "Załóż konto", "signIn": "Zaloguj się", "preview": "Zobacz aplikację" },
+  "proof": {
+    "private": "Twoje dane pod Twoją kontrolą",
+    "pwa": "Wygodny dostęp z telefonu",
+    "bilingual": "Po polsku i po angielsku"
+  },
+  "features": {
+    "eyebrow": "Mniej pamiętania, więcej kontroli",
+    "title": "Wiesz, co dzieje się z Twoim samochodem",
+    "description": "Najważniejsze informacje o aucie masz pod ręką, bez szukania po rachunkach, wiadomościach i notatkach.",
+    "items": [
+      {
+        "title": "Cała historia samochodu",
+        "description": "Zobacz w jednym miejscu, co działo się z autem i kiedy."
+      },
+      {
+        "title": "Tankowania pod kontrolą",
+        "description": "Zapisuj paliwo, ceny i przebieg, aby łatwiej kontrolować zużycie."
+      },
+      {
+        "title": "Ładowanie bez liczenia",
+        "description": "Notuj energię, koszt i poziom baterii swojego auta elektrycznego."
+      },
+      {
+        "title": "Serwis bez zgadywania",
+        "description": "Zachowaj informacje o naprawach, częściach i warsztatach w jednym miejscu."
+      },
+      {
+        "title": "Wiesz, ile kosztuje auto",
+        "description": "Sprawdź, na co przeznaczasz pieniądze i jak zmieniają się wydatki."
+      },
+      {
+        "title": "Pamiętasz o ważnych terminach",
+        "description": "Dodaj przypomnienia o przeglądzie, ubezpieczeniu i serwisie."
+      }
+    ]
+  },
+  "tour": {
+    "eyebrow": "Pełny obraz zamiast zgadywania",
+    "title": "Podejmuj decyzje na podstawie historii auta",
+    "description": "Każdy wpis trafia do chronologii pojazdu. Dzięki temu wiesz, kiedy był serwis, ile kosztowały naprawy i co warto zrobić dalej.",
+    "points": [
+      "Tankowania, serwis, koszty i usterki na jednej liście",
+      "Najważniejsze dane wybranego auta od razu po wejściu",
+      "Jedno miejsce dla samochodów spalinowych i elektrycznych"
+    ]
+  },
+  "how": {
+    "eyebrow": "Prosty start",
+    "title": "Zacznij w trzech krokach",
+    "steps": [
+      { "title": "Dodaj samochód", "description": "Wpisz podstawowe dane auta tylko raz." },
+      {
+        "title": "Zapisuj ważne sprawy",
+        "description": "Dodaj tankowanie, serwis, wydatek, usterkę lub termin."
+      },
+      {
+        "title": "Miej wszystko pod ręką",
+        "description": "W każdej chwili sprawdź historię, koszty i najbliższe zadania."
+      }
+    ]
+  },
+  "closing": {
+    "title": "Zadbaj o porządek w sprawach swojego auta.",
+    "description": "Załóż konto i zacznij od samochodu, który znasz najlepiej."
+  },
+  "screens": {
+    "vehicleHubAlt": "Widok samochodów zapisanych w CarNotea",
+    "dashboardAlt": "Pełny pulpit samochodu elektrycznego z historią i najważniejszymi informacjami",
+    "evAlt": "Mobilny widok auta elektrycznego w CarNotea",
+    "activityAlt": "Mobilny widok historii samochodu w CarNotea",
+    "openPreview": "Powiększ zrzut aplikacji",
+    "closePreview": "Zamknij powiększony zrzut"
+  },
+  "footer": { "github": "GitHub" }
 }

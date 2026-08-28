@@ -51,7 +51,7 @@ export function SignInForm({ redirectTo, onSwitchToSignUp }: SignInFormProps) {
       return;
     }
 
-    await navigate({ to: redirectTo ?? '/', replace: true });
+    await navigate({ to: redirectTo ?? '/dashboard', replace: true });
   }
 
   return (
