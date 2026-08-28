@@ -231,7 +231,9 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       {
         vehicleId: evVehicleId,
         categoryId: serviceCategory.id,
-        expenseDate: monthDate(-1, 11),
+        // Keep this date distinct from the reminder's created date so the
+        // cross-resource ordering assertion never depends on UUID ordering.
+        expenseDate: monthDate(-1, 10),
         amount: '30.00',
         description: 'Washer fluid',
         sourceType: 'manual',
@@ -290,8 +292,8 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
       'charge',
       'service',
       'issue',
-      'expense',
       'reminder',
+      'expense',
       'charge',
     ]);
     expect(body.nextCursor).toBeNull();

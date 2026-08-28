@@ -1,7 +1,7 @@
 ---
 id: T-105
 title: Fix high-severity transitive dependency advisories
-status: ready
+status: in_progress
 priority: high
 size: S
 spec_version: 1
@@ -9,7 +9,7 @@ owner: codex
 dependencies: []
 labels: [security, dependencies, ci]
 created_at: 2026-07-28
-updated_at: 2026-07-28
+updated_at: 2026-08-28
 closed_at: ~
 ---
 
@@ -23,7 +23,7 @@ Restore the required production dependency-audit check by resolving the patched 
 
 The required `pnpm audit --prod --audit-level=high` check reports GHSA-c96f-x56v-gq3h for `find-my-way <=9.6.0` and GHSA-mh99-v99m-4gvg for `brace-expansion <=5.0.7`. On 2026-07-28, package-manager metadata reports patched stable versions `find-my-way@9.7.0` and `brace-expansion@5.0.8`; current direct parents `fastify@5.10.0` and `@nestjs/platform-fastify@11.1.28` have no newer stable release. The existing root override policy already pins patched transitive `brace-expansion` ranges, making narrow additional overrides the smallest compatible fix.
 
-This restores the audit gate introduced by [T-049](./T-049-security-hardening.md) and unblocks documentation-only changes whose CI is otherwise green.
+This restores the audit gate introduced by [T-049](./T-049-security-hardening.md) and unblocks PR #171. The same CI run exposed a nondeterministic activity integration fixture, which is included here because both fixes are required to merge the release PR.
 
 ## Contract
 
@@ -53,6 +53,7 @@ _n/a — no runtime schema changes._
 - [ ] Existing safe `brace-expansion` 1.x and 2.x overrides remain unchanged.
 - [ ] `pnpm install --lockfile-only` completes without peer-dependency or resolution errors.
 - [ ] API lint, typecheck, tests, and build pass with the patched router dependency.
+- [ ] The activity integration test uses distinct dates and passes with the CI database.
 - [ ] No application source, public API contract, database schema, environment variable, or user-facing behavior changes.
 
 ## Test matrix
@@ -69,6 +70,7 @@ _n/a — no runtime schema changes._
 
 - `package.json`
 - `pnpm-lock.yaml`
+- `apps/api/src/activity/activity.integration.test.ts`
 - `tickets/T-105-fix-high-severity-dependency-audit.md`
 - `tickets/INDEX.md`
 
