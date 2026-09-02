@@ -73,7 +73,7 @@ catalog:
   '@nestjs/platform-fastify': ^11.1.28
   '@nestjs/testing': ^11.1.28
   '@nestjs/cli': ^11.0.24
-  fastify: ^5.10.0
+  fastify: ^5.12.1
   nestjs-pino: ^4.6.1
   pino-http: ^11.0.0
   pino-pretty: ^13.1.3
