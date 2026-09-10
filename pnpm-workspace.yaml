@@ -84,7 +84,7 @@ catalog:
   # Auth (apps/api) — better-auth, ADR-0004
   better-auth: ^1.6.23
   # Email transport (apps/api) — T-051
-  nodemailer: ^9.0.3
+  nodemailer: ^9.1.1
   '@types/nodemailer': ^8.0.1
   # Security — T-049
   '@fastify/helmet': ^13.1.0
