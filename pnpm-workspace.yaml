@@ -70,7 +70,7 @@ catalog:
   '@nestjs/common': ^11.1.28
   '@nestjs/core': ^11.1.28
   '@nestjs/config': ^4.0.4
-  '@nestjs/platform-fastify': ^11.1.28
+  '@nestjs/platform-fastify': ^11.2.4
   '@nestjs/testing': ^11.1.28
   '@nestjs/cli': ^11.0.24
   fastify: ^5.10.0
