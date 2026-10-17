@@ -36,7 +36,7 @@
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "fastify": "catalog:",
-    "handlebars": "^4.7.9",
+    "handlebars": "^4.7.10",
     "i18next": "catalog:",
     "nestjs-pino": "catalog:",
     "nodemailer": "catalog:",
