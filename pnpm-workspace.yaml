@@ -28,7 +28,7 @@ catalog:
   # Validation (used by api, web, shared)
   zod: ^4.4.3
   # Web build toolchain
-  vite: ^8.1.5
+  vite: ^8.1.6
   '@vitejs/plugin-react': ^6.0.3
   # i18n (apps/web) — ADR-0007
   i18next: ^26.3.6
