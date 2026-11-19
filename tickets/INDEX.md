@@ -35,7 +35,6 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 
 ## In progress
 
-- 🔴 [T-105 — Resolve CI dependency advisories and activity ordering](./T-105-fix-high-severity-dependency-audit.md)
 - 🟡 [T-042 — End-to-end tests with Playwright for the critical path](./T-042-e2e-playwright.md)
 - 🔴 [T-046 — Continuous deployment with safe release-step migrations](./T-046-cd-deploy-migrate.md)
 - 🟢 [T-054 — PWA offline-first caching and queued-mutation sync](./T-054-pwa-offline-sync.md)
@@ -47,6 +46,8 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-077 — 'Web — apply the instrument-cluster design system to forms, detail pages, profile, and vehicle hub'](./T-077-web-design-system-consistency-pass.md)
 - 🔴 [T-086 — 'Web — mobile vehicle switching, StatStrip wrap, trend label, and textarea fields'](./T-086-web-mobile-vehicle-switch-and-ui-fixes.md)
 - 🔴 [T-097 — Move production PostgreSQL management to Dokploy](./T-097-dokploy-managed-postgres.md)
+- 🔴 [T-105 — Fix high-severity transitive dependency advisories](./T-105-fix-high-severity-dependency-audit.md)
+- 🔴 [T-110 — Refresh vulnerable dependencies and container images](./T-110-dependency-security-refresh.md)
 
 ## Blocked
 

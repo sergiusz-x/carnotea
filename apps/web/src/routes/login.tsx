@@ -26,7 +26,7 @@ export const loginRoute = createRoute({
   path: '/login',
   validateSearch: loginSearchSchema,
   beforeLoad: async ({ context, search }) => {
-    await context.queryClient.prefetchQuery(sessionQueryOptions);
+    await context.queryClient.query(sessionQueryOptions).catch(() => undefined);
 
     const sessionState = context.queryClient.getQueryState(sessionQueryOptions.queryKey);
     const session = context.queryClient.getQueryData(sessionQueryOptions.queryKey);

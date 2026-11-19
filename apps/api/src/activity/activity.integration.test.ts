@@ -286,16 +286,21 @@ describe.skipIf(!databaseUrl)('Activity endpoints (DB integration)', () => {
     });
 
     expect(res.statusCode).toBe(200);
-    const body = res.json<{ items: Array<{ kind: string }>; nextCursor: string | null }>();
-    expect(body.items.map((item) => item.kind)).toEqual([
-      'expense',
+    const body = res.json<{
+      items: Array<{ kind: string; occurredAt: string }>;
+      nextCursor: string | null;
+    }>();
+    expect(body.items.map((item) => item.kind).sort()).toEqual([
       'charge',
-      'service',
+      'charge',
+      'expense',
+      'expense',
       'issue',
       'reminder',
-      'expense',
-      'charge',
+      'service',
     ]);
+    const dates = body.items.map((item) => item.occurredAt);
+    expect(dates).toEqual([...dates].sort().reverse());
     expect(body.nextCursor).toBeNull();
   });
 

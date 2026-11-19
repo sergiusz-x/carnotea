@@ -49,5 +49,14 @@ describe.skipIf(!databaseUrl)('better-auth signup creates a linked domain profil
     expect(profile?.email).toBe(email.toLowerCase());
     expect(profile?.firstName).toBe('Jan');
     expect(profile?.lastName).toBe('Kowalski');
+
+    const session = await auth.api.signInEmail({
+      body: { email, password: 'sup3rs3cret!' },
+    });
+    expect(session.user.id).toBe(userId);
+
+    await expect(
+      auth.api.signInEmail({ body: { email, password: 'wrong-password' } }),
+    ).rejects.toThrow();
   });
 });

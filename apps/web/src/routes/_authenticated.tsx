@@ -22,7 +22,7 @@ export const authenticatedLayoutRoute = createRoute({
   id: '_authenticated',
   component: AuthenticatedLayout,
   beforeLoad: async ({ context, location }) => {
-    await context.queryClient.prefetchQuery(sessionQueryOptions);
+    await context.queryClient.query(sessionQueryOptions).catch(() => undefined);
 
     const sessionState = context.queryClient.getQueryState(sessionQueryOptions.queryKey);
     const session = context.queryClient.getQueryData(sessionQueryOptions.queryKey);

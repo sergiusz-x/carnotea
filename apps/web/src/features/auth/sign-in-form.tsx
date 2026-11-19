@@ -41,7 +41,7 @@ export function SignInForm({ redirectTo, onSwitchToSignUp }: SignInFormProps) {
     queryClient.removeQueries({ queryKey: ['session'] });
 
     try {
-      const session = await queryClient.ensureQueryData(sessionQueryOptions);
+      const session = await queryClient.query({ ...sessionQueryOptions, staleTime: 'static' });
       if (!session?.user) {
         form.setError('root', { message: t('errors.sessionSync') });
         return;

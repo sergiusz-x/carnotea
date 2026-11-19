@@ -5,7 +5,7 @@
 # =============================================================================
 
 # ---- Stage 1: Build the static bundle --------------------------------------
-FROM node:22-slim AS builder
+FROM node:24.22.3-slim AS builder
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends git ca-certificates \
@@ -38,7 +38,7 @@ RUN pnpm --filter @carnotea/web... build
 
 
 # ---- Stage 2: Serve with nginx ---------------------------------------------
-FROM nginx:1.27-alpine AS runner
+FROM nginx:1.30.7-alpine AS runner
 
 # Remove default nginx static content
 RUN rm -rf /usr/share/nginx/html/*
