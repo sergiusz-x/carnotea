@@ -74,6 +74,8 @@ function createServiceHarness(params: {
     removeForSource: vi.fn().mockResolvedValue(undefined),
   };
 
+  // The service only calls the two mocked methods.
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-class-instance-assignment
   const service = new FluidLogsService(db as unknown as Db, costSync);
 
   return { service, db, costSync };

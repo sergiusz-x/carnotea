@@ -86,6 +86,8 @@ function createServiceHarness(params: {
   const service = new FuelLogsService(
     db as unknown as Db,
     mileageSync as unknown as MileageSyncService,
+    // The service only calls the two mocked methods.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-class-instance-assignment
     costSync,
   );
 
