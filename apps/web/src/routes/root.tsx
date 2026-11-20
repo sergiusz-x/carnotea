@@ -11,20 +11,20 @@ export interface RouterContext {
 
 function RootError({ error, reset }: { error: unknown; reset: () => void }) {
   return (
-    <div className="flex min-h-screen items-center justify-center p-8">
+    <main className="flex min-h-screen items-center justify-center p-8">
       <ErrorState
         message="Wystąpił błąd aplikacji"
         detail={error instanceof Error ? error.message : 'Nieznany błąd'}
         onRetry={reset}
         retryLabel="Spróbuj ponownie"
       />
-    </div>
+    </main>
   );
 }
 
 function NotFound() {
   return (
-    <div className="flex min-h-screen items-center justify-center p-8">
+    <main className="flex min-h-screen items-center justify-center p-8">
       <EmptyState
         title="404: Nie znaleziono"
         description="Nie mogliśmy znaleźć strony, której szukasz."
@@ -34,7 +34,7 @@ function NotFound() {
           </Link>
         }
       />
-    </div>
+    </main>
   );
 }
 

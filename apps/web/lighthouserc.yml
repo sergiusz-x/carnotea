@@ -16,6 +16,7 @@ ci:
       'maskable-icon': ['off', {}]
       'network-dependency-tree-insight': ['off', {}]
       'unused-javascript': ['off', {}]
+      'valid-source-maps': ['off', {}]
       'meta-description': ['warn', {}]
       'meta-viewport': ['warn', {}]
 
