@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 interface ImageLightboxProps {
   src: string;
   alt: string;
+  width: number;
+  height: number;
   openLabel: string;
   closeLabel: string;
   imageClassName?: string;
@@ -14,6 +16,8 @@ interface ImageLightboxProps {
 export function ImageLightbox({
   src,
   alt,
+  width,
+  height,
   openLabel,
   closeLabel,
   imageClassName,
@@ -26,7 +30,13 @@ export function ImageLightbox({
           className="group relative block w-full cursor-zoom-in overflow-hidden rounded-[inherit] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           aria-label={[openLabel, alt].join(': ')}
         >
-          <img src={src} alt={alt} className={cn('block h-auto w-full', imageClassName)} />
+          <img
+            src={src}
+            alt={alt}
+            width={width}
+            height={height}
+            className={cn('block h-auto w-full', imageClassName)}
+          />
           <span className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full border border-white/15 bg-black/70 text-white opacity-80 shadow-lg transition group-hover:scale-105 group-hover:opacity-100 group-focus-visible:opacity-100">
             <ZoomIn className="h-5 w-5" aria-hidden="true" />
           </span>

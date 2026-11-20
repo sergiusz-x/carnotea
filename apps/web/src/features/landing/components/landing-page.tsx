@@ -125,6 +125,8 @@ export function LandingPage() {
               <div className="hidden overflow-hidden rounded-2xl border bg-card p-2 shadow-2xl shadow-primary/10 sm:block">
                 <ImageLightbox
                   src="/showcase/dashboard-ev-desktop.png"
+                  width={1440}
+                  height={1000}
                   alt={t('screens.dashboardAlt')}
                   openLabel={t('screens.openPreview')}
                   closeLabel={t('screens.closePreview')}
@@ -134,6 +136,8 @@ export function LandingPage() {
               <div className="mx-auto w-full max-w-64 rounded-[2rem] border bg-card p-2 shadow-2xl shadow-primary/10 sm:hidden">
                 <ImageLightbox
                   src="/showcase/dashboard-ev-mobile.png"
+                  width={390}
+                  height={844}
                   alt={t('screens.evAlt')}
                   openLabel={t('screens.openPreview')}
                   closeLabel={t('screens.closePreview')}
@@ -174,6 +178,8 @@ export function LandingPage() {
               <div className="mx-auto w-full max-w-[22rem] rounded-[2rem] border bg-card p-2 shadow-xl">
                 <ImageLightbox
                   src="/showcase/activity-mobile.png"
+                  width={390}
+                  height={844}
                   alt={t('screens.activityAlt')}
                   openLabel={t('screens.openPreview')}
                   closeLabel={t('screens.closePreview')}
