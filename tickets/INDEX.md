@@ -48,6 +48,7 @@ are all `done` — use `/next-ticket` (Claude Code) or the `next-ticket` skill (
 - 🔴 [T-097 — Move production PostgreSQL management to Dokploy](./T-097-dokploy-managed-postgres.md)
 - 🔴 [T-105 — Fix high-severity transitive dependency advisories](./T-105-fix-high-severity-dependency-audit.md)
 - 🔴 [T-110 — Refresh vulnerable dependencies and container images](./T-110-dependency-security-refresh.md)
+- 🔴 [T-111 — Consolidate outstanding dependency updates](./T-111-consolidate-dependency-updates.md)
 
 ## Blocked
 

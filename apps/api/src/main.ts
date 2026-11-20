@@ -34,6 +34,8 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({ bodyLimit }),
+    // Nest accepts this structurally typed options object.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-class-instance-assignment
     { bufferLogs: true },
   );
 
