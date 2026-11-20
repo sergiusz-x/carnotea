@@ -5,7 +5,7 @@
 # =============================================================================
 
 # ---- Stage 1: Build the monorepo -------------------------------------------
-FROM node:22-slim AS builder
+FROM node:24.22.3-slim AS builder
 
 # Install git (needed for build-version scripts) and Corepack for pnpm
 RUN apt-get update \
@@ -41,7 +41,7 @@ RUN pnpm deploy --filter @carnotea/api --prod /app/out
 
 
 # ---- Stage 2: Slim runtime image -------------------------------------------
-FROM node:22-slim AS runner
+FROM node:24.22.3-slim AS runner
 
 # Corepack still needed at runtime: the migrate service's command runs
 # `pnpm --filter @carnotea/db db:deploy`. COREPACK_HOME must be set before
